@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170526214421) do
+ActiveRecord::Schema.define(version: 20170526224446) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,25 @@ ActiveRecord::Schema.define(version: 20170526214421) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_accounts_on_user_id"
+  end
+
+  create_table "addresses", id: :serial, force: :cascade do |t|
+    t.string "street"
+    t.string "extended"
+    t.string "locality"
+    t.string "region"
+    t.string "postal_code"
+    t.string "country_code_alpha3"
+    t.string "phone"
+    t.string "url"
+    t.float "longitude"
+    t.float "latitude"
+    t.string "addressable_type"
+    t.integer "addressable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["addressable_id", "addressable_type"], name: "index_addresses_on_addressable_id_and_addressable_type", unique: true
+    t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable_type_and_addressable_id"
   end
 
   create_table "children", force: :cascade do |t|
@@ -39,6 +58,14 @@ ActiveRecord::Schema.define(version: 20170526214421) do
     t.bigint "child_id", null: false
     t.index ["child_id", "parent_id"], name: "index_children_parents_on_child_id_and_parent_id"
     t.index ["parent_id", "child_id"], name: "index_children_parents_on_parent_id_and_child_id"
+  end
+
+  create_table "locations", force: :cascade do |t|
+    t.bigint "account_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_locations_on_account_id"
   end
 
   create_table "parents", force: :cascade do |t|
@@ -81,4 +108,5 @@ ActiveRecord::Schema.define(version: 20170526214421) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "locations", "accounts"
 end
