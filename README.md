@@ -21,4 +21,7 @@ Things you may want to cover:
 
 * Deployment instructions
 
-* ...
+* Rails secrets
+  * Set env variable in production `RAILS_MASTER_KEY` to value in `config/secrets.yml.key`
+  * `config/secrets.yml.enc` can be safely commited to repo, contains encrypted values contained in secrets file
+  * `EDITOR=vim bin/rails secrets:edit` to edit the secrets file.
