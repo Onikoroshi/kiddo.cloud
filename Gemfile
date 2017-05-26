@@ -7,6 +7,8 @@ end
 
 gem 'devise', '~> 4.2'
 gem 'haml', '~> 5.0', '>= 5.0.1'
+gem 'wicked', '~> 1.3', '>= 1.3.1'
+gem 'forgery', '~> 0.6.0'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
