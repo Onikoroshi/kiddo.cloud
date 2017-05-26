@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  references: 
+  grade_entering: MyString
+  birthdate: 2017-05-26
+  additional_info: MyText
+  gender: MyString
+
+two:
+  references: 
+  grade_entering: MyString
+  birthdate: 2017-05-26
+  additional_info: MyText
+  gender: MyString

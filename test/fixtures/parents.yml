@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  references: 
+  phone: MyString
+  email: MyString
+  signature: MyString
+  agreed_to_waivers: false
+  email_waivers: 
+
+two:
+  references: 
+  phone: MyString
+  email: MyString
+  signature: MyString
+  agreed_to_waivers: false
+  email_waivers: 
