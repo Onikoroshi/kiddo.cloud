@@ -18,4 +18,17 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:sign_up, keys: [:email, :password, :password_confirmation, center_attributes: [:subdomain]])
   end
 
+  def after_sign_in_path_for(resource)
+    return root_url unless user_signed_in?
+
+    if current_user.present? && current_user.roles.count == 0
+      sign_out(resource)
+      flash.discard(:notice)
+      flash[:error] = "Sign in unsuccessful. You do not appear to have the necessary permissions."
+      return new_user_session_url
+    end
+
+    stored_location_for(resource) || Receptionist.new(resource).direct
+  end
+
 end

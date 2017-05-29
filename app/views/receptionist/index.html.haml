@@ -1,0 +1,11 @@
+.row.role-chooser
+  #login.narrow.no-left.no-right-padding
+    .container-fluid
+      %header.trans.white
+        %h1 Role Selector
+      .nav.clearfix
+        WHICH ROLE WOULD YOU LIKE TO OPERATE AS?
+      %section
+        %ul
+          - current_user.roles.each do |role|
+            %li= link_to role.name, @receptionist.direct_by_role(role), :class => "btn btn-lg btn-secondary"

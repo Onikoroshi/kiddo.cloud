@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170529180440) do
+ActiveRecord::Schema.define(version: 20170529182616) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,16 @@ ActiveRecord::Schema.define(version: 20170529180440) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["center_id"], name: "index_cores_on_center_id"
+  end
+
+  create_table "emergency_contacts", force: :cascade do |t|
+    t.bigint "core_id"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "phone"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["core_id"], name: "index_emergency_contacts_on_core_id"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -156,4 +166,5 @@ ActiveRecord::Schema.define(version: 20170529180440) do
   end
 
   add_foreign_key "cores", "centers"
+  add_foreign_key "emergency_contacts", "cores"
 end
