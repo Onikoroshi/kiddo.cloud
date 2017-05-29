@@ -1,14 +1,14 @@
 class Users::RegistrationsController < Devise::RegistrationsController
-  prepend_before_action :set_account
+  prepend_before_action :set_center
 
-  def set_account
-    @account = Account.find_by(subdomain: request.subdomain) if (request.subdomain.present? && !["www", "admin"].include?(request.subdomain))
+  def set_center
+    @center = Center.find_by(subdomain: request.subdomain) if (request.subdomain.present? && !["www", "admin"].include?(request.subdomain))
   end
 
   # POST /resource
   def create
     build_resource(sign_up_params)
-    @account.users << resource if resource.save #Register user for account
+    @center.users << resource if resource.save #Register user for center
 
     yield resource if block_given?
     if resource.persisted?

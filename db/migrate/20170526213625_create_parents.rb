@@ -2,6 +2,7 @@ class CreateParents < ActiveRecord::Migration[5.1]
   def change
     create_table :parents do |t|
       t.references :user, index: true
+      t.references :core, index: true
       t.string :phone
       t.string :email
       t.string :signature

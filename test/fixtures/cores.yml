@@ -2,8 +2,6 @@
 
 one:
   center: one
-  name: MyString
 
 two:
   center: two
-  name: MyString

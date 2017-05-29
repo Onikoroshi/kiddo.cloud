@@ -1,4 +1,4 @@
 class Location < ApplicationRecord
-  belongs_to :account
+  belongs_to :center
   has_one :address, as: :addressable
 end

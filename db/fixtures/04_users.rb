@@ -8,7 +8,7 @@ User.seed_once(:email) do |user|
   user.last_name = "Eastwood"
   user.roles = Role.all
   user.permissions = Permission.all
-  user.account = Account.find_by(subdomain: "www")
+  user.center = Center.find_by(subdomain: "www")
 end
 
 User.seed_once(:email) do |user|
@@ -26,7 +26,7 @@ User.seed_once(:email) do |user|
   user.first_name = "Lynda"
   user.last_name = "Yancher"
   user.roles = [director]
-  user.account = Account.find_by(subdomain: "daviskidsklub")
+  user.center = Center.find_by(subdomain: "daviskidsklub")
 end
 
 User.all.map { |u| u.update_attributes!(password: "asdfasdf") }
