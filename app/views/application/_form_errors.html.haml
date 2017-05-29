@@ -1,0 +1,11 @@
+#form-errors
+  - if object.errors.any?
+    .row
+      .col-xs-12
+        .hidden #{pluralize(object.errors.count, "error")} encountered:
+        .danger
+          %ul
+            - object.errors.messages.each do |attribute, msg|
+              - msg.each do |value|
+                %li
+                  = value

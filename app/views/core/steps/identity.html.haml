@@ -1,10 +1,38 @@
-= form_for @core, method: :put, url: wizard_path do |f|
-  - if f.object.errors.any?
-    .error_messages
-      - f.object.errors.full_messages.each do |error|
-        %p= error
+= form_for @core_form, method: :put, url: wizard_path do |f|
+  = render "application/form_errors", object: @core_form
   %fieldset
     %legend Core Identity
     %div
     %div
       = f.submit 'Next Step'
+
+
+/ = form_for [:admin, @admin_signup_form], url: admin_signups_path, :html => {:multipart => true} do |f|
+/   = render "common/errors", object: @admin_signup_form
+
+
+/   %div
+/     %h3 User Information
+
+/     .row
+/       .col-md-6
+/         .settingsTitle
+/           = label_tag :first_name, "First Name", class: "settingsTitle"
+/           = text_field_tag "admin_signup_form[first_name]", @admin_signup_form.first_name, required: true, class: "formField"
+/       .col-md-6
+/         .settingsTitle
+/           = label_tag :last_name, "Last Name", class: "settingsTitle"
+/           = text_field_tag "admin_signup_form[last_name]", @admin_signup_form.last_name, required: true, class: "formField"
+
+/     .row
+/       .col-md-6
+/         .settingsTitle
+/           = label_tag :email, "Email", class: "settingsTitle"
+/           = text_field_tag "admin_signup_form[email]", @admin_signup_form.email, required: true, class: "formField"
+/       .col-md-6
+/         .settingsTitle
+/           = label_tag :password, "Password", class: "settingsTitle"
+/           = password_field_tag "admin_signup_form[password]", @admin_signup_form.password, required: true, class: "formField"
+
+/   %div
+/    %h3 Business Information
