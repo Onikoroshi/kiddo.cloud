@@ -13,7 +13,7 @@ end
 Account.seed_once(:name) do |account|
   account.id = 3
   account.name = "Conejo Valley Care"
-  account.subdomain = "conejovalleycare"
+  account.subdomain = "conejovalleykids"
 end
 
 Account.seed_once(:name) do |account|
