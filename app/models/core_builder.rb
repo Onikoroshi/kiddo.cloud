@@ -6,7 +6,7 @@ class CoreBuilder
   end
 
   def build
-    user.create_parent
+    user.create_parent(primary: true)
     user.parent.create_core
   end
 

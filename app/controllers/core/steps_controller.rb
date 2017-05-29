@@ -20,7 +20,7 @@ class Core::StepsController < ApplicationController
     def core_form_params(step)
       permitted_attributes = case step
         when "identity"
-          [:name, :owner_name]
+          [children: [:first_name, :last_name]]
         when "characteristics"
           [:colour, :identifying_characteristics]
         when "instructions"

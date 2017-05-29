@@ -2,8 +2,15 @@
   = render "application/form_errors", object: @core_form
   %fieldset
     %legend Core Identity
-    %div
-    %div
+    .row
+      .col-md-6
+        .settingsTitle
+          = label_tag :first_name, "First Name", class: "settingsTitle"
+          = text_field_tag "core_form[children][first_name]", nil, required: true, class: "formField"
+      .col-md-6
+        .settingsTitle
+          = label_tag :last_name, "Last Name", class: "settingsTitle"
+          = text_field_tag "core_form[children][last_name]", nil, required: true, class: "formField"
       = f.submit 'Next Step'
 
 

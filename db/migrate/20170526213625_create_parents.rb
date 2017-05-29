@@ -3,6 +3,7 @@ class CreateParents < ActiveRecord::Migration[5.1]
     create_table :parents do |t|
       t.references :user, index: true
       t.references :core, index: true
+      t.boolean :primary, default: false
       t.string :phone
       t.string :email
       t.string :signature

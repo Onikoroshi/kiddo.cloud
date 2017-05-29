@@ -6,12 +6,21 @@ class CoreForm
     @core = core
   end
 
-  def parse_attributes(params)
+  def user
+    core.parent.user
+  end
 
+  def parent
+    core.parent.primary
+  end
+
+  def parse_attributes(params)
+    child_attributes = params.slice(:children)
+    byebug
   end
 
   def update(params)
-
+    parse_attributes(params)
   end
 
 end
