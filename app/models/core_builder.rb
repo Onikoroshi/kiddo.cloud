@@ -1,13 +1,16 @@
 class CoreBuilder
 
-  attr_accessor :user
-  def initialize(user)
+  attr_accessor :user, :center
+  def initialize(user, center)
     @user = user
+    @center = center
   end
 
   def build
     user.create_parent(primary: true)
-    user.parent.create_core
+    parent = user.parent
+    parent.create_core(center: center)
+    parent.core.parents << parent
   end
 
 end

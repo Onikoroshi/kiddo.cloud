@@ -1,9 +1,10 @@
 class CoreForm
   include ActiveModel::Model
 
-  attr_accessor :core
-  def initialize(core)
+  attr_reader :core, :step, :child_attributes, :parent_attributes
+  def initialize(core, step)
     @core = core
+    @step = step
   end
 
   def user
@@ -14,13 +15,15 @@ class CoreForm
     core.parent.primary
   end
 
-  def parse_attributes(params)
-    child_attributes = params.slice(:children)
-    byebug
-  end
-
   def update(params)
-    parse_attributes(params)
+    partial_core = StepFactory.find(core, step, params).build
+
+    if partial_core.save
+      byebug
+    else
+      self.errors.add(:user, "messed up.")
+    end
   end
 
 end
+
