@@ -14,9 +14,8 @@ class IdentityStepBuilder
   end
 
   def add_children(params)
-    primary_parent = core.primary_parent
     params["children"].each do |k,v|
-      primary_parent.children << build_child(v)
+      core.primary_parent.children << build_child(v)
     end
   end
 
