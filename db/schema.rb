@@ -44,6 +44,8 @@ ActiveRecord::Schema.define(version: 20170529182616) do
 
   create_table "children", force: :cascade do |t|
     t.bigint "parent_id"
+    t.string "first_name"
+    t.string "last_name"
     t.string "grade_entering"
     t.date "birthdate"
     t.text "additional_info"
