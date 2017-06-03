@@ -18,10 +18,18 @@ class CoreForm
   def update(params)
     partial_core = StepFactory.find(core, step, params).build
 
-    if partial_core.save_all
-      byebug
+    ap partial_core
+    ap partial_core.primary_parent
+    ap partial_core.primary_parent.address
+    ap partial_core.primary_parent.user
+    ap partial_core.primary_parent.children
+
+    if partial_core.save!
+      true
     else
+      byebug
       self.errors.add(:user, "messed up.")
+      false
     end
   end
 

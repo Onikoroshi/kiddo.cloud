@@ -5,7 +5,8 @@ class StepFactory
   end
 
   def self.class_name(step)
-    "::#{step.to_s.capitalize!}StepBuilder".constantize
+    prefix = step.to_s.capitalize
+    "::#{prefix}StepBuilder".constantize
   end
 
 end

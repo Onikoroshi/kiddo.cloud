@@ -35,28 +35,28 @@
       .col-md-6
         .settingsTitle
           = label_tag :first_name, "Parent First Name", class: "settingsTitle"
-          = text_field_tag "core_form[parents][first_name]", nil, required: true, class: "formField"
+          = text_field_tag "core_form[parents][0][first_name]", nil, required: true, class: "formField"
       .col-md-6
         .settingsTitle
           = label_tag :last_name, "Parent Last Name", class: "settingsTitle"
-          = text_field_tag "core_form[parents][last_name]", nil, required: true, class: "formField"
+          = text_field_tag "core_form[parents][0][last_name]", nil, required: true, class: "formField"
       .col-md-6
         .settingsTitle
           = label_tag :last_name, "Street Address", class: "settingsTitle"
-          = text_field_tag "core_form[parents][street]", nil, required: true, class: "formField"
+          = text_field_tag "core_form[parents][0][street]", nil, required: true, class: "formField"
       .col-md-6
         .settingsTitle
           = label_tag :last_name, "Extended Address", class: "settingsTitle"
-          = text_field_tag "core_form[parents][extended]", nil, required: true, class: "formField"
+          = text_field_tag "core_form[parents][0][extended]", nil, required: true, class: "formField"
         .settingsTitle
           = label_tag :last_name, "City", class: "settingsTitle"
-          = text_field_tag "core_form[parents][locality]", nil, required: true, class: "formField"
+          = text_field_tag "core_form[parents][0][locality]", nil, required: true, class: "formField"
         .settingsTitle
           = label_tag :last_name, "State", class: "settingsTitle"
-          = text_field_tag "core_form[parents][region]", nil, required: true, class: "formField"
+          = text_field_tag "core_form[parents][0][region]", nil, required: true, class: "formField"
         .settingsTitle
           = label_tag :last_name, "Postal Code", class: "settingsTitle"
-          = text_field_tag "core_form[parents][postal_code]", nil, required: true, class: "formField"
+          = text_field_tag "core_form[parents][0][postal_code]", nil, required: true, class: "formField"
 
     .row
       = link_to "+", root_path
