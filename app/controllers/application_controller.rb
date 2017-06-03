@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
+  layout :get_layout
 
   before_action :set_center
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -29,6 +30,10 @@ class ApplicationController < ActionController::Base
     end
 
     stored_location_for(resource) || Receptionist.new(resource).direct
+  end
+
+  def get_layout
+    @center.present? ? @center.name.parameterize.underscore : "Application"
   end
 
 end

@@ -1,4 +1,5 @@
 class CoresController < ApplicationController
+  before_action :require_center!
   before_action :set_core, only: [:show, :edit, :update, :destroy]
 
   # GET /cores
