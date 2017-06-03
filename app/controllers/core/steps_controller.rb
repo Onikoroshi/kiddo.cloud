@@ -11,8 +11,11 @@ class Core::StepsController < ApplicationController
   def update
     core = Core.find(params[:core_id])
     @core_form = CoreForm.new(core, step)
-    @core_form.update(core_form_params(step))
-    render_wizard @core
+    if @core_form.update(core_form_params(step))
+      redirect_to next_wizard_path
+    else
+      render_wizard
+    end
   end
 
   private
