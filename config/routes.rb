@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :time_disputes
   devise_for :users, :controllers => { :registrations => "users/registrations" }
 
   resources :receptionist, only: [:index], path: "direct"

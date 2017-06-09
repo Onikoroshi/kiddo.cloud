@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>First name:</strong>
+  <%= @time_dispute.first_name %>
+</p>
+
+<p>
+  <strong>Last name:</strong>
+  <%= @time_dispute.last_name %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @time_dispute.email %>
+</p>
+
+<p>
+  <strong>Phone:</strong>
+  <%= @time_dispute.phone %>
+</p>
+
+<p>
+  <strong>Date:</strong>
+  <%= @time_dispute.date %>
+</p>
+
+<p>
+  <strong>Location:</strong>
+  <%= @time_dispute.location %>
+</p>
+
+<p>
+  <strong>Message:</strong>
+  <%= @time_dispute.message %>
+</p>
+
+<%= link_to 'Edit', edit_time_dispute_path(@time_dispute) %> |
+<%= link_to 'Back', time_disputes_path %>
