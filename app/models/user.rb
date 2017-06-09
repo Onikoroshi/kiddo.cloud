@@ -4,10 +4,10 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  belongs_to :center
+
   has_one :parent, dependent: :destroy
   has_one :staff, dependent: :destroy
-
-  belongs_to :center
 
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles, dependent: :destroy

@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
       return new_user_session_url
     end
 
-    stored_location_for(resource) || Receptionist.new(resource).direct
+    stored_location_for(resource) || Receptionist.new(resource, @center).direct
   end
 
   def get_layout
