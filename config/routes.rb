@@ -3,8 +3,8 @@ Rails.application.routes.draw do
 
   resources :receptionist, only: [:index], path: "direct"
 
-  resources :cores, only: [:new, :create, :show, :index] do
-    resources :steps, only: [:show, :update], controller: 'core/steps'
+  resources :accounts, only: [:new, :create, :show, :index] do
+    resources :steps, only: [:show, :update], controller: 'account/steps'
   end
 
   root to: "static#dkk", constraints: { subdomain: "daviskidsklub" }

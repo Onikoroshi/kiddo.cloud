@@ -1,3 +1,3 @@
 class EmergencyContact < ApplicationRecord
-  belongs_to :core
+  belongs_to :account
 end

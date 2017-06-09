@@ -1,17 +1,17 @@
-class Core::StepsController < ApplicationController
+class Account::StepsController < ApplicationController
   include Wicked::Wizard
-  steps *Core.form_steps
+  steps *Account.form_steps
 
   def show
-    core = Core.find(params[:core_id])
-    @core_form = CoreForm.new(core, step)
+    account = Account.find(params[:account_id])
+    @account_form = AccountForm.new(account, step)
     render_wizard
   end
 
   def update
-    core = Core.find(params[:core_id])
-    @core_form = CoreForm.new(core, step)
-    if @core_form.update(core_form_params(step))
+    account = Account.find(params[:account_id])
+    @account_form = AccountForm.new(account, step)
+    if @account_form.update(account_form_params(step))
       redirect_to next_wizard_path
     else
       render_wizard
@@ -20,7 +20,7 @@ class Core::StepsController < ApplicationController
 
   private
 
-    def core_form_params(step)
+    def account_form_params(step)
       permitted_attributes = case step
         when "identity"
           [
@@ -33,6 +33,6 @@ class Core::StepsController < ApplicationController
           [:special_instructions]
         end
 
-      params.require(:core_form).permit(permitted_attributes).merge(form_step: step)
+      params.require(:account_form).permit(permitted_attributes).merge(form_step: step)
     end
 end

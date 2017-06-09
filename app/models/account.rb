@@ -1,4 +1,4 @@
-class Core < ApplicationRecord
+class Account < ApplicationRecord
   belongs_to :center
   has_many :parents
   has_many :children

@@ -1,6 +1,7 @@
 class CreateChildren < ActiveRecord::Migration[5.1]
   def change
     create_table :children do |t|
+      t.references :account, index: true
       t.references :parent, index: true
       t.string :first_name
       t.string :last_name
