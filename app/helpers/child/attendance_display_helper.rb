@@ -1,0 +1,2 @@
+module Child::AttendanceDisplayHelper
+end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170529182616) do
+ActiveRecord::Schema.define(version: 20170609194701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -130,6 +130,16 @@ ActiveRecord::Schema.define(version: 20170529182616) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_staffs_on_user_id"
+  end
+
+  create_table "time_entries", force: :cascade do |t|
+    t.datetime "time_in"
+    t.datetime "time_out"
+    t.string "time_recordable_type"
+    t.bigint "time_recordable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["time_recordable_type", "time_recordable_id"], name: "index_recordable_id_type"
   end
 
   create_table "user_permissions", id: :serial, force: :cascade do |t|
