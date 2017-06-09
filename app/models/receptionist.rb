@@ -1,14 +1,16 @@
 class Receptionist
   include Rails.application.routes.url_helpers
 
-  def initialize(current_user)
+  attr_reader :current_user, :center
+  def initialize(current_user, center)
     @current_user = current_user
+    @center = center
   end
 
   # Show the intermediate "choose your path" page if the user has more
   # than one role. Otherwise, direct to the page for your role.
   def direct
-    if @current_user.nil?
+    if @current_user.nil? || @center.nil?
       new_user_session_path
     elsif @current_user.roles.count > 1
       receptionist_index_path
@@ -21,10 +23,10 @@ class Receptionist
     return root_path unless role.present?
 
     case role.name
-    when "super_admin"
+    when "root"
       root_path
-    when "btv_admin"
-      admin_dashboard_admin_path
+    when "director"
+      attendance_router_index_path
     when "wu_admin"
       root_path
     end
