@@ -1,7 +1,7 @@
 class StepFactory
 
-  def self.find(core, step, params)
-    class_name(step).new(core, step, params)
+  def self.find(account, step, params)
+    class_name(step).new(account, step, params)
   end
 
   def self.class_name(step)

@@ -15,6 +15,14 @@ ActiveRecord::Schema.define(version: 20170529182616) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "accounts", force: :cascade do |t|
+    t.bigint "center_id"
+    t.string "last_registration_step_completed"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["center_id"], name: "index_accounts_on_center_id"
+  end
+
   create_table "addresses", id: :serial, force: :cascade do |t|
     t.string "street"
     t.string "extended"
@@ -43,6 +51,7 @@ ActiveRecord::Schema.define(version: 20170529182616) do
   end
 
   create_table "children", force: :cascade do |t|
+    t.bigint "account_id"
     t.bigint "parent_id"
     t.string "first_name"
     t.string "last_name"
@@ -52,6 +61,7 @@ ActiveRecord::Schema.define(version: 20170529182616) do
     t.string "gender"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_children_on_account_id"
     t.index ["parent_id"], name: "index_children_on_parent_id"
   end
 
@@ -62,21 +72,14 @@ ActiveRecord::Schema.define(version: 20170529182616) do
     t.index ["parent_id", "child_id"], name: "index_children_parents_on_parent_id_and_child_id"
   end
 
-  create_table "cores", force: :cascade do |t|
-    t.bigint "center_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["center_id"], name: "index_cores_on_center_id"
-  end
-
   create_table "emergency_contacts", force: :cascade do |t|
-    t.bigint "core_id"
+    t.bigint "account_id"
     t.string "first_name"
     t.string "last_name"
     t.string "phone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["core_id"], name: "index_emergency_contacts_on_core_id"
+    t.index ["account_id"], name: "index_emergency_contacts_on_account_id"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -89,7 +92,7 @@ ActiveRecord::Schema.define(version: 20170529182616) do
 
   create_table "parents", force: :cascade do |t|
     t.bigint "user_id"
-    t.bigint "core_id"
+    t.bigint "account_id"
     t.boolean "primary", default: false
     t.string "phone"
     t.string "email"
@@ -98,7 +101,7 @@ ActiveRecord::Schema.define(version: 20170529182616) do
     t.boolean "email_waivers"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["core_id"], name: "index_parents_on_core_id"
+    t.index ["account_id"], name: "index_parents_on_account_id"
     t.index ["user_id"], name: "index_parents_on_user_id"
   end
 
@@ -168,6 +171,6 @@ ActiveRecord::Schema.define(version: 20170529182616) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "cores", "centers"
-  add_foreign_key "emergency_contacts", "cores"
+  add_foreign_key "accounts", "centers"
+  add_foreign_key "emergency_contacts", "accounts"
 end

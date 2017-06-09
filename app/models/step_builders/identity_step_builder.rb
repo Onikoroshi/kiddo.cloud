@@ -1,24 +1,24 @@
 class IdentityStepBuilder
 
-  attr_accessor :core, :step, :params, :primary_parent
-  def initialize(core, step, params)
-    @core = core
+  attr_accessor :account, :step, :params, :primary_parent
+  def initialize(account, step, params)
+    @account = account
     @step = step
     @params = params
-    @primary_parent = @core.primary_parent
+    @primary_parent = @account.primary_parent
   end
 
   def build
     add_children(params.slice(:children))
     add_parents(params.slice(:parents))
     add_contacts
-    core.last_registration_step_completed = step
-    core
+    account.last_registration_step_completed = step
+    account
   end
 
   def add_children(params)
     params["children"].each do |k,v|
-      core.primary_parent.children << build_child(v)
+      account.primary_parent.children << build_child(v)
     end
   end
 
@@ -52,8 +52,6 @@ class IdentityStepBuilder
       region: params["region"],
       postal_code: params["postal_code"]
     )
-    byebug
-    puts "hi"
   end
 
   def add_contacts
