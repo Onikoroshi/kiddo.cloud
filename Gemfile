@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'devise', '~> 4.2'
-gem 'haml', '~> 5.0', '>= 5.0.1'
+gem 'hamlit', '~> 2.8', '>= 2.8.1'
 gem 'wicked', '~> 1.3', '>= 1.3.1'
 gem 'forgery', '~> 0.6.0'
 gem 'seed-fu', '~> 2.3', '>= 2.3.6'
