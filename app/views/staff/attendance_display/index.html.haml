@@ -10,3 +10,5 @@ staff attendance display
     - @center.users.staff.all.each do |staff|
       %li= staff.full_name
       = radio_button_tag :id, staff.id, data: { href: "#" }, class: 'remote-input'
+
+= link_to "Dispute Time In / Time Out", new_time_dispute_path
