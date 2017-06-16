@@ -14,7 +14,7 @@ class TimeDisputesController < ApplicationController
 
   # GET /time_disputes/new
   def new
-    @time_dispute = TimeDispute.new
+    @time_dispute = TimeDispute.new(location: Location.find_by_id(params[:location]))
   end
 
   # GET /time_disputes/1/edit
@@ -24,11 +24,12 @@ class TimeDisputesController < ApplicationController
   # POST /time_disputes
   # POST /time_disputes.json
   def create
-    @time_dispute = TimeDispute.new(time_dispute_params)
+    @time_dispute = TimeDispute.new(time_dispute_params.merge(created_by: current_user))
+    @time_dispute.location = Location.find_by_id(params[:time_dispute][:location])
 
     respond_to do |format|
       if @time_dispute.save
-        format.html { redirect_to @time_dispute, notice: 'Time dispute was successfully created.' }
+        format.html { redirect_to staff_attendance_display_index_url, notice: 'Time dispute was successfully created.' }
         format.json { render :show, status: :created, location: @time_dispute }
       else
         format.html { render :new }
