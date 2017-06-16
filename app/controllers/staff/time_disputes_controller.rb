@@ -1,4 +1,4 @@
-class TimeDisputesController < ApplicationController
+class Staff::TimeDisputesController < ApplicationController
   before_action :set_time_dispute, only: [:show, :edit, :update, :destroy]
 
   # GET /time_disputes

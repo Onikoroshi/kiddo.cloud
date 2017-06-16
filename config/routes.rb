@@ -3,7 +3,6 @@ Rails.application.routes.draw do
 
   resources :receptionist, only: [:index], path: "direct"
   resources :attendance_router, only: :index
-  resources :time_disputes, only: [:index, :new, :create]
 
   resources :accounts, only: [:new, :create, :show, :index] do
     resources :steps, only: [:show, :update], controller: 'account/steps'
@@ -14,6 +13,7 @@ Rails.application.routes.draw do
   end
 
   namespace :staff do
+    resources :time_disputes, only: [:index, :new, :create]
     resources :attendance_display, only: :index
   end
 
