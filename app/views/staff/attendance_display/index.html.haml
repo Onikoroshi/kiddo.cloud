@@ -1,1 +1,12 @@
-staff attendance disp;lay
+staff attendance display
+
+#location-switcher
+= form_tag staff_attendance_display_index_path, method: :get do
+  = select_tag :id, options_from_collection_for_select(@center.locations, 'id', 'name', params[:location]),
+    { prompt: "Edit Location", onchange: "callMe()" }
+
+#time-entries
+  %ul
+    - @center.users.staff.all.each do |staff|
+      %li= staff.full_name
+      = radio_button_tag :id, staff.id, data: { href: "#" }, class: 'remote-input'

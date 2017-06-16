@@ -3,6 +3,7 @@ class Staff::AttendanceDisplayController < ApplicationController
 
   # GET /interviews
   def index
+
   end
 
 
