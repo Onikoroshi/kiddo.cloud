@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170609194701) do
+ActiveRecord::Schema.define(version: 20170609203658) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -132,6 +132,19 @@ ActiveRecord::Schema.define(version: 20170609194701) do
     t.index ["user_id"], name: "index_staffs_on_user_id"
   end
 
+  create_table "time_disputes", force: :cascade do |t|
+    t.bigint "location_id"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.string "phone"
+    t.date "date"
+    t.text "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_time_disputes_on_location_id"
+  end
+
   create_table "time_entries", force: :cascade do |t|
     t.datetime "time_in"
     t.datetime "time_out"
@@ -183,4 +196,5 @@ ActiveRecord::Schema.define(version: 20170609194701) do
 
   add_foreign_key "accounts", "centers"
   add_foreign_key "emergency_contacts", "accounts"
+  add_foreign_key "time_disputes", "locations"
 end
