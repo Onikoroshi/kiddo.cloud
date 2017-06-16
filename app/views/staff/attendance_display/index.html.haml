@@ -8,5 +8,30 @@ staff attendance display
 #time-entries
   %ul
     - @center.users.staff.all.each do |staff|
-      %li= staff.full_name
-      = radio_button_tag :id, staff.id, data: { href: "#" }, class: 'remote-input'
+      .checkbox
+        %label
+          %input{"data-toggle" => "toggle", :type => "checkbox"}/
+          %li= staff.full_name
+
+        .switcher
+          = hidden_field_tag 'coupon[show_barcode]', false
+          = check_box_tag "coupon[show_barcode]", true, true, required: false, class: "new-field", id: "switch-barcode"
+          %label{:for => "switch-barcode"}
+        .switcher-title
+          Add UPC / Barcode
+
+
+.col-sm-3
+  .title
+    %h3 Toggle Buttons
+  .togglebutton
+    %label
+      %input{:checked => "checked", :type => "checkbox"}/
+      Toggle is on
+  .togglebutton
+    %label
+      %input{:type => "checkbox"}/
+      Toggle is off
+
+
+

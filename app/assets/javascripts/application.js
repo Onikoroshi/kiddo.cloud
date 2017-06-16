@@ -14,7 +14,7 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap
-//= require plugins/material-kit.js
+//= require plugins/material-kit.min
 //= require flatpickr
 //= require flatpickr/l10n/es
 //= require dates
