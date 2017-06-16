@@ -8,4 +8,4 @@
             - object.errors.messages.each do |attribute, msg|
               - msg.each do |value|
                 %li
-                  = value
+                  #{attribute.to_s.humanize} #{value}

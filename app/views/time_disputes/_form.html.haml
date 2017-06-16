@@ -1,0 +1,25 @@
+= form_for @time_dispute do |form|
+  = render "application/form_errors", object: time_dispute
+  .field
+    = form.label :first_name
+    = form.text_field :first_name, id: :time_dispute_first_name
+  .field
+    = form.label :last_name
+    = form.text_field :last_name, id: :time_dispute_last_name
+  .field
+    = form.label :email
+    = form.text_field :email, id: :time_dispute_email
+  .field
+    = form.label :phone
+    = form.text_field :phone, id: :time_dispute_phone
+  .field
+    = form.label :date
+    = form.text_field :date, id: "flatpickr-input"
+  .field
+    = form.label :location_id
+    = form.text_field :location_id, id: :time_dispute_location_id
+  .field
+    = form.label :message
+    = form.text_area :message, id: :time_dispute_message
+  .actions
+    = form.submit

@@ -61,6 +61,8 @@ GEM
     erubi (1.6.0)
     execjs (2.7.0)
     ffi (1.9.18)
+    flatpickr_rails (1.1.0)
+      railties (>= 3.0)
     forgery (0.6.0)
     globalid (0.4.0)
       activesupport (>= 4.2.0)
@@ -179,6 +181,7 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.2)
   devise (~> 4.2)
+  flatpickr_rails
   forgery (~> 0.6.0)
   hamlit (~> 2.8, >= 2.8.1)
   jquery-rails

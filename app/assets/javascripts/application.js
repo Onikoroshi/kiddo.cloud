@@ -13,4 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= require flatpickr
+//= require flatpickr/l10n/es
+//= require dates
 //= require_tree .

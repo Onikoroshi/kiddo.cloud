@@ -11,6 +11,7 @@ gem 'wicked', '~> 1.3', '>= 1.3.1'
 gem 'forgery', '~> 0.6.0'
 gem 'seed-fu', '~> 2.3', '>= 2.3.6'
 gem 'awesome_print', '~> 1.7'
+gem 'flatpickr_rails'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
