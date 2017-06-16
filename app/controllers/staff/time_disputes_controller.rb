@@ -30,7 +30,7 @@ class Staff::TimeDisputesController < ApplicationController
     respond_to do |format|
       if @time_dispute.save
         TransactionalMailer.time_dispute_email(@time_dispute).deliver_now
-        format.html { redirect_to staff_attendance_display_index_url, notice: 'Time dispute was successfully created.' }
+        format.html { redirect_to staff_attendance_display_index_url, notice: 'Your time dispute has been sent' }
         format.json { render :show, status: :created, location: @time_dispute }
       else
         format.html { render :new }
