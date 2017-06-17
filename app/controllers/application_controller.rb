@@ -1,9 +1,12 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   layout :get_layout
+  include Pundit
 
   before_action :set_center
   before_action :configure_permitted_parameters, if: :devise_controller?
+
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def set_center
     @center = Center.find_by(subdomain: request.subdomain) if (request.subdomain.present? && !["www", "admin"].include?(request.subdomain))
@@ -34,6 +37,13 @@ class ApplicationController < ActionController::Base
 
   def get_layout
     @center.present? ? @center.name.parameterize.underscore : "Application"
+  end
+
+  private
+
+  def user_not_authorized
+    flash[:alert] = "You are not authorized to perform this action."
+    redirect_to(request.referrer || root_path)
   end
 
 end
