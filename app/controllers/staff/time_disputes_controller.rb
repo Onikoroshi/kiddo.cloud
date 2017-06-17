@@ -15,6 +15,7 @@ class Staff::TimeDisputesController < ApplicationController
   # GET /time_disputes/new
   def new
     @time_dispute = TimeDispute.new(location: Location.find_by_id(params[:location]))
+    authorize @time_dispute
   end
 
   # GET /time_disputes/1/edit
@@ -26,6 +27,7 @@ class Staff::TimeDisputesController < ApplicationController
   def create
     @time_dispute = TimeDispute.new(time_dispute_params.merge(created_by: current_user))
     @time_dispute.location = Location.find_by_id(params[:time_dispute][:location])
+    authorize @time_dispute
 
     respond_to do |format|
       if @time_dispute.save

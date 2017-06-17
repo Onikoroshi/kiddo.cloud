@@ -22,4 +22,20 @@ class User < ApplicationRecord
   def full_name
     "#{first_name} #{last_name}"
   end
+
+  # Returns true if the user has *any* of the roles
+  def role?(*r)
+    roles.find_by(name: r).present? # Use db query instead of array filtering
+  end
+
+  # Returns true if the user has *any* of the permissions
+  def permission?(*p)
+    p = p.flatten if p.present?
+    permissions.find_by(name: p).present? # Use db query instead of array filtering
+  end
+
+  def director?
+    role?(:director)
+  end
+
 end

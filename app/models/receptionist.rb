@@ -26,7 +26,7 @@ class Receptionist
     when "root"
       root_path
     when "director"
-      attendance_router_index_path
+      attendance_router_path
     when "wu_admin"
       root_path
     end
