@@ -1,5 +1,5 @@
 class AccountsController < ApplicationController
-  before_action :require_center!
+  before_action :guard_center!
   before_action :set_account, only: [:show, :edit, :update, :destroy]
 
   def index

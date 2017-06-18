@@ -14,8 +14,9 @@ class ApplicationController < ActionController::Base
 
   # Add to any controller to require multitenancy. You would leave this out of controllers that manage pages like "team"
   # or "about": pages that pertain to the whole application and not just a single center.
-  def require_center!
-    redirect_to root_url(subdomain: "wwww") if !@center.present?
+  def guard_center!
+    checkpoint = CenterCheckPoint.new(center: @center, user: current_user)
+    user_not_authorized unless checkpoint.passes?
   end
 
   def configure_permitted_parameters
@@ -43,7 +44,7 @@ class ApplicationController < ActionController::Base
 
   def user_not_authorized
     flash[:alert] = "You are not authorized to perform this action."
-    redirect_to(request.referrer || root_path)
+    redirect_to(request.referrer || root_url(subdomain: "wwww"))
   end
 
 end
