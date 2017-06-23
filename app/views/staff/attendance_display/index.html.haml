@@ -7,8 +7,8 @@ staff attendance display
 
 #time-entries
   %ul
-    - @center.users.staff.all.each do |staff|
-      %li= staff.full_name
-      = radio_button_tag :id, staff.id, data: { href: "#" }, class: 'remote-input'
+    - @center.users.staff.all.each do |u|
+      %li= u.staff.full_name
+      = check_box_tag :on_clock, true, u.staff.on_clock?, :data => {:remote => true, :url => url_for( controller: "staff/time_entries", :action => 'create', params: {"time_entry[location_id]" => "1", "time_entry[time_recordable_id]" => u.staff.id, "time_entry[time_recordable_type]" => "Staff"}), :method => :post}, :class => 'input-large'
 
 = link_to "Dispute Time In / Time Out", new_staff_time_dispute_path

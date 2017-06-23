@@ -25,14 +25,7 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(resource)
     return root_url unless user_signed_in?
-
-    if current_user.present? && current_user.roles.count == 0
-      sign_out(resource)
-      flash.discard(:notice)
-      flash[:error] = "Sign in unsuccessful. You do not appear to have the necessary permissions."
-      return new_user_session_url
-    end
-
+    return handle_signout if user_exists_without_roles? || @center.nil? # center could be nil if session expires but user still available
     stored_location_for(resource) || Receptionist.new(resource, @center).direct
   end
 
@@ -42,9 +35,20 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def user_exists_without_roles?
+    current_user.present? && current_user.roles.count == 0
+  end
+
   def user_not_authorized
     flash[:alert] = "You are not authorized to perform this action."
     redirect_to(request.referrer || root_url(subdomain: "wwww"))
+  end
+
+  def handle_signout
+    sign_out(resource)
+    flash.discard(:notice)
+    flash[:error] = "Sign in unsuccessful."
+    new_user_session_url
   end
 
 end

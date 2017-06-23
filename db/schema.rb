@@ -148,12 +148,14 @@ ActiveRecord::Schema.define(version: 20170609203658) do
   end
 
   create_table "time_entries", force: :cascade do |t|
-    t.datetime "time_in"
-    t.datetime "time_out"
+    t.bigint "location_id"
+    t.datetime "time"
+    t.string "record_type"
     t.string "time_recordable_type"
     t.bigint "time_recordable_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_time_entries_on_location_id"
     t.index ["time_recordable_type", "time_recordable_id"], name: "index_recordable_id_type"
   end
 
