@@ -1,4 +1,4 @@
-class Staff::TimeEntriesController < ApplicationController
+class TimeEntriesController < ApplicationController
 
   # POST /time_entries
   def create

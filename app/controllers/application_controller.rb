@@ -16,7 +16,10 @@ class ApplicationController < ActionController::Base
   # or "about": pages that pertain to the whole application and not just a single center.
   def guard_center!
     checkpoint = CenterCheckPoint.new(center: @center, user: current_user)
-    user_not_authorized unless checkpoint.passes?
+    if !checkpoint.passes?
+      flash[:alert] = "You are not authorized to perform this action."
+      redirect_to(root_url(subdomain: "www"))
+    end
   end
 
   def configure_permitted_parameters
@@ -41,7 +44,7 @@ class ApplicationController < ActionController::Base
 
   def user_not_authorized
     flash[:alert] = "You are not authorized to perform this action."
-    redirect_to(request.referrer || root_url(subdomain: "wwww"))
+    redirect_to(request.referrer || root_url(subdomain: "www"))
   end
 
   def handle_signout

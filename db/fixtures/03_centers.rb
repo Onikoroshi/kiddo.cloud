@@ -22,3 +22,8 @@ Center.seed_once(:name) do |center|
   center.subdomain = "bethelkids"
 end
 
+Account.seed_once(:id) do |a|
+  a.id = 1
+  a.center = Center.find(2)
+end
+

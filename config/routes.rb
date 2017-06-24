@@ -15,8 +15,9 @@ Rails.application.routes.draw do
   namespace :staff do
     resources :time_disputes, only: [:index, :new, :create]
     resources :attendance_display, only: :index
-    resources :time_entries, only: :create
   end
+
+  resources :time_entries, only: :create
 
   root to: "static#dkk", constraints: { subdomain: "daviskidsklub" }
   root to: "static#bethelkids", constraints: { subdomain: "bethelkids" }
