@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170609203658) do
+ActiveRecord::Schema.define(version: 20170627210608) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,13 @@ ActiveRecord::Schema.define(version: 20170609203658) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "child_locations", force: :cascade do |t|
+    t.bigint "child_id"
+    t.bigint "location_id"
+    t.index ["child_id"], name: "index_child_locations_on_child_id"
+    t.index ["location_id"], name: "index_child_locations_on_location_id"
   end
 
   create_table "children", force: :cascade do |t|
@@ -125,11 +132,18 @@ ActiveRecord::Schema.define(version: 20170609203658) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "staffs", force: :cascade do |t|
+  create_table "staff", force: :cascade do |t|
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_staffs_on_user_id"
+    t.index ["user_id"], name: "index_staff_on_user_id"
+  end
+
+  create_table "staff_locations", force: :cascade do |t|
+    t.bigint "staff_id"
+    t.bigint "location_id"
+    t.index ["location_id"], name: "index_staff_locations_on_location_id"
+    t.index ["staff_id"], name: "index_staff_locations_on_staff_id"
   end
 
   create_table "time_disputes", force: :cascade do |t|
