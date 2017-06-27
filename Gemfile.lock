@@ -68,6 +68,8 @@ GEM
     ffi (1.9.18)
     flatpickr_rails (1.1.0)
       railties (>= 3.0)
+    font-awesome-rails (4.7.0.2)
+      railties (>= 3.2, < 5.2)
     forgery (0.6.0)
     globalid (0.4.0)
       activesupport (>= 4.2.0)
@@ -190,6 +192,7 @@ DEPENDENCIES
   coffee-rails (~> 4.2)
   devise (~> 4.2)
   flatpickr_rails
+  font-awesome-rails
   forgery (~> 0.6.0)
   hamlit (~> 2.8, >= 2.8.1)
   jquery-rails

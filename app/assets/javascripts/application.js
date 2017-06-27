@@ -14,6 +14,10 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap
+//= require material.min
+//= require bootstrap-selectpicker
+//= require atv-img-animation
+//= require material-kit
 //= require flatpickr
 //= require flatpickr/l10n/es
 //= require dates
