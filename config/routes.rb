@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   end
 
   resources :time_entries, only: :create
+  get "material" => "static#material", as: :material
 
   root to: "static#dkk", constraints: { subdomain: "daviskidsklub" }
   root to: "static#bethelkids", constraints: { subdomain: "bethelkids" }

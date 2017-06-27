@@ -6,4 +6,8 @@ class StaticController < ApplicationController
   def dkk
   end
 
+  def material
+    render layout: "material"
+  end
+
 end

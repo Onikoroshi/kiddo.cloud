@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
   end
 
   def get_layout
-    @center.present? ? @center.name.parameterize.underscore : "Application"
+    @center.present? ? @center.name.parameterize.underscore : "application"
   end
 
   private
