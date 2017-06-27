@@ -1,7 +1,7 @@
 #location-switcher
 = form_tag staff_attendance_display_index_path, method: :get do
-  = select_tag :id, options_from_collection_for_select(@center.locations, 'id', 'name', params[:location]),
-    { prompt: "Edit Location", onchange: "callMe()" }
+  = select_tag "staff-location-switcher", options_from_collection_for_select(@center.locations, 'id', 'name', @location.try(:id)),
+    { class: "location-switcher", prompt: "Edit Location" }
 
 #time-entry-message
 

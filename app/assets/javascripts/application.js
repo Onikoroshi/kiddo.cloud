@@ -22,4 +22,5 @@
 //= require flatpickr
 //= require flatpickr/l10n/es
 //= require dates
+//= require attendance_display
 //= require_tree .

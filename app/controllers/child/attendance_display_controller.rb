@@ -3,6 +3,7 @@ class Child::AttendanceDisplayController < ApplicationController
 
   # GET /interviews
   def index
+    @location = Location.find(params[:location_id]) if params[:location_id].present?
   end
 
 end
