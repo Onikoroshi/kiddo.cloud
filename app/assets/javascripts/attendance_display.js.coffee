@@ -4,7 +4,7 @@ $ ->
     if location_id
       window.location = "/staff/attendance_display?location_id=#{location_id}"
     else
-      window.location = "/child/attendance_display"
+      window.location = "/staff/attendance_display"
     end
     return
 
