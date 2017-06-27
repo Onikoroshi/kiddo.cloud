@@ -3,6 +3,8 @@
   = select_tag :id, options_from_collection_for_select(@center.locations, 'id', 'name', params[:location]),
     { prompt: "Edit Location", onchange: "callMe()" }
 
+#time-entry-message
+
 #time-entries
   %ul
     - @center.users.staff.all.each do |u|

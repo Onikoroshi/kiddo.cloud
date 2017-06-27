@@ -16,6 +16,7 @@
 //= require bootstrap
 //= require material.min
 //= require bootstrap-selectpicker
+//= require bootstrap-tagsinput
 //= require atv-img-animation
 //= require material-kit
 //= require flatpickr

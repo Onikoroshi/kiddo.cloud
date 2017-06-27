@@ -1,0 +1,6 @@
+<% if @time_entry.checked_in? %>
+  $("#time-entry-message").html("<%=@time_entry.recordable_name%> was checked in.");
+<% else %>
+  $("#time-entry-message").html("<%=@time_entry.recordable_name%> was checked out.");
+<% end %>
+
