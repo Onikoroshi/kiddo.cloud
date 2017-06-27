@@ -7,6 +7,5 @@ class Location < ApplicationRecord
   has_many :children, through: :child_locations
 
   has_many :staff_locations
-  has_many :staff, through: :staff_locations
-
+  has_many :staffs, through: :staff_locations
 end
