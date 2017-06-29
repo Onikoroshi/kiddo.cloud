@@ -5,10 +5,12 @@ class TimeEntriesController < ApplicationController
     record_type = params["on_clock"].present? ? "entry" : "exit"
     @time_entry = TimeEntry.new(time_entry_params.merge({ time: Time.zone.now, record_type: record_type }))
 
-    if @time_entry.save
-      render text: :success
-    else
-      render :new
+    respond_to do |format|
+      if @time_entry.save
+        format.js
+      else
+        format.json { render json: @time_entry.errors, status: :unprocessable_entity }
+      end
     end
   end
 

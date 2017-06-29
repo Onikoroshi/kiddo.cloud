@@ -1,11 +1,15 @@
 #location-switcher
 = form_tag staff_attendance_display_index_path, method: :get do
-  = select_tag :id, options_from_collection_for_select(@center.locations, 'id', 'name', params[:location]),
-    { prompt: "Edit Location", onchange: "callMe()" }
+  = select_tag "child-location-switcher", options_from_collection_for_select(@center.locations, 'id', 'name', @location.try(:id)),
+    { prompt: "Edit Location", class: "location-switcher" }
+
+#time-entry-message
 
 #time-entries
   %ul
-    - @center.children.each do |c|
+    - @location.children.each do |c|
       %li= c.full_name
-      = check_box_tag :on_clock, true, true, :data => {:remote => true, :url => url_for( controller: "/time_entries", :action => 'create', params: {"time_entry[location_id]" => "1", "time_entry[time_recordable_id]" => c.id, "time_entry[time_recordable_type]" => "Child"}), :method => :post}, :class => 'input-large'
+      .togglebutton
+        %label
+          = check_box_tag :on_clock, true, true, :data => {:remote => true, :url => url_for( controller: "/time_entries", :action => 'create', params: {"time_entry[location_id]" => "1", "time_entry[time_recordable_id]" => c.id, "time_entry[time_recordable_type]" => "Child"}), :method => :post}, :class => 'input-large'
 

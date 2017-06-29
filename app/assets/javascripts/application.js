@@ -16,9 +16,11 @@
 //= require bootstrap
 //= require material.min
 //= require bootstrap-selectpicker
+//= require bootstrap-tagsinput
 //= require atv-img-animation
 //= require material-kit
 //= require flatpickr
 //= require flatpickr/l10n/es
 //= require dates
+//= require attendance_display
 //= require_tree .
