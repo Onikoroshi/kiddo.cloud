@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     resources :steps, only: [:show, :update], controller: 'account/steps'
   end
 
-  namespace :child do
+  namespace :children do
     resources :attendance_display, only: :index
   end
 

@@ -10,6 +10,10 @@ class Center < ApplicationRecord
     end
     children.flatten
   end
+
+  def default_location
+    @location = self.locations.select { |l| l.default }.first || self.locations.first
+  end
 end
 
 

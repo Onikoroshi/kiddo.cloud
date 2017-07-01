@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(version: 20170627222649) do
   create_table "locations", force: :cascade do |t|
     t.bigint "center_id"
     t.string "name"
+    t.boolean "default", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["center_id"], name: "index_locations_on_center_id"
