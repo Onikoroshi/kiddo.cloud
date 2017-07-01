@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   devise_for :users, :controllers => { :registrations => "users/registrations" }
 
   resources :receptionist, only: [:index], path: "direct"
-  resource :attendance_router, only: :show, controller: "attendance_router"
+  resource :attendance_router, only: :show, controller: "attendance_router", path: "manage"
 
   resources :accounts, only: [:new, :create, :show, :index] do
     resources :steps, only: [:show, :update], controller: 'account/steps'

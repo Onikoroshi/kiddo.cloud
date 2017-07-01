@@ -1,35 +1,56 @@
 class AccountForm
   include ActiveModel::Model
 
-  attr_reader :account, :step, :child_attributes, :parent_attributes
-  def initialize(account, step)
-    @account = account
-    @step = step
+  delegate :parent_first_name, :parent_last_name, :email, :password, to: :user
+
+  attr_accessor(
+    :current_user,
+    :parents,
+    :contacts,
+    :step
+  )
+
+  def contacts_attributes=(attributes)
+    @contacts ||= []
+    attributes.each do |i, contact_params|
+      @contacts.push(EmergencyContact.new(contact_params))
+    end
+  end
+
+  def parents_attributes=(attributes)
+    @parents ||= []
+    attributes.each do |i, parent_params|
+      @parents.push(Parent.new(parent_params))
+    end
   end
 
   def user
-    account.parent.user
+    @user || User.new
   end
 
-  def parent
-    account.parent.primary
+  def parents
+    @parents ||= [
+      Parent.new(user: @current_user)
+    ]
   end
 
-  def update(params)
-    partial_account = StepFactory.find(account, step, params).build
+  def contacts
+    @contacts ||= [
+      EmergencyContact.new
+    ]
+  end
 
-    ap partial_account
-    ap partial_account.primary_parent
-    ap partial_account.primary_parent.address
-    ap partial_account.primary_parent.user
-    ap partial_account.primary_parent.children
+  def submit
+    return unless valid?
+    parents_attributes(params)
+    account.save
+  end
 
-    if partial_account.save!
-      true
-    else
-      self.errors.add(:user, "messed up.")
-      false
-    end
+  def account
+    @account ||= Account.new(
+      parents: parents,
+      emergency_contacts: contacts
+    )
   end
 
 end

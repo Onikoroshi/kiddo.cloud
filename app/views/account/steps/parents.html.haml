@@ -1,0 +1,68 @@
+= form_for @account_form, method: :put, url: wizard_path do |f|
+  = render "application/form_errors", object: @account_form
+
+  .row
+    Parent
+    = f.fields_for :parents do |p|
+      = p.error_messages
+      = label_tag :first_name, "First Name", class: "settingsTitle"
+      = p.text_field :first_name
+
+      = label_tag :last_name, "Last Name", class: "settingsTitle"
+      = p.text_field :last_name
+
+      = label_tag :last_name, "Phone", class: "settingsTitle"
+      = p.text_field :phone
+
+    / .row
+    /   .col-md-6
+    /     Second Parent / Guardian (optional)
+    /     .settingsTitle
+    /       = label_tag :first_name, "First Name", class: "settingsTitle"
+    /       = text_field_tag "account_form[parents][1][first_name]", nil, required: true, class: "formField"
+    /   .col-md-6
+    /     .settingsTitle
+    /       = label_tag :last_name, "Last Name", class: "settingsTitle"
+    /       = text_field_tag "account_form[parents][1][last_name]", nil, required: true, class: "formField"
+    /   .col-md-6
+    /     .settingsTitle
+    /       = label_tag :last_name, "Phone", class: "settingsTitle"
+    /       = text_field_tag "account_form[parents][1][phone]", nil, required: true, class: "formField"
+    /   .col-md-6
+    /     .settingsTitle
+    /       = label_tag :last_name, "Street Address", class: "settingsTitle"
+    /       = text_field_tag "account_form[parents][1][street]", nil, required: true, class: "formField"
+    /   .col-md-6
+    /     .settingsTitle
+    /       = label_tag :last_name, "Extended Address", class: "settingsTitle"
+    /       = text_field_tag "account_form[parents][1][extended]", nil, required: true, class: "formField"
+    /     .settingsTitle
+    /       = label_tag :last_name, "City", class: "settingsTitle"
+    /       = text_field_tag "account_form[parents][1][locality]", nil, required: true, class: "formField"
+    /     .settingsTitle
+    /       = label_tag :last_name, "State", class: "settingsTitle"
+    /       = text_field_tag "account_form[parents][1][region]", nil, required: true, class: "formField"
+    /     .settingsTitle
+    /       = label_tag :last_name, "Postal Code", class: "settingsTitle"
+    /       = text_field_tag "account_form[parents][1][postal_code]", nil, required: true, class: "formField"
+
+
+    / .row
+    /   .col-md-6
+    /     First Alternate Contact
+    /     .settingsTitle
+    /       = label_tag :first_name, "First Name", class: "settingsTitle"
+    /       = text_field_tag "account_form[contacts][0][first_name]", nil, required: true, class: "formField"
+    /   .col-md-6
+    /     .settingsTitle
+    /       = label_tag :last_name, "Parent Last Name", class: "settingsTitle"
+    /       = text_field_tag "account_form[contacts][0][last_name]", nil, required: true, class: "formField"
+    /   .col-md-6
+    /     .settingsTitle
+    /       = label_tag :last_name, "Phone", class: "settingsTitle"
+    /       = text_field_tag "account_form[contacts][0][phone]", nil, required: true, class: "formField"
+
+    .row
+      = f.submit 'Next Step'
+
+
