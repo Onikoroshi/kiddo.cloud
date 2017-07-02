@@ -10,18 +10,9 @@ class AccountForm
     :step
   )
 
-  def contacts_attributes=(attributes)
-    @contacts ||= []
-    attributes.each do |i, contact_params|
-      @contacts.push(EmergencyContact.new(contact_params))
-    end
-  end
-
-  def parents_attributes=(attributes)
-    @parents ||= []
-    attributes.each do |i, parent_params|
-      @parents.push(Parent.new(parent_params))
-    end
+  attr_reader :account
+  def initialize(account)
+    @account = account
   end
 
   def user
@@ -42,15 +33,11 @@ class AccountForm
 
   def submit
     return unless valid?
-    parents_attributes(params)
     account.save
   end
 
   def account
-    @account ||= Account.new(
-      parents: parents,
-      emergency_contacts: contacts
-    )
+    @account ||= Account.new
   end
 
 end

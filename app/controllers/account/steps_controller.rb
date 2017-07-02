@@ -1,6 +1,7 @@
 class Account::StepsController < ApplicationController
   include Wicked::Wizard
   steps :parents, :children, :plan, :medical, :summary
+  before_action :find_account
 
   def show
     case step
@@ -19,14 +20,14 @@ class Account::StepsController < ApplicationController
   private
 
   def show_parents
-    @account_form = AccountForm.new
+    @account_form = AccountForm.new(nil)
     @account_form.assign_attributes(current_user: current_user)
     render_wizard
   end
 
   def update_parents
-    @account_form = AccountForm.new(account_form_params(:parents))
-    if @account_form.save
+    @account_form = AccountForm.new(Account.new)
+    if @account_form.submit
       redirect_to next_wizard_path
     else
       render_wizard
@@ -34,9 +35,15 @@ class Account::StepsController < ApplicationController
   end
 
   def show_children
+    redirect_to new_account_child_path(@account)
   end
 
   def update_children
+  end
+
+  def find_account
+    raise Pundit::NotAuthorizedError if !user_signed_in?
+    @account ||= Account.create
   end
 
 

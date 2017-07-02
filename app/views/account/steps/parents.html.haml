@@ -4,7 +4,6 @@
   .row
     Parent
     = f.fields_for :parents do |p|
-      = p.error_messages
       = label_tag :first_name, "First Name", class: "settingsTitle"
       = p.text_field :first_name
 
