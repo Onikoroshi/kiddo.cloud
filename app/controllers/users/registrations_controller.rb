@@ -30,6 +30,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def after_sign_up_path_for(resource)
-    account_step_path(resource.parent.account, :identity)
+    account_step_path(resource.parent.account, :parents)
   end
 end

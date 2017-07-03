@@ -6,6 +6,4 @@ class Staff::AttendanceDisplayController < ApplicationController
     @location = Location.find(params[:location_id]) if params[:location_id].present?
   end
 
-
-
 end

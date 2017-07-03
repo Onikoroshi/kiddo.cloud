@@ -18,6 +18,10 @@ ActiveRecord::Schema.define(version: 20170627222649) do
   create_table "accounts", force: :cascade do |t|
     t.bigint "center_id"
     t.string "last_registration_step_completed"
+    t.string "signature"
+    t.boolean "waiver_agreement", default: false
+    t.boolean "mail_agreements", default: true
+    t.boolean "medical_waiver_agreement", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["center_id"], name: "index_accounts_on_center_id"
@@ -94,6 +98,7 @@ ActiveRecord::Schema.define(version: 20170627222649) do
   create_table "locations", force: :cascade do |t|
     t.bigint "center_id"
     t.string "name"
+    t.boolean "default", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["center_id"], name: "index_locations_on_center_id"

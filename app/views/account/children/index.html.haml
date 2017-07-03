@@ -1,0 +1,13 @@
+%p#notice= notice
+%table
+  %thead
+    %tr
+      %th{:colspan => "3"}
+  %tbody
+    - @account.children.each do |c|
+      %tr
+        %td= link_to 'Edit', edit_account_child_path(@account, c)
+        %td= link_to 'Destroy', account_child_path(@account, c), method: :delete, data: { confirm: 'Are you sure?' }
+%br/
+= link_to 'Register New Child', new_account_child_path(@account)
+= link_to 'Continue', account_step_path(@account, :plan)

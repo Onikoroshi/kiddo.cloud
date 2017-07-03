@@ -6,10 +6,12 @@ Rails.application.routes.draw do
 
   resources :accounts, only: [:new, :create, :show, :index] do
     resources :steps, only: [:show, :update], controller: 'account/steps'
+    resources :children, controller: 'account/children'
   end
 
-  namespace :child do
+  namespace :children do
     resources :attendance_display, only: :index
+
   end
 
   namespace :staff do

@@ -1,0 +1,23 @@
+= form_for [@account, @account_child], method: :post do |form|
+  = render "application/form_errors", object: @account_child
+  .field
+    = form.label :first_name
+    = form.text_field :first_name
+  .field
+    = form.label :last_name
+    = form.text_field :last_name
+  .field
+    = form.label :gender
+    = form.text_field :gender
+  .field
+    = form.label :grade_entering
+    = form.text_field :grade_entering
+  .field
+    = form.label :birthdate
+    = form.text_field :birthdate, id: "flatpickr-input"
+  .field
+    = form.label :additional_info
+    = form.text_area :additional_info
+  .actions
+    = link_to "Previous", account_step_path(@account, :parents)
+    = form.submit "Register Child"

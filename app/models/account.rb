@@ -8,4 +8,8 @@ class Account < ApplicationRecord
     parents.where(primary: true).first
   end
 
+  def record_step(step)
+    update_attributes(last_registration_step_completed: step)
+  end
+
 end

@@ -5,4 +5,9 @@ class Location < ApplicationRecord
 
   has_many :child_locations
   has_many :children, through: :child_locations
+
+  def default?
+    default
+  end
+
 end
