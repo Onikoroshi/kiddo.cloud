@@ -7,6 +7,7 @@ class Account::StepsController < ApplicationController
     case step
     when :parents then show_parents
     when :children then show_children
+    when :plan then show_plan
     end
   end
 
@@ -14,6 +15,7 @@ class Account::StepsController < ApplicationController
     case step
     when :parents then update_parents
     when :children then update_children
+    when :plan then update_plan
     end
   end
 
@@ -40,6 +42,15 @@ class Account::StepsController < ApplicationController
 
   def update_children
   end
+
+  def show_plan
+    render_wizard
+  end
+
+  def update_plan
+  end
+
+  private
 
   def find_account
     raise Pundit::NotAuthorizedError if !user_signed_in?

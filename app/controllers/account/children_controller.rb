@@ -2,6 +2,9 @@ class Account::ChildrenController < ApplicationController
   before_action :set_account
   before_action :set_account_child, only: [:show, :edit, :update, :destroy]
 
+  def index
+  end
+
   # GET /account/children/1
   def show
   end
@@ -15,12 +18,15 @@ class Account::ChildrenController < ApplicationController
   def edit
   end
 
+
   # POST /account/children
   def create
     @account_child = Child.new(account_child_params)
+    @account_child.account_id = @account.id
+    # todo: add child to parents
 
     if @account_child.save
-      redirect_to @account_child, notice: 'Child was successfully created.'
+      redirect_to account_children_path(@account), notice: 'Child was successfully created.'
     else
       render :new
     end
@@ -29,7 +35,7 @@ class Account::ChildrenController < ApplicationController
   # PATCH/PUT /account/children/1
   def update
     if @account_child.update(account_child_params)
-      redirect_to @account_child, notice: 'Child was successfully updated.'
+      redirect_to account_children_path(@account), notice: 'Child was successfully updated.'
     else
       render :edit
     end
@@ -38,7 +44,7 @@ class Account::ChildrenController < ApplicationController
   # DELETE /account/children/1
   def destroy
     @account_child.destroy
-    redirect_to account_children_url, notice: 'Child was successfully destroyed.'
+    redirect_to account_children_path(@account), notice: 'Child was successfully destroyed.'
   end
 
   private
