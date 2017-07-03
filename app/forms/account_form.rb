@@ -11,18 +11,21 @@ class AccountForm
     :parent_region,
     :parent_postal_code,
 
-    :guardian_first_name,
-    :guardian_last_name,
-    :guardian_phone,
-    :guardian_street,
-    :guardian_extended,
-    :guardian_locality,
-    :parent_region,
-    :parent_postal_code,
+    :parent_guardian_first_name,
+    :parent_guardian_last_name,
+    :parent_guardian_phone,
+    :parent_guardian_street,
+    :parent_guardian_extended,
+    :parent_guardian_locality,
+    :parent_guardian_region,
+    :parent_guardian_postal_code,
 
     :emergency_contact_first_name,
     :emergency_contact_last_name,
     :emergency_contact_phone,
+
+    :waiver_agreement,
+    :mail_agreements,
     :step
   )
 
@@ -35,9 +38,20 @@ class AccountForm
   validates :parent_region,      presence: true
   validates :parent_postal_code, presence: true
 
+  validates :parent_guardian_first_name,   presence: true
+  validates :parent_guardian_last_name,    presence: true
+  validates :parent_guardian_phone,        presence: true
+  validates :parent_guardian_street,       presence: true
+  validates :parent_guardian_extended,     presence: true
+  validates :parent_guardian_locality,     presence: true
+  validates :parent_guardian_region,       presence: true
+  validates :parent_guardian_postal_code,  presence: true
+
   validates :emergency_contact_first_name, presence: true
   validates :emergency_contact_last_name,  presence: true
   validates :emergency_contact_phone,      presence: true
+
+  validates :waiver_agreement, acceptance: true
 
   attr_reader :center, :account, :current_user
   def initialize(center, account, current_user)
@@ -55,6 +69,8 @@ class AccountForm
     save_second_parent
     save_emergency_contact
 
+    account.waiver_agreement = waiver_agreement.present? && waiver_agreement == "1"
+    account.mail_agreements = mail_agreements.present? && mail_agreements == "1"
     account.save!
   end
 
@@ -82,6 +98,23 @@ class AccountForm
   end
 
   def save_second_parent
+    parent_guardian.update_attributes(
+      first_name: parent_guardian_first_name,
+      last_name: parent_guardian_last_name,
+      phone: parent_guardian_phone
+    )
+
+    parent_guardian.address.update_attributes(
+      street: parent_guardian_street,
+      extended: parent_guardian_extended,
+      locality: parent_guardian_locality,
+      region: parent_guardian_region,
+      postal_code: parent_guardian_postal_code
+    )
+
+    parent_guardian.primary = false
+    parent_guardian.save!
+    account.parents << parent_guardian
   end
 
   def save_emergency_contact
@@ -106,6 +139,19 @@ class AccountForm
     }
   end
 
+  def parent_guardian_attributes_hash
+    {
+      parent_guardian_first_name: parent_guardian.first_name,
+      parent_guardian_last_name: parent_guardian.last_name,
+      parent_guardian_phone: parent_guardian.phone,
+      parent_guardian_street: parent_guardian.address.street,
+      parent_guardian_extended: parent_guardian.address.extended,
+      parent_guardian_locality: parent_guardian.address.locality,
+      parent_guardian_region: parent_guardian.address.region,
+      parent_guardian_postal_code: parent_guardian.address.postal_code
+    }
+  end
+
   def emergency_contact_hash
     {
       emergency_contact_first_name: emergency_contact.first_name,
@@ -115,11 +161,17 @@ class AccountForm
   end
 
   def all_attributes
-    parent_attributes_hash.merge(emergency_contact_hash)
+    parent_attributes_hash.merge(emergency_contact_hash).merge(parent_guardian_attributes_hash)
   end
 
   def parent
     parent = account.parents.first || account.parents.build
+    parent.address = parent.address || parent.build_address
+    parent
+  end
+
+  def parent_guardian
+    parent = account.parents.where(primary: false).first || account.parents.build
     parent.address = parent.address || parent.build_address
     parent
   end

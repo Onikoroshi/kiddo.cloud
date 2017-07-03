@@ -7,10 +7,6 @@ class CreateParents < ActiveRecord::Migration[5.1]
       t.string :last_name
       t.boolean :primary, default: false
       t.string :phone
-      t.string :email
-      t.string :signature
-      t.boolean :agreed_to_waivers
-      t.boolean :email_waivers
 
       t.timestamps
     end

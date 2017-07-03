@@ -114,10 +114,6 @@ ActiveRecord::Schema.define(version: 20170627222649) do
     t.string "last_name"
     t.boolean "primary", default: false
     t.string "phone"
-    t.string "email"
-    t.string "signature"
-    t.boolean "agreed_to_waivers"
-    t.boolean "email_waivers"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_parents_on_account_id"

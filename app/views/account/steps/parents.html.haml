@@ -42,6 +42,47 @@
 
     %br
 
+  .row
+    = f.label :parent_guardian_first_name
+    = f.text_field :parent_guardian_first_name
+
+    %br
+
+    = f.label :parent_guardian_last_name
+    = f.text_field :parent_guardian_last_name
+
+    %br
+
+    = f.label :parent_guardian_phone
+    = f.text_field :parent_guardian_phone
+
+    %br
+
+    = f.label :parent_guardian_street
+    = f.text_field :parent_guardian_street
+
+    %br
+
+    = f.label :parent_guardian_extended
+    = f.text_field :parent_guardian_extended
+
+    %br
+
+    = f.label :parent_guardian_locality
+    = f.text_field :parent_guardian_locality
+
+    %br
+
+    = f.label :parent_guardian_region
+    = f.text_field :parent_guardian_region
+
+    %br
+
+    = f.label :parent_guardian_postal_code
+    = f.text_field :parent_guardian_postal_code
+
+    %br
+
     = f.label :emergency_contact_first_name
     = f.text_field :emergency_contact_first_name
 
@@ -54,6 +95,17 @@
 
     = f.label :emergency_contact_phone
     = f.text_field :emergency_contact_phone
+
+    %br
+
+    = f.check_box :waiver_agreement, checked: @account.waiver_agreement
+    = f.label :waiver_agreement do
+      I have read and agree with #{link_to 'all waivers and agreements', root_path}
+    %br
+
+    = f.check_box :mail_agreements, checked: @account.last_registration_step_completed == "parents" ? @account.mail_agreements : true
+    = f.label :mail_agreements do
+      Have all waivers and agreements mailed to me
 
     / .row
     /   .col-md-6
