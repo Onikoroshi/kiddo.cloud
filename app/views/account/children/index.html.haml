@@ -9,5 +9,9 @@
         %td= link_to 'Edit', edit_account_child_path(@account, c)
         %td= link_to 'Destroy', account_child_path(@account, c), method: :delete, data: { confirm: 'Are you sure?' }
 %br/
+
+= link_to 'Previous Step', account_step_path(@account, :parents)
+%br
 = link_to 'Register New Child', new_account_child_path(@account)
-= link_to 'Continue', account_step_path(@account, :plan)
+%br
+= link_to 'Next Step', account_step_path(@account, :plan)
