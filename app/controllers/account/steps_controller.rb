@@ -89,24 +89,37 @@ class Account::StepsController < ApplicationController
 
   end
 
-  def account_form_params(step)
-    permitted_attributes = case step
-      when :parents
-        [
-         parents_attributes:  [:phone, :street, :extended, :locality, :region, :postal_code, user_attributes: [:id, :first_name, :last_name]],
-         contacts_attributes: [:first_name, :last_name, :phone]
-        ]
-      when "characteristics"
-        [:colour, :identifying_characteristics]
-      when :summary
-        [:signature]
-      end
+  # def account_form_params(step)
+  #   permitted_attributes = case step
+  #     when :parents
+  #       [
+  #        parents_attributes:  [:phone, :street, :extended, :locality, :region, :postal_code, user_attributes: [:id, :first_name, :last_name]],
+  #        contacts_attributes: [:first_name, :last_name, :phone]
+  #       ]
+  #     when "characteristics"
+  #       [:colour, :identifying_characteristics]
+  #     when :summary
+  #       [:signature]
+  #     end
 
-    params.require(:account_form).permit(permitted_attributes).merge(step: step)
-  end
+  #   params.require(:account_form).permit(permitted_attributes).merge(step: step)
+  # end
 
   def account_parent_params(step)
-    permitted_attributes = [:parent_first_name, :parent_last_name, :parent_phone, :parent_email, :parent_street, :parent_extended, :parent_locality, :parent_region, :parent_postal_code]
+    permitted_attributes = [
+     :parent_first_name,
+     :parent_last_name,
+     :parent_phone,
+     :parent_email,
+     :parent_street,
+     :parent_extended,
+     :parent_locality,
+     :parent_region,
+     :parent_postal_code,
+     :emergency_contact_first_name,
+     :emergency_contact_last_name,
+     :emergency_contact_phone
+    ]
     params.require(:account_form).permit(permitted_attributes).merge(step: step)
   end
 

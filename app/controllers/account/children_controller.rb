@@ -23,9 +23,9 @@ class Account::ChildrenController < ApplicationController
   def create
     @account_child = Child.new(account_child_params)
     @account_child.account_id = @account.id
-    # todo: add child to parents
 
     if @account_child.save
+      @account.parents.map { |p| p.children << @account_child }
       @account.record_step(:children)
       redirect_to account_children_path(@account), notice: 'Child was successfully created.'
     else

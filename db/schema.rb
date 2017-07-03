@@ -107,6 +107,8 @@ ActiveRecord::Schema.define(version: 20170627222649) do
   create_table "parents", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "account_id"
+    t.string "first_name"
+    t.string "last_name"
     t.boolean "primary", default: false
     t.string "phone"
     t.string "email"
