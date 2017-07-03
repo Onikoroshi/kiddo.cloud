@@ -10,8 +10,8 @@ class AccountForm
     :step
   )
 
-  attr_reader :account
-  def initialize(account)
+  attr_reader :center, :account
+  def initialize(center, account)
     @account = account
   end
 
@@ -33,6 +33,7 @@ class AccountForm
 
   def submit
     return unless valid?
+    account.center = center
     account.save
   end
 

@@ -26,6 +26,7 @@ class Account::ChildrenController < ApplicationController
     # todo: add child to parents
 
     if @account_child.save
+      @account.record_step(:children)
       redirect_to account_children_path(@account), notice: 'Child was successfully created.'
     else
       render :new
