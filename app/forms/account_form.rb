@@ -54,7 +54,7 @@ class AccountForm
   validates :waiver_agreement, acceptance: true
 
   attr_reader :center, :account, :current_user
-  def initialize(center, account, current_user)
+  def initialize(center:, account:, current_user:)
     @account = account
     @center = center
     @current_user = current_user
@@ -68,13 +68,17 @@ class AccountForm
     save_parent
     save_second_parent
     save_emergency_contact
+    sign_waivers
 
-    account.waiver_agreement = waiver_agreement.present? && waiver_agreement == "1"
-    account.mail_agreements = mail_agreements.present? && mail_agreements == "1"
     account.save!
   end
 
   private
+
+  def sign_waivers
+    account.waiver_agreement = waiver_agreement.present? && waiver_agreement == "1"
+    account.mail_agreements = mail_agreements.present? && mail_agreements == "1"
+  end
 
   def save_parent
     parent.update_attributes(

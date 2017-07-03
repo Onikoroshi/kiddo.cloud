@@ -25,12 +25,12 @@ class Account::StepsController < ApplicationController
   private
 
   def show_parents
-    @account_form = AccountForm.new(@center, @account, current_user)
+    @account_form = AccountForm.new(center: @center, account: @account, current_user: current_user)
     render_wizard
   end
 
   def update_parents
-    @account_form = AccountForm.new(@center, @account, current_user)
+    @account_form = AccountForm.new(center: @center, account: @account, current_user: current_user)
     @account_form.assign_attributes(account_parent_params(step))
     if @account_form.submit
       @account.record_step(:parents)
@@ -72,7 +72,7 @@ class Account::StepsController < ApplicationController
     @account_summary_form.assign_attributes(account_summary_form_params.merge(current_user: current_user))
     if @account_summary_form.submit
       @account.record_step(:summary)
-      redirect_to next_wizard_path
+      redirect_to_finish_wizard_path
     else
       render_wizard
     end
@@ -85,8 +85,8 @@ class Account::StepsController < ApplicationController
     @account ||= current_user.account
   end
 
-  def redirect_to_finish_wizard
-
+  def redirect_to_finish_wizard_path
+    next_wizard_path
   end
 
   def account_parent_params(step)
