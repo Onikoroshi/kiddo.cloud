@@ -1,4 +1,5 @@
 class Account < ApplicationRecord
+  belongs_to :user
   belongs_to :center
   has_many :parents
   has_many :children
@@ -10,6 +11,10 @@ class Account < ApplicationRecord
 
   def record_step(step)
     update_attributes(last_registration_step_completed: step)
+  end
+
+  def signup_complete?
+    self.signup_complete
   end
 
 end

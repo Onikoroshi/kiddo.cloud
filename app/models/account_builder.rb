@@ -9,8 +9,9 @@ class AccountBuilder
   def build
     user.create_parent(primary: true)
     parent = user.parent
-    parent.create_account(center: center)
+    parent.create_account(center: center, user: user)
     parent.account.parents << parent
+    user.roles << Role.find_by(name: "parent")
   end
 
 end

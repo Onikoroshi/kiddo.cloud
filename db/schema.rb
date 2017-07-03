@@ -16,15 +16,18 @@ ActiveRecord::Schema.define(version: 20170627222649) do
   enable_extension "plpgsql"
 
   create_table "accounts", force: :cascade do |t|
+    t.bigint "user_id"
     t.bigint "center_id"
     t.string "last_registration_step_completed"
     t.string "signature"
     t.boolean "waiver_agreement", default: false
     t.boolean "mail_agreements", default: true
     t.boolean "medical_waiver_agreement", default: false
+    t.boolean "signup_complete", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["center_id"], name: "index_accounts_on_center_id"
+    t.index ["user_id"], name: "index_accounts_on_user_id"
   end
 
   create_table "addresses", id: :serial, force: :cascade do |t|
@@ -215,6 +218,7 @@ ActiveRecord::Schema.define(version: 20170627222649) do
   end
 
   add_foreign_key "accounts", "centers"
+  add_foreign_key "accounts", "users"
   add_foreign_key "emergency_contacts", "accounts"
   add_foreign_key "time_disputes", "locations"
 end
