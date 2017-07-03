@@ -12,6 +12,7 @@ class Account::ChildrenController < ApplicationController
   # GET /account/children/new
   def new
     @account_child = Child.new
+    @account_child.build_default_care_items
   end
 
   # GET /account/children/1/edit
@@ -45,7 +46,7 @@ class Account::ChildrenController < ApplicationController
   # DELETE /account/children/1
   def destroy
     @account_child.destroy
-    redirect_to account_children_path(@account), notice: 'Child was successfully destroyed.'
+    redirect_to account_children_path(@account), notice: 'Child was successfully removed.'
   end
 
   private
@@ -60,6 +61,14 @@ class Account::ChildrenController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def account_child_params
-      params.fetch(:account_child, {})
+      permitted_attributes = [
+       :first_name,
+       :last_name,
+       :gender,
+       :grade_entering,
+       :birthdate,
+       :additional_info
+      ]
+      params.require(:child).permit(permitted_attributes)
     end
 end
