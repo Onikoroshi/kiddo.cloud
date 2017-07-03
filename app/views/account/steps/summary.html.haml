@@ -1,0 +1,5 @@
+= form_for @account_summary_form, method: :put, url: wizard_path do |f|
+  = render "application/form_errors", object: @account_summary_form
+  = f.label :signature
+  = f.text_field :signature
+  = f.submit "Submit"

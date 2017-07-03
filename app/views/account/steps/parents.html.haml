@@ -2,16 +2,43 @@
   = render "application/form_errors", object: @account_form
 
   .row
-    Parent
-    = f.fields_for :parents do |p|
-      = label_tag :first_name, "First Name", class: "settingsTitle"
-      = p.text_field :first_name
+    = f.label :parent_first_name
+    = f.text_field :parent_first_name
 
-      = label_tag :last_name, "Last Name", class: "settingsTitle"
-      = p.text_field :last_name
+    %br
 
-      = label_tag :last_name, "Phone", class: "settingsTitle"
-      = p.text_field :phone
+    = f.label :parent_last_name
+    = f.text_field :parent_last_name
+
+    %br
+
+    = f.label :parent_phone
+    = f.text_field :parent_phone
+
+    %br
+
+    = f.label :parent_street
+    = f.text_field :parent_street
+
+    %br
+
+    = f.label :parent_extended
+    = f.text_field :parent_extended
+
+    %br
+
+    = f.label :parent_locality
+    = f.text_field :parent_locality
+
+    %br
+
+    = f.label :parent_region
+    = f.text_field :parent_region
+
+    %br
+
+    = f.label :parent_postal_code
+    = f.text_field :parent_postal_code
 
     / .row
     /   .col-md-6
