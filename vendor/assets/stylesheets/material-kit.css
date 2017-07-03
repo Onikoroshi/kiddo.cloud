@@ -2742,7 +2742,7 @@ select.form-control[multiple], .form-group.is-focused select.form-control[multip
 .navbar.navbar-transparent {
   background-color: transparent;
   box-shadow: none;
-  color: #fff;
+  color: #222;
   padding-top: 25px;
 }
 .navbar.navbar-transparent .logo-container .brand {
@@ -7407,7 +7407,7 @@ select.selectpicker {
 
 .presentation-page .page-header,
 .index-page .page-header {
-  height: 90vh;
+  height: 175px;
   overflow: hidden;
 }
 .presentation-page .brand,
@@ -7445,10 +7445,7 @@ select.selectpicker {
 }
 .presentation-page .header-filter:after,
 .index-page .header-filter:after {
-  background: rgba(132, 13, 121, 0.88);
-  background: linear-gradient(45deg, rgba(132, 13, 121, 0.88) 0%, rgba(208, 44, 180, 0.31) 100%);
-  background: -moz-linear-gradient(135deg, rgba(132, 13, 121, 0.88) 0%, rgba(208, 44, 180, 0.31) 100%);
-  background: -webkit-linear-gradient(135deg, rgba(132, 13, 121, 0.88) 0%, rgba(208, 44, 180, 0.31) 100%);
+  background: #eee;
 }
 .presentation-page h4.description,
 .index-page h4.description {
@@ -8157,7 +8154,7 @@ select.selectpicker {
 @media (max-width: 991px) {
   .page-header {
     height: auto;
-    min-height: 60vh;
+    min-height: 150px;
   }
   .page-header .iframe-container {
     padding: 30px 0;
