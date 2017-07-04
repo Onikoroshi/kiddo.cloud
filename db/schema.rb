@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170627222649) do
+ActiveRecord::Schema.define(version: 20170703223151) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,16 @@ ActiveRecord::Schema.define(version: 20170627222649) do
     t.datetime "updated_at", null: false
     t.index ["addressable_id", "addressable_type"], name: "index_addresses_on_addressable_id_and_addressable_type", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable_type_and_addressable_id"
+  end
+
+  create_table "care_items", force: :cascade do |t|
+    t.bigint "child_id"
+    t.string "name"
+    t.boolean "active"
+    t.text "explanation"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["child_id"], name: "index_care_items_on_child_id"
   end
 
   create_table "centers", force: :cascade do |t|
@@ -215,6 +225,7 @@ ActiveRecord::Schema.define(version: 20170627222649) do
 
   add_foreign_key "accounts", "centers"
   add_foreign_key "accounts", "users"
+  add_foreign_key "care_items", "children"
   add_foreign_key "emergency_contacts", "accounts"
   add_foreign_key "time_disputes", "locations"
 end

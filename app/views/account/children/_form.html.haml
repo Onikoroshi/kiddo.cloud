@@ -1,4 +1,4 @@
-= form_for [@account, @account_child], method: :post do |form|
+= form_for [@account, @account_child] do |form|
   = render "application/form_errors", object: @account_child
   .field
     = form.label :first_name
@@ -15,9 +15,26 @@
   .field
     = form.label :birthdate
     = form.text_field :birthdate, id: "flatpickr-input"
-  .field
-    = form.label :additional_info
-    = form.text_area :additional_info
+
+
+  .row
+    = form.fields_for :care_items, @account_child.care_items do |c|
+      %br
+      = c.object.name
+      = c.hidden_field :name, value: c.object.name
+      = c.radio_button :active, false, checked: !c.object.active
+      No
+      = c.radio_button :active, true
+      Yes
+      = c.text_field :explanation, placeholder: "Please explain"
+
+  .row
+    .field
+      = form.label :additional_info do
+        ADDITIONAL INFO (Favorite hobbies, sports, books, etc)
+      = form.text_area :additional_info, placeholder: "(optional)"
+
+
   .actions
     = link_to "Previous", account_step_path(@account, :parents)
     = form.submit "Register Child"
