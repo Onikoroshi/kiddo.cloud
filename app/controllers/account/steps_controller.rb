@@ -69,7 +69,7 @@ class Account::StepsController < ApplicationController
 
   def update_summary
     @account_summary_form = AccountSummaryForm.new(@center, @account)
-    @account_summary_form.assign_attributes(account_summary_form_params.merge(current_user: current_user))
+    @account_summary_form.assign_attributes(account_summary_form_params)
     if @account_summary_form.submit
       @account.record_step(:summary)
       redirect_to_finish_wizard_path
