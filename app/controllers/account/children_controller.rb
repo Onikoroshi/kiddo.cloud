@@ -1,4 +1,5 @@
 class Account::ChildrenController < ApplicationController
+  before_action :guard_center!
   before_action :set_account
   before_action :set_account_child, only: [:show, :edit, :update, :destroy]
 
@@ -12,13 +13,11 @@ class Account::ChildrenController < ApplicationController
   # GET /account/children/new
   def new
     @account_child = Child.new
-    @account_child.build_default_care_items
   end
 
   # GET /account/children/1/edit
   def edit
   end
-
 
   # POST /account/children
   def create
@@ -39,6 +38,7 @@ class Account::ChildrenController < ApplicationController
     if @account_child.update(account_child_params)
       redirect_to account_children_path(@account), notice: 'Child was successfully updated.'
     else
+
       render :edit
     end
   end
@@ -67,7 +67,8 @@ class Account::ChildrenController < ApplicationController
        :gender,
        :grade_entering,
        :birthdate,
-       :additional_info
+       :additional_info,
+       care_items_attributes: [:id, :name, :active, :explanation]
       ]
       params.require(:child).permit(permitted_attributes)
     end

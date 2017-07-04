@@ -50,11 +50,13 @@ ActiveRecord::Schema.define(version: 20170703223151) do
   end
 
   create_table "care_items", force: :cascade do |t|
+    t.bigint "child_id"
     t.string "name"
     t.boolean "active"
     t.text "explanation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["child_id"], name: "index_care_items_on_child_id"
   end
 
   create_table "centers", force: :cascade do |t|
@@ -223,6 +225,7 @@ ActiveRecord::Schema.define(version: 20170703223151) do
 
   add_foreign_key "accounts", "centers"
   add_foreign_key "accounts", "users"
+  add_foreign_key "care_items", "children"
   add_foreign_key "emergency_contacts", "accounts"
   add_foreign_key "time_disputes", "locations"
 end
