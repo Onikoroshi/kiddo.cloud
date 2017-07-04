@@ -86,7 +86,7 @@ class Account::StepsController < ApplicationController
   end
 
   def redirect_to_finish_wizard_path
-    next_wizard_path
+    redirect_to account_dashboard_path(@account)
   end
 
   def account_parent_params(step)
