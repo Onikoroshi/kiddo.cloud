@@ -17,4 +17,8 @@ class Account < ApplicationRecord
     self.signup_complete
   end
 
+  def mark_signup_complete!
+    self.update_attributes(signup_complete: true)
+  end
+
 end

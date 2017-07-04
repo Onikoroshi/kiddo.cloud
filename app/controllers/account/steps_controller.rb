@@ -2,6 +2,7 @@ class Account::StepsController < ApplicationController
   include Wicked::Wizard
   steps :parents, :children, :plan, :medical, :summary
   before_action :find_account
+  before_action :guard_signup_complete
 
   def show
     case step
@@ -72,7 +73,7 @@ class Account::StepsController < ApplicationController
     @account_summary_form.assign_attributes(account_summary_form_params)
     if @account_summary_form.submit
       @account.record_step(:summary)
-      redirect_to_finish_wizard_path
+      finalize_signup
     else
       render_wizard
     end
@@ -80,12 +81,17 @@ class Account::StepsController < ApplicationController
 
   private
 
+  def guard_signup_complete
+    redirect_to account_dashboard_path(@account) if @account.signup_complete?
+  end
+
   def find_account
     raise Pundit::NotAuthorizedError if !user_signed_in?
     @account ||= current_user.account
   end
 
-  def redirect_to_finish_wizard_path
+  def finalize_signup
+    @account.mark_signup_complete!
     redirect_to account_dashboard_path(@account)
   end
 
