@@ -43,5 +43,8 @@
       = form.text_area :additional_info, placeholder: "(optional)"
 
   .actions
-    = link_to "Previous", account_step_path(@account, :parents)
-    = form.submit @account_child.persisted? ? "Edit Child" : "Register Child"
+    = form.submit @account_child.persisted? ? "Edit Child" : "Register Child", class: "btn"
+
+  .navigation
+    = link_to "Previous", account_step_path(@account, :parents), class: "btn"
+    = link_to 'Continue', account_step_path(@account, :plan), class: "btn"

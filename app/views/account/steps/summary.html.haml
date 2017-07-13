@@ -2,4 +2,7 @@
   = render "application/form_errors", object: @account_summary_form
   = f.label :signature
   = f.text_field :signature
-  = f.submit "Submit"
+  %br
+  = link_to "Previous", account_step_path(@account, :medical), class: "btn"
+  = f.submit "Submit", class: "btn"
+
