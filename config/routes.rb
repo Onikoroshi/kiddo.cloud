@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   resources :accounts, only: [:new, :create, :show, :index] do
     resources :steps, only: [:show, :update], controller: 'account/steps'
     resources :children, controller: 'account/children'
-    resource :dashboard, only: :show, controller: 'account/dashboards'
+    resource :dashboard, controller: 'account/dashboards'
   end
 
   namespace :children do

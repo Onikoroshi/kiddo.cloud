@@ -1,17 +1,25 @@
 = form_for [@account, @account_child] do |form|
   = render "application/form_errors", object: @account_child
+
   .field
     = form.label :first_name
     = form.text_field :first_name
+
   .field
     = form.label :last_name
     = form.text_field :last_name
+
   .field
     = form.label :gender
-    = form.text_field :gender
+    M
+    = form.radio_button :gender, "male", checked: @account_child.gender == "male" || @account_child.gender.nil?
+    F
+    = form.radio_button :gender, "female"
+
   .field
     = form.label :grade_entering
-    = form.text_field :grade_entering
+    = form.select :grade_entering, (1..10).to_a, include_blank: false
+
   .field
     = form.label :birthdate
     = form.text_field :birthdate, id: "flatpickr-input"
@@ -34,7 +42,6 @@
         ADDITIONAL INFO (Favorite hobbies, sports, books, etc)
       = form.text_area :additional_info, placeholder: "(optional)"
 
-
   .actions
     = link_to "Previous", account_step_path(@account, :parents)
-    = form.submit "Register Child"
+    = form.submit @account_child.persisted? ? "Edit Child" : "Register Child"
