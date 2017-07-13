@@ -58,12 +58,19 @@ class Account::StepsController < ApplicationController
   end
 
   def show_medical
+    @account_medical_form = AccountMedicalForm.new(@center, @account)
     render_wizard
   end
 
   def update_medical
-    @account.record_step(:medical)
-    render_wizard
+    @account_medical_form = AccountMedicalForm.new(@center, @account)
+    @account_medical_form.assign_attributes(account_medical_form_params)
+    if @account_medical_form.submit
+      @account.record_step(:medical)
+      redirect_to next_wizard_path
+    else
+      render_wizard
+    end
   end
 
   def show_summary
@@ -129,5 +136,18 @@ class Account::StepsController < ApplicationController
 
   def account_summary_form_params
     params.require(:account_summary_form).permit(:signature)
+  end
+
+  def account_medical_form_params
+    permitted_attributes = [
+      :family_physician,
+      :physician_phone,
+      :family_dentist,
+      :dentist_phone,
+      :insurance_company,
+      :insurance_policy_number,
+      :medical_waiver_agreement
+    ]
+    params.require(:account_medical_form).permit(permitted_attributes).merge(step: step)
   end
 end
