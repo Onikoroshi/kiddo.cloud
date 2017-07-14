@@ -102,6 +102,7 @@ class Account::StepsController < ApplicationController
 
   def finalize_signup
     @account.mark_signup_complete!
+    TransactionalMailer.welcome_customer(@center, current_user).deliver_now
     redirect_to account_dashboard_path(@account)
   end
 

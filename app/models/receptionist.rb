@@ -28,7 +28,7 @@ class Receptionist
       attendance_router_path
     when "parent"
       if current_user.account.signup_complete?
-        root_path
+        account_dashboard_path(current_user.account)
       else
         last_step = current_user.account.last_registration_step_completed
         last_step = last_step.blank? ? :parents : last_step.to_sym
