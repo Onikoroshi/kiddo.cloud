@@ -7,12 +7,18 @@ class AccountPolicy
   end
 
   def register?
-    user.present? && account.present? && user_owns_account?
+    user_owns_account?
+  end
+
+  def dashboard?
+    user_owns_account?
   end
 
   private
 
   def user_owns_account?
+    user.present? &&
+    account.present? &&
     user.account.id == account.id
   end
 

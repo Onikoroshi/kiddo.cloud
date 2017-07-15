@@ -1,0 +1,4 @@
+- if flash.any?
+  #flash-messages
+    - flash.each do |name, msg|
+      = content_tag :div, raw(msg), :id => "flash_#{name}", class: "#{flash_class(name)}"
