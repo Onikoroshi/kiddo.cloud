@@ -1,0 +1,33 @@
+.card.card-nav-tabs.card-plain
+  .header.header-primary
+    / colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger"
+    .nav-tabs-navigation
+      .nav-tabs-wrapper
+        %ul.nav.nav-tabs{"data-tabs" => "tabs"}
+          %li{ class: (step == :parents) ? "active" : ""}
+            =link_to account_step_path(@account, :parents) do
+              %i.material-icons account_circle
+              Parents
+          - if controller_name == "children" || @account.parents.count > 1
+            %li{ class: (step == :children) ? "active" : ""}
+              =link_to account_step_path(@account, :children) do
+                %i.material-icons face
+                Children
+          - if step == :plan || @account.children.any?
+            %li{ class: (step == :plan) ? "active" : ""}
+              =link_to account_step_path(@account, :plan) do
+                %i.material-icons star
+                Plan
+          - if step == :medical || true
+            %li{ class: (step == :medical) ? "active" : ""}
+              =link_to account_step_path(@account, :medical) do
+                %i.material-icons message
+                Medical
+          - if step == :summary || @account.medical_waiver_agreement
+            %li{ class: (step == :summary) ? "active" : ""}
+              =link_to account_step_path(@account, :summary) do
+                %i.material-icons check_circle
+                Summary
+
+
+
