@@ -1,4 +1,5 @@
 class Account::ChildrenController < ApplicationController
+  include WizardChildStep
   before_action :guard_center!
   before_action :set_account
   before_action :set_account_child, only: [:show, :edit, :update, :destroy]
