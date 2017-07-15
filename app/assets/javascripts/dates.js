@@ -1,3 +1,3 @@
-$(document).ready(function(){
+document.addEventListener("turbolinks:load", function() {
   flatpickr('#flatpickr-input');
 });
