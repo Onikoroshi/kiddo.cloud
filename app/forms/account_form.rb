@@ -84,7 +84,9 @@ class AccountForm
     parent.update_attributes(
       first_name: parent_first_name,
       last_name: parent_last_name,
-      phone: parent_phone
+      phone: parent_phone,
+      primary: true,
+      user_id: current_user.id
     )
 
     parent.address.update_attributes(
@@ -94,18 +96,14 @@ class AccountForm
       region: parent_region,
       postal_code: parent_postal_code
     )
-
-    parent.primary = true
-    parent.user_id = current_user.id
-    parent.save!
-    account.parents << parent
   end
 
   def save_second_parent
     parent_guardian.update_attributes(
       first_name: parent_guardian_first_name,
       last_name: parent_guardian_last_name,
-      phone: parent_guardian_phone
+      phone: parent_guardian_phone,
+      primary: false
     )
 
     parent_guardian.address.update_attributes(
@@ -116,8 +114,6 @@ class AccountForm
       postal_code: parent_guardian_postal_code
     )
 
-    parent_guardian.primary = false
-    parent_guardian.save!
     account.parents << parent_guardian
   end
 
@@ -169,15 +165,15 @@ class AccountForm
   end
 
   def parent
-    parent = account.parents.first || account.parents.build
-    parent.address = parent.address || parent.build_address
+    parent = account.primary_parent
+    parent.build_address
     parent
   end
 
   def parent_guardian
-    parent = account.parents.where(primary: false).first || account.parents.build
-    parent.address = parent.address || parent.build_address
-    parent
+    guardian ||= account.build_secondary_parent
+    guardian.build_address
+    guardian
   end
 
   def emergency_contact
@@ -185,4 +181,3 @@ class AccountForm
   end
 
 end
-

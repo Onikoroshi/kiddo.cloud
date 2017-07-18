@@ -1,4 +1,40 @@
-medical.
+= render partial: "step_navigation"
 
-= link_to "Previous", account_step_path(@account, :plan)
-= link_to "Next", account_step_path(@account, :summary)
+= form_for @account_medical_form, method: :put, url: wizard_path do |f|
+  = render "application/form_errors", object: @account_medical_form
+
+  .field
+    = f.label :family_physician
+    = f.text_field :family_physician
+
+  .field
+    = f.label :physician_phone
+    = f.text_field :physician_phone
+
+  .field
+    = f.label :family_dentist
+    = f.text_field :family_dentist
+
+  .field
+    = f.label :dentist_phone
+    = f.text_field :dentist_phone
+
+  .field
+    = f.label :insurance_company
+    = f.text_field :insurance_company
+
+  .field
+    = f.label :insurance_policy_number
+    = f.text_field :insurance_policy_number
+
+  .field
+    = f.check_box :medical_waiver_agreement, checked: @account.medical_waiver_agreement
+    = f.label :medical_waiver_agreement do
+      I authorize #{@center.name} personnel to arrange transportation in case of accident
+      or acute ..
+    %br
+
+
+  .row
+    = f.submit 'Next Step', class: "btn"
+

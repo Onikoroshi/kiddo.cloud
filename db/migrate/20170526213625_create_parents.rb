@@ -5,8 +5,9 @@ class CreateParents < ActiveRecord::Migration[5.1]
       t.references :account, index: true
       t.string :first_name
       t.string :last_name
-      t.boolean :primary, default: false
       t.string :phone
+      t.boolean :primary, default: false
+      t.boolean :secondary, default: false
 
       t.timestamps
     end

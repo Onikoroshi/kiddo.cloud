@@ -120,4 +120,5 @@
   .main.main-raised
     .section.section-basic
       .container
-        =yield
+        = render "application/flash_messages"
+        = yield

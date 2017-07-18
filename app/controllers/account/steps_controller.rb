@@ -1,9 +1,12 @@
 class Account::StepsController < ApplicationController
   include Wicked::Wizard
   steps :parents, :children, :plan, :medical, :summary
+  before_action :authenticate_user!
   before_action :find_account
+  before_action :guard_signup_complete
 
   def show
+    authorize @account, :register?
     case step
     when :parents then show_parents
     when :children then delegate_to_account_children_controller
@@ -14,6 +17,7 @@ class Account::StepsController < ApplicationController
   end
 
   def update
+    authorize @account, :register?
     case step
     when :parents then update_parents
     when :plan then update_plan
@@ -45,7 +49,12 @@ class Account::StepsController < ApplicationController
   end
 
   def show_plan
-    render_wizard
+    if @account.children.empty?
+      flash[:error] = "You must add at least one child to continue."
+      redirect_to new_account_child_path(@account) and return
+    else
+      render_wizard
+    end
   end
 
   def update_plan
@@ -54,12 +63,19 @@ class Account::StepsController < ApplicationController
   end
 
   def show_medical
+    @account_medical_form = AccountMedicalForm.new(@center, @account)
     render_wizard
   end
 
   def update_medical
-    @account.record_step(:medical)
-    render_wizard
+    @account_medical_form = AccountMedicalForm.new(@center, @account)
+    @account_medical_form.assign_attributes(account_medical_form_params)
+    if @account_medical_form.submit
+      @account.record_step(:medical)
+      redirect_to next_wizard_path
+    else
+      render_wizard
+    end
   end
 
   def show_summary
@@ -69,10 +85,10 @@ class Account::StepsController < ApplicationController
 
   def update_summary
     @account_summary_form = AccountSummaryForm.new(@center, @account)
-    @account_summary_form.assign_attributes(account_summary_form_params.merge(current_user: current_user))
+    @account_summary_form.assign_attributes(account_summary_form_params)
     if @account_summary_form.submit
       @account.record_step(:summary)
-      redirect_to_finish_wizard_path
+      finalize_signup
     else
       render_wizard
     end
@@ -80,13 +96,18 @@ class Account::StepsController < ApplicationController
 
   private
 
+  def guard_signup_complete
+    redirect_to account_dashboard_path(@account) if @account.signup_complete?
+  end
+
   def find_account
     raise Pundit::NotAuthorizedError if !user_signed_in?
     @account ||= current_user.account
   end
 
-  def redirect_to_finish_wizard_path
-    next_wizard_path
+  def finalize_signup
+    @account.finalize_signup
+    redirect_to account_dashboard_path(@account)
   end
 
   def account_parent_params(step)
@@ -120,5 +141,18 @@ class Account::StepsController < ApplicationController
 
   def account_summary_form_params
     params.require(:account_summary_form).permit(:signature)
+  end
+
+  def account_medical_form_params
+    permitted_attributes = [
+      :family_physician,
+      :physician_phone,
+      :family_dentist,
+      :dentist_phone,
+      :insurance_company,
+      :insurance_policy_number,
+      :medical_waiver_agreement
+    ]
+    params.require(:account_medical_form).permit(permitted_attributes).merge(step: step)
   end
 end

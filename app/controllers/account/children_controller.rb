@@ -1,4 +1,6 @@
 class Account::ChildrenController < ApplicationController
+  include WizardChildStep
+  before_action :guard_center!
   before_action :set_account
   before_action :set_account_child, only: [:show, :edit, :update, :destroy]
 
@@ -17,7 +19,6 @@ class Account::ChildrenController < ApplicationController
   # GET /account/children/1/edit
   def edit
   end
-
 
   # POST /account/children
   def create
@@ -38,6 +39,7 @@ class Account::ChildrenController < ApplicationController
     if @account_child.update(account_child_params)
       redirect_to account_children_path(@account), notice: 'Child was successfully updated.'
     else
+
       render :edit
     end
   end
@@ -45,7 +47,7 @@ class Account::ChildrenController < ApplicationController
   # DELETE /account/children/1
   def destroy
     @account_child.destroy
-    redirect_to account_children_path(@account), notice: 'Child was successfully destroyed.'
+    redirect_to account_children_path(@account), notice: 'Child was successfully removed.'
   end
 
   private
@@ -60,6 +62,15 @@ class Account::ChildrenController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def account_child_params
-      params.fetch(:account_child, {})
+      permitted_attributes = [
+       :first_name,
+       :last_name,
+       :gender,
+       :grade_entering,
+       :birthdate,
+       :additional_info,
+       care_items_attributes: [:id, :name, :active, :explanation]
+      ]
+      params.require(:child).permit(permitted_attributes)
     end
 end
