@@ -165,7 +165,7 @@ class AccountForm
   end
 
   def parent
-    parent = account.primary_parent
+    parent ||= account.primary_parent
     parent.build_address
     parent
   end
