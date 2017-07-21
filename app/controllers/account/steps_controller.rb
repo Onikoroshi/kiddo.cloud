@@ -1,6 +1,6 @@
 class Account::StepsController < ApplicationController
   include Wicked::Wizard
-  steps :parents, :children, :plan, :medical, :summary
+  steps :parents, :children, :medical, :plan, :payment, :summary
   before_action :authenticate_user!
   before_action :find_account
   before_action :guard_signup_complete

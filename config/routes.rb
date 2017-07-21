@@ -2,22 +2,22 @@ Rails.application.routes.draw do
   devise_for :users, :controllers => { :registrations => "users/registrations" }
 
   resources :receptionist, only: [:index], path: "direct"
-  resource :attendance_router, only: :show, controller: "attendance_router", path: "manage"
 
   resources :accounts, only: [:new, :create, :show, :index] do
     resources :steps, only: [:show, :update], controller: 'account/steps'
     resources :children, controller: 'account/children'
     resource :dashboard, controller: 'account/dashboards'
+    resource :subscription, controller: 'account/subscription'
   end
 
   namespace :children do
     resources :attendance_display, only: :index
-
   end
 
   namespace :staff do
     resources :time_disputes, only: [:index, :new, :create]
     resources :attendance_display, only: :index
+    resource :dashboard, only: :show, controller: 'dashboard'
   end
 
   resources :time_entries, only: :create
