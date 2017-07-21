@@ -5,6 +5,7 @@ class Account < ApplicationRecord
   has_many :parents, dependent: :destroy
   has_one :primary_parent, ->(p) { where primary: true }, class_name: "Parent"
   has_one :secondary_parent, ->(p) { where secondary: true }, class_name: "Parent"
+  has_one :subscription
 
   has_many :children
   has_many :emergency_contacts, dependent: :destroy
@@ -31,6 +32,10 @@ class Account < ApplicationRecord
     mark_signup_complete!
     TransactionalMailer.welcome_customer(self).deliver_now
     TransactionalMailer.waivers_and_agreements(self).deliver_now if mail_agreements
+  end
+
+  def customer?
+    gateway_customer_id.present?
   end
 
 end

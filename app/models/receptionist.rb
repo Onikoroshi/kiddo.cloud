@@ -25,7 +25,7 @@ class Receptionist
     when "root"
       root_path
     when "director"
-      attendance_router_path
+      staff_dashboard_path
     when "parent"
       if current_user.account.signup_complete?
         account_dashboard_path(current_user.account)

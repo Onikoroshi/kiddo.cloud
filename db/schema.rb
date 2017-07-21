@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170703223151) do
+ActiveRecord::Schema.define(version: 20170721191649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,7 +84,6 @@ ActiveRecord::Schema.define(version: 20170703223151) do
 
   create_table "children", force: :cascade do |t|
     t.bigint "account_id"
-    t.bigint "parent_id"
     t.string "first_name"
     t.string "last_name"
     t.string "grade_entering"
@@ -94,7 +93,6 @@ ActiveRecord::Schema.define(version: 20170703223151) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_children_on_account_id"
-    t.index ["parent_id"], name: "index_children_on_parent_id"
   end
 
   create_table "children_parents", id: false, force: :cascade do |t|
@@ -162,6 +160,14 @@ ActiveRecord::Schema.define(version: 20170703223151) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_staffs_on_user_id"
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "account_id"
+    t.string "gateway_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_subscriptions_on_account_id"
   end
 
   create_table "time_disputes", force: :cascade do |t|
@@ -234,5 +240,6 @@ ActiveRecord::Schema.define(version: 20170703223151) do
   add_foreign_key "accounts", "users"
   add_foreign_key "care_items", "children"
   add_foreign_key "emergency_contacts", "accounts"
+  add_foreign_key "subscriptions", "accounts"
   add_foreign_key "time_disputes", "locations"
 end

@@ -1,0 +1,10 @@
+%h1 Payment
+= form_tag account_subscription_path, id: "payment-form" do |form|
+  .form-row
+    %label{:for => "card-element"}
+      Credit or debit card
+    #card-element.form-control
+      / a Stripe Element will be inserted here.
+    / Used to display Element errors
+    #card-errors{:role => "alert"}
+  %button Submit Payment
