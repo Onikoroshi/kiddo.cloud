@@ -1,3 +1,5 @@
+= render partial: "account/steps/step_navigation"
+
 = form_for [@account, @account_child] do |form|
   = render "application/form_errors", object: @account_child
 
@@ -42,9 +44,6 @@
         ADDITIONAL INFO (Favorite hobbies, sports, books, etc)
       = form.text_area :additional_info, placeholder: "(optional)"
 
-  .actions
-    = form.submit @account_child.persisted? ? "Edit Child" : "Register Child", class: "btn"
-
   .navigation
-    = link_to "Previous", account_step_path(@account, :parents), class: "btn"
-    = link_to 'Continue', account_step_path(@account, :plan), class: "btn"
+    = link_to "Cancel", account_children_path(@account), class: "btn" if @account.children.any?
+    = form.submit @account_child.persisted? ? "Update Child" : "Register Child", class: "btn"

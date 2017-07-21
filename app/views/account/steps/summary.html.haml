@@ -1,8 +1,88 @@
-= form_for @account_summary_form, method: :put, url: wizard_path do |f|
-  = render "application/form_errors", object: @account_summary_form
-  = f.label :signature
-  = f.text_field :signature
-  %br
-  = link_to "Previous", account_step_path(@account, :medical), class: "btn"
-  = f.submit "Submit", class: "btn"
+= render partial: "step_navigation"
+
+#parents
+  %h4 Parents #{link_to "Edit", account_step_path(@account, :parents), class: "btn btn-xs"}
+
+  #primary-parent
+    %h5 Primary Parent
+    .row
+      Name:
+      = @account.primary_parent.full_name
+    .row
+      Email:
+      = @account.primary_parent.user.email
+    .row
+      Address:
+      = @account.primary_parent.address.full_address
+
+  #guardian
+    %h5 Secondary Contact
+
+
+  #emergency-contacts
+    %h5 Emergency Contacts
+
+
+#children
+  %h5 Children #{link_to "Edit", account_step_path(@account, :children), class: "btn btn-xs"}
+  - @account.children.each do |c|
+    .row
+      Name:
+      = c.full_name
+    .row
+      Gender:
+      = c.gender.capitalize
+    .row
+      Grade Entering:
+      = c.grade_entering
+    .row
+      Date of Birth:
+      = c.birthdate
+    .row
+      %h5 Care Items
+      - c.care_items.where(active: true).each do |ci|
+        .row
+          Name:
+          = ci.name
+        .row
+          Explanation:
+          = ci.explanation
+    .row
+      Additional Information:
+      = c.additional_info
+
+#plan
+  %h5 Plan Information #{link_to "Edit", account_step_path(@account, :plan), class: "btn btn-xs"}
+  You children are signed up for the x plan. Your card will be charged x per month.
+
+#medical
+  %h5 Medical #{link_to "Edit", account_step_path(@account, :medical), class: "btn btn-xs"}
+  .row
+    Family Physician:
+    = @account.family_physician
+  .row
+    Family Physician Phone:
+    = @account.physician_phone
+  .row
+    Family Dentist:
+    = @account.family_dentist
+  .row
+    Family Dentist Phone:
+    = @account.dentist_phone
+  .row
+    Insurance Company:
+    = @account.insurance_company
+  .row
+    Insurance Policy Number:
+    = @account.insurance_policy_number
+
+#signature-form
+  %h5 Signature
+
+  = form_for @account_summary_form, method: :put, url: wizard_path do |f|
+    = render "application/form_errors", object: @account_summary_form
+    = f.label :signature
+    = f.text_field :signature
+    %br
+    = f.submit "Complete Registration", class: "btn"
 

@@ -49,7 +49,12 @@ class Account::StepsController < ApplicationController
   end
 
   def show_plan
-    render_wizard
+    if @account.children.empty?
+      flash[:error] = "You must add at least one child to continue."
+      redirect_to new_account_child_path(@account) and return
+    else
+      render_wizard
+    end
   end
 
   def update_plan

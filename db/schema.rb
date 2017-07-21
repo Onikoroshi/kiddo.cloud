@@ -128,8 +128,9 @@ ActiveRecord::Schema.define(version: 20170703223151) do
     t.bigint "account_id"
     t.string "first_name"
     t.string "last_name"
-    t.boolean "primary", default: false
     t.string "phone"
+    t.boolean "primary", default: false
+    t.boolean "secondary", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_parents_on_account_id"

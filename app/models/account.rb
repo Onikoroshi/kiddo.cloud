@@ -1,7 +1,11 @@
 class Account < ApplicationRecord
   belongs_to :user
   belongs_to :center
-  has_many :parents
+
+  has_many :parents, dependent: :destroy
+  has_one :primary_parent, ->(p) { where primary: true }, class_name: "Parent"
+  has_one :secondary_parent, ->(p) { where secondary: true }, class_name: "Parent"
+
   has_many :children
   has_many :emergency_contacts, dependent: :destroy
 
@@ -9,10 +13,6 @@ class Account < ApplicationRecord
 
   def primary_email
     user.email
-  end
-
-  def primary_parent
-    parents.where(primary: true).first
   end
 
   def record_step(step)
@@ -34,3 +34,7 @@ class Account < ApplicationRecord
   end
 
 end
+
+
+
+
