@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170721191649) do
+ActiveRecord::Schema.define(version: 20170722015827) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,11 @@ ActiveRecord::Schema.define(version: 20170721191649) do
     t.string "dentist_phone"
     t.string "insurance_company"
     t.string "insurance_policy_number"
+    t.string "gateway_customer_id"
+    t.string "card_brand"
+    t.string "card_exp_month"
+    t.string "card_exp_year"
+    t.string "card_last4"
     t.boolean "waiver_agreement", default: false
     t.boolean "mail_agreements", default: true
     t.boolean "medical_waiver_agreement", default: false
@@ -53,6 +58,22 @@ ActiveRecord::Schema.define(version: 20170721191649) do
     t.datetime "updated_at", null: false
     t.index ["addressable_id", "addressable_type"], name: "index_addresses_on_addressable_id_and_addressable_type", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable_type_and_addressable_id"
+  end
+
+  create_table "attendance_plans", force: :cascade do |t|
+    t.bigint "child_id"
+    t.bigint "program_id"
+    t.boolean "monday"
+    t.boolean "tuesday"
+    t.string "wednesday_boolean"
+    t.string "thursday_boolean"
+    t.boolean "friday"
+    t.boolean "saturday"
+    t.boolean "sunday"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["child_id"], name: "index_attendance_plans_on_child_id"
+    t.index ["program_id"], name: "index_attendance_plans_on_program_id"
   end
 
   create_table "care_items", force: :cascade do |t|
@@ -143,6 +164,26 @@ ActiveRecord::Schema.define(version: 20170721191649) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "program_plans", force: :cascade do |t|
+    t.bigint "program_id"
+    t.string "name"
+    t.integer "days_per_week"
+    t.float "price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["program_id"], name: "index_program_plans_on_program_id"
+  end
+
+  create_table "programs", force: :cascade do |t|
+    t.bigint "center_id"
+    t.string "name"
+    t.date "starts_at"
+    t.date "ends_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["center_id"], name: "index_programs_on_center_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -238,8 +279,12 @@ ActiveRecord::Schema.define(version: 20170721191649) do
 
   add_foreign_key "accounts", "centers"
   add_foreign_key "accounts", "users"
+  add_foreign_key "attendance_plans", "children"
+  add_foreign_key "attendance_plans", "programs"
   add_foreign_key "care_items", "children"
   add_foreign_key "emergency_contacts", "accounts"
+  add_foreign_key "program_plans", "programs"
+  add_foreign_key "programs", "centers"
   add_foreign_key "subscriptions", "accounts"
   add_foreign_key "time_disputes", "locations"
 end

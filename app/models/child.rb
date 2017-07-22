@@ -2,11 +2,14 @@ class Child < ApplicationRecord
   belongs_to :account
   has_many :children_parents
   has_many :parents, through: :children_parents
-  has_many :time_entries, as: :time_recordable
 
   has_many :child_locations
   has_many :locations, through: :child_locations
 
+  has_many :attendance_plans
+  has_many :programs, through: :attendance_plans
+
+  has_many :time_entries, as: :time_recordable
   has_many :care_items, dependent: :destroy
 
   after_initialize :build_default_care_items
