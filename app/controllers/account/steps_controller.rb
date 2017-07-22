@@ -1,6 +1,6 @@
 class Account::StepsController < ApplicationController
   include Wicked::Wizard
-  steps :parents, :children, :medical, :plan, :payment, :summary
+  steps :parents, :children, :medical, :plan, :summary, :payment
   before_action :authenticate_user!
   before_action :find_account
   before_action :guard_signup_complete
@@ -10,8 +10,8 @@ class Account::StepsController < ApplicationController
     case step
     when :parents then show_parents
     when :children then delegate_to_account_children_controller
-    when :plan then show_plan
     when :medical then show_medical
+    when :plan then show_plan
     when :summary then show_summary
     end
   end
@@ -20,8 +20,8 @@ class Account::StepsController < ApplicationController
     authorize @account, :register?
     case step
     when :parents then update_parents
-    when :plan then update_plan
     when :medical then update_medical
+    when :plan then update_plan
     when :summary then update_summary
     end
   end

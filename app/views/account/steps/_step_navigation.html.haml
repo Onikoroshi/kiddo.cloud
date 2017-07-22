@@ -23,16 +23,16 @@
               =link_to account_step_path(@account, :plan) do
                 %i.material-icons star
                 Plan
-          - if step == :payment || @account.children.any? # account.chosen plan?
-            %li{ class: (step == :payment) ? "active" : ""}
-              =link_to account_step_path(@account, :plan) do
-                %i.material-icons payment
-                Payment
           - if step == :summary || @account.medical_waiver_agreement # account.paid?
             %li{ class: (step == :summary) ? "active" : ""}
               =link_to account_step_path(@account, :summary) do
                 %i.material-icons check_circle
                 Summary
+          - if step == :payment || @account.children.any? # account.chosen plan?
+            %li{ class: (step == :payment) ? "active" : ""}
+              =link_to account_step_path(@account, :plan) do
+                %i.material-icons payment
+                Payment
 
 
 
