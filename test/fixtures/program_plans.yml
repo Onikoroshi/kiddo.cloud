@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  program: one
+  name: MyString
+  days_per_week: 1
+  price: 1.5
+
+two:
+  program: two
+  name: MyString
+  days_per_week: 1
+  price: 1.5

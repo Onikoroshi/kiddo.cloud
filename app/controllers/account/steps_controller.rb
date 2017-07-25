@@ -49,20 +49,23 @@ class Account::StepsController < ApplicationController
   end
 
   def show_plan
-    if @account.children.empty?
-      flash[:error] = "You must add at least one child to continue."
-      redirect_to new_account_child_path(@account) and return
+    guard_children_added!
+    @account_attendance_plan_form = AccountAttendancePlanForm.new(@center, @account)
+    render_wizard
+  end
+
+  def update_plan
+    @account_attendance_plan_form = AccountAttendancePlanForm.new(@center, @account)
+    if @account_attendance_plan_form.submit
+      @account.record_step(:plan)
+      redirect_to next_wizard_path
     else
       render_wizard
     end
   end
 
-  def update_plan
-    @account.record_step(:plan)
-    render_wizard
-  end
-
   def show_medical
+    guard_children_added!
     @account_medical_form = AccountMedicalForm.new(@center, @account)
     render_wizard
   end
@@ -98,6 +101,13 @@ class Account::StepsController < ApplicationController
 
   def guard_signup_complete
     redirect_to account_dashboard_path(@account) if @account.signup_complete?
+  end
+
+  def guard_children_added!
+    if @account.children.empty?
+      flash[:error] = "You must add at least one child to continue."
+      redirect_to new_account_child_path(@account) and return
+    end
   end
 
   def find_account

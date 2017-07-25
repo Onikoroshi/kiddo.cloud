@@ -21,7 +21,7 @@
           %span.icon-bar
           %span.icon-bar
           %span.icon-bar
-        %a{:href => "/users/sign_up"}
+        =link_to root_path do
           =image_tag ("logo.png")
 
       - if user_signed_in?
