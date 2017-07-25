@@ -1,8 +1,34 @@
 = render partial: "step_navigation"
 
+#plan-type-switcher
+  = link_to "Monthly", "#"
+  |
+  = link_to "Drop-In", "#"
 
-- @account.children.each do |c|
-  = c.full_name
 
+= form_for @account_attendance_plan_form, method: :put, url: wizard_path do |f|
+  = render "application/form_errors", object: @account_attendance_plan_form
 
-= link_to "Next", account_step_path(@account, :summary), class: "btn"
+  = fields_for :children, @account_attendance_plan_form.children do |child_fields|
+    = child_fields.object
+    /= child_fields.object.full_name
+    /= child_fields.text_field :first_name, value: child_fields.object.first_name
+    / .field
+    /   = c.fields_for :attendance_selection, c.attendance_selections.build do |s|
+    /     %br
+    /     = s.radio_button :monday, false, checked: s.object.monday
+    /     M
+    /     = s.radio_button :tuesday, false, checked: s.object.tuesday
+    /     T
+    /     = s.radio_button :wednesday, false, checked: s.object.wednesday
+    /     W
+    /     = s.radio_button :thursday, false, checked: s.object.thursday
+    /     R
+    /     = s.radio_button :friday, false, checked: s.object.friday
+    /     F
+
+    %br
+
+  .row
+    = f.submit 'Next', class: "btn"
+

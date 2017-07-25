@@ -1,13 +1,21 @@
 Rails.application.routes.draw do
-  devise_for :users, :controllers => { :registrations => "users/registrations" }
+  devise_for :users,
+    path: "/",
+    path_names: {
+      sign_in: "sign-in",
+      sign_out: "sign-out"
+    },
+    controllers: { registrations: "users/registrations"
+  }
 
   resources :receptionist, only: [:index], path: "direct"
 
   resources :accounts, only: [:new, :create, :show, :index] do
     resources :steps, only: [:show, :update], controller: 'account/steps'
     resources :children, controller: 'account/children'
-    resource :dashboard, controller: 'account/dashboards'
     resource :subscription, controller: 'account/subscription'
+    resources :child_attendance_selections, controller: 'account/child_attendance_selections'
+    resource :dashboard, controller: 'account/dashboards'
   end
 
   namespace :children do

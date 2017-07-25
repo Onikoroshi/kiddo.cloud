@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170722015827) do
+ActiveRecord::Schema.define(version: 20170722180716) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,20 +60,18 @@ ActiveRecord::Schema.define(version: 20170722015827) do
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable_type_and_addressable_id"
   end
 
-  create_table "attendance_plans", force: :cascade do |t|
+  create_table "attendance_selections", force: :cascade do |t|
     t.bigint "child_id"
-    t.bigint "program_id"
     t.boolean "monday"
     t.boolean "tuesday"
-    t.string "wednesday_boolean"
-    t.string "thursday_boolean"
+    t.boolean "wednesday"
+    t.boolean "thursday"
     t.boolean "friday"
     t.boolean "saturday"
     t.boolean "sunday"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["child_id"], name: "index_attendance_plans_on_child_id"
-    t.index ["program_id"], name: "index_attendance_plans_on_program_id"
+    t.index ["child_id"], name: "index_attendance_selections_on_child_id"
   end
 
   create_table "care_items", force: :cascade do |t|
@@ -101,6 +99,15 @@ ActiveRecord::Schema.define(version: 20170722015827) do
     t.datetime "updated_at", null: false
     t.index ["child_id"], name: "index_child_locations_on_child_id"
     t.index ["location_id"], name: "index_child_locations_on_location_id"
+  end
+
+  create_table "child_program_plans", force: :cascade do |t|
+    t.bigint "child_id"
+    t.bigint "program_plan_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["child_id"], name: "index_child_program_plans_on_child_id"
+    t.index ["program_plan_id"], name: "index_child_program_plans_on_program_plan_id"
   end
 
   create_table "children", force: :cascade do |t|
@@ -167,12 +174,15 @@ ActiveRecord::Schema.define(version: 20170722015827) do
   end
 
   create_table "program_plans", force: :cascade do |t|
+    t.bigint "child_id"
     t.bigint "program_id"
     t.string "name"
     t.integer "days_per_week"
     t.float "price"
+    t.string "plan_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["child_id"], name: "index_program_plans_on_child_id"
     t.index ["program_id"], name: "index_program_plans_on_program_id"
   end
 
@@ -279,10 +289,12 @@ ActiveRecord::Schema.define(version: 20170722015827) do
 
   add_foreign_key "accounts", "centers"
   add_foreign_key "accounts", "users"
-  add_foreign_key "attendance_plans", "children"
-  add_foreign_key "attendance_plans", "programs"
+  add_foreign_key "attendance_selections", "children"
   add_foreign_key "care_items", "children"
+  add_foreign_key "child_program_plans", "children"
+  add_foreign_key "child_program_plans", "program_plans"
   add_foreign_key "emergency_contacts", "accounts"
+  add_foreign_key "program_plans", "children"
   add_foreign_key "program_plans", "programs"
   add_foreign_key "programs", "centers"
   add_foreign_key "subscriptions", "accounts"

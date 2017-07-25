@@ -1,12 +1,11 @@
-class CreateAttendancePlans < ActiveRecord::Migration[5.1]
+class CreateAttendanceSelections < ActiveRecord::Migration[5.1]
   def change
-    create_table :attendance_plans do |t|
+    create_table :attendance_selections do |t|
       t.references :child, foreign_key: true
-      t.references :program, foreign_key: true
       t.boolean :monday
       t.boolean :tuesday
-      t.string :wednesday_boolean
-      t.string :thursday_boolean
+      t.boolean :wednesday
+      t.boolean :thursday
       t.boolean :friday
       t.boolean :saturday
       t.boolean :sunday
