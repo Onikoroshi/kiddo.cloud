@@ -2,11 +2,15 @@ class Child < ApplicationRecord
   belongs_to :account
   has_many :children_parents
   has_many :parents, through: :children_parents
-  has_many :time_entries, as: :time_recordable
+  has_many :attendance_selections, dependent: :destroy
 
   has_many :child_locations
   has_many :locations, through: :child_locations
 
+  has_many :child_program_plans
+  has_many :program_plans, through: :child_program_plans
+
+  has_many :time_entries, as: :time_recordable
   has_many :care_items, dependent: :destroy
 
   after_initialize :build_default_care_items
@@ -17,6 +21,7 @@ class Child < ApplicationRecord
   validates :birthdate, presence: true
 
   accepts_nested_attributes_for :care_items, allow_destroy: true
+  accepts_nested_attributes_for :attendance_selections, allow_destroy: true
 
   def full_name
     "#{first_name} #{last_name}"

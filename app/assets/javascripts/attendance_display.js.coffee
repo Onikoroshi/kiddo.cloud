@@ -1,4 +1,5 @@
-$ ->
+document.addEventListener 'turbolinks:load', ->
+  Turbolinks.clearCache()
   $("#staff-location-switcher").on "change", ->
     location_id = $(this).val()
     if location_id

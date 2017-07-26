@@ -6,7 +6,11 @@
     = csrf_meta_tags
     %link{:href => "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons", :rel => "stylesheet", :type => "text/css"}/
     = stylesheet_link_tag    'application-dkk', media: 'all', 'data-turbolinks-track': 'reload'
-    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'https://js.stripe.com/v3/', 'data-turbolinks-track': 'reload'
+    = tag :meta, name: "stripe-public-key", content: Rails.application.secrets.stripe_public_key
+
+
+
 %body.index-page
   %nav#sectionsNav.navbar.navbar-default.navbar-transparent.navbar-fixed-top.navbar-color-on-scroll{"color-on-scroll" => " "}
     .container
@@ -17,103 +21,27 @@
           %span.icon-bar
           %span.icon-bar
           %span.icon-bar
+<<<<<<< HEAD
         %a{:href => "/"}
+=======
+        =link_to root_path do
+>>>>>>> 6700cb36aefe11aab9321a2091f1dbf7aad49fc8
           =image_tag ("logo.png")
-      .collapse.navbar-collapse
-        %ul.nav.navbar-nav.navbar-right
 
-          %li
-            %a{:href => "index.html"}
-              %i.material-icons apps
-              Components
-          %li.dropdown
-            %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
-              %i.material-icons view_day
-              Sections
-              %b.caret
-            %ul.dropdown-menu.dropdown-with-icons
-              %li
-                %a{:href => "sections.html#headers"}
-                  %i.material-icons dns
-                  Headers
-              %li
-                %a{:href => "sections.html#features"}
-                  %i.material-icons build
-                  Features
-              %li
-                %a{:href => "sections.html#blogs"}
-                  %i.material-icons list
-                  Blogs
-              %li
-                %a{:href => "sections.html#teams"}
-                  %i.material-icons people
-                  Teams
-              %li
-                %a{:href => "sections.html#projects"}
-                  %i.material-icons assignment
-                  Projects
-              %li
-                %a{:href => "sections.html#pricing"}
-                  %i.material-icons monetization_on
-                  Pricing
-              %li
-                %a{:href => "sections.html#testimonials"}
-                  %i.material-icons chat
-                  Testimonials
-              %li
-                %a{:href => "sections.html#contactus"}
-                  %i.material-icons call
-                  Contacts
-          %li.dropdown
-            %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
-              %i.material-icons view_carousel
-              Examples
-              %b.caret
-            %ul.dropdown-menu.dropdown-with-icons
-              %li
-                %a{:href => "examples/about-us.html"}
-                  %i.material-icons account_balance
-                  About Us
-              %li
-                %a{:href => "examples/blog-post.html"}
-                  %i.material-icons art_track
-                  Blog Post
-              %li
-                %a{:href => "examples/blog-posts.html"}
-                  %i.material-icons view_quilt
-                  Blog Posts
-              %li
-                %a{:href => "examples/contact-us.html"}
-                  %i.material-icons location_on
-                  Contact Us
-              %li
-                %a{:href => "examples/landing-page.html"}
-                  %i.material-icons view_day
-                  Landing Page
-              %li
-                %a{:href => "examples/login-page.html"}
-                  %i.material-icons fingerprint
-                  Login Page
-              %li
-                %a{:href => "examples/pricing.html"}
-                  %i.material-icons attach_money
-                  Pricing Page
-              %li
-                %a{:href => "examples/ecommerce.html"}
-                  %i.material-icons shop
-                  Ecommerce Page
-              %li
-                %a{:href => "examples/product-page.html"}
-                  %i.material-icons beach_access
-                  Product Page
-              %li
-                %a{:href => "examples/profile-page.html"}
-                  %i.material-icons account_circle
-                  Profile Page
-              %li
-                %a{:href => "examples/signup-page.html"}
-                  %i.material-icons person_add
-                  Signup Page
+      - if user_signed_in?
+        .collapse.navbar-collapse
+          %ul.nav.navbar-nav.navbar-right
+            %li.dropdown
+              %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+                %i.material-icons account_circle
+                Your Account
+                %b.caret
+              %ul.dropdown-menu.dropdown-with-icons
+                %li
+                  = link_to destroy_user_session_path do
+                    %i.material-icons eject
+                    Log Out
+
 
   .page-header.header-filter.clear-filter
 

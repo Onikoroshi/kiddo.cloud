@@ -14,6 +14,7 @@ gem 'awesome_print', '~> 1.7'
 gem 'flatpickr_rails'
 gem 'pundit', '~> 1.1'
 gem "font-awesome-rails"
+gem "chronic"
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

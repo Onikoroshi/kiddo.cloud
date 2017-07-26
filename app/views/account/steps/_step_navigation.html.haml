@@ -13,21 +13,27 @@
               =link_to account_step_path(@account, :children) do
                 %i.material-icons face
                 Children
-          - if step == :plan || @account.children.any?
-            %li{ class: (step == :plan) ? "active" : ""}
-              =link_to account_step_path(@account, :plan) do
-                %i.material-icons star
-                Plan
-          - if step == :medical || true
+          - if step == :medical || @account.children.any?
             %li{ class: (step == :medical) ? "active" : ""}
               =link_to account_step_path(@account, :medical) do
                 %i.material-icons message
                 Medical
-          - if step == :summary || @account.medical_waiver_agreement
+          - if step == :plan || @account.medical_waiver_agreement
+            %li{ class: (step == :plan) ? "active" : ""}
+              =link_to account_step_path(@account, :plan) do
+                %i.material-icons star
+                Plan
+          - if step == :summary || @account.medical_waiver_agreement # account.paid?
             %li{ class: (step == :summary) ? "active" : ""}
               =link_to account_step_path(@account, :summary) do
                 %i.material-icons check_circle
                 Summary
+          - if step == :payment || @account.children.any? # account.chosen plan?
+            %li{ class: (step == :payment) ? "active" : ""}
+              =link_to account_step_path(@account, :plan) do
+                %i.material-icons payment
+                Payment
 
 
 
+  parents, children, medical, plan, summary, payment

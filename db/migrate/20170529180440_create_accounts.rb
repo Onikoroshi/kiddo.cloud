@@ -11,6 +11,11 @@ class CreateAccounts < ActiveRecord::Migration[5.1]
       t.string :dentist_phone
       t.string :insurance_company
       t.string :insurance_policy_number
+      t.string :gateway_customer_id
+      t.string :card_brand
+      t.string :card_exp_month
+      t.string :card_exp_year
+      t.string :card_last4
       t.boolean :waiver_agreement, default: false
       t.boolean :mail_agreements, default: true
       t.boolean :medical_waiver_agreement, default: false

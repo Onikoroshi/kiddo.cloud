@@ -166,13 +166,13 @@ class AccountForm
 
   def parent
     parent ||= account.primary_parent
-    parent.build_address
+    parent.address ||= parent.build_address
     parent
   end
 
   def parent_guardian
-    guardian ||= account.build_secondary_parent
-    guardian.build_address
+    guardian = account.secondary_parent || account.build_secondary_parent
+    guardian.address || guardian.build_address
     guardian
   end
 
