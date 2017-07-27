@@ -1,19 +1,18 @@
-class Account::ChildAttendanceSelectionsController < ApplicationController
+class Account::AttendanceSelectionsController < ApplicationController
   before_action :guard_center!
-  before_action :set_account
+  before_action :fetch_account
 
-  # GET /account/children/1/edit
-  def edit
+  def step
+    :plan
+  end
+
+  def new
+    @account.children.map { |c| c.attendance_selections.build }
   end
 
   # PATCH/PUT /account/children/1
-  def update
-    if @account_child.update(account_child_params)
-      redirect_to account_children_path(@account), notice: 'Child was successfully updated.'
-    else
-
-      render :edit
-    end
+  def create
+    debugger
   end
 
   private
@@ -22,7 +21,7 @@ class Account::ChildAttendanceSelectionsController < ApplicationController
       @account_child = Child.find(params[:id])
     end
 
-    def set_account
+    def fetch_account
       @account = Account.find(params[:account_id])
     end
 

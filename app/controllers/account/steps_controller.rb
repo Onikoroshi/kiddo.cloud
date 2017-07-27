@@ -11,7 +11,7 @@ class Account::StepsController < ApplicationController
     when :parents then show_parents
     when :children then delegate_to_account_children_controller
     when :medical then show_medical
-    when :plan then show_plan
+    when :plan then delegate_to_attendance_selections
     when :summary then show_summary
     end
   end
@@ -48,20 +48,8 @@ class Account::StepsController < ApplicationController
     redirect_to new_account_child_path(@account)
   end
 
-  def show_plan
-    guard_children_added!
-    @account_attendance_plan_form = AccountAttendancePlanForm.new(@center, @account)
-    render_wizard
-  end
-
-  def update_plan
-    @account_attendance_plan_form = AccountAttendancePlanForm.new(@center, @account)
-    if @account_attendance_plan_form.submit
-      @account.record_step(:plan)
-      redirect_to next_wizard_path
-    else
-      render_wizard
-    end
+  def delegate_to_attendance_selections
+    redirect_to new_account_attendance_selection_path(@account)
   end
 
   def show_medical

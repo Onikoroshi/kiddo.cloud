@@ -1,0 +1,22 @@
+= render partial: "account/steps/step_navigation"
+
+#plan-type-switcher
+  = link_to "Monthly", "#"
+  |
+  = link_to "Drop-In", "#"
+
+= form_for(:account, :url => "/accounts/#{@account.id}/plans", :method => :post) do |f|
+  - @account.children.each do |child|
+    = child.full_name
+    = f.fields_for :children, child do |cf|
+      - child.attendance_selections.each do |attendance_selection|
+        = cf.fields_for :attendance_selections, attendance_selection do |asf|
+          = asf.radio_button :monday, false, checked: true
+          = asf.radio_button :tuesday, false, checked: true
+          = asf.radio_button :wednesday, false, checked: true
+          = asf.radio_button :thursday, false, checked: true
+          = asf.radio_button :friday, false, checked: true
+
+
+  = f.submit "go"
+
