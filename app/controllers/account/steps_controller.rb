@@ -49,7 +49,7 @@ class Account::StepsController < ApplicationController
   end
 
   def delegate_to_attendance_selections
-    redirect_to new_account_attendance_selection_path(@account)
+    redirect_to edit_account_attendance_selection_path(@account)
   end
 
   def show_medical

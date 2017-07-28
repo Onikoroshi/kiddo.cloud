@@ -6,13 +6,17 @@ class Account::AttendanceSelectionsController < ApplicationController
     :plan
   end
 
-  def new
-    @account.children.map { |c| c.attendance_selections.build }
+  def edit
+    @account.create_default_child_attendance_selections
   end
 
-  # PATCH/PUT /account/children/1
-  def create
-    debugger
+  def update
+    if @account.update_attributes(account_selection_params)
+      @account.record_step(:plan)
+      redirect_to account_step_path(@account, :summary), notice: "Great! You're all signed up. Let's review."
+    else
+      render :new
+    end
   end
 
   private
@@ -26,17 +30,22 @@ class Account::AttendanceSelectionsController < ApplicationController
     end
 
     # Only allow a trusted parameter "white list" through.
-    def account_child_params
+    def account_selection_params
       permitted_attributes = [
-       :first_name,
-       :last_name,
-       :gender,
-       :grade_entering,
-       :birthdate,
-       :additional_info,
-       care_items_attributes: [:id, :name, :active, :explanation],
-       attendance_selections_attributes: []
+        children_attributes: [
+          :id,
+          attendance_selection_attributes: [
+            :id,
+            :monday,
+            :tuesday,
+            :wednesday,
+            :thursday,
+            :friday,
+            :saturday,
+            :sunday,
+          ],
+        ]
       ]
-      params.require(:child).permit(permitted_attributes)
+      params.require(:account).permit(permitted_attributes)
     end
 end
