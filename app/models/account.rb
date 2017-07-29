@@ -10,6 +10,8 @@ class Account < ApplicationRecord
   has_many :children
   has_many :emergency_contacts, dependent: :destroy
 
+  has_many :drop_ins
+
   delegate :name, to: :center, prefix: :center
 
   accepts_nested_attributes_for :children, allow_destroy: true

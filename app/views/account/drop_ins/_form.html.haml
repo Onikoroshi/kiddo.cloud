@@ -1,0 +1,19 @@
+= form_for(@account, url: new_account_drop_in_path(@account), method: :post) do |f|
+  = render "application/form_errors", object: @account
+  %table
+
+    = f.fields_for :children, @account.children do |cf|
+
+      %tr
+        %td= cf.object.full_name
+        %td= cf.object.drop_ins.count
+
+        = cf.fields_for :drop_ins, cf.object.drop_ins do |dif|
+
+          %td
+            = dif.text_field :date
+            %br
+            = dif.label :date
+
+
+  = f.submit "Submit", class: "btn"
