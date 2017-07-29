@@ -17,5 +17,5 @@ Drop in for #{@center.current_program.name}
             %br
             = dif.label :date
 
-
+  = link_to "Cancel", account_step_path(@account, :plan), class: "btn"
   = f.submit "Submit", class: "btn"
