@@ -46,6 +46,16 @@ class Account < ApplicationRecord
     end
   end
 
+  def summarize_enrollments(program)
+    result = Array.new
+    program.plans.each do |p|
+      children.each do |c|
+        result << c.enrollments.where(plan: p).first.to_s
+      end
+    end
+    result.flatten.reject(&:empty?)
+  end
+
 end
 
 

@@ -1,7 +1,8 @@
-class CreateAttendanceSelections < ActiveRecord::Migration[5.1]
+class CreateEnrollments < ActiveRecord::Migration[5.1]
   def change
-    create_table :attendance_selections do |t|
+    create_table :enrollments do |t|
       t.references :child, foreign_key: true
+      t.references :plan, foreign_key: true
       t.boolean :monday, default: false
       t.boolean :tuesday, default: false
       t.boolean :wednesday, default: false
@@ -9,7 +10,6 @@ class CreateAttendanceSelections < ActiveRecord::Migration[5.1]
       t.boolean :friday, default: false
       t.boolean :saturday, default: false
       t.boolean :sunday, default: false
-
       t.timestamps
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170722180716) do
+ActiveRecord::Schema.define(version: 20170729180318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,13 +62,13 @@ ActiveRecord::Schema.define(version: 20170722180716) do
 
   create_table "attendance_selections", force: :cascade do |t|
     t.bigint "child_id"
-    t.boolean "monday"
-    t.boolean "tuesday"
-    t.boolean "wednesday"
-    t.boolean "thursday"
-    t.boolean "friday"
-    t.boolean "saturday"
-    t.boolean "sunday"
+    t.boolean "monday", default: false
+    t.boolean "tuesday", default: false
+    t.boolean "wednesday", default: false
+    t.boolean "thursday", default: false
+    t.boolean "friday", default: false
+    t.boolean "saturday", default: false
+    t.boolean "sunday", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["child_id"], name: "index_attendance_selections_on_child_id"
@@ -101,15 +101,6 @@ ActiveRecord::Schema.define(version: 20170722180716) do
     t.index ["location_id"], name: "index_child_locations_on_location_id"
   end
 
-  create_table "child_program_plans", force: :cascade do |t|
-    t.bigint "child_id"
-    t.bigint "program_plan_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["child_id"], name: "index_child_program_plans_on_child_id"
-    t.index ["program_plan_id"], name: "index_child_program_plans_on_program_plan_id"
-  end
-
   create_table "children", force: :cascade do |t|
     t.bigint "account_id"
     t.string "first_name"
@@ -138,6 +129,22 @@ ActiveRecord::Schema.define(version: 20170722180716) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_emergency_contacts_on_account_id"
+  end
+
+  create_table "enrollments", force: :cascade do |t|
+    t.bigint "child_id"
+    t.bigint "plan_id"
+    t.boolean "monday", default: false
+    t.boolean "tuesday", default: false
+    t.boolean "wednesday", default: false
+    t.boolean "thursday", default: false
+    t.boolean "friday", default: false
+    t.boolean "saturday", default: false
+    t.boolean "sunday", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["child_id"], name: "index_enrollments_on_child_id"
+    t.index ["plan_id"], name: "index_enrollments_on_plan_id"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -173,21 +180,21 @@ ActiveRecord::Schema.define(version: 20170722180716) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "program_plans", force: :cascade do |t|
-    t.bigint "child_id"
+  create_table "plans", force: :cascade do |t|
     t.bigint "program_id"
-    t.string "name"
+    t.string "short_code"
+    t.string "display_name"
     t.integer "days_per_week"
     t.float "price"
     t.string "plan_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["child_id"], name: "index_program_plans_on_child_id"
-    t.index ["program_id"], name: "index_program_plans_on_program_id"
+    t.index ["program_id"], name: "index_plans_on_program_id"
   end
 
   create_table "programs", force: :cascade do |t|
     t.bigint "center_id"
+    t.string "short_code"
     t.string "name"
     t.date "starts_at"
     t.date "ends_at"
@@ -291,11 +298,10 @@ ActiveRecord::Schema.define(version: 20170722180716) do
   add_foreign_key "accounts", "users"
   add_foreign_key "attendance_selections", "children"
   add_foreign_key "care_items", "children"
-  add_foreign_key "child_program_plans", "children"
-  add_foreign_key "child_program_plans", "program_plans"
   add_foreign_key "emergency_contacts", "accounts"
-  add_foreign_key "program_plans", "children"
-  add_foreign_key "program_plans", "programs"
+  add_foreign_key "enrollments", "children"
+  add_foreign_key "enrollments", "plans"
+  add_foreign_key "plans", "programs"
   add_foreign_key "programs", "centers"
   add_foreign_key "subscriptions", "accounts"
   add_foreign_key "time_disputes", "locations"

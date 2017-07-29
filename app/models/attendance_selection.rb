@@ -27,4 +27,21 @@ class AttendanceSelection < ApplicationRecord
     )
     self.save(validate: false)
   end
+
+  def day_count
+    count = 0
+    [
+      monday,
+      tuesday,
+      wednesday,
+      thursday,
+      friday,
+      saturday,
+      sunday,
+    ].map { |day|
+      count += 1 if day
+    }
+    count
+  end
+
 end
