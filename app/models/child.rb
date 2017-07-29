@@ -36,4 +36,9 @@ class Child < ApplicationRecord
       self.care_items.build(name: "Current Medications")
     end
   end
+
+  def siblings?
+    self.account.children.count > 1
+  end
+
 end

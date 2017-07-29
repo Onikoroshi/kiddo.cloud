@@ -175,7 +175,8 @@ ActiveRecord::Schema.define(version: 20170729180318) do
 
   create_table "plans", force: :cascade do |t|
     t.bigint "program_id"
-    t.string "name"
+    t.string "short_code"
+    t.string "display_name"
     t.integer "days_per_week"
     t.float "price"
     t.string "plan_type"
@@ -186,6 +187,7 @@ ActiveRecord::Schema.define(version: 20170729180318) do
 
   create_table "programs", force: :cascade do |t|
     t.bigint "center_id"
+    t.string "short_code"
     t.string "name"
     t.date "starts_at"
     t.date "ends_at"

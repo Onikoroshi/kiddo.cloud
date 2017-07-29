@@ -3,6 +3,8 @@ class Center < ApplicationRecord
   has_many :users
   has_many :locations, dependent: :destroy
 
+  has_many :programs
+
   def children
     children = []
     self.accounts.includes(:children).all.each do |account|
@@ -13,6 +15,10 @@ class Center < ApplicationRecord
 
   def default_location
     @location = self.locations.select { |l| l.default }.first || self.locations.first
+  end
+
+  def current_program
+    programs.where(short_code: "dkk_fall_2017").first
   end
 end
 
