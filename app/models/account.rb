@@ -42,11 +42,23 @@ class Account < ApplicationRecord
 
   def create_default_child_attendance_selections
     children.each do |child|
-      unless child.attendance_selection.present?
-        default_selection = AttendanceSelection.new(child_id: child.id)
-        default_selection.save(validate: false)
+      AttendanceSelection.where(child_id: child.id).first_or_create!
+    end
+  end
+
+  def summarize_enrollments(program)
+    result = Array.new
+    program.plans.each do |p|
+      children.each do |c|
+        result << c.enrollments.where(plan: p).first.to_s
       end
     end
+    result.flatten.reject(&:empty?)
+  end
+
+  def children_enrolled?(program)
+    return false unless children.any?
+    children.includes(:enrollments).collect { |c| c.enrolled?(program) }.all?
   end
 
 end

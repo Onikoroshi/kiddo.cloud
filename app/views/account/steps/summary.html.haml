@@ -52,8 +52,14 @@
       = c.additional_info
 
 #plan
-  %h5 Plan Information #{link_to "Edit", account_step_path(@account, :plan), class: "btn btn-xs"}
-  You children are signed up for the x plan. Your card will be charged x per month.
+  %h5 Plan Information #{link_to "Edit",edit_account_attendance_selection_path(@account), class: "btn btn-xs"}
+
+  %h4
+    = @center.current_program.name
+
+  - @account.summarize_enrollments(@center.current_program).each do |item|
+    = item
+    %br
 
 #medical
   %h5 Medical #{link_to "Edit", account_step_path(@account, :medical), class: "btn btn-xs"}
@@ -82,7 +88,7 @@
   = form_for @account_summary_form, method: :put, url: wizard_path do |f|
     = render "application/form_errors", object: @account_summary_form
     = f.label :signature
-    = f.text_field :signature
+    = f.text_field :signature, value: @account.signature
     %br
     = f.submit "Submit and Continue to Payment", class: "btn"
 

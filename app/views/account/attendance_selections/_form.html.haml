@@ -17,7 +17,6 @@
           %td= cf.object.full_name
 
           = cf.fields_for :attendance_selection, cf.object.attendance_selection do |asf|
-            = asf.object.id
 
             %td
               = asf.check_box :monday, checked: asf.object.monday
@@ -45,4 +44,3 @@
               = asf.label :friday
 
     = f.submit "Submit", class: "btn"
-
