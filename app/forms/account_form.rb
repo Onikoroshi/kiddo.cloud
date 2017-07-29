@@ -33,7 +33,6 @@ class AccountForm
   validates :parent_last_name,   presence: true
   validates :parent_phone,       presence: true
   validates :parent_street,      presence: true
-  validates :parent_extended,    presence: true
   validates :parent_locality,    presence: true
   validates :parent_region,      presence: true
   validates :parent_postal_code, presence: true

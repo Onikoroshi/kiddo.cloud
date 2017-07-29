@@ -53,7 +53,16 @@
 
 #plan
   %h5 Plan Information #{link_to "Edit",edit_account_attendance_selection_path(@account), class: "btn btn-xs"}
-  You children are signed up for the x plan. Your card will be charged x per month.
+
+  %h4
+    = @center.current_program.name
+
+  - @account.summarize_enrollments(@center.current_program).each do |item|
+    = item
+    %br
+
+
+
 
 #medical
   %h5 Medical #{link_to "Edit", account_step_path(@account, :medical), class: "btn btn-xs"}
