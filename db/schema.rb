@@ -62,13 +62,13 @@ ActiveRecord::Schema.define(version: 20170729180318) do
 
   create_table "attendance_selections", force: :cascade do |t|
     t.bigint "child_id"
-    t.boolean "monday", default: false
-    t.boolean "tuesday", default: false
-    t.boolean "wednesday", default: false
-    t.boolean "thursday", default: false
-    t.boolean "friday", default: false
-    t.boolean "saturday", default: false
-    t.boolean "sunday", default: false
+    t.boolean "monday"
+    t.boolean "tuesday"
+    t.boolean "wednesday"
+    t.boolean "thursday"
+    t.boolean "friday"
+    t.boolean "saturday"
+    t.boolean "sunday"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["child_id"], name: "index_attendance_selections_on_child_id"

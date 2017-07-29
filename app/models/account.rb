@@ -56,6 +56,11 @@ class Account < ApplicationRecord
     result.flatten.reject(&:empty?)
   end
 
+  def children_enrolled?(program)
+    return false unless children.any?
+    children.includes(:enrollments).collect { |c| c.enrolled?(program) }.all?
+  end
+
 end
 
 
