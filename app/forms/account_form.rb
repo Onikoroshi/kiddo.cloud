@@ -38,15 +38,6 @@ class AccountForm
   validates :parent_region,      presence: true
   validates :parent_postal_code, presence: true
 
-  validates :parent_guardian_first_name,   presence: true
-  validates :parent_guardian_last_name,    presence: true
-  validates :parent_guardian_phone,        presence: true
-  validates :parent_guardian_street,       presence: true
-  validates :parent_guardian_extended,     presence: true
-  validates :parent_guardian_locality,     presence: true
-  validates :parent_guardian_region,       presence: true
-  validates :parent_guardian_postal_code,  presence: true
-
   validates :emergency_contact_first_name, presence: true
   validates :emergency_contact_last_name,  presence: true
   validates :emergency_contact_phone,      presence: true
