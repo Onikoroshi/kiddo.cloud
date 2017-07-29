@@ -7,8 +7,8 @@ class Child < ApplicationRecord
   has_many :child_locations
   has_many :locations, through: :child_locations
 
-  has_many :child_program_plans
-  has_many :program_plans, through: :child_program_plans
+  has_many :enrollments
+  has_many :plans, through: :enrollments
 
   has_many :time_entries, as: :time_recordable
   has_many :care_items, dependent: :destroy
