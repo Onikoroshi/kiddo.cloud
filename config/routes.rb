@@ -3,10 +3,10 @@ Rails.application.routes.draw do
     path: "/",
     path_names: {
       sign_in: "sign-in",
-      sign_out: "sign-out"
+      sign_out: "sign-out",
+      sign_up: "sign-up"
     },
-    controllers: { registrations: "users/registrations"
-  }
+    controllers: { registrations: "users/registrations" }
 
   resources :receptionist, only: [:index], path: "direct"
 
@@ -14,7 +14,12 @@ Rails.application.routes.draw do
     resources :steps, only: [:show, :update], controller: 'account/steps'
     resources :children, controller: 'account/children'
     resource :subscription, controller: 'account/subscription'
-    resources :child_attendance_selections, controller: 'account/child_attendance_selections'
+
+    resource :attendance_selection,
+      only: [:edit, :update],
+      controller: 'account/attendance_selections',
+      path: "plans"
+
     resource :dashboard, controller: 'account/dashboards'
   end
 

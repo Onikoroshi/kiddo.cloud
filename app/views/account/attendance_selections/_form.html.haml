@@ -1,0 +1,48 @@
+= render partial: "account/steps/step_navigation"
+
+#plan-type-switcher
+
+  = link_to "Monthly", "#", class: "btn"
+  = link_to "Drop-In", "#", class: "btn"
+
+#attendance-selection
+
+  = form_for(@account, url: account_attendance_selection_path, method: "PUT") do |f|
+    = render "application/form_errors", object: @account
+    %table
+
+      = f.fields_for :children, @account.children do |cf|
+
+        %tr
+          %td= cf.object.full_name
+
+          = cf.fields_for :attendance_selection, cf.object.attendance_selection do |asf|
+            = asf.object.id
+
+            %td
+              = asf.check_box :monday, checked: asf.object.monday
+              %br
+              = asf.label :monday
+
+            %td
+              = asf.check_box :tuesday, checked: asf.object.tuesday
+              %br
+              = asf.label :tuesday
+
+            %td
+              = asf.check_box :wednesday, checked: asf.object.wednesday
+              %br
+              = asf.label :wednesday
+
+            %td
+              = asf.check_box :thursday, checked: asf.object.thursday
+              %br
+              = asf.label :thursday
+
+            %td
+              = asf.check_box :friday, checked: asf.object.friday
+              %br
+              = asf.label :friday
+
+    = f.submit "Submit", class: "btn"
+

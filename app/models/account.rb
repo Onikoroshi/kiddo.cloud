@@ -12,6 +12,8 @@ class Account < ApplicationRecord
 
   delegate :name, to: :center, prefix: :center
 
+  accepts_nested_attributes_for :children, allow_destroy: true
+
   def primary_email
     user.email
   end
@@ -36,6 +38,15 @@ class Account < ApplicationRecord
 
   def customer?
     gateway_customer_id.present?
+  end
+
+  def create_default_child_attendance_selections
+    children.each do |child|
+      unless child.attendance_selection.present?
+        default_selection = AttendanceSelection.new(child_id: child.id)
+        default_selection.save(validate: false)
+      end
+    end
   end
 
 end
