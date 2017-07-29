@@ -13,6 +13,7 @@ class Account::StepsController < ApplicationController
     when :medical then show_medical
     when :plan then delegate_to_attendance_selections
     when :summary then show_summary
+    when :payment then show_payment
     end
   end
 
@@ -23,6 +24,7 @@ class Account::StepsController < ApplicationController
     when :medical then update_medical
     when :plan then update_plan
     when :summary then update_summary
+    when :payment then update_payment
     end
   end
 
@@ -79,10 +81,19 @@ class Account::StepsController < ApplicationController
     @account_summary_form.assign_attributes(account_summary_form_params)
     if @account_summary_form.submit
       @account.record_step(:summary)
-      finalize_signup
+      redirect_to next_wizard_path
     else
       render_wizard
     end
+  end
+
+  def show_payment
+    render_wizard
+  end
+
+  def update_payment
+    @account.record_step(:payment)
+    finalize_signup
   end
 
   private

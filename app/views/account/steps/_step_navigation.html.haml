@@ -9,8 +9,8 @@
               %i.material-icons account_circle
               Parents
           - if controller_name == "children" || @account.parents.count > 1
-            %li{ class: (step == :children) ? "active" : ""}
-              =link_to account_step_path(@account, :children) do
+            %li{ class: (controller_name == "children") ? "active" : ""}
+              =link_to account_children_path(@account) do
                 %i.material-icons face
                 Children
           - if step == :medical || @account.children.any?
@@ -23,14 +23,14 @@
               =link_to account_step_path(@account, :plan) do
                 %i.material-icons star
                 Plan
-          - if step == :summary || @account.medical_waiver_agreement # account.paid?
+          - if step == :summary || @account.children_enrolled?(@center.current_program)
             %li{ class: (step == :summary) ? "active" : ""}
               =link_to account_step_path(@account, :summary) do
                 %i.material-icons check_circle
                 Summary
-          - if step == :payment || @account.children.any? # account.chosen plan?
+          - if step == :payment || @account.signature
             %li{ class: (step == :payment) ? "active" : ""}
-              =link_to account_step_path(@account, :plan) do
+              =link_to account_step_path(@account, :payment) do
                 %i.material-icons payment
                 Payment
 

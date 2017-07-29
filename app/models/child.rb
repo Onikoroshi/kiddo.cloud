@@ -41,4 +41,8 @@ class Child < ApplicationRecord
     self.account.children.count > 1
   end
 
+  def enrolled?(program)
+    self.enrollments.where(plan: program.plans).present?
+  end
+
 end
