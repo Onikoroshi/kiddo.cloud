@@ -15,10 +15,17 @@ Rails.application.routes.draw do
     resources :children, controller: 'account/children'
     resource :subscription, controller: 'account/subscription'
 
+    resource :enrollment_type,
+      controller: 'account/enrollment_type',
+      only: :show,
+      path: "plan-options"
+
     resource :attendance_selection,
       only: [:edit, :update],
       controller: 'account/attendance_selections',
       path: "plans"
+
+    resources :drop_ins, controller: 'account/drop_ins'
 
     resource :dashboard, controller: 'account/dashboards'
   end

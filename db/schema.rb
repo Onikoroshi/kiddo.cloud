@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170729180318) do
+ActiveRecord::Schema.define(version: 20170729205245) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,13 +62,13 @@ ActiveRecord::Schema.define(version: 20170729180318) do
 
   create_table "attendance_selections", force: :cascade do |t|
     t.bigint "child_id"
-    t.boolean "monday", default: false
-    t.boolean "tuesday", default: false
-    t.boolean "wednesday", default: false
-    t.boolean "thursday", default: false
-    t.boolean "friday", default: false
-    t.boolean "saturday", default: false
-    t.boolean "sunday", default: false
+    t.boolean "monday"
+    t.boolean "tuesday"
+    t.boolean "wednesday"
+    t.boolean "thursday"
+    t.boolean "friday"
+    t.boolean "saturday"
+    t.boolean "sunday"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["child_id"], name: "index_attendance_selections_on_child_id"
@@ -119,6 +119,18 @@ ActiveRecord::Schema.define(version: 20170729180318) do
     t.bigint "child_id", null: false
     t.index ["child_id", "parent_id"], name: "index_children_parents_on_child_id_and_parent_id"
     t.index ["parent_id", "child_id"], name: "index_children_parents_on_parent_id_and_child_id"
+  end
+
+  create_table "drop_ins", force: :cascade do |t|
+    t.bigint "account_id"
+    t.bigint "child_id"
+    t.date "date"
+    t.text "notes"
+    t.float "price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_drop_ins_on_account_id"
+    t.index ["child_id"], name: "index_drop_ins_on_child_id"
   end
 
   create_table "emergency_contacts", force: :cascade do |t|
@@ -298,6 +310,8 @@ ActiveRecord::Schema.define(version: 20170729180318) do
   add_foreign_key "accounts", "users"
   add_foreign_key "attendance_selections", "children"
   add_foreign_key "care_items", "children"
+  add_foreign_key "drop_ins", "accounts"
+  add_foreign_key "drop_ins", "children"
   add_foreign_key "emergency_contacts", "accounts"
   add_foreign_key "enrollments", "children"
   add_foreign_key "enrollments", "plans"
