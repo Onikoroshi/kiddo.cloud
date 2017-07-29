@@ -1,7 +1,6 @@
 class Account::DropInsController < ApplicationController
   before_action :guard_center!
   before_action :fetch_account
-  before_action :fetch_drop_in, only: [:create, :edit, :update, :destroy]
 
   def step
     :plan
@@ -14,6 +13,14 @@ class Account::DropInsController < ApplicationController
   end
 
   def create
+    @account.assign_attributes(new_drop_in_params)
+
+    if @account.save
+      @account.record_step(:plan)
+      redirect_to account_step_path(@account, :summary), notice: "Great! You're all signed up. Let's review."
+    else
+      render :new
+    end
   end
 
   def edit
@@ -27,11 +34,6 @@ class Account::DropInsController < ApplicationController
 
   private
 
-    # Use callbacks to share common setup or constraints between actions.
-    def fetch_drop_in
-      @drop_in = DropIn.find(params[:id])
-    end
-
     def fetch_account
       @account = Account.find(params[:account_id])
     end
@@ -39,19 +41,13 @@ class Account::DropInsController < ApplicationController
     #  {"id"=>nil, "account_id"=>nil, "child_id"=>nil, "date"=>nil, "notes"=>nil, "price"=>nil, "created_at"=>nil, "updated_at"=>nil}
     # Only allow a trusted parameter "white list" through.
     # Only allow a trusted parameter "white list" through.
-    def account_selection_params
+    def new_drop_in_params
       permitted_attributes = [
         children_attributes: [
           :id,
           drop_ins_attributes: [
-            :id,
-            :monday,
-            :tuesday,
-            :wednesday,
-            :thursday,
-            :friday,
-            :saturday,
-            :sunday,
+            :date,
+            :account_id
           ],
         ]
       ]
