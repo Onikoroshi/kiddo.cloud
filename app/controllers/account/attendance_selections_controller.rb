@@ -13,7 +13,7 @@ class Account::AttendanceSelectionsController < ApplicationController
   def update
     if @account.update_attributes(account_selection_params)
       @account.record_step(:plan)
-      Enrollers::DkkEnroller.new(@account.children, @center.current_program).enroll
+      Enrollment::DkkEnroller.new(@account.children, @center.current_program).enroll
       redirect_to account_step_path(@account, :summary), notice: "Great! You're all signed up. Let's review."
     else
       render :new

@@ -1,4 +1,4 @@
-module Enrollers
+module Enrollment
   class DkkEnroller
 
     attr_reader :children, :plans
