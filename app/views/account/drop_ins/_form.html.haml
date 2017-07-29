@@ -1,6 +1,7 @@
 Drop in for #{@center.current_program.name}
 
-= form_for(@account, url: new_account_drop_in_path(@account), method: :post) do |f|
+/= form_for(@account, url: account_drop_ins_path(@account)) do |f|
+= form_for([@account, DropIn.new]) do |f|
   = render "application/form_errors", object: @account
   %table
 
@@ -12,8 +13,9 @@ Drop in for #{@center.current_program.name}
 
         = cf.fields_for :drop_ins, cf.object.drop_ins do |dif|
 
+          = dif.hidden_field :account_id, value: @account.id
           %td
-            = dif.text_field :date
+            = dif.text_field :date, id: "flatpickr-input"
             %br
             = dif.label :date
 
