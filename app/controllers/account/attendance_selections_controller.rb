@@ -20,10 +20,6 @@ class Account::AttendanceSelectionsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_account_child
-      @account_child = Child.find(params[:id])
-    end
 
     def fetch_account
       @account = Account.find(params[:account_id])

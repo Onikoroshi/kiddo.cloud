@@ -42,10 +42,7 @@ class Account < ApplicationRecord
 
   def create_default_child_attendance_selections
     children.each do |child|
-      unless child.attendance_selection.present?
-        default_selection = AttendanceSelection.new(child_id: child.id)
-        default_selection.save(validate: false)
-      end
+      AttendanceSelection.where(child_id: child.id).first_or_create!
     end
   end
 
