@@ -15,6 +15,7 @@ gem 'flatpickr_rails'
 gem 'pundit', '~> 1.1'
 gem "font-awesome-rails"
 gem "chronic"
+gem "money", github: "Shopify/money"
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

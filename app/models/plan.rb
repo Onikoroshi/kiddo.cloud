@@ -3,4 +3,6 @@ class Plan < ApplicationRecord
 
   has_many :enrollments
   has_many :children, through: :enrollments
+
+  money_column :price
 end
