@@ -3,111 +3,126 @@
 = form_for @account_form, method: :put, url: wizard_path do |f|
   = render "application/form_errors", object: @account_form
 
-  .row
-    = f.label :parent_first_name
-    = f.text_field :parent_first_name
-
+  .col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1
+    .row
+      .col-md-12
+        %h3 Parents
+      .col-sm-6
+        .form-group.label-floating
+          = f.label :parent_first_name, "First Name", class: "control-label"
+          = f.text_field :parent_first_name, class: "form-control"
+    
+      .col-sm-6
+        .form-group.label-floating
+          = f.label :parent_last_name, "Last Name", class: "control-label"
+          = f.text_field :parent_last_name, class: "form-control"
+    
+      .col-sm-12
+        .form-group.label-floating
+          = f.label :parent_phone, "Phone Number", class: "control-label"
+          = f.text_field :parent_phone, class: "form-control"
+      
+      .col-sm-12
+        .form-group.label-floating
+          = f.label :parent_street, "Street Address", class: "control-label"
+          = f.text_field :parent_street, class: "form-control"
+      
+      .col-sm-12
+        .form-group.label-floating
+          = f.label :parent_extended, "Street Address 2", class: "control-label"
+          = f.text_field :parent_extended, class: "form-control"
+      
+      .col-sm-5
+        .form-group.label-floating
+          = f.label :parent_locality, "City", class: "control-label"
+          = f.text_field :parent_locality, class: "form-control"
+      
+      .col-sm-4
+        .form-group.label-floating
+          = f.label :parent_region, "State", class: "control-label"
+          = f.text_field :parent_region, class: "form-control"
+      
+      .col-sm-3
+        .form-group.label-floating
+          = f.label :parent_postal_code, "Zip Code", class: "control-label"
+          = f.text_field :parent_postal_code, class: "form-control"
     %br
-
-    = f.label :parent_last_name
-    = f.text_field :parent_last_name
-
+    .row
+      .col-md-12
+        %h3 Guardian
+      .col-sm-6
+        .form-group.label-floating
+          = f.label :parent_guardian_first_name, "First Name", class: "control-label"
+          = f.text_field :parent_guardian_first_name, class: "form-control"
+      
+      .col-sm-6
+        .form-group.label-floating
+          = f.label :parent_guardian_last_name, "Last Name", class: "control-label"
+          = f.text_field :parent_guardian_last_name, class: "form-control"
+      
+      .col-sm-12
+        .form-group.label-floating
+          = f.label :parent_guardian_phone, "Phone Number", class: "control-label"
+          = f.text_field :parent_guardian_phone, class: "form-control"
+      
+      .col-sm-12
+        .form-group.label-floating
+          = f.label :parent_guardian_street, "Street Address", class: "control-label"
+          = f.text_field :parent_guardian_street, class: "form-control"
+      
+      .col-sm-12
+        .form-group.label-floating
+          = f.label :parent_guardian_extended, "Street Address 2", class: "control-label"
+          = f.text_field :parent_guardian_extended, class: "form-control"
+      
+      .col-sm-5
+        .form-group.label-floating
+          = f.label :parent_guardian_locality, "City", class: "control-label"
+          = f.text_field :parent_guardian_locality, class: "form-control"
+      
+      .col-sm-4
+        .form-group.label-floating
+          = f.label :parent_guardian_region, "State", class: "control-label"
+          = f.text_field :parent_guardian_region, class: "form-control"
+      
+      .col-sm-3
+        .form-group.label-floating
+          = f.label :parent_guardian_postal_code, "Zip Code", class: "control-label"
+          = f.text_field :parent_guardian_postal_code, class: "form-control"
+      
     %br
+    .row
+      .col-md-12
+        %h3 Emergency Contact
+      .col-sm-6
+        .form-group.label-floating
+          = f.label :emergency_contact_first_name, "First Name", class: "control-label"
+          = f.text_field :emergency_contact_first_name, class: "form-control"
+      
+      .col-sm-6
+        .form-group.label-floating
+          = f.label :emergency_contact_last_name, "Last Name", class: "control-label"
+          = f.text_field :emergency_contact_last_name, class: "form-control"
+      
+      .col-sm-12
+        .form-group.label-floating
+          = f.label :emergency_contact_phone, "Phone Number", class: "control-label"
+          = f.text_field :emergency_contact_phone, class: "form-control"
+      
+      .col-sm-12
+        .form-group.label-floating
+          = f.check_box :waiver_agreement, checked: @account.waiver_agreement
+          = f.label :waiver_agreement do
+            I have read and agree with #{link_to 'all waivers and agreements', root_path}
+      .col-sm-12
+        .form-group.label-floating
+          = f.check_box :mail_agreements, checked: @account.last_registration_step_completed == "parents" ? @account.mail_agreements : true
+          = f.label :mail_agreements do
+            Have all waivers and agreements mailed to me
 
-    = f.label :parent_phone
-    = f.text_field :parent_phone
+      .col-sm-12
+        = f.submit 'Next Step', class: "btn btn-block btn-info"
 
-    %br
-
-    = f.label :parent_street
-    = f.text_field :parent_street
-
-    %br
-
-    = f.label :parent_extended
-    = f.text_field :parent_extended
-
-    %br
-
-    = f.label :parent_locality
-    = f.text_field :parent_locality
-
-    %br
-
-    = f.label :parent_region
-    = f.text_field :parent_region
-
-    %br
-
-    = f.label :parent_postal_code
-    = f.text_field :parent_postal_code
-
-    %br
-
-  .row
-    = f.label :parent_guardian_first_name
-    = f.text_field :parent_guardian_first_name
-
-    %br
-
-    = f.label :parent_guardian_last_name
-    = f.text_field :parent_guardian_last_name
-
-    %br
-
-    = f.label :parent_guardian_phone
-    = f.text_field :parent_guardian_phone
-
-    %br
-
-    = f.label :parent_guardian_street
-    = f.text_field :parent_guardian_street
-
-    %br
-
-    = f.label :parent_guardian_extended
-    = f.text_field :parent_guardian_extended
-
-    %br
-
-    = f.label :parent_guardian_locality
-    = f.text_field :parent_guardian_locality
-
-    %br
-
-    = f.label :parent_guardian_region
-    = f.text_field :parent_guardian_region
-
-    %br
-
-    = f.label :parent_guardian_postal_code
-    = f.text_field :parent_guardian_postal_code
-
-    %br
-
-    = f.label :emergency_contact_first_name
-    = f.text_field :emergency_contact_first_name
-
-    %br
-
-    = f.label :emergency_contact_last_name
-    = f.text_field :emergency_contact_last_name
-
-    %br
-
-    = f.label :emergency_contact_phone
-    = f.text_field :emergency_contact_phone
-
-    %br
-
-    = f.check_box :waiver_agreement, checked: @account.waiver_agreement
-    = f.label :waiver_agreement do
-      I have read and agree with #{link_to 'all waivers and agreements', root_path}
-    %br
-
-    = f.check_box :mail_agreements, checked: @account.last_registration_step_completed == "parents" ? @account.mail_agreements : true
-    = f.label :mail_agreements do
-      Have all waivers and agreements mailed to me
 
     / .row
     /   .col-md-6
@@ -157,7 +172,6 @@
     /       = label_tag :last_name, "Phone", class: "settingsTitle"
     /       = text_field_tag "account_form[contacts][0][phone]", nil, required: true, class: "formField"
 
-    .row
-      = f.submit 'Next Step', class: "btn"
+    
 
 
