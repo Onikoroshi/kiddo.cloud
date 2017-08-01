@@ -23,4 +23,6 @@
 //= require flatpickr/l10n/es
 //= require dates
 //= require attendance_display
+//= require cocoon
+//= require drop_ins
 //= require_tree .

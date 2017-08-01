@@ -1,0 +1,8 @@
+.nested-fields
+  .field
+    = f.hidden_field :account_id, value: @account.id
+    %td
+      = f.text_field :date, id: "flatpickr-input"
+      = f.label :date
+
+      = link_to_remove_association "Remove Drop IN", f

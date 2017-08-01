@@ -25,7 +25,7 @@ Rails.application.routes.draw do
       controller: 'account/attendance_selections',
       path: "plans"
 
-    resources :drop_ins, controller: 'account/drop_ins'
+    resource :drop_ins, controller: 'account/drop_ins'
 
     resource :dashboard, controller: 'account/dashboards'
   end

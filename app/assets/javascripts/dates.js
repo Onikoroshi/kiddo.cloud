@@ -6,6 +6,7 @@ document.addEventListener("turbolinks:load", function() {
   });
 
   flatpickr('#flatpickr-input', {
-    dateFormat: "m-d-Y",
+    dateFormat: "Y-m-d",
   });
+
 });

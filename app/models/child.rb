@@ -4,7 +4,7 @@ class Child < ApplicationRecord
   has_many :parents, through: :children_parents
   has_one :attendance_selection, dependent: :destroy
 
-  has_many :drop_ins
+  has_many :drop_ins, dependent: :destroy
 
   has_many :child_locations
   has_many :locations, through: :child_locations
@@ -24,7 +24,7 @@ class Child < ApplicationRecord
 
   accepts_nested_attributes_for :care_items, allow_destroy: true
   accepts_nested_attributes_for :attendance_selection, allow_destroy: true
-  accepts_nested_attributes_for :drop_ins, allow_destroy: true
+  accepts_nested_attributes_for :drop_ins, allow_destroy: true, reject_if: :all_blank
 
   def full_name
     "#{first_name} #{last_name}"
