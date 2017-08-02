@@ -23,7 +23,7 @@ class Account::DropInsController < ApplicationController
   end
 
   def edit
-    #pre_load_drop_ins
+    pre_load_drop_ins
   end
 
   def update
@@ -56,7 +56,7 @@ class Account::DropInsController < ApplicationController
 
     def pre_load_drop_ins
       @account.children.each do |child|
-        child.drop_ins.build if child.drop_ins.count == 0
+        child.drop_ins.build unless child.drop_ins.any?
       end
     end
 

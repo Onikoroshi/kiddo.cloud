@@ -1,7 +1,7 @@
 document.addEventListener("turbolinks:load", function() {
   Turbolinks.clearCache()
   flatpickr('#flatpickr-dob-input', {
-    dateFormat: "m-d-Y",
+    dateFormat: "Y-m-d",
     maxDate: "1-1-2005"
   });
 

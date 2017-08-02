@@ -15,9 +15,6 @@ Drop in for #{@center.current_program.name}
         = cf.fields_for :drop_ins, cf.object.drop_ins.build do |drop_in|
           = drop_in.object.id
           = render "drop_in_fields", f: drop_in
-          %td.links
-            = link_to_add_association 'Add Drop In', f, :drop_ins
-
 
 
   = link_to "Cancel", account_step_path(@account, :plan), class: "btn"
