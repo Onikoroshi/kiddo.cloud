@@ -39,5 +39,5 @@ We use Heroku for deployments. Assuming you already have a login below you will 
 
 ## Routine Deployments
 
-* heroku container:push web
-* heroku run rake db:migrate
+* `heroku container:push web`
+* `heroku run rake db:migrate`
