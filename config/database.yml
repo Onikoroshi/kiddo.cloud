@@ -1,12 +1,15 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: db
+  username: postgres
+  password:
+  pool: 5
+
 development:
-  adapter: postgresql
-  encoding: unicode
+  <<: *default
   database: kidsclub_development
-  host: localhost
-  port: 5432
+
 test:
-  adapter: postgresql
-  encoding: unicode
+  <<: *default
   database: kidsclub_test
-  host: localhost
-  port: 5432
