@@ -13,3 +13,8 @@ development:
 test:
   <<: *default
   database: kidsclub_test
+
+#Because: https://devcenter.heroku.com/articles/rails-database-connection-behavior#rails-4-1-and-beyond
+production:
+  encoding: utf8
+  pool: 15
