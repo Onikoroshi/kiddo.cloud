@@ -14,6 +14,7 @@ class Account::DropInsController < ApplicationController
     @account.assign_attributes(new_drop_in_params)
 
     if @account.save
+      @account.destroy_attendance_selections if !@account.signup_complete? # plan or drop ins but not both
       @account.record_step(:plan)
       redirect_to account_step_path(@account, :summary), notice: "Great! You're all signed up. Let's review."
     else

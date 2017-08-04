@@ -20,4 +20,8 @@ class DropIn < ApplicationRecord
     return false unless program.present?
     ((program.starts_at)..(program.ends_at)).include?(self.date)
   end
+
+  def to_s
+    "#{child.full_name} is scheduled to be dropped in on #{date.stamp("March 1, 2029")}."
+  end
 end

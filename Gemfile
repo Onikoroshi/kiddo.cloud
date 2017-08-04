@@ -17,6 +17,7 @@ gem "font-awesome-rails"
 gem "chronic"
 gem "money", github: "Shopify/money"
 gem "cocoon"
+gem "stamp"
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

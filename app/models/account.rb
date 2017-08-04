@@ -48,6 +48,10 @@ class Account < ApplicationRecord
     end
   end
 
+  def destroy_attendance_selections
+    children.map { |c| c.attendance_selection.destroy }
+  end
+
   def summarize_enrollments(program)
     result = Array.new
     program.plans.each do |p|
