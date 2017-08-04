@@ -17,7 +17,7 @@ class Account::SubscriptionController < ApplicationController
 
   # POST /account/children
   def create
-    result = SubscriptionService.new(@account).subscribe
+    result = StripeSubscriptionService.new(@account).subscribe
 
     if @account_child.save
       @account.record_step(:plan)

@@ -8,7 +8,6 @@ class Account::DropInsController < ApplicationController
 
   def new
     redirect_to edit_account_drop_ins_path(@account) and return if children_have_dropins?
-    #pre_load_drop_ins
   end
 
   def create
@@ -69,7 +68,8 @@ class Account::DropInsController < ApplicationController
           :id,
           drop_ins_attributes: [
             :date,
-            :account_id
+            :account_id,
+            :program_id
           ],
         ]
       ]
@@ -84,6 +84,7 @@ class Account::DropInsController < ApplicationController
             :id,
             :date,
             :account_id,
+            :program_id,
             :_destroy
           ],
         ]
