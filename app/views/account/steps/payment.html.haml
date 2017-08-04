@@ -1,11 +1,7 @@
 = render partial: "step_navigation"
 
-= form_tag account_subscription_path, id: "payment-form" do |form|
-  .form-row
-    %label{:for => "card-element"}
-      Credit or debit card
-    #card-element.form-control
-      / a Stripe Element will be inserted here.
-    / Used to display Element errors
-    #card-errors{:role => "alert"}
-  = submit_tag "Submit Payment And Complete Registration", class: "btn btn-lg"
+- if @account.drop_ins.any?
+  = render "drop_in_payment"
+- else
+  = render "subscription_payment"
+
