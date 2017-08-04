@@ -43,7 +43,8 @@ Rails.application.routes.draw do
   resources :time_entries, only: :create
   get "material" => "static#material", as: :material
 
-  root to: "static#dkk", constraints: { subdomain: "daviskidsklub" }
-  root to: "static#bethelkids", constraints: { subdomain: "bethelkids" }
+  root to: redirect("https://iank.us/dkk/")
+  #root to: "static#dkk", constraints: { subdomain: "daviskidsklub" }
+  #root to: "static#bethelkids", constraints: { subdomain: "bethelkids" }
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
