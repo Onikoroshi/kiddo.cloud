@@ -7,7 +7,7 @@ module ChildEnrollment
       @program = program
     end
 
-    def execute
+    def calculate
       assign_prices
       base_price
     end

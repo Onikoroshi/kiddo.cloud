@@ -49,6 +49,7 @@ module ChildEnrollment
     private
 
     # Sibling Club is designed for students 1-3 grade waiting for siblings 4-6 grade
+    # any day but wednesday
     def qualifies_for_sibling_club?(child)
       grade = child.last.grade_entering
     end

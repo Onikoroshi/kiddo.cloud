@@ -33,9 +33,9 @@ class PlanSummarizer
 
   def total!
     if account.drop_ins.any?
-      ChildEnrollment::DropInPriceCalculator.new(account.children, account.center.current_program).execute
+      ChildEnrollment::DropInPriceCalculator.new(account.children, account.center.current_program).calculate
     else
-
+      ChildEnrollment::EnrollmentPriceCalculator.new(account.children, account.center.current_program).calculate
     end
   end
 
