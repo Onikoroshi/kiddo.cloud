@@ -57,7 +57,11 @@
   %h4
     = @center.current_program.name
 
-  = PlanSummarizer.new(@account).summarize.html_safe
+  - summarizer = PlanSummarizer.new(@account)
+  = summarizer.summarize.html_safe
+
+  %h5
+    Total: #{summarizer.total!}
 
 #medical
   %h5 Medical #{link_to "Edit", account_step_path(@account, :medical), class: "btn btn-xs"}
