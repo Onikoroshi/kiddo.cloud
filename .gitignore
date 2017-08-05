@@ -24,4 +24,3 @@
 config/secrets.yml.key
 
 *.orig
-.idea/
