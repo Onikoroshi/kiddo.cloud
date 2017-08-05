@@ -17,11 +17,12 @@ class Account::SubscriptionController < ApplicationController
 
   # POST /account/children
   def create
-    result = StripeSubscriptionService.new(@account).subscribe
+    subscription = StripeSubscriptionService.new(@account, params[:stripeToken]).subscribe
 
-    if @account_child.save
-      @account.record_step(:plan)
-      redirect_to account_children_path(@account), notice: 'Child was successfully created.'
+    if subscription.present?
+      @account.record_step(:payment)
+      @account.update_attributes(signup_complete: true)
+      redirect_to account_dashboard_path(@account), notice: 'Congratuations!'
     else
       render :new
     end
@@ -30,7 +31,7 @@ class Account::SubscriptionController < ApplicationController
   # PATCH/PUT /account/children/1
   def update
     if @account_child.update(account_child_params)
-      redirect_to account_children_path(@account), notice: 'Child was successfully updated.'
+      redirect_to account_dashboard_path(@account), notice: 'Congratuations!'
     else
 
       render :edit
