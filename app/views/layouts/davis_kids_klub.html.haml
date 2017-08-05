@@ -11,42 +11,42 @@
 
 
 
-%body.index-page
-  %nav#sectionsNav.navbar.navbar-default.navbar-transparent.navbar-fixed-top.navbar-color-on-scroll{"color-on-scroll" => " "}
-    .container
-      / Brand and toggle get grouped for better mobile display
-      .navbar-header
-        %button.navbar-toggle{"data-toggle" => "collapse", :type => "button"}
-          %span.sr-only Toggle navigation
-          %span.icon-bar
-          %span.icon-bar
-          %span.icon-bar
-
-        %a{:href => "/"}
-
-        =link_to root_path do
-
-          =image_tag ("logo.png")
-
-      - if user_signed_in?
-        .collapse.navbar-collapse
-          %ul.nav.navbar-nav.navbar-right
-            %li.dropdown
-              %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
-                %i.material-icons account_circle
-                Your Account
-                %b.caret
-              %ul.dropdown-menu.dropdown-with-icons
-                %li
-                  = link_to destroy_user_session_path do
-                    %i.material-icons eject
-                    Log Out
-
-
-  .page-header.header-filter.clear-filter
-
-  .main.main-raised
-    .section.section-basic
+  %body.index-page
+    %nav#sectionsNav.navbar.navbar-default.navbar-transparent.navbar-fixed-top.navbar-color-on-scroll{"color-on-scroll" => " "}
       .container
-        = render "application/flash_messages"
-        = yield
+        / Brand and toggle get grouped for better mobile display
+        .navbar-header
+          %button.navbar-toggle{"data-toggle" => "collapse", :type => "button"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+
+          %a{:href => "/"}
+
+          =link_to root_path do
+
+            =image_tag ("logo.png")
+
+        - if user_signed_in?
+          .collapse.navbar-collapse
+            %ul.nav.navbar-nav.navbar-right
+              %li.dropdown
+                %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+                  %i.material-icons account_circle
+                  Your Account
+                  %b.caret
+                %ul.dropdown-menu.dropdown-with-icons
+                  %li
+                    = link_to destroy_user_session_path do
+                      %i.material-icons eject
+                      Log Out
+
+
+    .page-header.header-filter.clear-filter
+
+    .main.main-raised
+      .section.section-basic
+        .container
+          = render "application/flash_messages"
+          = yield
