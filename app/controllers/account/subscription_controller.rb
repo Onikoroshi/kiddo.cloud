@@ -21,7 +21,8 @@ class Account::SubscriptionController < ApplicationController
 
     if subscription.present?
       @account.record_step(:payment)
-      @account.update_attributes(signup_complete: true)
+      @account.finalize_signup
+      @account.mark_paid!
       redirect_to account_dashboard_path(@account), notice: 'Congratuations!'
     else
       render :new

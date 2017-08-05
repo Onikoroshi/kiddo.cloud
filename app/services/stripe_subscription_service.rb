@@ -2,21 +2,27 @@ class StripeSubscriptionService
 
   attr_writer :customer_service
 
-  attr_reader :account, :stripe_token
+  attr_reader :account, :stripe_token, :program
   def initialize(account, stripe_token)
     @account = account
     @stripe_token = stripe_token
+    @program = account.center.current_program
   end
 
   def subscribe
-    subscribe_to_enrollment_plan(customer)
+    subscribe_to_custom_plan(customer)
   end
 
-  def subscribe_to_enrollment_plan(stripe_customer)
+  # Unless we create multiple subscriptions per customer,
+  # we can't subscribe to preset plans like "Davis Kids Klub Fall 2017 Daily drop-in per day (M,T,TH,F)".
+  #
+  # We have multiple children, so we have to generate a custom amount / plan per account
+  # and create a new plan for the family. We then subscribe the account to the new plan
+  def subscribe_to_custom_plan(stripe_customer)
 
     plan = Stripe::Plan.create(
-      :name => "dkk_program_plan",
-      :id => "#{stripe_customer.id}_#{account.center.current_program.short_code}",
+      :name => "#{program.name} custom customer plan",
+      :id => "#{stripe_customer.id}_#{program.short_code}",
       :interval => "month",
       :currency => "usd",
       :amount => price.to_i * 100

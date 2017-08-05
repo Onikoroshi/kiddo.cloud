@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(version: 20170729205245) do
     t.boolean "friday", default: false
     t.boolean "saturday", default: false
     t.boolean "sunday", default: false
+    t.boolean "paid", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["child_id"], name: "index_enrollments_on_child_id"

@@ -10,6 +10,7 @@ class CreateEnrollments < ActiveRecord::Migration[5.1]
       t.boolean :friday, default: false
       t.boolean :saturday, default: false
       t.boolean :sunday, default: false
+      t.boolean :paid, default: false
       t.timestamps
     end
   end

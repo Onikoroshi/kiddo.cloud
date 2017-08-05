@@ -32,11 +32,15 @@ class PlanSummarizer
   end
 
   def total!
+    total_string = ""
     if account.drop_ins.any?
-      ChildEnrollment::DropInPriceCalculator.new(account.children, account.center.current_program).calculate
+      amount = ChildEnrollment::DropInPriceCalculator.new(account.children, account.center.current_program).calculate
+      total_string += "#{amount} one-time payment"
     else
-      ChildEnrollment::EnrollmentPriceCalculator.new(account.children, account.center.current_program).calculate
+      amount = ChildEnrollment::EnrollmentPriceCalculator.new(account.children, account.center.current_program).calculate
+      total_string += "#{amount} per month"
     end
+    total_string
   end
 
 end

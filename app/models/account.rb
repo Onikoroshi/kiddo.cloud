@@ -67,6 +67,14 @@ class Account < ApplicationRecord
     children.includes(:enrollments).collect { |c| c.enrolled?(program) }.all?
   end
 
+  def mark_paid!
+    self.children.each do |c|
+      c.enrollments.each do |enrollment|
+        enrollment.update_attributes(paid: true)
+      end
+    end
+  end
+
 end
 
 

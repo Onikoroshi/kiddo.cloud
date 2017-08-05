@@ -45,6 +45,23 @@ class MaintenanceTools::ProductionSeeder
     Plan.where(program: program, short_code: "drop_1_wed", display_name: "Daily drop-in per day (Wednesday)", days_per_week: 0, price: 35.00, plan_type: "drop-in").first_or_create!
   end
 
+  # def seed_stripe
+  #   program.plans.each do |p|
+  #     begin
+  #       Stripe::Plan.retrieve("dkk_#{p.short_code}")
+  #     rescue => e
+  #       plan = Stripe::Plan.create(
+  #         :name => "#{program.name} #{p.display_name}",
+  #         :id => "dkk_#{p.short_code}",
+  #         :interval => "month",
+  #         :currency => "usd",
+  #         :amount => p.price.to_i * 100,
+  #       )
+  #       puts "Created Stripe Plan: #{plan.name}"
+  #     end
+  #   end
+  # end
+
   def backout
     Program.first.destroy
     Plan.destroy_all
