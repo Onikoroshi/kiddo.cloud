@@ -1,20 +1,12 @@
-default: &default
+development:
   adapter: postgresql
   encoding: unicode
-  host: db
-  username: postgres
-  password:
-  pool: 5
-
-development:
-  <<: *default
   database: kidsclub_development
-
+  host: localhost
+  port: 5432
 test:
-  <<: *default
+  adapter: postgresql
+  encoding: unicode
   database: kidsclub_test
-
-#Because: https://devcenter.heroku.com/articles/rails-database-connection-behavior#rails-4-1-and-beyond
-production:
-  encoding: utf8
-  pool: 15
+  host: localhost
+  port: 5432
