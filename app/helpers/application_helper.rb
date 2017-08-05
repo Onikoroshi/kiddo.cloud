@@ -14,3 +14,18 @@ module ApplicationHelper
   end
 
 end
+
+# monkey patch shopify/money class to properly display monetary amounts
+class Money
+  def to_s
+    pre = value < 0 ? "-$" : "$"
+
+    index = -7
+    result = sprintf("%.2f", value.to_f.abs)
+    while (result.length + index) >= 0 do
+      result.insert(index, ",")
+      index -= 4
+    end
+    pre + result
+  end
+end

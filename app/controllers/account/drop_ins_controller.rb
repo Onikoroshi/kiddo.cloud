@@ -8,13 +8,13 @@ class Account::DropInsController < ApplicationController
 
   def new
     redirect_to edit_account_drop_ins_path(@account) and return if children_have_dropins?
-    #pre_load_drop_ins
   end
 
   def create
     @account.assign_attributes(new_drop_in_params)
 
     if @account.save
+      @account.destroy_attendance_selections if !@account.signup_complete? # plan or drop ins but not both
       @account.record_step(:plan)
       redirect_to account_step_path(@account, :summary), notice: "Great! You're all signed up. Let's review."
     else
@@ -69,7 +69,8 @@ class Account::DropInsController < ApplicationController
           :id,
           drop_ins_attributes: [
             :date,
-            :account_id
+            :account_id,
+            :program_id
           ],
         ]
       ]
@@ -84,6 +85,7 @@ class Account::DropInsController < ApplicationController
             :id,
             :date,
             :account_id,
+            :program_id,
             :_destroy
           ],
         ]

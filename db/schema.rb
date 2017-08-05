@@ -123,6 +123,7 @@ ActiveRecord::Schema.define(version: 20170729205245) do
 
   create_table "drop_ins", force: :cascade do |t|
     t.bigint "account_id"
+    t.bigint "program_id"
     t.bigint "child_id"
     t.date "date"
     t.text "notes"
@@ -131,6 +132,7 @@ ActiveRecord::Schema.define(version: 20170729205245) do
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_drop_ins_on_account_id"
     t.index ["child_id"], name: "index_drop_ins_on_child_id"
+    t.index ["program_id"], name: "index_drop_ins_on_program_id"
   end
 
   create_table "emergency_contacts", force: :cascade do |t|
@@ -312,6 +314,7 @@ ActiveRecord::Schema.define(version: 20170729205245) do
   add_foreign_key "care_items", "children"
   add_foreign_key "drop_ins", "accounts"
   add_foreign_key "drop_ins", "children"
+  add_foreign_key "drop_ins", "programs"
   add_foreign_key "emergency_contacts", "accounts"
   add_foreign_key "enrollments", "children"
   add_foreign_key "enrollments", "plans"

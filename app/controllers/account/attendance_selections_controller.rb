@@ -14,6 +14,7 @@ class Account::AttendanceSelectionsController < ApplicationController
     if @account.update_attributes(account_selection_params)
       @account.record_step(:plan)
       ChildEnrollment::DkkEnroller.new(@account.children, @center.current_program).enroll
+      @account.drop_ins.destroy_all if !@account.signup_complete? # plan or drop ins but not both
       redirect_to account_step_path(@account, :summary), notice: "Great! You're all signed up. Let's review."
     else
       render :new
