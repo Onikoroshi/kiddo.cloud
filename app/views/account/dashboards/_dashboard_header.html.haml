@@ -1,0 +1,4 @@
+.card.card-nav-tabs.card-plain
+  .header.header-success
+    / colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger"
+    #{@account.parents.where(primary: true).first.full_name}

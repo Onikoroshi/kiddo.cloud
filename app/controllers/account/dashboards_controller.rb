@@ -1,4 +1,5 @@
 class Account::DashboardsController < ApplicationController
+  layout "dkk_customer_dashboard"
   before_action :guard_center!
   before_action :set_account
   before_action :guard_signup_complete

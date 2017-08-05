@@ -1,4 +1,5 @@
 class Users::RegistrationsController < Devise::RegistrationsController
+  layout :evaluate_layout
   prepend_before_action :set_center
 
   def set_center
@@ -29,7 +30,34 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  def edit
+    @account = current_user.account
+    super
+  end
+
+  def update
+    @account = current_user.account
+    super
+  end
+
   def after_sign_up_path_for(resource)
     account_step_path(resource.parent.account, :parents)
   end
+
+  protected
+
+    def after_update_path_for(resource)
+      flash[:notice] = "Account succesfully updated"
+      account_dashboard_path(current_user.account)
+    end
+
+  private
+
+    def evaluate_layout
+      layout_name = "application"
+      if ["edit", "update"].include?(action_name)
+        layout_name = "dkk_customer_dashboard"
+      end
+      layout_name
+    end
 end

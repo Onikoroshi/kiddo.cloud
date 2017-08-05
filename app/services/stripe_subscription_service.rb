@@ -21,7 +21,7 @@ class StripeSubscriptionService
   def subscribe_to_custom_plan(stripe_customer)
 
     plan = Stripe::Plan.create(
-      :name => "#{program.name} custom customer plan",
+      :name => "#{program.name} custom plan",
       :id => "#{stripe_customer.id}_#{program.short_code}",
       :interval => "month",
       :currency => "usd",
@@ -30,7 +30,7 @@ class StripeSubscriptionService
 
     customer.subscriptions.create(
       source: stripe_token,
-      plan: plan
+      plan: plan,
     )
 
   end

@@ -27,7 +27,9 @@ Rails.application.routes.draw do
 
     resource :drop_ins, controller: 'account/drop_ins'
 
-    resource :dashboard, controller: 'account/dashboards'
+    resource :dashboard, controller: 'account/dashboards' do
+      resource :drop_ins
+    end
   end
 
   namespace :children do
