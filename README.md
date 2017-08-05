@@ -41,3 +41,4 @@ We use Heroku for deployments. Assuming you already have a login below you will 
 
 * `heroku container:push web`
 * `heroku run rake db:migrate`
+* `heroku run rake assets:precompile`
