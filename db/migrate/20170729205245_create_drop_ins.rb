@@ -7,6 +7,7 @@ class CreateDropIns < ActiveRecord::Migration[5.1]
       t.date :date
       t.text :notes
       t.float :price
+      t.boolean :paid, default: :false
 
       t.timestamps
     end

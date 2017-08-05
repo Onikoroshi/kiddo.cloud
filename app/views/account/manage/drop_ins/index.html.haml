@@ -1,0 +1,21 @@
+%h3
+  My Drop Ins
+
+.row
+  .pull-right
+    = link_to "+ Add Drop In", new_account_dashboard_drop_ins_path(@account), class: "btn btn-success"
+
+
+.row
+  .table-responsive
+    %table.table
+      %thead
+        %tr
+          %th Scheduled Drop In
+          %th Actions
+      %tbody
+        - @account.drop_ins.where(paid: true).order(date: :asc).each_with_index do |d, index|
+          %tr
+            %td=d.to_s
+            %td.td-actions.text-right
+              =link_to "X", account_dashboard_drop_ins_path(@account, drop_in_id: d.id), method: :delete, data: {confirm: "Are you sure?" }, class: "btn btn-info"

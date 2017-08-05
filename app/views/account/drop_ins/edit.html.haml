@@ -10,7 +10,6 @@ Drop in for #{@center.current_program.name}
 
       %tr
         %td= cf.object.full_name
-        %td= cf.object.drop_ins.count
 
         = cf.fields_for :drop_ins, cf.object.drop_ins do |dif|
 

@@ -1,8 +1,6 @@
-= render partial: "account/steps/step_navigation"
-
 Drop in for #{@center.current_program.name}
 
-= form_for(@account, url: "/accounts/#{@account.id}/drop_ins", method: :post) do |f|
+= form_for(@account, url: "/accounts/#{@account.id}/dashboard/drop_ins", method: :post) do |f|
   = render "application/form_errors", object: @account
   %table
 
@@ -12,9 +10,8 @@ Drop in for #{@center.current_program.name}
         %td= cf.object.full_name
 
         = cf.fields_for :drop_ins, cf.object.drop_ins.build do |drop_in|
-          = drop_in.object.id
           = render "drop_in_fields", f: drop_in
 
 
-  = link_to "Cancel", account_step_path(@account, :plan), class: "btn"
+  = link_to "Cancel", account_dashboard_path(@account), class: "btn"
   = f.submit "Submit", class: "btn"
