@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 20170729205245) do
     t.date "date"
     t.text "notes"
     t.float "price"
+    t.boolean "paid", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_drop_ins_on_account_id"

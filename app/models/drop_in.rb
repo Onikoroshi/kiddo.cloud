@@ -13,12 +13,13 @@ class DropIn < ApplicationRecord
   end
 
   def validate_date_within_range
-    errors.add(:date, "is out of range") unless date_in_range?
+    return if date.blank?
+    errors.add(:date, "must be from today till the end of #{program.name}") unless date_in_range?
   end
 
   def date_in_range?
     return false unless program.present?
-    ((program.starts_at)..(program.ends_at)).include?(self.date)
+    ((Time.zone.today)..(program.ends_at)).include?(self.date)
   end
 
   def to_s

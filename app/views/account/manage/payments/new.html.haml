@@ -1,1 +1,14 @@
 %h2 Drop In Payment
+
+.well
+  Your total: #{PlanSummarizer.new(@account).total!}
+
+= form_tag account_dashboard_payments_path(@account), id: "payment-form" do |form|
+  .form-row
+    %label{:for => "card-element"}
+      Credit or debit card
+    #card-element.form-control
+      / a Stripe Element will be inserted here.
+    / Used to display Element errors
+    #card-errors{:role => "alert"}
+  = submit_tag "Purchase", class: "btn btn-lg btn-success"

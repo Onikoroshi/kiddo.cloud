@@ -13,8 +13,7 @@ class Account::Manage::DropInsController < ApplicationController
     @account.assign_attributes(new_drop_in_params)
 
     if @account.save
-      @account.destroy_attendance_selections if !@account.signup_complete? # plan or drop ins but not both
-      redirect_to my_dropins_account_dashboard_path,  notice: "Great! Now let's pay."
+      redirect_to new_account_dashboard_payment_path(@account),  notice: "Great! Now let's pay."
     else
       render :new
     end
