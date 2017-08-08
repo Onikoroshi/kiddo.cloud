@@ -5,6 +5,8 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+ruby "2.4.1"
+
 gem 'devise', '~> 4.2'
 gem 'hamlit-rails', '~> 0.2.0'
 gem 'wicked', '~> 1.3', '>= 1.3.1'
@@ -53,6 +55,9 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
 end
+
+# Heroku
+gem 'rails_12factor', group: [:production, :beta]
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
