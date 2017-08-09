@@ -1,35 +1,29 @@
-- @account.children.each do |c|
-  .row
+.row
+  - @account.children.each do |c|
     .col-md-4
       .card
         .card-content
-          %h6.category.text-danger
-            %i.material-icons trending_up
-            Trending
           %h4.card-title
             = c.full_name
           .footer
             .author
-              %a{:href => "#pablo"}
-                %img.avatar.img-raised{:alt => "...", :src => "assets/img/faces/christian.jpg"}/
-                %span Lord Alex
+              Born: 
+              = c.birthdate
             .stats
-              %i.material-icons favorite
+              %i.material-icons edit
               = link_to 'Edit', edit_account_dashboard_child_path(@account, c)
-              %i.material-icons chat_bubble
+              %i.material-icons delete
               = link_to 'Remove', account_dashboard_child_path(@account, c), method: :delete, data: { confirm: 'Are you sure?' }
 
-.row
+
   .col-md-4
     .card
-      .card-content.content-success
-        %h5.category-social
-          %i.fa.fa-newspaper-o
-          TechCrunch
-        %h4.card-title
-          %a{:href => "#pablo"} "Focus on Your Employees"
-        %p.card-description
-          Children are the hands by which we take hold of heaven
+      .card-content
         .footer.text-center
-          = link_to "Add Another Child", new_account_dashboard_child_path(@account), class: "btn btn-white btn-round"
+          = link_to "Add Another Child", new_account_dashboard_child_path(@account), class: "btn btn-danger"
+          %br/
+          %br/
+          %p.card-description
+            &quot;Children are the hands by which we take hold of heaven&quot;
+          
 %br/

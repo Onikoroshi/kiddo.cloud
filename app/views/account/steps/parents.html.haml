@@ -8,7 +8,7 @@
       .col-xs-12
         Welcome to Davis Kids Klub! Please fill out the information below.
       .col-xs-12
-        %h3 Parents
+        %h3.parent-title Parents
       .col-sm-6
         .form-group.label-floating
           = f.label :parent_first_name, "First Name", class: "control-label"
@@ -51,7 +51,7 @@
     %br
     .row
       .col-md-12
-        %h3 Guardian
+        %h3.parent-title Guardian
       .col-sm-6
         .form-group.label-floating
           = f.label :parent_guardian_first_name, "First Name", class: "control-label"
@@ -95,7 +95,7 @@
     %br
     .row
       .col-md-12
-        %h3 Emergency Contact
+        %h3.parent-title Emergency Contact
       .col-sm-6
         .form-group.label-floating
           = f.label :emergency_contact_first_name, "First Name", class: "control-label"
@@ -113,12 +113,12 @@
       
       .col-sm-12
         .form-group.label-floating
-          = f.check_box :waiver_agreement, checked: @account.waiver_agreement
+          = f.check_box :waiver_agreement, checked: @account.waiver_agreement, class: "pull-left checkbox-padding"
           = f.label :waiver_agreement do
             I have read and agree with #{link_to 'all waivers and agreements', root_path}
       .col-sm-12
         .form-group.label-floating
-          = f.check_box :mail_agreements, checked: @account.last_registration_step_completed == "parents" ? @account.mail_agreements : true
+          = f.check_box :mail_agreements, checked: @account.last_registration_step_completed == "parents" ? @account.mail_agreements : true, class: "pull-left checkbox-padding"
           = f.label :mail_agreements do
             Have all waivers and agreements mailed to me
 

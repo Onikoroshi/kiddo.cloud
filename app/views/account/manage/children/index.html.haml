@@ -12,9 +12,8 @@
             = c.full_name
           .footer
             .author
-              %a{:href => "#pablo"}
-                %img.avatar.img-raised{:alt => "...", :src => "assets/img/faces/christian.jpg"}/
-                %span Lord Alex
+              Born: 
+              = c.birthdate
             .stats
               %i.material-icons favorite
               = link_to 'Edit', edit_account_child_path(@account, c)

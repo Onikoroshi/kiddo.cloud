@@ -1,17 +1,20 @@
 = render "account/steps/step_navigation"
 
-
-- if @account.drop_ins.any?
-  .well
-    You previously chose to register as a drop-in. If you choose a monthly plan instead, your drop-in selections will be reset.
-- elsif @account.children_enrolled?(@center.current_program)
-  .well
-    You previously chose a monthly plan. If you choose to register for a drop-in plan instead, your monthly selections will be reset.
-
-
-#attendance-selection-chooser
-  = link_to "Monthly", edit_account_attendance_selection_path(@account), class: "btn btn-lg"
-  = link_to "Drop In", new_account_drop_ins_path(@account), class: "btn btn-lg"
-
-
-
+.col-md-8.col-md-offset-2.col-xs-10.col-xs-offset-1
+  %h2.text-center
+    Select a Plan or Drop-in
+    
+  - if @account.drop_ins.any?
+    .well
+      You previously chose to register as a drop-in. If you choose a monthly plan instead, your drop-in selections will be reset.
+  - elsif @account.children_enrolled?(@center.current_program)
+    .well
+      You previously chose a monthly plan. If you choose to register for a drop-in plan instead, your monthly selections will be reset.
+  
+  %br
+  %br
+  #attendance-selection-chooser
+    .col-xs-6.text-center
+      = link_to "Monthly", edit_account_attendance_selection_path(@account), class: "btn btn-lg btn-block btn-info"
+    .col-xs-6.text-center
+      = link_to "Drop In", new_account_drop_ins_path(@account), class: "btn btn-lg btn-block btn-danger"
