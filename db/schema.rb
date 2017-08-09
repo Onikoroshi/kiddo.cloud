@@ -246,7 +246,7 @@ ActiveRecord::Schema.define(version: 20170729205245) do
 
   create_table "time_disputes", force: :cascade do |t|
     t.bigint "location_id"
-    t.bigint "created_by_id"
+    t.bigint "users_id"
     t.string "first_name"
     t.string "last_name"
     t.string "email"
@@ -255,8 +255,8 @@ ActiveRecord::Schema.define(version: 20170729205245) do
     t.text "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["created_by_id"], name: "index_time_disputes_on_created_by_id"
     t.index ["location_id"], name: "index_time_disputes_on_location_id"
+    t.index ["users_id"], name: "index_time_disputes_on_users_id"
   end
 
   create_table "time_entries", force: :cascade do |t|

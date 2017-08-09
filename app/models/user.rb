@@ -16,7 +16,7 @@ class User < ApplicationRecord
   has_many :user_permissions, dependent: :destroy
   has_many :permissions, through: :user_permissions, dependent: :destroy
 
-  has_many :time_disputes, dependent: :destroy
+  has_many :time_disputes
 
   scope :staff, -> { joins(:staff) }
 
