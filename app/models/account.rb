@@ -49,7 +49,7 @@ class Account < ApplicationRecord
   end
 
   def destroy_attendance_selections
-    children.map { |c| c.attendance_selection.destroy }
+    children.map { |c| c.attendance_selection.destroy if c.attendance_selection.present? }
   end
 
   def summarize_enrollments(program)

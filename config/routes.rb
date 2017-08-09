@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     resources :steps, only: [:show, :update], controller: 'account/steps'
     resources :children, controller: 'account/children'
     resource :subscription, controller: 'account/subscription'
+    resources :payments, controller: "account/payments"
 
     resource :enrollment_type,
       controller: 'account/enrollment_type',
