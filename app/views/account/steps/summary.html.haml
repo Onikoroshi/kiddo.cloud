@@ -4,7 +4,7 @@
   .account-box
     #parents
       %h3 Parents #{link_to "Edit", account_step_path(@account, :parents), class: "btn btn-xs btn-round"}
-    
+
       #primary-parent
         %h5 Primary Parent
       .row.account-row
@@ -19,16 +19,49 @@
           = @account.primary_parent.user.email
       .row.account-row
         .col-xs-4.account-label
+          Phone:
+        .col-xs-8.account-name
+          = @account.primary_parent.phone
+      .row.account-row
+        .col-xs-4.account-label
           Address:
         .col-xs-8.account-name
           = @account.primary_parent.address.full_address
-    
+
       #guardian
         %h5 Secondary Contact
-    
-    
+      - if @account.secondary_parent.present?
+        .row.account-row
+          .col-xs-4.account-label
+            Name:
+          .col-xs-8.account-name
+            = @account.secondary_parent.full_name
+        .row.account-row
+          .col-xs-4.account-label
+            Phone:
+          .col-xs-8.account-name
+            = @account.secondary_parent.phone
+        .row.account-row
+          .col-xs-4.account-label
+            Address:
+          .col-xs-8.account-name
+            = @account.secondary_parent.address.full_address
+
+
       #emergency-contacts
         %h5 Emergency Contacts
+      - if @account.emergency_contacts.any?
+        - contact = @account.emergency_contacts.first
+        .row.account-row
+          .col-xs-4.account-label
+            Name:
+          .col-xs-8.account-name
+            = contact.full_name
+        .row.account-row
+          .col-xs-4.account-label
+            Phone:
+          .col-xs-8.account-name
+            = contact.phone
 
 .col-md-4.col-sm-6
   .account-box
@@ -53,7 +86,7 @@
           .col-xs-4.account-label
             Date of Birth:
           .col-xs-8.account-name
-            = c.birthdate
+            = c.birthdate.stamp("November 30th, 1984") if c.birthdate.present?
         #careitems
           %h5 Care Items
           - c.care_items.where(active: true).each do |ci|
@@ -77,14 +110,14 @@
   .account-box
     #plan
       %h3 Plan Information #{link_to "Edit", account_step_path(@account, :plan), class: "btn btn-xs btn-round"}
-    
+
       %h5
         = @center.current_program.name
       - summarizer = PlanSummarizer.new(@account)
       = summarizer.summarize.html_safe
       %br
-      
-    
+
+
       %h5
         Total: #{summarizer.total!}
 
@@ -122,7 +155,7 @@
           Insurance Policy Number:
         .col-xs-6.account-name
           = @account.insurance_policy_number
-  
+
 .cleaner
 %hr
 .cleaner
@@ -130,14 +163,14 @@
   .col-md-6.col-md-offset-3
     #signature-form
       %h3 Sign and continue
-    
+
       = form_for @account_summary_form, method: :put, url: wizard_path do |f|
         = render "application/form_errors", object: @account_summary_form
         = f.label :signature
-        
+
         = f.text_field :signature, value: @account.signature, class: "text_field", placeholder: "Type your full name"
         %br
         = f.submit "Continue to Payment", class: "btn btn-info pull-right"
   .cleaner
-        
-    
+
+

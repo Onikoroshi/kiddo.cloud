@@ -1,9 +1,11 @@
 = render "account/steps/step_navigation"
 
-.well
-  - if @account.drop_ins.any?
+
+- if @account.drop_ins.any?
+  .well
     You previously chose to register as a drop-in. If you choose a monthly plan instead, your drop-in selections will be reset.
-  - else
+- elsif @account.children_enrolled?(@center.current_program)
+  .well
     You previously chose a monthly plan. If you choose to register for a drop-in plan instead, your monthly selections will be reset.
 
 

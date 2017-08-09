@@ -12,10 +12,10 @@
         %thead
           %tr
             %th Scheduled Drop In
-            %th Actions
+            %th
         %tbody
           - @account.drop_ins.where(paid: true).where("date >= ?", Time.zone.now).order(date: :asc).each_with_index do |d, index|
             %tr
               %td=d.to_s
               %td.td-actions.text-right
-                =link_to "X", account_dashboard_drop_ins_path(@account, drop_in_id: d.id), method: :delete, data: {confirm: "Are you sure?" }, class: "btn btn-info"
+                / =link_to "X", account_dashboard_drop_ins_path(@account, drop_in_id: d.id), method: :delete, data: {confirm: "Are you sure?" }, class: "btn btn-info"

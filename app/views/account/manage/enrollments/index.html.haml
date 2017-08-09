@@ -1,0 +1,13 @@
+- if @enrollments.any?
+  .row
+    .table-responsive
+      %table.table
+        %thead
+          %tr
+            %th My Enrollments
+            %th
+        %tbody
+          - @enrollments.each do |enrollment|
+            %tr
+              %td=enrollment.to_s
+              %td.td-actions.text-right
