@@ -35,7 +35,7 @@ class Child < ApplicationRecord
       self.care_items.build(name: "Allergies (Insects/Food)")
       self.care_items.build(name: "Learning Disorder")
       self.care_items.build(name: "Dietary Needs")
-      self.care_items.build(name: "Special Physical/Emotional Needs")
+      self.care_items.build(name: "Special Physical or Emotional Needs")
       self.care_items.build(name: "Current Medications")
     end
   end

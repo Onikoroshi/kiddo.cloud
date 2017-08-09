@@ -3,38 +3,43 @@
 = form_for @account_medical_form, method: :put, url: wizard_path do |f|
   = render "application/form_errors", object: @account_medical_form
 
-  .field
-    = f.label :family_physician
-    = f.text_field :family_physician
-
-  .field
-    = f.label :physician_phone
-    = f.text_field :physician_phone
-
-  .field
-    = f.label :family_dentist
-    = f.text_field :family_dentist
-
-  .field
-    = f.label :dentist_phone
-    = f.text_field :dentist_phone
-
-  .field
-    = f.label :insurance_company
-    = f.text_field :insurance_company
-
-  .field
-    = f.label :insurance_policy_number
-    = f.text_field :insurance_policy_number
-
-  .field
-    = f.check_box :medical_waiver_agreement, checked: @account.medical_waiver_agreement
-    = f.label :medical_waiver_agreement do
-      I authorize #{@center.name} personnel to arrange transportation in case of accident
-      or acute ..
-    %br
-
-
   .row
-    = f.submit 'Next Step', class: "btn"
+    .col-md-4.col-md-offset-2.col-sm-5.col-sm-offset-1.col-xs-10.col-xs-offset-1
+      .form-group.label-floating
+        = f.label :family_physician, class: "control-label"
+        = f.text_field :family_physician, autofocus: true, class: "form-control"
+    
+      .form-group.label-floating
+        = f.label :physician_phone, class: "control-label"
+        = f.text_field :physician_phone, autofocus: true, class: "form-control"
 
+    .col-md-4.col-sm-5.col-xs-10.col-xs-offset-1
+      .form-group.label-floating
+        = f.label :family_dentist, class: "control-label"
+        = f.text_field :family_dentist, autofocus: true, class: "form-control"
+    
+      .form-group.label-floating
+        = f.label :dentist_phone, class: "control-label"
+        = f.text_field :dentist_phone, autofocus: true, class: "form-control"
+
+    .col-md-4.col-md-offset-2.col-sm-5.col-sm-offset-1.col-xs-10.col-xs-offset-1
+      .form-group.label-floating
+        = f.label :insurance_company, class: "control-label"
+        = f.text_field :insurance_company, autofocus: true, class: "form-control"
+    
+    .col-md-4.col-sm-5.col-xs-10.col-xs-offset-1
+      .form-group.label-floating
+        = f.label :insurance_policy_number, class: "control-label"
+        = f.text_field :insurance_policy_number, autofocus: true, class: "form-control"
+    
+    .col-md-8.col-md-offset-2.col-sm-5.col-sm-offset-1.col-xs-10.col-xs-offset-1
+      .form-group.label-floating
+        = f.check_box :medical_waiver_agreement, checked: @account.medical_waiver_agreement
+        = f.label :medical_waiver_agreement do
+          I authorize #{@center.name} personnel to arrange transportation in case of accident
+          or acute ..
+
+    
+    
+      = f.submit 'Next Step', class: "btn"
+    

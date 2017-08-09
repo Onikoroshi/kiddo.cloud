@@ -12,12 +12,10 @@
           = form.label :first_name, "First Name", class: "control-label"
           = form.text_field :first_name, class: "form-control"
     
-      .col-md-6
         .form-group.label-floating
           = form.label :last_name, "Last Name", class: "control-label"
           = form.text_field :last_name, class: "form-control"
     
-      .col-md-6
         .form-group.label-floating
           = form.label :gender
           M
@@ -25,12 +23,10 @@
           F
           = form.radio_button :gender, "Female"
       
-      .col-md-6
         .form-group.label-floating
           = form.label :grade_entering
           = form.select :grade_entering, (1..10).to_a, include_blank: false
       
-      .col-md-6
         .form-group.label-floating
           = form.label :birthdate, "Birth Date", class: "control-label"
           = form.text_field :birthdate, id: "flatpickr-dob-input", class: "form-control"
@@ -39,16 +35,23 @@
       .col-md-6
         .form-group.label-floating
           = form.fields_for :care_items, @account_child.care_items do |c|
+            .row
+              .col-xs-6
+                = c.object.name
+                = c.hidden_field :name, value: c.object.name
+                
+              .col-xs-3.text-center
+                = c.radio_button :active, false, checked: !c.object.active
+                No
+              .col-xs-3.text-center
+                = c.radio_button :active, true
+                Yes
+              .col-xs-12
+                = c.text_field :explanation, placeholder: "Please explain", class: "form-control"
             %br
-            = c.object.name
-            = c.hidden_field :name, value: c.object.name
-            = c.radio_button :active, false, checked: !c.object.active
-            No
-            = c.radio_button :active, true
-            Yes
-            = c.text_field :explanation, placeholder: "Please explain"
+                
       
-      .col-md-6
+      .col-xs-12
         .form-group.label-floating
           = form.label :additional_info do
             ADDITIONAL INFO (Favorite hobbies, sports, books, etc)
@@ -56,4 +59,4 @@
       
         .navigation
           = link_to "Cancel", account_children_path(@account), class: "btn" if @account.children.any?
-          = form.submit @account_child.persisted? ? "Update Child" : "Register Child", class: "btn"
+          = form.submit @account_child.persisted? ? "Update Child" : "Register Child", class: "btn btn-info pull-right"
