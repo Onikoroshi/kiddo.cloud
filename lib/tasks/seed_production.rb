@@ -3,3 +3,6 @@ namespace :launch do
   task :seed_production => :environment do
     ProductionSeeder.seed
   end
+
+end
+
