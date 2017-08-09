@@ -2,5 +2,5 @@
   %li
     = link_to "Account Home", account_dashboard_path(@account)
     = link_to "Drop Ins", my_dropins_account_dashboard_path(@account)
-    = link_to "Enrollments", root_path
+    = link_to "Enrollments", account_dashboard_enrollments_path(@account) if @account.children_enrolled?(@center.current_program)
     = link_to "Edit Email/Password", edit_user_registration_path

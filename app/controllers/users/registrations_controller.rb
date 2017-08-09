@@ -3,7 +3,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
   prepend_before_action :set_center
 
   def set_center
-    @center = Center.find_by(subdomain: request.subdomain) if (request.subdomain.present? && !["www", "admin"].include?(request.subdomain))
+    subdomain = request.subdomain.include?("staging") ? "daviskidsklub" : request.subdomain
+    @center = Center.find_by(subdomain: subdomain) if (subdomain.present? && !["www", "admin"].include?(subdomain))
+
     if !@center.present?
       flash[:alert] = "You are not authorized to perform this action."
       redirect_to(request.referrer || root_url(subdomain: "www"))

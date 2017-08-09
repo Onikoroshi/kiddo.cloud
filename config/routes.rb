@@ -33,6 +33,7 @@ Rails.application.routes.draw do
       resource :drop_ins, controller: 'account/manage/drop_ins'
       resources :payments, controller: "account/manage/payments"
       resources :children, controller: 'account/manage/children'
+      resources :enrollments, controller: "account/manage/enrollments"
     end
   end
 
