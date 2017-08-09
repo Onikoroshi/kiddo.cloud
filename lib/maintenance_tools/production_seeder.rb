@@ -18,6 +18,7 @@ class MaintenanceTools::ProductionSeeder
       @program = seed_program
       seed_program_plans
       seed_roles
+      seed_users
       seed_locations
     rescue => e
       puts e.message
