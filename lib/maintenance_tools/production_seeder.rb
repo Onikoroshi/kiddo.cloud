@@ -13,7 +13,7 @@ class MaintenanceTools::ProductionSeeder
 
   def seed_all
     begin
-      @center = Center.where(name: "Davis Kids Klub").first_or_create!
+      @center = Center.where(name: "Davis Kids Klub", subdomain: "daviskidsklub").first_or_create!
       @program = seed_program
       seed_program_plans
     rescue => e
