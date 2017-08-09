@@ -1,96 +1,143 @@
 = render partial: "step_navigation"
 
-#parents
-  %h4 Parents #{link_to "Edit", account_step_path(@account, :parents), class: "btn btn-xs"}
-
-  #primary-parent
-    %h5 Primary Parent
-    .row
-      Name:
-      = @account.primary_parent.full_name
-    .row
-      Email:
-      = @account.primary_parent.user.email
-    .row
-      Address:
-      = @account.primary_parent.address.full_address
-
-  #guardian
-    %h5 Secondary Contact
-
-
-  #emergency-contacts
-    %h5 Emergency Contacts
-
-
-#children
-  %h5 Children #{link_to "Edit", account_step_path(@account, :children), class: "btn btn-xs"}
-  - @account.children.each do |c|
-    .row
-      Name:
-      = c.full_name
-    .row
-      Gender:
-      = c.gender.capitalize
-    .row
-      Grade Entering:
-      = c.grade_entering
-    .row
-      Date of Birth:
-      = c.birthdate
-    .row
-      %h5 Care Items
-      - c.care_items.where(active: true).each do |ci|
-        .row
+.col-md-4.col-sm-6
+  .account-box
+    #parents
+      %h3 Parents #{link_to "Edit", account_step_path(@account, :parents), class: "btn btn-xs btn-round"}
+    
+      #primary-parent
+        %h5 Primary Parent
+      .row.account-row
+        .col-xs-4.account-label
           Name:
-          = ci.name
+        .col-xs-8.account-name
+          = @account.primary_parent.full_name
+      .row.account-row
+        .col-xs-4.account-label
+          Email:
+        .col-xs-8.account-name
+          = @account.primary_parent.user.email
+      .row.account-row
+        .col-xs-4.account-label
+          Address:
+        .col-xs-8.account-name
+          = @account.primary_parent.address.full_address
+    
+      #guardian
+        %h5 Secondary Contact
+    
+    
+      #emergency-contacts
+        %h5 Emergency Contacts
+
+.col-md-4.col-sm-6
+  .account-box
+    #children
+      %h3 Children #{link_to "Edit", account_step_path(@account, :children), class: "btn btn-xs btn-round"}
+      - @account.children.each do |c|
         .row
-          Explanation:
-          = ci.explanation
-    .row
-      Additional Information:
-      = c.additional_info
+          .account-child
+            .col-xs-12
+              = c.full_name
+        .row.account-row
+          .col-xs-4.account-label
+            Gender:
+          .col-xs-8.account-name
+            = c.gender.capitalize
+        .row.account-row
+          .col-xs-4.account-label
+            Grade Entering:
+          .col-xs-8.account-name
+            = c.grade_entering
+        .row.account-row
+          .col-xs-4.account-label
+            Date of Birth:
+          .col-xs-8.account-name
+            = c.birthdate
+        #careitems
+          %h5 Care Items
+          - c.care_items.where(active: true).each do |ci|
+            .row.account-row
+              .col-xs-4.account-label
+                Name:
+              .col-xs-8.account-name
+                = ci.name
+            .row.account-row
+              .col-xs-4.account-label
+                Explanation:
+              .col-xs-8.account-name
+                = ci.explanation
+        .row.account-row
+          .col-xs-4.account-label
+            Additional Information:
+          .col-xs-8.account-name
+            = c.additional_info
 
-#plan
-  %h5 Plan Information #{link_to "Edit", account_step_path(@account, :plan), class: "btn btn-xs"}
+.col-md-4.col-sm-6
+  .account-box
+    #plan
+      %h3 Plan Information #{link_to "Edit", account_step_path(@account, :plan), class: "btn btn-xs btn-round"}
+    
+      %h5
+        = @center.current_program.name
+      - summarizer = PlanSummarizer.new(@account)
+      = summarizer.summarize.html_safe
+      %br
+      
+    
+      %h5
+        Total: #{summarizer.total!}
 
-  %h4
-    = @center.current_program.name
-
-  - summarizer = PlanSummarizer.new(@account)
-  = summarizer.summarize.html_safe
-
-  %h5
-    Total: #{summarizer.total!}
-
-#medical
-  %h5 Medical #{link_to "Edit", account_step_path(@account, :medical), class: "btn btn-xs"}
-  .row
-    Family Physician:
-    = @account.family_physician
-  .row
-    Family Physician Phone:
-    = @account.physician_phone
-  .row
-    Family Dentist:
-    = @account.family_dentist
-  .row
-    Family Dentist Phone:
-    = @account.dentist_phone
-  .row
-    Insurance Company:
-    = @account.insurance_company
-  .row
-    Insurance Policy Number:
-    = @account.insurance_policy_number
-
-#signature-form
-  %h5 Signature
-
-  = form_for @account_summary_form, method: :put, url: wizard_path do |f|
-    = render "application/form_errors", object: @account_summary_form
-    = f.label :signature
-    = f.text_field :signature, value: @account.signature
-    %br
-    = f.submit "Submit and Continue to Payment", class: "btn"
-
+.col-md-4.col-sm-6
+  .account-box
+    #medical
+      %h3 Medical #{link_to "Edit", account_step_path(@account, :medical), class: "btn btn-xs btn-round"}
+      .row.account-row
+        .col-xs-6.account-label
+          Family Physician:
+        .col-xs-6.account-name
+          = @account.family_physician
+      .row.account-row
+        .col-xs-6.account-label
+          Family Physician Phone:
+        .col-xs-6.account-name
+          = @account.physician_phone
+      .row.account-row
+        .col-xs-6.account-label
+          Family Dentist:
+        .col-xs-6.account-name
+          = @account.family_dentist
+      .row.account-row
+        .col-xs-6.account-label
+          Family Dentist Phone:
+        .col-xs-6.account-name
+          = @account.dentist_phone
+      .row.account-row
+        .col-xs-6.account-label
+          Insurance Company:
+        .col-xs-6.account-name
+          = @account.insurance_company
+      .row.account-row
+        .col-xs-6.account-label
+          Insurance Policy Number:
+        .col-xs-6.account-name
+          = @account.insurance_policy_number
+  
+.cleaner
+%hr
+.cleaner
+.account-box
+  .col-md-6.col-md-offset-3
+    #signature-form
+      %h3 Sign and continue
+    
+      = form_for @account_summary_form, method: :put, url: wizard_path do |f|
+        = render "application/form_errors", object: @account_summary_form
+        = f.label :signature
+        
+        = f.text_field :signature, value: @account.signature, class: "text_field", placeholder: "Type your full name"
+        %br
+        = f.submit "Continue to Payment", class: "btn btn-info pull-right"
+  .cleaner
+        
+    
