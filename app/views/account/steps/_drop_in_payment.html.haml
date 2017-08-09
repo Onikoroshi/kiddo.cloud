@@ -3,7 +3,7 @@
 .well
   Your total: #{PlanSummarizer.new(@account).total!}
 
-= form_tag account_subscription_path, id: "payment-form" do |form|
+= form_tag account_payments_path, id: "payment-form" do |form|
   .form-row
     %label{:for => "card-element"}
       Credit or debit card

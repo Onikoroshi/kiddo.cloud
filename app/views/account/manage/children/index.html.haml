@@ -1,3 +1,5 @@
+%p#notice= notice
+
 - @account.children.each do |c|
   .row
     .col-md-4
@@ -15,9 +17,9 @@
                 %span Lord Alex
             .stats
               %i.material-icons favorite
-              = link_to 'Edit', edit_account_dashboard_child_path(@account, c)
+              = link_to 'Edit', edit_account_child_path(@account, c)
               %i.material-icons chat_bubble
-              = link_to 'Remove', account_dashboard_child_path(@account, c), method: :delete, data: { confirm: 'Are you sure?' }
+              = link_to 'Remove', account_child_path(@account, c), method: :delete, data: { confirm: 'Are you sure?' }
 
 .row
   .col-md-4
@@ -31,5 +33,7 @@
         %p.card-description
           Children are the hands by which we take hold of heaven
         .footer.text-center
-          = link_to "Add Another Child", new_account_dashboard_child_path(@account), class: "btn btn-white btn-round"
+          = link_to "Add Another Child", new_account_child_path(@account), class: "btn btn-white btn-round"
 %br/
+
+= link_to 'Next Step', account_step_path(@account, :medical), class: "btn"

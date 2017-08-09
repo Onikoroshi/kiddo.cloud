@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     resources :steps, only: [:show, :update], controller: 'account/steps'
     resources :children, controller: 'account/children'
     resource :subscription, controller: 'account/subscription'
+    resources :payments, controller: "account/payments"
 
     resource :enrollment_type,
       controller: 'account/enrollment_type',
@@ -31,6 +32,7 @@ Rails.application.routes.draw do
       get  :my_dropins,     to: "account/manage/drop_ins#index"
       resource :drop_ins, controller: 'account/manage/drop_ins'
       resources :payments, controller: "account/manage/payments"
+      resources :children, controller: 'account/manage/children'
     end
   end
 

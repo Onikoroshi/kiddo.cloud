@@ -10,6 +10,10 @@ class ApplicationController < ActionController::Base
 
   def set_center
     @center = Center.find_by(subdomain: request.subdomain) if (request.subdomain.present? && !["www", "admin"].include?(request.subdomain))
+    if !@center.present?
+      flash[:alert] = "You are not authorized to perform this action."
+      redirect_to(request.referrer || root_url(subdomain: "www"))
+    end
   end
 
   # Add to any controller to require multitenancy. You would leave this out of controllers that manage pages like "team"
