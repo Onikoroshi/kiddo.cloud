@@ -18,7 +18,6 @@ class MaintenanceTools::ProductionSeeder
       @program = seed_program
       seed_program_plans
       seed_roles
-      seed_users
       seed_locations
     rescue => e
       puts e.message
@@ -57,31 +56,38 @@ class MaintenanceTools::ProductionSeeder
   end
 
   def seed_users
-    User.where(
+    u = User.create!(
       email: "daviskidsklub@aol.com",
       first_name: "Lynda",
       last_name: "Yancher",
-      roles: [Role.find_by(name: "director")],
-      center: Center.find_by(subdomain: "daviskidsklub").first_or_create!
+      center: Center.find_by(subdomain: "daviskidsklub"),
+      password: "asdfasdf",
+      password_confirmation: "asdfasdf"
     )
 
-    User.where(
+    u.roles << Role.find_by(name: "director")
+
+    u = User.create!(
       email: "jason@codinglabs.com",
       first_name: "Jason",
       last_name: "Eastwood",
-      roles: Role.all,
-      center: Center.find_by(subdomain: "www").first_or_create!
+      center: Center.find_by(subdomain: "www"),
+      password: "asdfasdf",
+      password_confirmation: "asdfasdf"
     )
 
-    User.where(
+    u.roles << Role.all
+
+    u = User.create!(
       email: "ian.kilpatrick@gmail.com",
       first_name: "Ian",
       last_name: "kilpatrick",
-      roles: Role.all,
-      center: Center.find_by(subdomain: "www").first_or_create!
+      center: Center.find_by(subdomain: "www"),
+      password: "asdfasdf",
+      password_confirmation: "asdfasdf"
     )
 
-    User.all.map { |u| u.update_attributes!(password: "asdfasdf") }
+    u.roles << Role.all
   end
 
   def seed_locations
@@ -116,11 +122,11 @@ class MaintenanceTools::ProductionSeeder
     DropIn.destroy_all
     Enrollment.destroy_all
     Plan.destroy_all
-    Program.first.destroy
+    Program.destroy_all
     Center.destroy_all
-    User.destroy_all
     Role.destroy_all
     Location.destroy_all
+    User.destroy_all
   end
 
 end
