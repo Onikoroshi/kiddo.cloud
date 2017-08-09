@@ -9,7 +9,8 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def set_center
-    @center = Center.find_by(subdomain: request.subdomain) if (request.subdomain.present? && !["www", "admin"].include?(request.subdomain))
+    subdomain = request.subdomain.include?("staging") ? "daviskidsklub" : request.subdomain
+    @center = Center.find_by(subdomain: subdomain) if (subdomain.present? && !["www", "admin"].include?(subdomain))
     if !@center.present?
       flash[:alert] = "You are not authorized to perform this action."
       redirect_to(request.referrer || root_url(subdomain: "www"))
