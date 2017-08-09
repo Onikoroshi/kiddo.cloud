@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       get  :my_dropins,     to: "account/manage/drop_ins#index"
       resource :drop_ins, controller: 'account/manage/drop_ins'
       resources :payments, controller: "account/manage/payments"
+      resources :children, controller: 'account/manage/children'
     end
   end
 
