@@ -57,28 +57,28 @@ class MaintenanceTools::ProductionSeeder
   end
 
   def seed_users
-    User.create(
+    User.where(
       email: "daviskidsklub@aol.com",
       first_name: "Lynda",
       last_name: "Yancher",
       roles: [Role.find_by(name: "director")],
-      center: Center.find_by(subdomain: "daviskidsklub")
+      center: Center.find_by(subdomain: "daviskidsklub").first_or_create!
     )
 
-    User.create(
+    User.where(
       email: "jason@codinglabs.com",
       first_name: "Jason",
       last_name: "Eastwood",
       roles: Role.all,
-      center: Center.find_by(subdomain: "www")
+      center: Center.find_by(subdomain: "www").first_or_create!
     )
 
-    User.create(
+    User.where(
       email: "ian.kilpatrick@gmail.com",
       first_name: "Ian",
       last_name: "kilpatrick",
       roles: Role.all,
-      center: Center.find_by(subdomain: "www")
+      center: Center.find_by(subdomain: "www").first_or_create!
     )
 
     User.all.map { |u| u.update_attributes!(password: "asdfasdf") }
