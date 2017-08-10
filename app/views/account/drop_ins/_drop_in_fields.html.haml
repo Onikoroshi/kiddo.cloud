@@ -4,3 +4,12 @@
     = f.hidden_field :program_id, value: @center.current_program.id
     %td
       = f.text_field :date, id: "flatpickr-input"
+    %td
+      = f.label :time_slot, "8am - 6pm"
+      = f.radio_button :time_slot, "full_day", checked: f.object.time_slot == "full_day"
+    %td
+      = f.label :time_slot, "8am - 1pm"
+      = f.radio_button :time_slot, "morning", checked: f.object.time_slot == "morning"
+    %td
+      = f.label :time_slot, "1pm - 6pm"
+      = f.radio_button :time_slot, "afternoon", checked: f.object.time_slot == "afternoon"
