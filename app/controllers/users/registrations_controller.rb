@@ -59,8 +59,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   private
 
+    # i.e. 'davis_kids_klub' or 'dkk_customer_dashboard'
     def evaluate_layout
-      layout_name = "application"
+      layout_name = @center.name.parameterize.underscore
       if ["edit", "update"].include?(action_name)
         layout_name = "dkk_customer_dashboard"
       end
