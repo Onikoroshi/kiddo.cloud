@@ -10,8 +10,8 @@
             = c.full_name
           .footer
             .author
-              Born: 
-              = c.birthdate
+              Born:
+              = c.birthdate.stamp("January 1, 2007") if c.birthdate.present?
             .stats
               %i.material-icons edit
               = link_to 'Edit', edit_account_child_path(@account, c)
