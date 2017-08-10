@@ -12,7 +12,6 @@
         %thead
           %tr
             %th Scheduled Drop In
-            %th
         %tbody
           - @account.drop_ins.where(paid: true).where("date >= ?", Time.zone.now).order(date: :asc).each_with_index do |d, index|
             %tr

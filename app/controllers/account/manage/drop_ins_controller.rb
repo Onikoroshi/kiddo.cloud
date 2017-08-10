@@ -7,6 +7,7 @@ class Account::Manage::DropInsController < ApplicationController
   end
 
   def new
+    @account.drop_ins.where(paid: false).destroy_all # clear out any drop ins that have been created but not paid for
   end
 
   def create

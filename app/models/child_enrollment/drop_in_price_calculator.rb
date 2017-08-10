@@ -28,7 +28,7 @@ module ChildEnrollment
     def base_price
       total = Money.new("0.00")
       children.each do |child|
-        child.drop_ins.each do |drop_in|
+        child.drop_ins.upcoming.not_paid.each do |drop_in|
           total += drop_in.price if drop_in.price.present?
         end
       end

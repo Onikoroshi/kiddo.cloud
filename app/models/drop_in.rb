@@ -3,6 +3,9 @@ class DropIn < ApplicationRecord
   belongs_to :child
   belongs_to :program
 
+  scope :upcoming, -> { where("drop_ins.date >= ?", Time.zone.today.beginning_of_day) }
+  scope :not_paid, -> { where(paid: false) }
+
   money_column :price
 
   validates :date, presence: true
