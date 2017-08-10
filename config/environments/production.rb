@@ -81,6 +81,24 @@ Rails.application.configure do
     config.logger = ActiveSupport::TaggedLogging.new(logger)
   end
 
+  # Default url options
+  config.action_mailer.default_url_options = {:host => 'www.kiddo.cloud'}
+  config.action_controller.default_url_options = {:host => 'www.kiddo.cloud'}
+
+  #Mailer asset host
+  config.action_mailer.asset_host = "https://www.kiddo.cloud"
+
+  ActionMailer::Base.smtp_settings = {
+      :port =>           '587',
+      :address =>        'smtp.sendgrid.net',
+      :user_name =>      ENV['SENDGRID_USERNAME'],
+      :password =>       ENV['SENDGRID_PASSWORD'],
+      :domain =>         'kiddo.cloud',
+      :authentication => :plain,
+      :enable_starttls_auto => true
+  }
+  ActionMailer::Base.delivery_method = :smtp
+
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
