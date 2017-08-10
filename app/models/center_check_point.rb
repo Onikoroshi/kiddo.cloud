@@ -7,7 +7,7 @@ class CenterCheckPoint
   end
 
   def passes?
-    byebug if center.nil? || user.nil? || user.center_id != center.id
+    #byebug if center.nil? || user.nil? || user.center_id != center.id
 
     center.present? &&
     user.present? &&
