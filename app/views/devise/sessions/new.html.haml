@@ -1,6 +1,6 @@
 .col-sm-5.col-sm-offset-1
   .login-box
-    %h2 Log in
+    %h3 Log in
     = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
       .form-group.label-floating
         = f.label :email, class: "control-label"
@@ -26,7 +26,7 @@
 
 .col-sm-5
   .login-box
-    %h2
+    %h3
       Need an Account?
     %br
     = render "devise/shared/links"

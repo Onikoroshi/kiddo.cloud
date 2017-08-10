@@ -4,6 +4,7 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %title Kiddo.cloud
     = csrf_meta_tags
+    %link{:href => "https://fonts.googleapis.com/css?family=Open+Sans", :rel => "stylesheet"}/
     = stylesheet_link_tag    'application-dkk', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
     = tag :meta, name: "stripe-public-key", content: Rails.application.secrets.stripe_public_key
@@ -41,4 +42,5 @@
                         Log Out
       %p.notice= notice
       %p.alert= alert
+      
       = yield

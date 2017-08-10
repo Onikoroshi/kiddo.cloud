@@ -1,21 +1,31 @@
 .col-md-6.col-sm-8.col-md-offset-3.col-sm-offset-2
-  %h2
+  %h3.text-center
     Staff Clock-in/Clock-out
 
+  %h5.text-center
+    Select Your Location
+    
+  %select.selectpicker{"data-size" => "7", "data-style" => "btn btn-primary btn-round", :title => "Single Select"}
+    %option{:disabled => "disabled", :selected => "selected"} Single Option
+    %option{:value => "2"} Foobar
   #location-switcher
-  = form_tag staff_attendance_display_index_path, method: :get do
-    = select_tag "staff-location-switcher", options_from_collection_for_select(@center.locations, 'id', 'name', @location.try(:id)),
-      { class: "location-switcher" }
+    = form_tag staff_attendance_display_index_path, method: :get do
+      = select_tag "staff-location-switcher", options_from_collection_for_select(@center.locations, 'id', 'name', @location.try(:id)),
+        { "data-size" => "7", class: "btn btn-primary btn-round" }
 
   #time-entry-message
 
   #time-entries
-    %ul
-      - @center.users.staff.all.each do |u|
-        %li= u.staff.full_name
-        .togglebutton
-          %label
-            = check_box_tag :on_clock, true, u.staff.on_clock?, :data => {:remote => true, :url => url_for( controller: "/time_entries", :action => 'create', params: {"time_entry[location_id]" => "1", "time_entry[time_recordable_id]" => u.staff.id, "time_entry[time_recordable_type]" => "Staff"}), :method => :post}, :class => 'input-large'
+    - @center.users.staff.all.each do |u|
+      .checkin-name    
+        .col-xs-6= u.staff.full_name
+        
+        .col-xs-6.text-right
+          .togglebutton
+            %label
+              = check_box_tag :on_clock, true, u.staff.on_clock?, :data => {:remote => true, :url => url_for( controller: "/time_entries", :action => 'create', params: {"time_entry[location_id]" => "1", "time_entry[time_recordable_id]" => u.staff.id, "time_entry[time_recordable_type]" => "Staff"}), :method => :post}, :class => 'input-large'
+        .cleaner
+              
 
   = link_to "Dispute Time In / Time Out", new_staff_time_dispute_path
 
