@@ -65,7 +65,7 @@ namespace :db do
 
   desc "Reload schema, then seed. (Does not try to drop and recreate db, which causes problems on heroku.)"
   task :reload => :environment do
-    raise "This task can not be run in this environment." unless %w[development alpha beta beta1].include? Rails.env
+    raise "This task can not be run in this environment." unless %w[development alpha beta beta1 production].include? Rails.env
     puts "Dropping/loading the db..."
     Rake::Task['db:schema:load'].invoke
     puts "Done."
