@@ -66,7 +66,7 @@
 .col-md-4.col-sm-6
   .account-box
     #children
-      %h3 Children #{link_to "Edit", account_step_path(@account, :children), class: "btn btn-xs btn-round"}
+      %h3 Children #{link_to "Edit", account_children_path(@account), class: "btn btn-xs btn-round"}
       - @account.children.each do |c|
         .row
           .account-child
