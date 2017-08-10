@@ -70,7 +70,8 @@ class Account::DropInsController < ApplicationController
           drop_ins_attributes: [
             :date,
             :account_id,
-            :program_id
+            :program_id,
+            :time_slot
           ],
         ]
       ]
@@ -86,6 +87,7 @@ class Account::DropInsController < ApplicationController
             :date,
             :account_id,
             :program_id,
+            :time_slot,
             :_destroy
           ],
         ]
