@@ -68,8 +68,6 @@ namespace :db do
     raise "This task can not be run in this environment." unless %w[development alpha beta beta1].include? Rails.env
     puts "Dropping/loading the db..."
     Rake::Task['db:schema:load'].invoke
-    puts "Seeding the db..."
-    Rake::Task['db:seed'].invoke
     puts "Done."
   end
 end
