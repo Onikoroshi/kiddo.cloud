@@ -1,0 +1,17 @@
+%h3
+  Parents
+
+- if @parents.any?
+  .row
+    .table-responsive
+      %table.table
+        %thead
+          %tr
+            %th Name
+            %th Action
+        %tbody
+          - @parents.each do |p|
+            %tr
+              %td=p.full_name
+              %td.td-actions.text-right
+                =link_to "X", root_path

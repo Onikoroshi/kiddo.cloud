@@ -1,4 +1,5 @@
 class Staff::TimeDisputesController < ApplicationController
+  layout "dkk_staff_dashboard"
   before_action :set_time_dispute, only: [:show, :edit, :update, :destroy]
 
   # GET /time_disputes

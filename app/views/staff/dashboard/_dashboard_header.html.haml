@@ -1,0 +1,26 @@
+.card.card-nav-tabs.card-plain
+  .header.header-info
+    / colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger"
+    .nav-tabs-navigation
+      .nav-tabs-wrapper
+        %ul.nav.nav-tabs{"data-tabs" => "tabs"}
+          %li{ class: (step == :parents) ? "active" : ""}
+            =link_to staff_dashboard_path do
+              %i.material-icons account_circle
+              Administrator Account Home
+          %li{ class: (controller_name == "children") ? "active" : ""}
+            =link_to staff_parents_path do
+              %i.material-icons face
+              Parents
+          %li{ class: (controller_name == "children") ? "active" : ""}
+            =link_to root_path do
+              %i.material-icons face
+              Children
+          %li{ class: (step == :summary) ? "active" : ""}
+            =link_to staff_dashboard_path do
+              %i.material-icons check_circle
+              Attendance
+          %li{ class: (step == :payment) ? "active" : ""}
+            =link_to new_staff_time_dispute_path do
+              %i.material-icons payment
+              Time Disputes

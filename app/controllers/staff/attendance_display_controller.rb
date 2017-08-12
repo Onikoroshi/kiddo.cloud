@@ -1,4 +1,5 @@
 class Staff::AttendanceDisplayController < ApplicationController
+  layout "dkk_staff_dashboard"
   before_action :guard_center!
 
   # GET /interviews
