@@ -13,6 +13,10 @@ module ChildEnrollment
       children.each do |child|
         enroll_child(child)
       end
+
+      if account_qualifies_for_sibling_club?
+        adjust_enrollments_for_sibling_club
+      end
     end
 
     def unenroll
@@ -30,7 +34,6 @@ module ChildEnrollment
       else
         enroll_single_day_plan(child)
       end
-
     end
 
     protected
@@ -46,12 +49,38 @@ module ChildEnrollment
       child.plans << plan
     end
 
+    def enroll_in_sibling_club(child)
+      child.plans.clear
+      child.plans << plans.where(short_code: "sibling_club").first
+    end
+
+    def adjust_enrollments_for_sibling_club
+      high_grade_siblings.each do |high_grade_sibling|
+        if high_grade_sibling.plans.first == "week_1"
+          low_grade_siblings.map { |c| enroll_in_sibling_club(c) }
+        end
+      end
+    end
+
+    def high_grade_siblings
+      children.select { |c| c.grade_entering > 3 }
+    end
+
+    def low_grade_siblings
+      children.select { |c| c.grade_entering <= 3 }
+    end
+
     private
+
+    # low_grade_siblings.map { |c| enroll_in_sibling_club(c) }
 
     # Sibling Club is designed for students 1-3 grade waiting for siblings 4-6 grade
     # any day but wednesday
-    def qualifies_for_sibling_club?(child)
-      grade = child.last.grade_entering
+    def account_qualifies_for_sibling_club?
+      return false unless children.size > 1
+      #return false if not wednesday
+
+      high_grade_siblings.any? && low_grade_siblings.any?
     end
 
   end
