@@ -1,6 +1,9 @@
-%ul.nav.nav-pills.nav-pills-rose.nav-stacked
+%ul.nav.nav-pills.nav-pills-rose
   %li
     = link_to "Account Home", account_dashboard_path(@account)
-    = link_to "Drop Ins", my_dropins_account_dashboard_path(@account)
-    = link_to "Enrollments", account_dashboard_enrollments_path(@account) if @account.children_enrolled?(@center.current_program)
+  %li
+    = link_to "My Drop-ins", my_dropins_account_dashboard_path(@account)
+  %li
+    = link_to "My Monthly Programs", account_dashboard_enrollments_path(@account) if @account.children_enrolled?(@center.current_program)
+  %li
     = link_to "Edit Email/Password", edit_user_registration_path

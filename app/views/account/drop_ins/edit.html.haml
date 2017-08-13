@@ -1,6 +1,6 @@
 = render partial: "account/steps/step_navigation"
 
-Drop in for #{@center.current_program.name}
+Drop-in for #{@center.current_program.name}
 
 = form_for(@account, url: "/accounts/#{@account.id}/drop_ins", method: :put) do |f|
   = render "application/form_errors", object: @account

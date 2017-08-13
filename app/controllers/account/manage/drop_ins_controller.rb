@@ -38,7 +38,7 @@ class Account::Manage::DropInsController < ApplicationController
   def destroy
     @drop_in = DropIn.find_by(id: params[:drop_in_id])
     @drop_in.destroy
-    redirect_to my_dropins_account_dashboard_path, notice: 'This drop in date has been removed'
+    redirect_to my_dropins_account_dashboard_path, notice: 'This drop-in date has been removed'
   end
 
   private

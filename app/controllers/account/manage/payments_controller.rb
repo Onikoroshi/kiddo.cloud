@@ -26,7 +26,7 @@ class Account::Manage::PaymentsController < ApplicationController
 
     if charge.present?
       @account.drop_ins.where(paid: false).map { |d| d.update_attributes(paid: true) }
-      redirect_to my_dropins_account_dashboard_path(@account), notice: 'Your drop in days have been added'
+      redirect_to my_dropins_account_dashboard_path(@account), notice: 'Your drop-in days have been added'
     else
       render :new
     end

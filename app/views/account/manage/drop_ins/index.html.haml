@@ -1,9 +1,11 @@
-%h3
-  My Drop Ins
+.row
+  .col-xs-12
+    %h3.text-center
+      My Drop-Ins
 
 .row
-  .pull-right
-    = link_to "+ Schedule a Drop In", new_account_dashboard_drop_ins_path(@account), class: "btn btn-success"
+  .text-center
+    = link_to "+ Schedule a Drop-In", new_account_dashboard_drop_ins_path(@account), class: "btn btn-info"
 
 - if @account.drop_ins.any?
   .row
@@ -11,7 +13,7 @@
       %table.table
         %thead
           %tr
-            %th Scheduled Drop In
+            %th Scheduled Drop-In
         %tbody
           - @account.drop_ins.where(paid: true).where("date >= ?", Time.zone.now).order(date: :asc).each_with_index do |d, index|
             %tr
