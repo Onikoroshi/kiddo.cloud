@@ -5,6 +5,8 @@ class Center < ApplicationRecord
 
   has_many :programs
 
+  accepts_nested_attributes_for :locations
+
   def children
     children = []
     self.accounts.includes(:children).all.each do |account|
@@ -21,5 +23,3 @@ class Center < ApplicationRecord
     programs.where(short_code: "dkk_fall_2017").first
   end
 end
-
-
