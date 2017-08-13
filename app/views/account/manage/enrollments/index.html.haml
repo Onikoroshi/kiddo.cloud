@@ -1,13 +1,9 @@
 - if @enrollments.any?
   .row
-    .table-responsive
-      %table.table
-        %thead
-          %tr
-            %th My Enrollments
-            %th
-        %tbody
-          - @enrollments.each do |enrollment|
-            %tr
-              %td=enrollment.to_s
-              %td.td-actions.text-right
+    .col-md-6.col-sm-8.col-md-offset-3.col-sm-offset-2
+      %h3 My Enrollments
+      %br
+      .account-box
+      
+        - @enrollments.each do |enrollment|
+          =enrollment.to_s

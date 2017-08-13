@@ -1,22 +1,22 @@
 .row
-  .col-xs-12
-    %h3.text-center
+  .col-md-6.col-sm-8.col-md-offset-3.col-sm-offset-2
+    %h3
       My Drop-Ins
-
-.row
-  .text-center
-    = link_to "+ Schedule a Drop-In", new_account_dashboard_drop_ins_path(@account), class: "btn btn-info"
-
-- if @account.drop_ins.any?
-  .row
-    .table-responsive
-      %table.table
-        %thead
-          %tr
-            %th Scheduled Drop-In
-        %tbody
-          - @account.drop_ins.where(paid: true).where("date >= ?", Time.zone.now).order(date: :asc).each_with_index do |d, index|
+    %br
+      
+    .text-center
+      = link_to "+ Schedule a Drop-In", new_account_dashboard_drop_ins_path(@account), class: "btn btn-info btn-block"
+  
+  - if @account.drop_ins.any?
+    .row
+      .table-responsive
+        %table.table
+          %thead
             %tr
-              %td=d.to_s
-              %td.td-actions.text-right
-                / =link_to "X", account_dashboard_drop_ins_path(@account, drop_in_id: d.id), method: :delete, data: {confirm: "Are you sure?" }, class: "btn btn-info"
+              %th Scheduled Drop-In
+          %tbody
+            - @account.drop_ins.where(paid: true).where("date >= ?", Time.zone.now).order(date: :asc).each_with_index do |d, index|
+              %tr
+                %td=d.to_s
+                %td.td-actions.text-right
+                  / =link_to "X", account_dashboard_drop_ins_path(@account, drop_in_id: d.id), method: :delete, data: {confirm: "Are you sure?" }, class: "btn btn-info"

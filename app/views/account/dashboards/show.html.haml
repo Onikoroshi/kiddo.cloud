@@ -1,29 +1,28 @@
-.row
-  .col-xs-12
-    %h3.text-center Account Home
-.row
-  - @account.children.each do |c|
-    .col-md-4
-      .card
-        .card-content
-          %h4.card-title
-            = c.full_name
-          .footer
-            .author
-              Born: 
-              = c.birthdate
-            .stats
-              %i.material-icons edit
-              = link_to 'Edit', edit_account_dashboard_child_path(@account, c)
-              %i.material-icons delete
-              = link_to 'Remove', account_dashboard_child_path(@account, c), method: :delete, data: { confirm: 'Are you sure?' }
 
-
+.col-xs-12
+  %h3 Account Home
+  %br
+- @account.children.each do |c|
   .col-md-4
     .card
       .card-content
-        .footer.text-center
-          = link_to "Add Another Child", new_account_dashboard_child_path(@account), class: "btn btn-danger"
+        %h4.card-title
+          = c.full_name
+        .footer
+          .author
+            Born: 
+            = c.birthdate
+          .stats
+            %i.material-icons edit
+            = link_to 'Edit', edit_account_dashboard_child_path(@account, c)
+            %i.material-icons delete
+            = link_to 'Remove', account_dashboard_child_path(@account, c), method: :delete, data: { confirm: 'Are you sure?' }
 
-          
-%br/
+
+.col-md-4
+  .card
+    .card-content
+      .footer.text-center
+        = link_to "Add Another Child", new_account_dashboard_child_path(@account), class: "btn btn-danger"
+
+        
