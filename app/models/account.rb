@@ -7,6 +7,8 @@ class Account < ApplicationRecord
   has_one :secondary_parent, ->(p) { where secondary: true }, class_name: "Parent"
   has_one :subscription
 
+  belongs_to :location
+
   has_many :children
   has_many :emergency_contacts, dependent: :destroy
 
@@ -76,7 +78,3 @@ class Account < ApplicationRecord
   end
 
 end
-
-
-
-
