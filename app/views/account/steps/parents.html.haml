@@ -5,122 +5,150 @@
 
   .col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1
     .row
-      .col-xs-12
-        Welcome to Davis Kids Klub! Please fill out the information below.
-      .col-xs-12
-        %h3.parent-title Parents
-      .col-sm-6
-        .form-group.label-floating
-          = f.label :parent_first_name, "First Name", class: "control-label"
-          = f.text_field :parent_first_name, class: "form-control"
-    
-      .col-sm-6
-        .form-group.label-floating
-          = f.label :parent_last_name, "Last Name", class: "control-label"
-          = f.text_field :parent_last_name, class: "form-control"
-    
-      .col-sm-12
-        .form-group.label-floating
-          = f.label :parent_phone, "Phone Number", class: "control-label"
-          = f.text_field :parent_phone, class: "form-control"
+      .col-xs-12.text-center
+        %h2 Welcome to Davis Kids Klub!
+        %h5 Please fill out the information below.
+      .cleaner
+      #collapse
+        #accordion.panel-group{"aria-multiselectable" => "true", :role => "tablist"}
+          .panel.panel-default
+            #headingOne.panel-heading{:role => "tab"}
+              %a{"aria-controls" => "collapseOne", "aria-expanded" => "true", "data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseOne", :role => "button"}
+                .col-xs-12
+                  %h3.parent-title
+                    Parents
+                    %i.material-icons keyboard_arrow_down
+            #collapseOne.panel-collapse.collapse.in{"aria-labelledby" => "headingOne", :role => "tabpanel"}
+              .panel-body
+                .col-sm-6
+                  .form-group.label-floating
+                    = f.label :parent_first_name, "First Name", class: "control-label"
+                    = f.text_field :parent_first_name, class: "form-control"
+              
+                .col-sm-6
+                  .form-group.label-floating
+                    = f.label :parent_last_name, "Last Name", class: "control-label"
+                    = f.text_field :parent_last_name, class: "form-control"
+              
+                .col-sm-12
+                  .form-group.label-floating
+                    = f.label :parent_phone, "Phone Number", class: "control-label"
+                    = f.text_field :parent_phone, class: "form-control"
+                
+                .col-sm-6
+                  .form-group.label-floating
+                    = f.label :parent_street, "Street Address", class: "control-label"
+                    = f.text_field :parent_street, class: "form-control"
+                
+                .col-sm-6
+                  .form-group.label-floating
+                    = f.label :parent_extended, "Street Address 2", class: "control-label"
+                    = f.text_field :parent_extended, class: "form-control"
+                
+                .col-sm-5
+                  .form-group.label-floating
+                    = f.label :parent_locality, "City", class: "control-label"
+                    = f.text_field :parent_locality, class: "form-control"
+                
+                .col-sm-4
+                  .form-group.label-floating
+                    = f.label :parent_region, "State", class: "control-label"
+                    = f.text_field :parent_region, class: "form-control"
+                
+                .col-sm-3
+                  .form-group.label-floating
+                    = f.label :parent_postal_code, "Zip Code", class: "control-label"
+                    = f.text_field :parent_postal_code, class: "form-control"
+
+          .cleaner
+
+          .panel.panel-default
+            #headingTwo.panel-heading{:role => "tab"}
+              %a.collapsed{"aria-controls" => "collapseTwo", "aria-expanded" => "false", "data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseTwo", :role => "button"}
+                .col-xs-12
+                  %h3.parent-title
+                    Additional Parent / Guardian (optional)
+                    %i.material-icons keyboard_arrow_down
+            #collapseTwo.panel-collapse.collapse{"aria-labelledby" => "headingTwo", :role => "tabpanel"}
+              .panel-body
+
+                .col-sm-6
+                  .form-group.label-floating
+                    = f.label :parent_guardian_first_name, "First Name", class: "control-label"
+                    = f.text_field :parent_guardian_first_name, class: "form-control"
+                
+                .col-sm-6
+                  .form-group.label-floating
+                    = f.label :parent_guardian_last_name, "Last Name", class: "control-label"
+                    = f.text_field :parent_guardian_last_name, class: "form-control"
+                
+                .col-sm-12
+                  .form-group.label-floating
+                    = f.label :parent_guardian_phone, "Phone Number", class: "control-label"
+                    = f.text_field :parent_guardian_phone, class: "form-control"
+                
+                .col-sm-12
+                  .form-group.label-floating
+                    = f.label :parent_guardian_street, "Street Address", class: "control-label"
+                    = f.text_field :parent_guardian_street, class: "form-control"
+                
+                .col-sm-12
+                  .form-group.label-floating
+                    = f.label :parent_guardian_extended, "Street Address 2", class: "control-label"
+                    = f.text_field :parent_guardian_extended, class: "form-control"
+                
+                .col-sm-5
+                  .form-group.label-floating
+                    = f.label :parent_guardian_locality, "City", class: "control-label"
+                    = f.text_field :parent_guardian_locality, class: "form-control"
+                
+                .col-sm-4
+                  .form-group.label-floating
+                    = f.label :parent_guardian_region, "State", class: "control-label"
+                    = f.text_field :parent_guardian_region, class: "form-control"
+                
+                .col-sm-3
+                  .form-group.label-floating
+                    = f.label :parent_guardian_postal_code, "Zip Code", class: "control-label"
+                    = f.text_field :parent_guardian_postal_code, class: "form-control"
       
-      .col-sm-12
-        .form-group.label-floating
-          = f.label :parent_street, "Street Address", class: "control-label"
-          = f.text_field :parent_street, class: "form-control"
-      
-      .col-sm-12
-        .form-group.label-floating
-          = f.label :parent_extended, "Street Address 2", class: "control-label"
-          = f.text_field :parent_extended, class: "form-control"
-      
-      .col-sm-5
-        .form-group.label-floating
-          = f.label :parent_locality, "City", class: "control-label"
-          = f.text_field :parent_locality, class: "form-control"
-      
-      .col-sm-4
-        .form-group.label-floating
-          = f.label :parent_region, "State", class: "control-label"
-          = f.text_field :parent_region, class: "form-control"
-      
-      .col-sm-3
-        .form-group.label-floating
-          = f.label :parent_postal_code, "Zip Code", class: "control-label"
-          = f.text_field :parent_postal_code, class: "form-control"
-    %br
-    .row
-      .col-md-12
-        %h3.parent-title Guardian
-      .col-sm-6
-        .form-group.label-floating
-          = f.label :parent_guardian_first_name, "First Name", class: "control-label"
-          = f.text_field :parent_guardian_first_name, class: "form-control"
-      
-      .col-sm-6
-        .form-group.label-floating
-          = f.label :parent_guardian_last_name, "Last Name", class: "control-label"
-          = f.text_field :parent_guardian_last_name, class: "form-control"
-      
-      .col-sm-12
-        .form-group.label-floating
-          = f.label :parent_guardian_phone, "Phone Number", class: "control-label"
-          = f.text_field :parent_guardian_phone, class: "form-control"
-      
-      .col-sm-12
-        .form-group.label-floating
-          = f.label :parent_guardian_street, "Street Address", class: "control-label"
-          = f.text_field :parent_guardian_street, class: "form-control"
-      
-      .col-sm-12
-        .form-group.label-floating
-          = f.label :parent_guardian_extended, "Street Address 2", class: "control-label"
-          = f.text_field :parent_guardian_extended, class: "form-control"
-      
-      .col-sm-5
-        .form-group.label-floating
-          = f.label :parent_guardian_locality, "City", class: "control-label"
-          = f.text_field :parent_guardian_locality, class: "form-control"
-      
-      .col-sm-4
-        .form-group.label-floating
-          = f.label :parent_guardian_region, "State", class: "control-label"
-          = f.text_field :parent_guardian_region, class: "form-control"
-      
-      .col-sm-3
-        .form-group.label-floating
-          = f.label :parent_guardian_postal_code, "Zip Code", class: "control-label"
-          = f.text_field :parent_guardian_postal_code, class: "form-control"
-      
-    %br
-    .row
-      .col-md-12
-        %h3.parent-title Emergency Contact
-      .col-sm-6
-        .form-group.label-floating
-          = f.label :emergency_contact_first_name, "First Name", class: "control-label"
-          = f.text_field :emergency_contact_first_name, class: "form-control"
-      
-      .col-sm-6
-        .form-group.label-floating
-          = f.label :emergency_contact_last_name, "Last Name", class: "control-label"
-          = f.text_field :emergency_contact_last_name, class: "form-control"
-      
-      .col-sm-12
-        .form-group.label-floating
-          = f.label :emergency_contact_phone, "Phone Number", class: "control-label"
-          = f.text_field :emergency_contact_phone, class: "form-control"
-      
-      .col-sm-12
-        .form-group.label-floating
-          = f.check_box :waiver_agreement, checked: @account.waiver_agreement, class: "pull-left checkbox-padding"
-          = f.label :waiver_agreement do
-            I have read and agree with #{link_to 'all waivers and agreements', root_path}
-      .col-sm-12
-        .form-group.label-floating
-          = f.check_box :mail_agreements, checked: @account.last_registration_step_completed == "parents" ? @account.mail_agreements : true, class: "pull-left checkbox-padding"
-          = f.label :mail_agreements do
-            Have all waivers and agreements mailed to me
+          .cleaner
+
+          .panel.panel-default
+            #headingThree.panel-heading{:role => "tab"}
+              %a.collapsed{"aria-controls" => "collapseThree", "aria-expanded" => "false", "data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseThree", :role => "button"}
+                .col-xs-12
+                  %h3.parent-title
+                    Emergency Contact
+                    %i.material-icons keyboard_arrow_down
+            #collapseThree.panel-collapse.collapse{"aria-labelledby" => "headingTwo", :role => "tabpanel"}
+              .panel-body
+              
+                .col-sm-6
+                  .form-group.label-floating
+                    = f.label :emergency_contact_first_name, "First Name", class: "control-label"
+                    = f.text_field :emergency_contact_first_name, class: "form-control"
+                
+                .col-sm-6
+                  .form-group.label-floating
+                    = f.label :emergency_contact_last_name, "Last Name", class: "control-label"
+                    = f.text_field :emergency_contact_last_name, class: "form-control"
+                
+                .col-sm-12
+                  .form-group.label-floating
+                    = f.label :emergency_contact_phone, "Phone Number", class: "control-label"
+                    = f.text_field :emergency_contact_phone, class: "form-control"
+                
+                .col-sm-12
+                  .form-group.label-floating
+                    = f.check_box :waiver_agreement, checked: @account.waiver_agreement, class: "pull-left checkbox-padding"
+                    = f.label :waiver_agreement do
+                      I have read and agree with #{link_to 'all waivers and agreements', root_path}
+                .col-sm-12
+                  .form-group.label-floating
+                    = f.check_box :mail_agreements, checked: @account.last_registration_step_completed == "parents" ? @account.mail_agreements : true, class: "pull-left checkbox-padding"
+                    = f.label :mail_agreements do
+                      Have all waivers and agreements mailed to me
 
       .col-sm-12
         = f.submit 'Next Step', class: "btn btn-block btn-info"

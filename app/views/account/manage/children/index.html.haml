@@ -5,9 +5,6 @@
     .col-md-4
       .card
         .card-content
-          %h6.category.text-danger
-            %i.material-icons trending_up
-            Trending
           %h4.card-title
             = c.full_name
           .footer
@@ -24,13 +21,6 @@
   .col-md-4
     .card
       .card-content.content-success
-        %h5.category-social
-          %i.fa.fa-newspaper-o
-          TechCrunch
-        %h4.card-title
-          %a{:href => "#pablo"} "Focus on Your Employees"
-        %p.card-description
-          Children are the hands by which we take hold of heaven
         .footer.text-center
           = link_to "Add Another Child", new_account_child_path(@account), class: "btn btn-white btn-round"
 %br/
