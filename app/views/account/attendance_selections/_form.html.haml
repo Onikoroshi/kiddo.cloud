@@ -5,21 +5,23 @@
     Monthly Recurring Plan
   %h4.text-center
     Select which days each week your child will be with us
-    
+
   #attendance-selection
-  
+
     = form_for(@account, url: account_attendance_selection_path, method: "PUT") do |f|
       = render "application/form_errors", object: @account
-  
+      %h5 Location
+      = f.select :location_id, @account.center.locations.map {|a| [ a.name, a.id ] }
+
       = f.fields_for :children, @account.children do |cf|
         .plan-box
-        
+
           .col-xs-12
             .dropin-name.text-center
               = cf.object.full_name
 
           .col-sm-4.col-sm-offset-2
-            %h5 Location
+
           = cf.fields_for :attendance_selection, cf.object.attendance_selection do |asf|
             .col-sm-4
               %h5 Days
@@ -27,28 +29,28 @@
                 %label
                   = asf.check_box :monday, checked: asf.object.monday
                   = asf.label :monday
-  
+
               .checkbox
                 %label
                   = asf.check_box :tuesday, checked: asf.object.tuesday
                   = asf.label :tuesday
-  
+
               .checkbox
                 %label
                   = asf.check_box :wednesday, checked: asf.object.wednesday
                   = asf.label :wednesday
-  
+
               .checkbox
                 %label
                   = asf.check_box :thursday, checked: asf.object.thursday
                   = asf.label :thursday
-  
+
               .checkbox
                 %label
                   = asf.check_box :friday, checked: asf.object.friday
                   = asf.label :friday
             .cleaner
-                  
-  
+
+
       = link_to "Cancel", account_step_path(@account, :plan), class: "btn"
       = f.submit "Submit", class: "btn btn-info pull-right"

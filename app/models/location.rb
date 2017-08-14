@@ -9,5 +9,4 @@ class Location < ApplicationRecord
   def default?
     default
   end
-
 end

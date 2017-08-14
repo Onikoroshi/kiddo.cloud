@@ -30,6 +30,7 @@ class Account::AttendanceSelectionsController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def account_selection_params
       permitted_attributes = [
+        :location_id,
         children_attributes: [
           :id,
           attendance_selection_attributes: [
@@ -46,4 +47,5 @@ class Account::AttendanceSelectionsController < ApplicationController
       ]
       params.require(:account).permit(permitted_attributes)
     end
+
 end
