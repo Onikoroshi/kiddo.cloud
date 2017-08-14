@@ -5,10 +5,6 @@
   %h5.text-center
     Select Your Location
 
-  %select.selectpicker{"data-size" => "7", "data-style" => "btn btn-primary btn-round", :title => "Single Select"}
-    %option{:disabled => "disabled", :selected => "selected"} Single Option
-    %option{:value => "2"} Foobar
-    
   #location-switcher
     = form_tag staff_attendance_display_index_path, method: :get do
       = select_tag "staff-location-switcher", options_from_collection_for_select(@center.locations, 'id', 'name', @location.try(:id)),
@@ -17,7 +13,7 @@
   #time-entry-message
 
   #time-entries
-    - @center.users.staff.all.each do |u|
+    - @location.staff.all.each do |u|
       .checkin-name
         .col-xs-6= u.staff.full_name
 
