@@ -42,7 +42,7 @@ Rails.application.routes.draw do
   end
 
   namespace :staff do
-    resources :parents, only: [:index]
+    resources :accounts, only: [:index]
     resources :time_disputes, only: [:index, :new, :create]
     resources :attendance_display, only: :index
     resource :dashboard, only: :show, controller: 'dashboard'

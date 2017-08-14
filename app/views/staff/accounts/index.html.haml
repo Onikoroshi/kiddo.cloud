@@ -1,0 +1,22 @@
+%h3
+  Parents
+
+- if @accounts.any?
+  .row
+    .table-responsive
+      %table.table
+        %thead
+          %tr
+            %th Primary Parent
+            %th Email
+            %th Children
+            %th Location
+            %th Account Created
+        %tbody
+          - @accounts.each do |a|
+            %tr
+              %td=a.primary_parent.full_name if a.primary_parent.present?
+              %td=a.user.email if a.user.present?
+              %td=a.children.collect {|c| c.full_name }.to_sentence
+              %td=a.location.name if a.location.present?
+              %td=a.created_at.stamp("Monday November 5, 2017")

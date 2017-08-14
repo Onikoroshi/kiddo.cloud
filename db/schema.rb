@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170810012307) do
+ActiveRecord::Schema.define(version: 20170814001027) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20170810012307) do
     t.boolean "signup_complete", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "location_id"
     t.index ["center_id"], name: "index_accounts_on_center_id"
     t.index ["user_id"], name: "index_accounts_on_user_id"
   end
@@ -247,7 +248,6 @@ ActiveRecord::Schema.define(version: 20170810012307) do
 
   create_table "time_disputes", force: :cascade do |t|
     t.bigint "location_id"
-    t.bigint "users_id"
     t.string "first_name"
     t.string "last_name"
     t.string "email"
@@ -256,8 +256,8 @@ ActiveRecord::Schema.define(version: 20170810012307) do
     t.text "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id"
     t.index ["location_id"], name: "index_time_disputes_on_location_id"
-    t.index ["users_id"], name: "index_time_disputes_on_users_id"
   end
 
   create_table "time_entries", force: :cascade do |t|

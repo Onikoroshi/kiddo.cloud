@@ -26,7 +26,7 @@ class Staff::TimeDisputesController < ApplicationController
   # POST /time_disputes
   # POST /time_disputes.json
   def create
-    @time_dispute = TimeDispute.new(time_dispute_params.merge(created_by: current_user))
+    @time_dispute = TimeDispute.new(time_dispute_params.merge(user_id: current_user.id))
     @time_dispute.location = Location.find_by_id(params[:time_dispute][:location])
     authorize @time_dispute
 

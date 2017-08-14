@@ -9,7 +9,7 @@ class DropIn < ApplicationRecord
   money_column :price
 
   validates :date, presence: true
-  validates :time_slot, presence: true
+  #validates :time_slot, presence: true
   validate :validate_date_within_range
 
   def wednesday?
@@ -27,7 +27,7 @@ class DropIn < ApplicationRecord
   end
 
   def to_s
-    "#{child.full_name} is scheduled to be dropped in on #{date.stamp("March 1, 2029")} from #{translate_time_slot}."
+    "#{child.full_name} is scheduled to be dropped in on #{date.stamp("March 1, 2029")}."
   end
 
   def translate_time_slot

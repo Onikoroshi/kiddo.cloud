@@ -6,11 +6,11 @@
         %ul.nav.nav-tabs{"data-tabs" => "tabs"}
           %li{ class: (step == :parents) ? "active" : ""}
             =link_to staff_dashboard_path do
-              %i.material-icons account_circle
+              %i.material-icons bookmark
               Administrator Account Home
-          %li{ class: (controller_name == "children") ? "active" : ""}
-            =link_to staff_parents_path do
-              %i.material-icons face
+          %li{ class: (controller_name == "accounts") ? "active" : ""}
+            =link_to staff_accounts_path do
+              %i.material-icons account_circle
               Parents
           %li{ class: (controller_name == "children") ? "active" : ""}
             =link_to root_path do
@@ -18,9 +18,9 @@
               Children
           %li{ class: (step == :summary) ? "active" : ""}
             =link_to staff_dashboard_path do
-              %i.material-icons check_circle
+              %i.material-icons done
               Attendance
           %li{ class: (step == :payment) ? "active" : ""}
             =link_to new_staff_time_dispute_path do
-              %i.material-icons payment
+              %i.material-icons thumbs_up_down
               Time Disputes
