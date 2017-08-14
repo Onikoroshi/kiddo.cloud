@@ -4,6 +4,11 @@ class Staff::AccountsController < ApplicationController
 
   # GET /account/dashboards/1
   def index
-    @accounts = Account.includes(:parents).all.order(created_at: :desc)
+    @accounts = Account
+                .includes(:parents)
+                .where(center: @center)
+                .order(created_at: :desc)
+                .page(params[:page])
+                .per(50)
   end
 end

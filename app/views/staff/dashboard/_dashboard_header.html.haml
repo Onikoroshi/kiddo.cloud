@@ -12,10 +12,6 @@
             =link_to staff_accounts_path do
               %i.material-icons account_circle
               Parents
-          %li{ class: (controller_name == "children") ? "active" : ""}
-            =link_to root_path do
-              %i.material-icons face
-              Children
           %li{ class: (step == :summary) ? "active" : ""}
             =link_to staff_dashboard_path do
               %i.material-icons done
