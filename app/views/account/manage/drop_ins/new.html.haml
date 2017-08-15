@@ -1,7 +1,7 @@
 .col-xs-12.text-center
   %h3 Drop-in for #{@center.current_program.name}
 
-.col-md-8.col-sm-10.col-md-offset-2.col-sm-offset-1
+.col-md-6.col-md-offset-3.col-xs-8.col-xs-offset-2
   = form_for(@account, url: "/accounts/#{@account.id}/dashboard/drop_ins", method: :post) do |f|
     = render "application/form_errors", object: @account
   

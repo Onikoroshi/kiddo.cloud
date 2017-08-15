@@ -10,9 +10,7 @@
 
     = form_for(@account, url: account_attendance_selection_path, method: "PUT") do |f|
       = render "application/form_errors", object: @account
-      %h5 Location
-      = f.select :location_id, @account.center.locations.map {|a| [ a.name, a.id ] }
-
+      
       = f.fields_for :children, @account.children do |cf|
         .plan-box
 
@@ -20,11 +18,13 @@
             .dropin-name.text-center
               = cf.object.full_name
 
-          .col-sm-4.col-sm-offset-2
+          .col-sm-4
+            %h5 Choose a Location
+            = f.select :location_id, @account.center.locations.map {|a| [ a.name, a.id ] }
 
           = cf.fields_for :attendance_selection, cf.object.attendance_selection do |asf|
-            .col-sm-4
-              %h5 Days
+            .col-sm-8
+              %h5 Select Days
               .checkbox
                 %label
                   = asf.check_box :monday, checked: asf.object.monday

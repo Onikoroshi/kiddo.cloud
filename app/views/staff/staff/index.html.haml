@@ -1,28 +1,27 @@
-%h3
+%h3.text-center
   Staff
 
-.row
+
+= link_to "+ Add New Staff Member", new_staff_staff_path, class: "btn btn-info btn-block"
+
+
+- if @staff.any?
+
+  .table-responsive
+    %table.table
+      %thead
+        %tr
+          %th Name
+          %th Email
+          %th Location
+          %th Date Created
+      %tbody
+        - @staff.each do |s|
+          %tr
+            %td=s.user.full_name
+            %td=s.user.email
+            %td=s.locations.collect {|l| l.name }.to_sentence
+            %td=s.created_at.stamp("Monday November 5, 2017")
+
   .text-center
-    = link_to "+ Add New Staff Member", new_staff_staff_path, class: "btn btn-info btn-block"
-
-.row
-  - if @staff.any?
-    .row
-      .table-responsive
-        %table.table
-          %thead
-            %tr
-              %th Name
-              %th Email
-              %th Location
-              %th Date Created
-          %tbody
-            - @staff.each do |s|
-              %tr
-                %td=s.user.full_name
-                %td=s.user.email
-                %td=s.locations.collect {|l| l.name }.to_sentence
-                %td=s.created_at.stamp("Monday November 5, 2017")
-
-    .text-center
-      = paginate @staff
+    = paginate @staff

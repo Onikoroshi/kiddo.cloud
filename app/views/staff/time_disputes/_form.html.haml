@@ -2,22 +2,24 @@
   = render "application/form_errors", object: time_dispute
   = form.hidden_field :location, value: @time_dispute.location.id if @time_dispute.location.present?
   .field
-    = form.label :first_name
-    = form.text_field :first_name, id: :time_dispute_first_name
+    = form.label :first_name, class: "control-label"
+    = form.text_field :first_name, id: :time_dispute_first_name, class: "form-control"
   .field
-    = form.label :last_name
-    = form.text_field :last_name, id: :time_dispute_last_name
+    = form.label :last_name, class: "control-label"
+    = form.text_field :last_name, id: :time_dispute_last_name, class: "form-control"
   .field
-    = form.label :email
-    = form.text_field :email, id: :time_dispute_email
+    = form.label :email, class: "control-label"
+    = form.text_field :email, id: :time_dispute_email, class: "form-control"
   .field
-    = form.label :phone
-    = form.text_field :phone, id: :time_dispute_phone
+    = form.label :phone, class: "control-label"
+    = form.text_field :phone, id: :time_dispute_phone, class: "form-control"
   .field
-    = form.label :date
+    = form.label :date, class: "control-label"
     = form.text_field :date, id: "flatpickr-input"
   .field
-    = form.label :message
-    = form.text_area :message, id: :time_dispute_message
+    = form.label :message, class: "control-label"
+    = form.text_area :message, id: :time_dispute_message, class: "form-control"
+  .cleaner
+    
   .actions
-    = form.submit
+    = form.submit :submit, class: "btn btn-info btn-sm pull-right"
