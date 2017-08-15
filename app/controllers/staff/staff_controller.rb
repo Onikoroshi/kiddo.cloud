@@ -53,6 +53,16 @@ class Staff::StaffController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def staff_params
-    params[:staff]
+    permitted_attributes = [
+      user_attributes: [
+        :id,
+        :email,
+        :first_name,
+        :last_name,
+        :password,
+        :password_confirmation
+      ]
+    ]
+    params.require(:staff).permit(permitted_attributes)
   end
 end
