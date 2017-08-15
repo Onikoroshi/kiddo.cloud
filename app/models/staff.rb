@@ -7,6 +7,8 @@ class Staff < ApplicationRecord
 
   delegate :full_name, to: :user
 
+  accepts_nested_attributes_for :user
+
   def last_time_entry
     self.time_entries.last
   end

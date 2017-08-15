@@ -231,6 +231,13 @@ ActiveRecord::Schema.define(version: 20170814003303) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "staff", force: :cascade do |t|
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_staff_on_user_id"
+  end
+
   create_table "staff_locations", force: :cascade do |t|
     t.bigint "staff_id"
     t.bigint "location_id"
@@ -238,13 +245,6 @@ ActiveRecord::Schema.define(version: 20170814003303) do
     t.datetime "updated_at", null: false
     t.index ["location_id"], name: "index_staff_locations_on_location_id"
     t.index ["staff_id"], name: "index_staff_locations_on_staff_id"
-  end
-
-  create_table "staffs", force: :cascade do |t|
-    t.bigint "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_staffs_on_user_id"
   end
 
   create_table "subscriptions", force: :cascade do |t|
