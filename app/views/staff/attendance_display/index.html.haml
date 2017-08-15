@@ -7,8 +7,7 @@
 
   #location-switcher
     = form_tag staff_attendance_display_index_path, method: :get do
-      = select_tag "staff-location-switcher", options_from_collection_for_select(@center.locations, 'id', 'name', @location.try(:id)),
-        { "data-size" => "7", class: "selectpicker btn btn-primary btn-round" }
+      = select_tag "staff-location-switcher", options_from_collection_for_select(@center.locations, 'id', 'name', @location.try(:id))
 
   #time-entry-message
 
