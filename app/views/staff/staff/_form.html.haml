@@ -13,10 +13,13 @@
           = u.label :email, "Email", class: "control-label"
           = u.text_field :email
         .form-group.label-floating
+          = f.label :location_ids, "Locations", class: "control-label"
+          = f.collection_select :location_ids, Location.all, :id, :name
+        .form-group.label-floating
           = u.label :password, "Password", class: "control-label"
-          = u.text_field :password
+          = u.password_field :password
         .form-group.label-floating
           = u.label :password, "Password Confirmation", class: "control-label"
-          = u.text_field :password_confirmation
+          = u.password_field :password_confirmation
 
         = f.submit class: "btn btn-success"

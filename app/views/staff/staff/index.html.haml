@@ -16,6 +16,7 @@
               %th Email
               %th Location
               %th Date Created
+              %th Actions
           %tbody
             - @staff.each do |s|
               %tr
@@ -23,6 +24,7 @@
                 %td=s.user.email
                 %td=s.locations.collect {|l| l.name }.to_sentence
                 %td=s.created_at.stamp("Monday November 5, 2017")
+                %td=link_to "Edit", edit_staff_staff_path(s), class: "btn btn-xs"
 
     .text-center
       = paginate @staff

@@ -15,6 +15,7 @@ class Staff::StaffController < ApplicationController
 
   def new
     @staff = Staff.new(user: User.new)
+    @staff.locations.build
   end
 
   def edit; end
@@ -23,7 +24,7 @@ class Staff::StaffController < ApplicationController
     @staff = Staff.new(staff_params)
 
     if @staff.save
-      redirect_to @staff, notice: 'Staff member was successfully created.'
+      redirect_to staff_staff_index_path, notice: 'Staff member was successfully created.'
     else
       render action: 'new'
     end
@@ -32,7 +33,7 @@ class Staff::StaffController < ApplicationController
   # PATCH/PUT /interviews/1
   def update
     if @staff.update(staff_params)
-      redirect_to @staff, notice: 'Staff member was successfully updated.'
+      redirect_to staff_staff_index_path, notice: 'Staff member was successfully updated.'
     else
       render action: 'edit'
     end
@@ -41,7 +42,7 @@ class Staff::StaffController < ApplicationController
   # DELETE /interviews/1
   def destroy
     @staff.destroy
-    redirect_to interviews_url, notice: 'Interview was successfully destroyed.'
+    redirect_to staff_staff_index_path, notice: 'Staff was successfully removed.'
   end
 
   private
@@ -54,6 +55,7 @@ class Staff::StaffController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def staff_params
     permitted_attributes = [
+      :location_ids,
       user_attributes: [
         :id,
         :email,
@@ -61,7 +63,7 @@ class Staff::StaffController < ApplicationController
         :last_name,
         :password,
         :password_confirmation
-      ]
+      ],
     ]
     params.require(:staff).permit(permitted_attributes)
   end
