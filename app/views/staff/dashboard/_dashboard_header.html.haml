@@ -12,11 +12,15 @@
             =link_to staff_accounts_path do
               %i.material-icons account_circle
               Parents
-          %li{ class: (step == :summary) ? "active" : ""}
+          %li{ class: (controller_name == "staff") ? "active" : ""}
+            =link_to staff_staff_index_path do
+              %i.material-icons accessibility
+              Staff
+          %li{ class: (controller_name == "dashboard") ? "active" : ""}
             =link_to staff_dashboard_path do
               %i.material-icons done
               Attendance
-          %li{ class: (step == :payment) ? "active" : ""}
+          %li{ class: (controller_name == "time_disputes") ? "active" : ""}
             =link_to new_staff_time_dispute_path do
               %i.material-icons thumbs_up_down
               Time Disputes

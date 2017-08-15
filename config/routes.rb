@@ -46,6 +46,7 @@ Rails.application.routes.draw do
     resources :time_disputes, only: [:index, :new, :create]
     resources :attendance_display, only: :index
     resource :dashboard, only: :show, controller: 'dashboard'
+    resources :staff
   end
 
   resources :time_entries, only: :create
