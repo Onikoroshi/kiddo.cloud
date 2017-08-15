@@ -4,17 +4,17 @@
 .col-md-8.col-sm-10.col-md-offset-2.col-sm-offset-1
   = form_for(@account, url: "/accounts/#{@account.id}/dashboard/drop_ins", method: :post) do |f|
     = render "application/form_errors", object: @account
-  
+
     = f.fields_for :children, @account.children do |cf|
-  
+
       .account-box
         .dropin-name
           = cf.object.full_name
-      
+
         = cf.fields_for :drop_ins, cf.object.drop_ins.build do |drop_in|
           = render "drop_in_fields", f: drop_in
-  
-  
+
+
     %br.cleaner
     = link_to "Cancel", account_dashboard_path(@account), class: "btn"
     = f.submit "Submit", class: "btn btn-info pull-right"
