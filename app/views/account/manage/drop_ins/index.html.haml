@@ -3,10 +3,10 @@
     %h3
       My Drop-Ins
     %br
-      
+
     .text-center
       = link_to "+ Schedule a Drop-In", new_account_dashboard_drop_ins_path(@account), class: "btn btn-info btn-block"
-  
+
   - if @account.drop_ins.any?
     .row
       .table-responsive
