@@ -1,10 +1,11 @@
 module ChildEnrollment
   class DkkEnroller
 
-    attr_reader :children, :plans
-    def initialize(children, program)
+    attr_reader :children, :plans, :location
+    def initialize(children, program, location)
       @children = children
       @plans = program.plans
+      @location = location
     end
 
     def enroll
@@ -12,6 +13,7 @@ module ChildEnrollment
 
       children.each do |child|
         enroll_child(child)
+        child.enrollments.update_all(location_id: location.id)
       end
     end
 

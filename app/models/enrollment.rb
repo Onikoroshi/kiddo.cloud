@@ -1,4 +1,5 @@
 class Enrollment < ApplicationRecord
+  belongs_to :location
   belongs_to :child
   belongs_to :plan
 

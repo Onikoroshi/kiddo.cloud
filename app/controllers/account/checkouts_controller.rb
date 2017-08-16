@@ -1,4 +1,4 @@
-class Account::PaymentsController < ApplicationController
+class Account::CheckoutsController < ApplicationController
   layout "dkk_customer_dashboard"
   before_action :guard_center!
   before_action :fetch_account
@@ -8,7 +8,10 @@ class Account::PaymentsController < ApplicationController
 
   def create
 
-    amount = ChildEnrollment::DropInPriceCalculator.new(@account.children, @account.center.current_program).calculate
+    amount = ChildEnrollment::EnrollmentPriceCalculator.new(
+      @account.children,
+      @account.center.current_program
+    ).calculate
 
     # Token is created using Stripe.js or Checkout!
     # Get the payment token ID submitted by the form:
@@ -19,9 +22,9 @@ class Account::PaymentsController < ApplicationController
 
     # Charge the Customer instead of the card:
     charge = Stripe::Charge.create(
-      :amount => amount.to_i * 100,
-      :currency => "usd",
-      :customer => customer.id,
+      amount: amount.to_i * 100,
+      currency: "usd",
+      customer: customer.id,
     )
 
     # YOUR CODE: Save the customer ID and other info in a database for later.
@@ -34,16 +37,19 @@ class Account::PaymentsController < ApplicationController
     # )
 
     if charge.present?
+      @account.update_attributes(
+        gateway_customer_id: customer.id,
+        card_brand: params[:account][:card_brand],
+        card_exp_month: params[:account][:card_exp_month],
+        card_exp_year: params[:account][:card_exp_year],
+        card_last4: params[:account][:card_last4]
+      )
       @account.record_step(:payment)
       @account.finalize_signup
-      @account.drop_ins.each do |d|
-        d.update_attributes(paid: true)
-      end
-
       @account.transactions << Transaction.create(
         account: @account,
         program: @account.center.current_program,
-        transaction_type: "drop in payment",
+        transaction_type: "monthly enrollment",
         month: Time.zone.now.month,
         year: Time.zone.now.year,
         amount: amount,
@@ -58,8 +64,8 @@ class Account::PaymentsController < ApplicationController
 
   private
 
-    def fetch_account
-      @account = Account.find(params[:account_id])
-    end
+  def fetch_account
+    @account = Account.find(params[:account_id])
+  end
 
 end

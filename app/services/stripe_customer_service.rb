@@ -6,7 +6,7 @@ class StripeCustomerService
   end
 
   def find_or_create_customer(token)
-    customer = if account.customer?
+    if account.customer?
       Stripe::Customer.retrieve(account.gateway_customer_id)
     else
       Stripe::Customer.create(email: account.primary_email, source: token)

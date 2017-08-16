@@ -15,7 +15,16 @@ module ChildEnrollment
           total += enrollment.plan.price
         end
       end
-      total
+      apply_discount(total)
+    end
+
+    def apply_discount(total)
+      if Time.zone.now.month == 8
+        discount = total * 0.20
+        total = total - discount
+      else
+        total
+      end
     end
 
   end

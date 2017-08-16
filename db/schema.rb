@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170814003303) do
+ActiveRecord::Schema.define(version: 20170816055552) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -151,6 +151,7 @@ ActiveRecord::Schema.define(version: 20170814003303) do
   create_table "enrollments", force: :cascade do |t|
     t.bigint "child_id"
     t.bigint "plan_id"
+    t.bigint "location_id"
     t.boolean "monday", default: false
     t.boolean "tuesday", default: false
     t.boolean "wednesday", default: false
@@ -162,6 +163,7 @@ ActiveRecord::Schema.define(version: 20170814003303) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["child_id"], name: "index_enrollments_on_child_id"
+    t.index ["location_id"], name: "index_enrollments_on_location_id"
     t.index ["plan_id"], name: "index_enrollments_on_plan_id"
   end
 
@@ -281,6 +283,20 @@ ActiveRecord::Schema.define(version: 20170814003303) do
     t.index ["time_recordable_type", "time_recordable_id"], name: "index_recordable_id_type"
   end
 
+  create_table "transactions", force: :cascade do |t|
+    t.bigint "account_id"
+    t.bigint "program_id"
+    t.string "transaction_type"
+    t.integer "month"
+    t.integer "year"
+    t.float "amount"
+    t.boolean "paid", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_transactions_on_account_id"
+    t.index ["program_id"], name: "index_transactions_on_program_id"
+  end
+
   create_table "user_permissions", id: :serial, force: :cascade do |t|
     t.integer "permission_id"
     t.integer "user_id"
@@ -329,9 +345,12 @@ ActiveRecord::Schema.define(version: 20170814003303) do
   add_foreign_key "drop_ins", "programs"
   add_foreign_key "emergency_contacts", "accounts"
   add_foreign_key "enrollments", "children"
+  add_foreign_key "enrollments", "locations"
   add_foreign_key "enrollments", "plans"
   add_foreign_key "plans", "programs"
   add_foreign_key "programs", "centers"
   add_foreign_key "subscriptions", "accounts"
   add_foreign_key "time_disputes", "locations"
+  add_foreign_key "transactions", "accounts"
+  add_foreign_key "transactions", "programs"
 end
