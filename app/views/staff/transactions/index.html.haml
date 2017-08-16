@@ -1,0 +1,38 @@
+%h3
+  Payments
+
+- if @transactions.any?
+  .row
+    .table-responsive
+      %table.table
+        %thead
+          %tr
+            %th Primary Parent
+            %th Email
+            %th Location
+            %th Program
+            %th Program Month/Yr
+            %th Amount
+            %th Card
+            %th Status
+            %th Type
+            %th Payment Date
+        %tbody
+          - @transactions.each do |tx|
+            - account = tx.account
+            %tr
+              %td=account.primary_parent.full_name if account.primary_parent.present?
+              %td=account.user.email if account.user.present?
+              %td=account.location.name if account.location.present?
+              %td=tx.program.name
+              %td
+                #{tx.month}/#{tx.year}
+              %td=Money.new(tx.amount).to_s
+              %td
+                #{account.card_brand} #{account.card_last4}
+              %td=tx.paid ? "Paid" : "Unpaid"
+              %td=tx.transaction_type
+              %td=tx.created_at.stamp("Monday November 5, 2017")
+
+  .text-center
+    = paginate @transactions

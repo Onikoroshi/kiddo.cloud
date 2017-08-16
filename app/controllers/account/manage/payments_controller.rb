@@ -26,6 +26,15 @@ class Account::Manage::PaymentsController < ApplicationController
 
     if charge.present?
       @account.drop_ins.where(paid: false).map { |d| d.update_attributes(paid: true) }
+      @account.transactions << Transaction.create(
+        account: @account,
+        program: @account.center.current_program,
+        transaction_type: "dropin payment",
+        month: Time.zone.now.month,
+        year: Time.zone.now.year,
+        amount: amount,
+        paid: true
+      )
       redirect_to my_dropins_account_dashboard_path(@account), notice: 'Your drop-in days have been added'
     else
       render :new

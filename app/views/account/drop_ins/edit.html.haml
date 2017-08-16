@@ -6,6 +6,9 @@ Drop-in for #{@center.current_program.name}
   = render "application/form_errors", object: @account
   %table
 
+    %h5 Location
+    = f.select :location_id, @account.center.locations.map {|a| [ a.name, a.id ] }
+
     = f.fields_for :children, @account.children do |cf|
 
       %tr

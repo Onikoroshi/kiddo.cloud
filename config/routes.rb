@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     resources :steps, only: [:show, :update], controller: 'account/steps'
     resources :children, controller: 'account/children'
     resource :subscription, controller: 'account/subscription'
+    resource :checkout, only: [:new, :create], controller: "account/checkouts"
     resources :payments, controller: "account/payments"
 
     resource :enrollment_type,
@@ -47,6 +48,8 @@ Rails.application.routes.draw do
     resources :attendance_display, only: :index
     resource :dashboard, only: :show, controller: 'dashboard'
     resources :staff
+    resources :transactions, only: [:index, :show]
+    resources :scheduled_children, only: :index
   end
 
   resources :time_entries, only: :create

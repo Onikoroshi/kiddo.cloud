@@ -12,6 +12,7 @@ class DropIn < ApplicationRecord
   #validates :time_slot, presence: true
   validate :validate_date_within_range
 
+
   def wednesday?
     date.wednesday?
   end
