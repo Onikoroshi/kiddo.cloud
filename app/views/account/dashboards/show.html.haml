@@ -10,8 +10,8 @@
           = c.full_name
         .footer
           .author
-            Born: 
-            = c.birthdate
+            Born:
+            = c.birthdate.stamp("November 27, 1983") if c.birthdate.present?
           .stats
             %i.material-icons edit
             = link_to 'Edit', edit_account_dashboard_child_path(@account, c)
@@ -24,5 +24,3 @@
     .card-content
       .footer.text-center
         = link_to "Add Another Child", new_account_dashboard_child_path(@account), class: "btn btn-danger"
-
-        

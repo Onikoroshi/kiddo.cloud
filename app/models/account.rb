@@ -6,6 +6,7 @@ class Account < ApplicationRecord
   has_one :primary_parent, ->(p) { where primary: true }, class_name: "Parent"
   has_one :secondary_parent, ->(p) { where secondary: true }, class_name: "Parent"
   has_one :subscription
+  has_many :transactions
 
   belongs_to :location
 

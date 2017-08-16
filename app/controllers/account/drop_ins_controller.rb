@@ -80,6 +80,7 @@ class Account::DropInsController < ApplicationController
 
     def edit_drop_in_params
       permitted_attributes = [
+        :location_id,
         children_attributes: [
           :id,
           drop_ins_attributes: [

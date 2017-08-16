@@ -4,11 +4,14 @@
   %h2.text-center
     Drop-in for #{@center.current_program.name}
   %p.text-center
-    Select the day you want your child(ren) to drop-in.
-  
+    Select the day and location you want your child(ren) to drop-in.
+
   = form_for(@account, url: "/accounts/#{@account.id}/drop_ins", method: :post) do |f|
     = render "application/form_errors", object: @account
-  
+
+    %h5 Location
+    = f.select :location_id, @account.center.locations.map {|a| [ a.name, a.id ] }
+
     = f.fields_for :children, @account.children do |cf|
       .row
         .dropin
@@ -19,7 +22,7 @@
           = cf.fields_for :drop_ins, cf.object.drop_ins.build do |drop_in|
             = drop_in.object.id
             = render "drop_in_fields", f: drop_in
-  
-  
+
+
     = link_to "Cancel", account_step_path(@account, :plan), class: "btn"
     = f.submit "Submit", class: "btn btn-info pull-right"
