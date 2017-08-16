@@ -15,11 +15,12 @@
         .form-group.label-floating
           = f.label :location_ids, "Locations", class: "control-label"
           = f.collection_select :location_ids, Location.all, :id, :name
-        .form-group.label-floating
-          = u.label :password, "Password", class: "control-label"
-          = u.password_field :password
-        .form-group.label-floating
-          = u.label :password, "Password Confirmation", class: "control-label"
-          = u.password_field :password_confirmation
+        - if @staff.new_record?
+          .form-group.label-floating
+            = u.label :password, "Password", class: "control-label"
+            = u.password_field :password
+          .form-group.label-floating
+            = u.label :password, "Password Confirmation", class: "control-label"
+            = u.password_field :password_confirmation
 
         = f.submit class: "btn btn-success"
