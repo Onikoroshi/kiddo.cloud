@@ -18,8 +18,12 @@ module ChildEnrollment
       apply_discount(total)
     end
 
+    # 80% off for August, 20% off for June
     def apply_discount(total)
       if Time.zone.now.month == 8
+        discount = total * 0.80
+        total = total - discount
+      elsif Time.zone.now.month == 6
         discount = total * 0.20
         total = total - discount
       else
