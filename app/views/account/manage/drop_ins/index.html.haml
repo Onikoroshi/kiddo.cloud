@@ -5,13 +5,12 @@
   %br
   %hr
   - if @account.drop_ins.any?
-  
+    %ul
     - @account.drop_ins.where(paid: true).where("date >= ?", Time.zone.now).order(date: :asc).each_with_index do |d, index|
-      =d.to_s
-      / =link_to "X", account_dashboard_drop_ins_path(@account, drop_in_id: d.id), method: :delete, data: {confirm: "Are you sure?" }, class: "btn btn-info"
+      %li=d.to_s
       .cleaner
       %hr
-        
+
 
 
   .text-center

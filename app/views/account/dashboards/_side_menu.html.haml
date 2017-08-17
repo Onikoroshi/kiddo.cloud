@@ -1,11 +1,11 @@
 %ul.nav.nav-pills.nav-pills-rose
-  %li.active
+  %li{ class: (controller_name == "dashboards") ? "active" : ""}
     = link_to "My Kids", account_dashboard_path(@account)
-  %li
+  %li{ class: (controller_name == "drop_ins") ? "active" : ""}
     = link_to "My Drop-ins", my_dropins_account_dashboard_path(@account)
-  %li
-    = link_to "My Monthly Programs", account_dashboard_enrollments_path(@account) 
-  %li
+  %li{ class: (controller_name == "enrollments") ? "active" : ""}
+    = link_to "My Monthly Programs", account_dashboard_enrollments_path(@account)
+  %li{ class: (controller_name == "registrations") ? "active" : ""}
     = link_to "Edit Email/Password", edit_user_registration_path
 .cleaner
 %br
