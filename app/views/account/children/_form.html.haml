@@ -10,11 +10,11 @@
         .form-group.label-floating
           = form.label :first_name, "First Name", class: "control-label"
           = form.text_field :first_name, class: "form-control"
-    
+
         .form-group.label-floating
           = form.label :last_name, "Last Name", class: "control-label"
           = form.text_field :last_name, class: "form-control"
-    
+
         .form-group.label-floating
           = form.label :gender
           .radio
@@ -24,29 +24,27 @@
             %label
               = form.radio_button :gender, "Female"
               Female
-          
-      
+
+
         .select.form-group.label-floating
           = form.label :grade_entering
           %br
-          %select.selectpicker{"data-size" => "7", "data-style" => "btn btn-sm btn-primary btn-round", :title => "Single Select"}
-            %option{:disabled => "disabled", :selected => "selected"} Select Grade
-            %option{:value => "2"} 1
-            = form.select :grade_entering, (1..10).to_a, include_blank: false
-      
+          = form.select :grade_entering, (1..10).to_a, include_blank: false, class: "selectpicker"
+
         .form-group.label-floating
           = form.label :birthdate, "Birth Date", class: "control-label"
+          %br
           = form.text_field :birthdate, id: "flatpickr-dob-input", class: "form-control"
-      
-      
+
+
       .col-md-6
         = form.fields_for :care_items, @account_child.care_items do |c|
-          .form-group.label-floating      
+          .form-group.label-floating
             .row
               .col-xs-6
                 = c.object.name
                 = c.hidden_field :name, value: c.object.name
-                
+
               .col-xs-3.text-center
                 .radio
                   %label
@@ -59,14 +57,14 @@
                     = c.radio_button :active, true
               .col-xs-12
                 = c.text_field :explanation, placeholder: "Please explain", class: "form-control"
-                
-      
+
+
       .col-xs-12
         .form-group.label-floating
           = form.label :additional_info do
             ADDITIONAL INFO (optional)
           = form.text_area :additional_info, placeholder: "(Favorite hobbies, sports, books, etc)"
-      
+
         .navigation
           = link_to "Cancel", account_children_path(@account), class: "btn" if @account.children.any?
           = form.submit @account_child.persisted? ? "Update Child" : "Register Child", class: "btn btn-info pull-right"
