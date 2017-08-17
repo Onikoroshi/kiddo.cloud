@@ -1,5 +1,5 @@
-.col-xs-12.text-center
-  %h3 Drop-in for #{@center.current_program.name}
+%h3.text-center Drop-in for #{@center.current_program.name}
+%br
 
 .col-md-6.col-md-offset-3.col-xs-8.col-xs-offset-2
   = form_for(@account, url: "/accounts/#{@account.id}/dashboard/drop_ins", method: :post) do |f|
@@ -10,7 +10,7 @@
       .account-box
         .dropin-name
           = cf.object.full_name
-
+        
         = cf.fields_for :drop_ins, cf.object.drop_ins.build do |drop_in|
           = render "drop_in_fields", f: drop_in
 

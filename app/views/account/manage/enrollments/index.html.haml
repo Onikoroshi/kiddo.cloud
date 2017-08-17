@@ -1,9 +1,8 @@
 - if @enrollments.any?
-  .row
-    .col-md-6.col-sm-8.col-md-offset-3.col-sm-offset-2
-      %h3 My Enrollments
-      %br
-      .account-box
-      
-        - @enrollments.each do |enrollment|
-          =enrollment.to_s
+  .col-md-6.col-sm-8
+    %h3 My Monthly Programs
+    %br
+    .account-box
+    
+      - @enrollments.each do |enrollment|
+        =enrollment.to_s

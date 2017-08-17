@@ -33,7 +33,7 @@
               %li.dropdown
                 %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
                   %i.material-icons account_circle
-                  My Account
+                  #{@account.parents.where(primary: true).first.full_name}
                   %b.caret
                 %ul.dropdown-menu.dropdown-with-icons
                   %li
@@ -49,7 +49,7 @@
         .container
           = render "application/flash_messages"
           .row
-            = render "account/dashboards/dashboard_header"
+            /= render "account/dashboards/dashboard_header"
           .row
             .col-xs-12
               = render "account/dashboards/side_menu"

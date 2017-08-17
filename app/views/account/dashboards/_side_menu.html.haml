@@ -1,9 +1,11 @@
 %ul.nav.nav-pills.nav-pills-rose
-  %li
-    = link_to "Account Home", account_dashboard_path(@account)
+  %li.active
+    = link_to "My Kids", account_dashboard_path(@account)
   %li
     = link_to "My Drop-ins", my_dropins_account_dashboard_path(@account)
   %li
     = link_to "My Monthly Programs", account_dashboard_enrollments_path(@account) 
   %li
     = link_to "Edit Email/Password", edit_user_registration_path
+.cleaner
+%br

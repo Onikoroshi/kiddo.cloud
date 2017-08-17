@@ -1,14 +1,12 @@
 = render partial: "step_navigation"
 
-.col-xs-12
-  %h3.text-center
-    Review &amp; Sign
-  %p.text-center
-    Please review the summary below. If everything looks correct please type your signature and continue to payment.
-
-
-  .cleaner
-  .account-box
+.row
+  .account-alert
+    %h3.text-center
+      Review &amp; Sign
+    %p.text-center
+      If everything looks correct in the summary below, please type your full name and continue to payment.
+    .cleaner
     .col-md-6.col-md-offset-3
       #signature-form
         = form_for @account_summary_form, method: :put, url: wizard_path do |f|
@@ -22,163 +20,163 @@
 
 
   .cleaner
-  %h6.text-center Summary
+.row
+  %h3.text-center Summary
+  .col-md-4.col-sm-6
+    .account-box
+      #parents
+        %h3 Parents #{link_to "Edit", account_step_path(@account, :parents), class: "btn btn-xs btn-round"}
   
-.col-md-4.col-sm-6
-  .account-box
-    #parents
-      %h3 Parents #{link_to "Edit", account_step_path(@account, :parents), class: "btn btn-xs btn-round"}
-
-      #primary-parent
-        %h5 Primary Parent
-      .row.account-row
-        .col-xs-4.account-label
-          Name:
-        .col-xs-8.account-name
-          = @account.primary_parent.full_name
-      .row.account-row
-        .col-xs-4.account-label
-          Email:
-        .col-xs-8.account-name
-          = @account.primary_parent.user.email
-      .row.account-row
-        .col-xs-4.account-label
-          Phone:
-        .col-xs-8.account-name
-          = @account.primary_parent.phone
-      .row.account-row
-        .col-xs-4.account-label
-          Address:
-        .col-xs-8.account-name
-          = @account.primary_parent.address.full_address
-
-      #guardian
-        %h5 Secondary Contact
-      - if @account.secondary_parent.present?
+        #primary-parent
+          %h5 Primary Parent
         .row.account-row
           .col-xs-4.account-label
             Name:
           .col-xs-8.account-name
-            = @account.secondary_parent.full_name
+            = @account.primary_parent.full_name
+        .row.account-row
+          .col-xs-4.account-label
+            Email:
+          .col-xs-8.account-name
+            = @account.primary_parent.user.email
         .row.account-row
           .col-xs-4.account-label
             Phone:
           .col-xs-8.account-name
-            = @account.secondary_parent.phone
+            = @account.primary_parent.phone
         .row.account-row
           .col-xs-4.account-label
             Address:
           .col-xs-8.account-name
-            = @account.secondary_parent.address.full_address
-
-
-      #emergency-contacts
-        %h5 Emergency Contacts
-      - if @account.emergency_contacts.any?
-        - contact = @account.emergency_contacts.first
+            = @account.primary_parent.address.full_address
+  
+        #guardian
+          %h5 Secondary Contact
+        - if @account.secondary_parent.present?
+          .row.account-row
+            .col-xs-4.account-label
+              Name:
+            .col-xs-8.account-name
+              = @account.secondary_parent.full_name
+          .row.account-row
+            .col-xs-4.account-label
+              Phone:
+            .col-xs-8.account-name
+              = @account.secondary_parent.phone
+          .row.account-row
+            .col-xs-4.account-label
+              Address:
+            .col-xs-8.account-name
+              = @account.secondary_parent.address.full_address
+  
+  
+        #emergency-contacts
+          %h5 Emergency Contacts
+        - if @account.emergency_contacts.any?
+          - contact = @account.emergency_contacts.first
+          .row.account-row
+            .col-xs-4.account-label
+              Name:
+            .col-xs-8.account-name
+              = contact.full_name
+          .row.account-row
+            .col-xs-4.account-label
+              Phone:
+            .col-xs-8.account-name
+              = contact.phone
+  
+  .col-md-4.col-sm-6
+    .account-box
+      #children
+        %h3 Children #{link_to "Edit", account_children_path(@account), class: "btn btn-xs btn-round"}
+        - @account.children.each do |c|
+          .row
+            .account-child
+              .col-xs-12
+                = c.full_name
+          .row.account-row
+            .col-xs-4.account-label
+              Gender:
+            .col-xs-8.account-name
+              = c.gender.capitalize
+          .row.account-row
+            .col-xs-4.account-label
+              Grade Entering:
+            .col-xs-8.account-name
+              = c.grade_entering
+          .row.account-row
+            .col-xs-4.account-label
+              Date of Birth:
+            .col-xs-8.account-name
+              = c.birthdate.stamp("November 30th, 1984") if c.birthdate.present?
+          #careitems
+            %h5 Care Items
+            - c.care_items.where(active: true).each do |ci|
+              .row.account-row
+                .col-xs-4.account-label
+                  Name:
+                .col-xs-8.account-name
+                  = ci.name
+              .row.account-row
+                .col-xs-4.account-label
+                  Explanation:
+                .col-xs-8.account-name
+                  = ci.explanation
+          .row.account-row
+            .col-xs-4.account-label
+              Additional Information:
+            .col-xs-8.account-name
+              = c.additional_info
+  
+  .col-md-4.col-sm-6
+    .account-box
+      #plan
+        %h3 Plan Information #{link_to "Edit", account_step_path(@account, :plan), class: "btn btn-xs btn-round"}
+  
+        %h5
+          = @center.current_program.name
+        - summarizer = PlanSummarizer.new(@account)
+        = summarizer.summarize.html_safe
+        %br
+  
+  
+        %h5
+          %strong
+            Total today: #{summarizer.total!}
+  
+  .col-md-4.col-sm-6
+    .account-box
+      #medical
+        %h3 Medical #{link_to "Edit", account_step_path(@account, :medical), class: "btn btn-xs btn-round"}
         .row.account-row
-          .col-xs-4.account-label
-            Name:
-          .col-xs-8.account-name
-            = contact.full_name
+          .col-xs-6.account-label
+            Family Physician:
+          .col-xs-6.account-name
+            = @account.family_physician
         .row.account-row
-          .col-xs-4.account-label
-            Phone:
-          .col-xs-8.account-name
-            = contact.phone
-
-.col-md-4.col-sm-6
-  .account-box
-    #children
-      %h3 Children #{link_to "Edit", account_children_path(@account), class: "btn btn-xs btn-round"}
-      - @account.children.each do |c|
-        .row
-          .account-child
-            .col-xs-12
-              = c.full_name
+          .col-xs-6.account-label
+            Family Physician Phone:
+          .col-xs-6.account-name
+            = @account.physician_phone
         .row.account-row
-          .col-xs-4.account-label
-            Gender:
-          .col-xs-8.account-name
-            = c.gender.capitalize
+          .col-xs-6.account-label
+            Family Dentist:
+          .col-xs-6.account-name
+            = @account.family_dentist
         .row.account-row
-          .col-xs-4.account-label
-            Grade Entering:
-          .col-xs-8.account-name
-            = c.grade_entering
+          .col-xs-6.account-label
+            Family Dentist Phone:
+          .col-xs-6.account-name
+            = @account.dentist_phone
         .row.account-row
-          .col-xs-4.account-label
-            Date of Birth:
-          .col-xs-8.account-name
-            = c.birthdate.stamp("November 30th, 1984") if c.birthdate.present?
-        #careitems
-          %h5 Care Items
-          - c.care_items.where(active: true).each do |ci|
-            .row.account-row
-              .col-xs-4.account-label
-                Name:
-              .col-xs-8.account-name
-                = ci.name
-            .row.account-row
-              .col-xs-4.account-label
-                Explanation:
-              .col-xs-8.account-name
-                = ci.explanation
+          .col-xs-6.account-label
+            Insurance Company:
+          .col-xs-6.account-name
+            = @account.insurance_company
         .row.account-row
-          .col-xs-4.account-label
-            Additional Information:
-          .col-xs-8.account-name
-            = c.additional_info
-
-.col-md-4.col-sm-6
-  .account-box
-    #plan
-      %h3 Plan Information #{link_to "Edit", account_step_path(@account, :plan), class: "btn btn-xs btn-round"}
-
-      %h5
-        = @center.current_program.name
-      - summarizer = PlanSummarizer.new(@account)
-      = summarizer.summarize.html_safe
-      %br
-
-
-      %h5
-        %strong
-          Total today: #{summarizer.total!}
-
-.col-md-4.col-sm-6
-  .account-box
-    #medical
-      %h3 Medical #{link_to "Edit", account_step_path(@account, :medical), class: "btn btn-xs btn-round"}
-      .row.account-row
-        .col-xs-6.account-label
-          Family Physician:
-        .col-xs-6.account-name
-          = @account.family_physician
-      .row.account-row
-        .col-xs-6.account-label
-          Family Physician Phone:
-        .col-xs-6.account-name
-          = @account.physician_phone
-      .row.account-row
-        .col-xs-6.account-label
-          Family Dentist:
-        .col-xs-6.account-name
-          = @account.family_dentist
-      .row.account-row
-        .col-xs-6.account-label
-          Family Dentist Phone:
-        .col-xs-6.account-name
-          = @account.dentist_phone
-      .row.account-row
-        .col-xs-6.account-label
-          Insurance Company:
-        .col-xs-6.account-name
-          = @account.insurance_company
-      .row.account-row
-        .col-xs-6.account-label
-          Insurance Policy Number:
-        .col-xs-6.account-name
-          = @account.insurance_policy_number
-
-.cleaner
+          .col-xs-6.account-label
+            Insurance Policy Number:
+          .col-xs-6.account-name
+            = @account.insurance_policy_number
+  
+  .cleaner
