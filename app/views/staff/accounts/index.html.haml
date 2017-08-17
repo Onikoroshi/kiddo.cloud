@@ -1,30 +1,36 @@
 %h3.text-center
   Parents
-
+%br
 - if @accounts.any?
 
-  .table-responsive
-    %table.table
-      %thead
-        %tr
-          %th Primary Parent
-          %th Email
-          %th Children
-          %th Location
-          %th Account Created
-      %tbody
-        - @accounts.each do |a|
-          %tr
-            %td
-              =a.primary_parent.full_name if a.primary_parent.present?
-            %td
-              =a.user.email if a.user.present?
-            %td
-              =a.children.collect {|c| c.full_name }.to_sentence
-            %td
-              =a.location.name if a.location.present?
-            %td
-              =a.created_at.stamp("Monday November 5, 2017")
+  .row
+    .col-xs-2.admin-title
+      Primary Parent
+    .col-xs-3.admin-title
+      Email
+    .col-xs-4.admin-title
+      Children
+    .col-xs-2.admin-title
+      Location
+    .col-xs-1.admin-title
+      Created
+    %br.cleaner
+    %hr
+
+    - @accounts.each do |a|
+      .col-xs-2.admin-parents
+        =a.primary_parent.full_name if a.primary_parent.present?
+      .col-xs-3.admin-parents
+        =a.user.email if a.user.present?
+      .col-xs-4.admin-parents
+        =a.children.collect {|c| c.full_name }.to_sentence
+      .col-xs-2.admin-parents
+        =a.location.name if a.location.present?
+      .col-xs-1.admin-parents
+        =a.created_at.stamp("11/05/2017")
+      %br.cleaner
+      %hr
+        
 
   .text-center
     = paginate @accounts

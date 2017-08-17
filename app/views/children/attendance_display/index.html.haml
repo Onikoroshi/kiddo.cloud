@@ -1,17 +1,24 @@
-%h3.text-center Child Check-in / out
-#location-switcher.text-center
-  = form_tag children_attendance_display_index_path, method: :get do
-    = select_tag "child-location-switcher", options_from_collection_for_select(@center.locations, 'id', 'name', @location.try(:id)),
-      { class: "location-switcher" }
+.col-md-6.col-sm-8.col-md-offset-3.col-sm-offset-2
+  %h3.text-center
+    Children Check-in / out
 
-#time-entry-message
-
-#time-entries
-  .col-md-6.col-sm-8.col-md-offset-3.col-sm-offset-2
+  %h5.text-center
+    Select Your Location
+  
+  #location-switcher.text-center
+    = form_tag children_attendance_display_index_path, method: :get do
+      = select_tag "child-location-switcher", options_from_collection_for_select(@center.locations, 'id', 'name', @location.try(:id)),
+        { class: "location-switcher" }
+  
+  #time-entry-message
+  
+  #time-entries
     - @location.children.each do |c|
-      %li= c.full_name
-      .togglebutton
-        %label
-          = check_box_tag :on_clock, true, c.on_clock?, :data => {:remote => true, :url => url_for( controller: "/time_entries", :action => 'create', params: {"time_entry[location_id]" => "1", "time_entry[time_recordable_id]" => c.id, "time_entry[time_recordable_type]" => "Child"}), :method => :post}, :class => 'input-large'
-
-      
+      .checkin-name
+        .col-xs-6= c.full_name
+        .col-xs-6.text-right
+          .togglebutton
+            %label
+              = check_box_tag :on_clock, true, c.on_clock?, :data => {:remote => true, :url => url_for( controller: "/time_entries", :action => 'create', params: {"time_entry[location_id]" => "1", "time_entry[time_recordable_id]" => c.id, "time_entry[time_recordable_type]" => "Child"}), :method => :post}, :class => 'input-large'
+        .cleaner
+.cleaner

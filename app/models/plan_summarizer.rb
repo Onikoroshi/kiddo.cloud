@@ -38,7 +38,7 @@ class PlanSummarizer
       total_string += "#{amount} one-time payment"
     else
       amount = ChildEnrollment::EnrollmentPriceCalculator.new(account.children, account.center.current_program).calculate
-      total_string += "#{amount} per month"
+      total_string += "#{amount}"
     end
     total_string
   end

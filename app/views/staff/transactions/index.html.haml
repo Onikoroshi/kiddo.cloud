@@ -1,38 +1,51 @@
-%h3
+%h3.text-center
   Payments
-
+%br
 - if @transactions.any?
   .row
-    .table-responsive
-      %table.table
-        %thead
-          %tr
-            %th Primary Parent
-            %th Email
-            %th Location
-            %th Program
-            %th Program Month/Yr
-            %th Amount
-            %th Card
-            %th Status
-            %th Type
-            %th Payment Date
-        %tbody
-          - @transactions.each do |tx|
-            - account = tx.account
-            %tr
-              %td=account.primary_parent.full_name if account.primary_parent.present?
-              %td=account.user.email if account.user.present?
-              %td=account.location.name if account.location.present?
-              %td=tx.program.name
-              %td
-                #{tx.month}/#{tx.year}
-              %td=Money.new(tx.amount).to_s
-              %td
-                #{account.card_brand} #{account.card_last4}
-              %td=tx.paid ? "Paid" : "Unpaid"
-              %td=tx.transaction_type
-              %td=tx.created_at.stamp("Monday November 5, 2017")
+    .col-xs-2.admin-title
+      Primary Parent
+    .col-xs-3.admin-title
+      Email
+    .col-xs-1.admin-title
+      Location
+    .col-xs-1.admin-title
+      Program
+    .col-xs-1.admin-title
+      Amount
+    .col-xs-1.admin-title
+      Card
+    .col-xs-1.admin-title
+      Status
+    .col-xs-1.admin-title
+      Type
+    .col-xs-1.admin-title
+      Date
+    %br.cleaner
+    %hr
+    - @transactions.each do |tx|
+      - account = tx.account
+      .col-xs-2.admin-parents
+        =account.primary_parent.full_name if account.primary_parent.present?
+      .col-xs-3.admin-parents
+        =account.user.email if account.user.present?
+      .col-xs-1.admin-parents
+        =account.location.name if account.location.present?
+      .col-xs-1.admin-parents
+        #{tx.month}/#{tx.year}
+      .col-xs-1.admin-parents
+        =Money.new(tx.amount).to_s
+      .col-xs-1.admin-parents
+        #{account.card_brand} #{account.card_last4}
+      .col-xs-1.admin-parents
+        =tx.paid ? "Paid" : "Unpaid"
+      .col-xs-1.admin-parents
+        =tx.transaction_type
+      .col-xs-1.admin-parents
+        =tx.created_at.stamp("11/05/2017")
+      %br.cleaner
+      %hr
+        
 
   .text-center
     = paginate @transactions

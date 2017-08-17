@@ -3,28 +3,31 @@
 .col-md-10.col-md-offset-1.col-xs-12
   %h2.text-center
     Monthly Recurring Plan
-  %h4.text-center
-    Select which days each week your child will be with us
 
-  #attendance-selection
-
-    = form_for(@account, url: account_attendance_selection_path, method: "PUT") do |f|
-      = render "application/form_errors", object: @account
+  = form_for(@account, url: account_attendance_selection_path, method: "PUT") do |f|
+    = render "application/form_errors", object: @account
+    %h5.text-center Choose a Location
+    .text-center= f.select :location_id, @account.center.locations.map {|a| [ a.name, a.id ] }
+    %br
+    %hr
+    
+  
+    %h4.text-center
+      Select which days each week your child(ren) will be with us
+    %br
+  
+    #attendance-selection
       
       = f.fields_for :children, @account.children do |cf|
         .plan-box
 
-          .col-xs-12
-            .dropin-name.text-center
+          .col-sm-3
+            .dropin-name
               = cf.object.full_name
 
-          .col-sm-4
-            %h5 Choose a Location
-            = f.select :location_id, @account.center.locations.map {|a| [ a.name, a.id ] }
 
           = cf.fields_for :attendance_selection, cf.object.attendance_selection do |asf|
-            .col-sm-8
-              %h5 Select Days
+            .col-sm-9
               .checkbox
                 %label
                   = asf.check_box :monday, checked: asf.object.monday

@@ -1,31 +1,41 @@
-.col-md-10.col-md-offset-1
+%h3.text-center
+  Staff
+  
+.text-center
+  = link_to "+ Add Staff Member", new_staff_staff_path, class: "btn btn-primary btn-sm"
+%br
+  
+
+- if @staff.any?
   .row
-    %h3.text-center
-      Staff
+    .col-xs-2.admin-title
+      Name
+    .col-xs-3.admin-title
+      Email
+    .col-xs-3.admin-title
+      Location
+    .col-xs-2.admin-title
+      Date Created
+    .col-xs-2.admin-title
+      Actions
+    %br.cleaner
     %hr
-
-  - if @staff.any?
-    .row
-      .table-responsive
-        %table.table
-          %thead
-            %tr
-              %th Name
-              %th Email
-              %th Location
-              %th Date Created
-              %th Actions
-          %tbody
-            - @staff.each do |s|
-              %tr
-                %td=s.user.full_name
-                %td=s.user.email
-                %td=s.locations.collect {|l| l.name }.to_sentence
-                %td=s.created_at.stamp("Monday November 5, 2017")
-                %td=link_to "Edit", edit_staff_staff_path(s), class: "btn btn-xs"
+  .row
+    - @staff.each do |s|
+      .col-xs-2.admin-parents
+        =s.user.full_name
+      .col-xs-3.admin-parents
+        =s.user.email
+      .col-xs-3.admin-parents
+        =s.locations.collect {|l| l.name }.to_sentence
+      .col-xs-2.admin-parents
+        =s.created_at.stamp("11/05/2017")
+      .col-xs-2.admin-parents
+        =link_to "Edit", edit_staff_staff_path(s), class: "btn btn-xs"
+      .cleaner
+      %hr
 
 
 
-
-  .text-center
-    = paginate @staff
+.text-center
+  = paginate @staff
