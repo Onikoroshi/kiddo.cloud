@@ -6,9 +6,9 @@
     .col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1
       .row
         .col-xs-12
-          %h3 Medical Info (optional)
+          %h3 Medical Info
         .col-xs-12
-          %h5 Physician
+          %h5 Physician (optional)
         .cleaner
         .col-sm-6
           .form-group.label-floating
@@ -20,7 +20,7 @@
             = f.text_field :physician_phone, autofocus: true, class: "form-control"
   
         .col-xs-12
-          %h5 Dentist
+          %h5 Dentist (optional)
         .cleaner
         .col-sm-6
           .form-group.label-floating
@@ -33,7 +33,7 @@
             = f.text_field :dentist_phone, autofocus: true, class: "form-control"
     
         .col-xs-12
-          %h5 Insurance
+          %h5 Insurance (optional)
         .cleaner
         .col-sm-6
           .form-group.label-floating
