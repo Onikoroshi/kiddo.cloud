@@ -11,6 +11,7 @@ class Account::AttendanceSelectionsController < ApplicationController
   end
 
   def update
+    @account.validate_location = true
     if @account.update_attributes(account_selection_params)
       @account.record_step(:plan)
 
