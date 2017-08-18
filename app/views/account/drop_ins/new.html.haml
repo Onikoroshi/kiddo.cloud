@@ -10,7 +10,7 @@
     = render "application/form_errors", object: @account
 
     %h5 Location
-    = f.select :location_id, @account.center.locations.map {|a| [ a.name, a.id ] }
+    = f.select :location_id, @account.center.locations.map {|a| [ a.name, a.id ] }, {include_blank: 'Select a Location'}
 
     = f.fields_for :children, @account.children do |cf|
       .row

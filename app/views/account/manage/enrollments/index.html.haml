@@ -3,6 +3,6 @@
     %h3 My Monthly Programs
     %br
     .account-box
-    
+      %ul
       - @enrollments.each do |enrollment|
-        =enrollment.to_s
+        %li=enrollment.to_s

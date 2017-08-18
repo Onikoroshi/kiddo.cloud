@@ -28,7 +28,7 @@ class DropIn < ApplicationRecord
   end
 
   def to_s
-    "#{child.full_name} is scheduled to be dropped in on #{date.stamp("March 1, 2029")}."
+    "#{child.full_name} is scheduled to be dropped in on #{date.stamp('March 1, 2029')} at #{account.location.name}."
   end
 
   def translate_time_slot

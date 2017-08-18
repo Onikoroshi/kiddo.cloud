@@ -11,6 +11,7 @@ class Account::Manage::DropInsController < ApplicationController
   end
 
   def create
+    @account.validate_location = true
     @account.assign_attributes(new_drop_in_params)
 
     if @account.save
@@ -25,6 +26,7 @@ class Account::Manage::DropInsController < ApplicationController
   end
 
   def update
+    @account.validate_location = true
     @account.update_attributes(edit_drop_in_params)
 
     if @account.save

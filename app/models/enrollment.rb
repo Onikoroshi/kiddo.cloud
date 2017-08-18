@@ -6,7 +6,7 @@ class Enrollment < ApplicationRecord
   after_create :copy_attendance_selections
 
   def to_s
-    "#{child.full_name} is enrolled in the #{plan.display_name} plan on #{enrolled_days(humanize: true)}."
+    "#{child.full_name} is enrolled in the #{plan.display_name} plan on #{enrolled_days(humanize: true)} at #{child.account.location.name}."
   end
 
   def enrolled_days(humanize = false)

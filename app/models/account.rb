@@ -2,11 +2,15 @@ class Account < ApplicationRecord
   belongs_to :user
   belongs_to :center
 
+  attr_accessor :validate_location
+
   has_many :parents, dependent: :destroy
   has_one :primary_parent, ->(p) { where primary: true }, class_name: "Parent"
   has_one :secondary_parent, ->(p) { where secondary: true }, class_name: "Parent"
   has_one :subscription
   has_many :transactions
+
+  validates :location_id, presence: true, if: :validate_location?
 
   belongs_to :location
 
@@ -76,6 +80,10 @@ class Account < ApplicationRecord
         enrollment.update_attributes(paid: true)
       end
     end
+  end
+
+  def validate_location?
+    validate_location.present? && validate_location == true
   end
 
 end
