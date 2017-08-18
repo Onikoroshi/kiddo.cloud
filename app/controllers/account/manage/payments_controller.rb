@@ -14,15 +14,28 @@ class Account::Manage::PaymentsController < ApplicationController
     # Get the payment token ID submitted by the form:
     token = params[:stripeToken]
 
-    # Create a Customer:
-    customer = StripeCustomerService.new(@account).find_or_create_customer(token)
+    begin
+      # Create a Customer:
+      customer = StripeCustomerService.new(@account).find_or_create_customer(token)
 
-    # Charge the Customer instead of the card:
-    charge = Stripe::Charge.create(
-      :amount => amount.to_i * 100,
-      :currency => "usd",
-      :customer => customer.id,
-    )
+      # Charge the Customer instead of the card:
+      charge = Stripe::Charge.create(
+        :amount => amount.to_i * 100,
+        :currency => "usd",
+        :customer => customer.id,
+      )
+
+    rescue Stripe::CardError => e
+      puts e.message
+      puts e.backtrace
+      flash[:notice] = e.message
+      redirect_to new_account_dashboard_payment_path(@account) and return
+    rescue => e
+      puts e.message
+      puts e.backtrace
+      flash[:error] = 'There seems to be a problem with your payment information. Please try again.'
+      redirect_to new_account_dashboard_payment_path(@account) and return
+    end
 
     if charge.present?
       @account.drop_ins.where(paid: false).map { |d| d.update_attributes(paid: true) }

@@ -14,15 +14,30 @@ class Account::PaymentsController < ApplicationController
     # Get the payment token ID submitted by the form:
     token = params[:stripeToken]
 
-    # Create a Customer:
-    customer = StripeCustomerService.new(@account).find_or_create_customer(token)
+    begin
+      # Create a Customer:
+      customer = StripeCustomerService.new(@account)
+                                      .find_or_create_customer(token)
 
-    # Charge the Customer instead of the card:
-    charge = Stripe::Charge.create(
-      :amount => amount.to_i * 100,
-      :currency => "usd",
-      :customer => customer.id,
-    )
+      # Charge the Customer instead of the card:
+      charge = Stripe::Charge.create(
+        amount: amount.to_i * 100,
+        currency: "usd",
+        customer: customer.id,
+      )
+      flash[:notice] = 'Card charged successfully.'
+
+    rescue Exceptions::PaymentVerificationError, Stripe::CardError => e
+      puts e.message
+      puts e.backtrace
+      flash[:notice] = "There seems to be a problem with your payment details. Please check and try again."
+      return
+    rescue => e
+      puts e.message
+      puts e.backtrace
+      flash[:notice] = 'Some error occurred.'
+      return
+    end
 
     # YOUR CODE: Save the customer ID and other info in a database for later.
 

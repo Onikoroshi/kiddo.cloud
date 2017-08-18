@@ -12,6 +12,7 @@ class TransactionalMailer < ApplicationMailer
 
   def waivers_and_agreements(account)
     @account = account
+    attachments['waivers_and_agreements.pdf'] = File.read("app/assets/images/Davis-Kids-Klub_Waivers-Agreements.pdf")
     mail(to: @account.primary_email, subject: "#{account.center_name} waivers and agreements")
   end
 end
