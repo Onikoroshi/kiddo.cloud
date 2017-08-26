@@ -32,6 +32,21 @@ class Enrollment < ApplicationRecord
     end
   end
 
+  def enrolled_today?
+    dictionary = {
+      1 => "monday",
+      2 => "tuesday",
+      3 => "wednesday",
+      4 => "thursday",
+      5 => "friday",
+      6 => "saturday",
+      7 => "sunday",
+    }
+
+    today = Time.zone.now.wday
+    send(dictionary[today])
+  end
+
   def copy_attendance_selections
     as = child.attendance_selection
     update_attributes(

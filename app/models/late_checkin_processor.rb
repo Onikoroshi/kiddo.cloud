@@ -19,15 +19,17 @@ class LateCheckinProcessor
   def process(children, swipe_window)
     sent_notifications = false
     children.find_each do |c|
-      if c.time_entries.entries_in_range(swipe_window).none?
-        if c.late_checkin_notifications.sent_today.none?
-          TransactionalMailer.late_checkin_alert(c.account).deliver_now
-          c.late_checkin_notifications.create(
-            account: c.account,
-            sent_at: Time.zone.now,
-            sent_to_email: c.account.primary_email,
-          )
-          sent_notifications = true
+      if c.scheduled_for_today?(Program.first)
+        if c.time_entries.entries_in_range(swipe_window).none?
+          if c.late_checkin_notifications.sent_today.none?
+            TransactionalMailer.late_checkin_alert(c.account).deliver_now
+            c.late_checkin_notifications.create(
+              account: c.account,
+              sent_at: Time.zone.now,
+              sent_to_email: c.account.primary_email,
+            )
+            sent_notifications = true
+          end
         end
       end
     end

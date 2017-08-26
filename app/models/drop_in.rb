@@ -5,13 +5,15 @@ class DropIn < ApplicationRecord
 
   scope :upcoming, -> { where("drop_ins.date >= ?", Time.zone.today.beginning_of_day) }
   scope :not_paid, -> { where(paid: false) }
+  scope :today, -> {
+    where(date:
+      DateTime.now.beginning_of_day..DateTime.now.end_of_day)
+  }
 
   money_column :price
 
   validates :date, presence: true
-  #validates :time_slot, presence: true
   validate :validate_date_within_range
-
 
   def wednesday?
     date.wednesday?
@@ -24,7 +26,7 @@ class DropIn < ApplicationRecord
 
   def date_in_range?
     return false unless program.present?
-    ((Time.zone.today)..(program.ends_at)).include?(self.date)
+    ((Time.zone.today)..(program.ends_at)).cover?(date)
   end
 
   def to_s

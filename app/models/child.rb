@@ -53,6 +53,12 @@ class Child < ApplicationRecord
     enrollments.where(plan: program.plans).present?
   end
 
+  def scheduled_for_today?(program)
+    drop_ins.today.any? ||
+      enrolled?(program) &&
+        enrollments.where(plan: program.plans).select { |e| e.enrolled_today? }.any?
+  end
+
   def last_time_entry
     time_entries.last
   end
