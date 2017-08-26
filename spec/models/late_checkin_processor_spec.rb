@@ -16,6 +16,13 @@ RSpec.describe LateCheckinProcessor, type: :model do
         result = LateCheckinProcessor.new(time_assistant).process_low_grade_alerts
         expect(result).to be true
         expect(not_checked_in_child.late_checkin_notifications.sent_today.size).to eq 1
+        expect(
+          not_checked_in_child
+          .late_checkin_notifications
+          .sent_today
+          .first
+          .sent_to_email,
+        ).to eq not_checked_in_child.account.primary_email
       end
     end
 

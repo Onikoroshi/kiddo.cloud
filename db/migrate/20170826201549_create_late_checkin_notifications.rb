@@ -4,7 +4,7 @@ class CreateLateCheckinNotifications < ActiveRecord::Migration[5.1]
       t.references :account
       t.references :child
       t.string :sent_at
-
+      t.string :sent_to_email
       t.timestamps
     end
   end

@@ -171,6 +171,7 @@ ActiveRecord::Schema.define(version: 20170826201549) do
     t.bigint "account_id"
     t.bigint "child_id"
     t.string "sent_at"
+    t.string "sent_to_email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_late_checkin_notifications_on_account_id"
