@@ -5,7 +5,11 @@ RSpec.describe LateCheckinProcessor, type: :model do
 
   describe ".process_low_grade_alerts" do
     context "when processing children without time entries in swipe window range" do
-      let!(:not_checked_in_child) { create(:child) }
+      let!(:not_checked_in_child) do
+        create(:child,
+          account: build(:account, user: build(:user)))
+      end
+
       it "sends an email" do
         set_checkin_window
         result = LateCheckinProcessor.new(time_assistant).process_low_grade_alerts
@@ -14,7 +18,11 @@ RSpec.describe LateCheckinProcessor, type: :model do
     end
 
     context "when processing children with time entries in swipe window range" do
-      let!(:checked_in_child) { create(:child, :with_time_entry) }
+      let!(:checked_in_child) do
+        create(:child, :with_time_entry,
+          account: build(:account, user: build(:user)))
+      end
+
       it "doesn't send an email" do
         set_checkin_window
         result = LateCheckinProcessor.new(time_assistant).process_low_grade_alerts

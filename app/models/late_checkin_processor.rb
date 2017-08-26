@@ -20,8 +20,7 @@ class LateCheckinProcessor
     sent_notifications = false
     children.find_each do |c|
       if c.time_entries.entries_in_range(swipe_window).none?
-        email = c.account.user.email if c.account.present? && c.account.user.present?
-        # send(email)
+        TransactionalMailer.late_checkin_alert(c.account).deliver_now
         sent_notifications = true
       end
     end
