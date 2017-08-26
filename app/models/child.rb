@@ -26,30 +26,33 @@ class Child < ApplicationRecord
   accepts_nested_attributes_for :attendance_selection, allow_destroy: true
   accepts_nested_attributes_for :drop_ins, allow_destroy: true, reject_if: :all_blank
 
+  scope :low_grade, -> { where(grade_entering: ["1", "2", "3"]) }
+  scope :high_grade, -> { where(grade_entering: ["4", "5", "6"]) }
+
   def full_name
     "#{first_name} #{last_name}"
   end
 
   def build_default_care_items
-    if self.care_items.empty?
-      self.care_items.build(name: "Allergies (Insects/Food)")
-      self.care_items.build(name: "Learning Disorder")
-      self.care_items.build(name: "Dietary Needs")
-      self.care_items.build(name: "Special Physical or Emotional Needs")
-      self.care_items.build(name: "Current Medications")
+    if care_items.empty?
+      care_items.build(name: "Allergies (Insects/Food)")
+      care_items.build(name: "Learning Disorder")
+      care_items.build(name: "Dietary Needs")
+      care_items.build(name: "Special Physical or Emotional Needs")
+      care_items.build(name: "Current Medications")
     end
   end
 
   def siblings?
-    self.account.children.count > 1
+    account.children.count > 1
   end
 
   def enrolled?(program)
-    self.enrollments.where(plan: program.plans).present?
+    enrollments.where(plan: program.plans).present?
   end
 
   def last_time_entry
-    self.time_entries.last
+    time_entries.last
   end
 
   def on_clock?
@@ -57,4 +60,7 @@ class Child < ApplicationRecord
     last_time_entry.record_type == "entry"
   end
 
+  def checked_in_for_session?(day)
+
+  end
 end
