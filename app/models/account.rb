@@ -1,14 +1,14 @@
 class Account < ApplicationRecord
+  attr_accessor :validate_location
   belongs_to :user
   belongs_to :center
 
-  attr_accessor :validate_location
-
   has_many :parents, dependent: :destroy
-  has_one :primary_parent, ->(p) { where primary: true }, class_name: "Parent"
-  has_one :secondary_parent, ->(p) { where secondary: true }, class_name: "Parent"
+  has_one :primary_parent, -> { where primary: true }, class_name: "Parent"
+  has_one :secondary_parent, -> { where secondary: true }, class_name: "Parent"
   has_one :subscription
   has_many :transactions
+  has_many :late_checkin_notifications
 
   validates :location_id, presence: true, if: :validate_location?
 
@@ -71,11 +71,11 @@ class Account < ApplicationRecord
 
   def children_enrolled?(program)
     return false unless children.any?
-    children.includes(:enrollments).collect { |c| c.enrolled?(program) }.all?
+    children.includes(:enrollments).map { |c| c.enrolled?(program) }.all?
   end
 
   def mark_paid!
-    self.children.each do |c|
+    children.each do |c|
       c.enrollments.each do |enrollment|
         enrollment.update_attributes(paid: true)
       end
@@ -85,5 +85,4 @@ class Account < ApplicationRecord
   def validate_location?
     validate_location.present? && validate_location == true
   end
-
 end

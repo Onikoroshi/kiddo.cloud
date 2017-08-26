@@ -1,5 +1,4 @@
 class TransactionalMailer < ApplicationMailer
-
   def time_dispute_email(time_dispute)
     @time_dispute = time_dispute
     mail(to: "officepersonal@dkk.com", subject: "time dispute")
@@ -12,7 +11,13 @@ class TransactionalMailer < ApplicationMailer
 
   def waivers_and_agreements(account)
     @account = account
-    attachments['waivers_and_agreements.pdf'] = File.read("app/assets/images/Davis-Kids-Klub_Waivers-Agreements.pdf")
+    file_path = "app/assets/images/Davis-Kids-Klub_Waivers-Agreements.pdf"
+    attachments["waivers_and_agreements.pdf"] = File.read(file_path)
     mail(to: @account.primary_email, subject: "#{account.center_name} waivers and agreements")
+  end
+
+  def late_checkin_alert(account)
+    @account = account
+    mail(to: @account.primary_email, subject: "Alert about your child")
   end
 end
