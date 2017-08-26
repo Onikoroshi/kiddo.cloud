@@ -1,14 +1,14 @@
 class Account < ApplicationRecord
+  attr_accessor :validate_location
   belongs_to :user
   belongs_to :center
-
-  attr_accessor :validate_location
 
   has_many :parents, dependent: :destroy
   has_one :primary_parent, -> { where primary: true }, class_name: "Parent"
   has_one :secondary_parent, -> { where secondary: true }, class_name: "Parent"
   has_one :subscription
   has_many :transactions
+  has_many :late_checkin_notifications
 
   validates :location_id, presence: true, if: :validate_location?
 

@@ -15,6 +15,8 @@ class Child < ApplicationRecord
   has_many :time_entries, as: :time_recordable
   has_many :care_items, dependent: :destroy
 
+  has_many :late_checkin_notifications
+
   after_initialize :build_default_care_items
 
   validates :first_name, presence: true

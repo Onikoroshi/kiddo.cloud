@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170816055552) do
+ActiveRecord::Schema.define(version: 20170826201549) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -165,6 +165,16 @@ ActiveRecord::Schema.define(version: 20170816055552) do
     t.index ["child_id"], name: "index_enrollments_on_child_id"
     t.index ["location_id"], name: "index_enrollments_on_location_id"
     t.index ["plan_id"], name: "index_enrollments_on_plan_id"
+  end
+
+  create_table "late_checkin_notifications", force: :cascade do |t|
+    t.bigint "account_id"
+    t.bigint "child_id"
+    t.string "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_late_checkin_notifications_on_account_id"
+    t.index ["child_id"], name: "index_late_checkin_notifications_on_child_id"
   end
 
   create_table "locations", force: :cascade do |t|

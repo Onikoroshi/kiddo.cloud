@@ -12,8 +12,10 @@ RSpec.describe LateCheckinProcessor, type: :model do
 
       it "sends an email" do
         set_checkin_window
+        expect(not_checked_in_child.late_checkin_notifications.sent_today.size).to eq 0
         result = LateCheckinProcessor.new(time_assistant).process_low_grade_alerts
         expect(result).to be true
+        expect(not_checked_in_child.late_checkin_notifications.sent_today.size).to eq 1
       end
     end
 
@@ -25,8 +27,10 @@ RSpec.describe LateCheckinProcessor, type: :model do
 
       it "doesn't send an email" do
         set_checkin_window
+        expect(checked_in_child.late_checkin_notifications.sent_today.size).to eq 0
         result = LateCheckinProcessor.new(time_assistant).process_low_grade_alerts
         expect(result).to be false
+        expect(checked_in_child.late_checkin_notifications.sent_today.size).to eq 0
       end
     end
   end
