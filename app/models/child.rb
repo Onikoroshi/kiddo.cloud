@@ -61,8 +61,4 @@ class Child < ApplicationRecord
     return false unless last_time_entry.present?
     last_time_entry.record_type == "entry"
   end
-
-  def checked_in_for_session?(day)
-
-  end
 end
