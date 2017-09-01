@@ -1,5 +1,4 @@
 class CenterCheckPoint
-
   attr_reader :center, :user
   def initialize(center:, user:)
     @center = center
@@ -10,9 +9,7 @@ class CenterCheckPoint
     #byebug if center.nil? || user.nil? || user.center_id != center.id
 
     center.present? &&
-    user.present? &&
-    user.center_id == center.id
+      user.present? &&
+      user.center_id == center.id
   end
-
 end
-

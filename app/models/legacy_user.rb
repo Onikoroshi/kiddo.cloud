@@ -1,0 +1,2 @@
+class LegacyUser < ApplicationRecord
+end

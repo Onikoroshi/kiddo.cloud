@@ -22,11 +22,12 @@ class Staff::StaffController < ApplicationController
 
   def create
     @staff = Staff.new(staff_params)
-
     if @staff.save
-      redirect_to staff_staff_index_path, notice: 'Staff member was successfully created.'
+      @staff.user.roles << Role.find_by(name: "staff")
+      @staff.user.update_attributes(center: @center)
+      redirect_to staff_staff_index_path, notice: "Staff member was successfully created."
     else
-      render action: 'new'
+      render action: "new"
     end
   end
 
