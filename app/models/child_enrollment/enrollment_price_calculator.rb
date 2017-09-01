@@ -12,7 +12,11 @@ module ChildEnrollment
       children.each do |child|
         # We'll want to scope this to the child's program at some point
         child.enrollments.each do |enrollment|
-          total += enrollment.plan.price
+          if enrollment.sibling_club?
+            total += Money.new("40.00")
+          else
+            total += enrollment.plan.price
+          end
         end
       end
       total += first_time_user_fee

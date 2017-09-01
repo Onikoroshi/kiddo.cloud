@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170901175508) do
+ActiveRecord::Schema.define(version: 20170901224305) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -162,6 +162,7 @@ ActiveRecord::Schema.define(version: 20170901175508) do
     t.boolean "paid", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "sibling_club", default: false
     t.index ["child_id"], name: "index_enrollments_on_child_id"
     t.index ["location_id"], name: "index_enrollments_on_location_id"
     t.index ["plan_id"], name: "index_enrollments_on_plan_id"

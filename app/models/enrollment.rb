@@ -54,7 +54,7 @@ class Enrollment < ApplicationRecord
       tuesday: as.tuesday,
       wednesday: as.wednesday,
       thursday: as.thursday,
-      friday: as.friday
+      friday: as.friday,
     )
   end
 end

@@ -1,7 +1,6 @@
 module ChildEnrollment
   class DkkEnroller
-
-    attr_reader :children, :plans, :location
+    attr_reader :children, :plans, :location, :program
     def initialize(children, program, location)
       @children = children
       @plans = program.plans
@@ -15,6 +14,8 @@ module ChildEnrollment
         enroll_child(child)
         child.enrollments.update_all(location_id: location.id)
       end
+
+      SiblingClub.new(children, program, location).apply
     end
 
     def unenroll
@@ -32,7 +33,6 @@ module ChildEnrollment
       else
         enroll_single_day_plan(child)
       end
-
     end
 
     protected
@@ -47,14 +47,5 @@ module ChildEnrollment
       plan = plans.where(short_code: short_code).first
       child.plans << plan
     end
-
-    private
-
-    # Sibling Club is designed for students 1-3 grade waiting for siblings 4-6 grade
-    # any day but wednesday
-    def qualifies_for_sibling_club?(child)
-      grade = child.last.grade_entering
-    end
-
   end
 end
