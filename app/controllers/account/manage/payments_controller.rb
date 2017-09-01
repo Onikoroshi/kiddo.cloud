@@ -8,7 +8,7 @@ class Account::Manage::PaymentsController < ApplicationController
 
   def create
 
-    amount = ChildEnrollment::DropInPriceCalculator.new(@account.children, @account.center.current_program).calculate
+    amount = ChildEnrollment::DropInPriceCalculator.new(@account).calculate
 
     # Token is created using Stripe.js or Checkout!
     # Get the payment token ID submitted by the form:

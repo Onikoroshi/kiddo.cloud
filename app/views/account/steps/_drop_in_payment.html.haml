@@ -1,7 +1,12 @@
-%h2 Drop-In Payment
+- if !current_user.legacy?
+  %h2 Drop-In Payment
+  .well
+    Your total: #{PlanSummarizer.new(@account).total!}
+- else
+  %h2 Store Payment Method For AutoPay
+  .well
+    Your card will not be re-charged for the drop-ins you have already purchased.
 
-.well
-  Your total: #{PlanSummarizer.new(@account).total!}
 
 = form_tag account_payments_path, id: "payment-form" do |form|
   .form-row
@@ -11,4 +16,5 @@
       / a Stripe Element will be inserted here.
     / Used to display Element errors
     #card-errors{:role => "alert"}
-  = submit_tag "Submit Payment And Complete Registration", class: "btn btn-lg"
+  - button_text = current_user.legacy? ? "Store Card For AutoPay" : "Pay & Finish Registration"
+  = submit_tag button_text, class: "btn btn-lg"

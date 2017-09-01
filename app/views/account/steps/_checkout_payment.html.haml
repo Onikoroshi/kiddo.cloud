@@ -1,14 +1,15 @@
 .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.text-center
-  %h3 Payment
 
-  %h5
-    Your total:
-    %strong
-      #{PlanSummarizer.new(@account).total!}
+  - if !current_user.legacy?
+    %h3 Payment
 
+    %h5
+      Your total:
+      %strong
+        #{PlanSummarizer.new(@account).total!}
+      - unless @account.user.legacy?
+        (Includes a 1-time, non-refundable $80 sign-up fee.)
   %br.cleaner
-
-
   = form_tag account_checkout_path(@account), id: "payment-form" do |form|
     .form-group.label-floating
       %label{:for => "card-element", class: "control-label"}
@@ -19,4 +20,5 @@
       #card-errors{:role => "alert"}
     .credit-cards
       = image_tag ("credit-cards.png")
-    = submit_tag "Pay & Finish Registration", class: "btn btn-info pull-right"
+    - button_text = current_user.legacy? ? "Store Card For AutoPay" : "Pay & Finish Registration"
+    = submit_tag button_text, class: "btn btn-info pull-right"
