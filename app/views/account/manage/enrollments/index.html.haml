@@ -1,8 +1,11 @@
 - if @enrollments.any?
-  .col-md-6.col-sm-8
+  .col-xs-12
     %h3 My Monthly Programs
     %br
     .account-box
       %ul
       - @enrollments.each do |enrollment|
         %li=enrollment.to_s
+    %br 
+    =link_to "Change Request", "http://iank.us/dkk/change-request", :class => "btn btn-info"
+        
