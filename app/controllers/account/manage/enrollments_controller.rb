@@ -4,14 +4,14 @@ class Account::Manage::EnrollmentsController < ApplicationController
   before_action :fetch_account
 
   def index
+    authorize @account, :dashboard?
     @enrollments = Enrollment.where(child: @account.children).all
   end
 
-
   private
 
-    def fetch_account
-      @account = Account.find(params[:account_id])
-    end
+  def fetch_account
+    @account = Account.find(params[:account_id])
+  end
 
 end

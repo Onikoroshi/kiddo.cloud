@@ -1,5 +1,4 @@
 class AccountPolicy
-
   attr_reader :user, :account
   def initialize(user, account)
     @user = user

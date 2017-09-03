@@ -23,7 +23,7 @@ class Account::SubscriptionController < ApplicationController
       @account.record_step(:payment)
       @account.finalize_signup
       @account.mark_paid!
-      redirect_to account_dashboard_path(@account), notice: 'Congratuations!'
+      redirect_to account_dashboard_path(@account), notice: 'Thank you, your payment is complete. You will receive an email shortly with a payment receipt.'
     else
       render :new
     end
@@ -32,7 +32,7 @@ class Account::SubscriptionController < ApplicationController
   # PATCH/PUT /account/children/1
   def update
     if @account_child.update(account_child_params)
-      redirect_to account_dashboard_path(@account), notice: 'Congratuations!'
+      redirect_to account_dashboard_path(@account), notice: 'Thank you, your payment is complete. You will receive an email shortly with a payment receipt.'
     else
 
       render :edit

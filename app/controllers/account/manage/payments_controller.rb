@@ -4,10 +4,11 @@ class Account::Manage::PaymentsController < ApplicationController
   before_action :fetch_account
 
   def new
+    authorize @account, :dashboard?
   end
 
   def create
-
+    authorize @account, :dashboard?
     amount = ChildEnrollment::DropInPriceCalculator.new(@account).calculate
 
     # Token is created using Stripe.js or Checkout!

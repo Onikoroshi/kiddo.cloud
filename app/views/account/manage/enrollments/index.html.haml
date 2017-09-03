@@ -5,7 +5,9 @@
     .account-box
       %ul
       - @enrollments.each do |enrollment|
-        %li=enrollment.to_s
-    %br 
+        %li
+          =enrollment.to_s
+          .pull-right
+            =enrollment.plan.price
+    %br
     =link_to "Change Request", "http://iank.us/dkk/change-request", :class => "btn btn-info"
-        

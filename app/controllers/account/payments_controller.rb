@@ -68,14 +68,14 @@ class Account::PaymentsController < ApplicationController
           paid: true,
         )
 
-        redirect_to account_dashboard_path(@account), notice: "Congratuations!"
+        redirect_to account_dashboard_path(@account), notice: "Thank you, your payment is complete. You will receive an email shortly with a payment receipt."
       else
         render :new
       end
     else
       @account.record_step(:payment)
       @account.finalize_signup
-      redirect_to account_dashboard_path(@account), notice: "Congratuations!"
+      redirect_to account_dashboard_path(@account), notice: "Thank you, your payment is complete. You will receive an email shortly with a payment receipt."
     end
   end
 
