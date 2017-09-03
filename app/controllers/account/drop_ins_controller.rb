@@ -67,6 +67,7 @@ class Account::DropInsController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def new_drop_in_params
       permitted_attributes = [
+        :location_id,
         children_attributes: [
           :id,
           drop_ins_attributes: [

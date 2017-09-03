@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170826201549) do
+ActiveRecord::Schema.define(version: 20170901224305) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -162,6 +162,7 @@ ActiveRecord::Schema.define(version: 20170826201549) do
     t.boolean "paid", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "sibling_club", default: false
     t.index ["child_id"], name: "index_enrollments_on_child_id"
     t.index ["location_id"], name: "index_enrollments_on_location_id"
     t.index ["plan_id"], name: "index_enrollments_on_plan_id"
@@ -176,6 +177,12 @@ ActiveRecord::Schema.define(version: 20170826201549) do
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_late_checkin_notifications_on_account_id"
     t.index ["child_id"], name: "index_late_checkin_notifications_on_child_id"
+  end
+
+  create_table "legacy_users", force: :cascade do |t|
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "locations", force: :cascade do |t|
@@ -342,6 +349,7 @@ ActiveRecord::Schema.define(version: 20170826201549) do
     t.string "last_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "legacy", default: false
     t.index ["center_id"], name: "index_users_on_center_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

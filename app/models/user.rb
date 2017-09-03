@@ -39,4 +39,15 @@ class User < ApplicationRecord
     role?(:director)
   end
 
+  def legacy?
+    legacy
+  end
+
+  def legacy_dropin_chargeable?
+    false
+  end
+
+  def legacy_enrollment_chargeable?
+    false
+  end
 end

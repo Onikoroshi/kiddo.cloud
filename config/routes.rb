@@ -4,9 +4,18 @@ Rails.application.routes.draw do
     path_names: {
       sign_in: "sign-in",
       sign_out: "sign-out",
-      sign_up: "sign-up"
+      sign_up: "sign-up",
     },
     controllers: { registrations: "users/registrations" }
+
+  namespace :legacy do
+    devise_for :users,
+    path: "/",
+    path_names: {
+      sign_up: "confirm/sign-up",
+    },
+    controllers: { registrations: "users/legacy_registrations" }
+  end
 
   resources :receptionist, only: [:index], path: "direct"
 

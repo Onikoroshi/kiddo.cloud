@@ -32,11 +32,11 @@ class Account < ApplicationRecord
   end
 
   def signup_complete?
-    self.signup_complete
+    signup_complete
   end
 
   def mark_signup_complete!
-    self.update_attributes(signup_complete: true)
+    update_attributes(signup_complete: true)
   end
 
   def finalize_signup

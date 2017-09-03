@@ -4,13 +4,16 @@ class Account::Manage::DropInsController < ApplicationController
   before_action :fetch_account
 
   def index
+    authorize @account, :dashboard?
   end
 
   def new
+    authorize @account, :dashboard?
     @account.drop_ins.where(paid: false).destroy_all # clear out any drop ins that have been created but not paid for
   end
 
   def create
+    authorize @account, :dashboard?
     @account.validate_location = true
     @account.assign_attributes(new_drop_in_params)
 
@@ -22,10 +25,12 @@ class Account::Manage::DropInsController < ApplicationController
   end
 
   def edit
+    authorize @account, :dashboard?
     pre_load_drop_ins
   end
 
   def update
+    authorize @account, :dashboard?
     @account.validate_location = true
     @account.update_attributes(edit_drop_in_params)
 
@@ -38,6 +43,7 @@ class Account::Manage::DropInsController < ApplicationController
   end
 
   def destroy
+    authorize @account, :dashboard?
     @drop_in = DropIn.find_by(id: params[:drop_in_id])
     @drop_in.destroy
     redirect_to my_dropins_account_dashboard_path, notice: 'This drop-in date has been removed'

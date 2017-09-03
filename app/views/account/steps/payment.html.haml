@@ -1,5 +1,15 @@
 = render partial: "step_navigation"
 
+- if current_user.legacy?
+  .row
+    .alert.alert-warning
+      .alert-icon
+        %i.material-icons warning
+      %button.close{"aria-label" => "Close", "data-dismiss" => "alert", :type => "button"}
+        %span{"aria-hidden" => "true"}
+          %i.material-icons clear
+      Please add your credit card information for auto-pay! If you have previously paid, you won't be charged again.
+
 - if @account.drop_ins.any?
   = render "drop_in_payment"
 - else

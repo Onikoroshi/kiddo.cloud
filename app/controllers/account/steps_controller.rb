@@ -96,8 +96,6 @@ class Account::StepsController < ApplicationController
     finalize_signup
   end
 
-  private
-
   def guard_signup_complete
     redirect_to account_dashboard_path(@account) if @account.signup_complete?
   end
@@ -105,7 +103,7 @@ class Account::StepsController < ApplicationController
   def guard_children_added!
     if @account.children.empty?
       flash[:error] = "You must add at least one child to continue."
-      redirect_to new_account_child_path(@account) and return
+      redirect_to new_account_child_path(@account) && return
     end
   end
 

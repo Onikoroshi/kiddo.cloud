@@ -5,23 +5,28 @@ class Account::Manage::ChildrenController < ApplicationController
   before_action :set_account_child, only: [:show, :edit, :update, :destroy]
 
   def index
+    authorize @account, :dashboard?
   end
 
   # GET /account/children/1
   def show
+    authorize @account, :dashboard?
   end
 
   # GET /account/children/new
   def new
+    authorize @account, :dashboard?
     @account_child = Child.new
   end
 
   # GET /account/children/1/edit
   def edit
+    authorize @account, :dashboard?
   end
 
   # POST /account/children
   def create
+    authorize @account, :dashboard?
     @account_child = Child.new(account_child_params)
     @account_child.account_id = @account.id
 
@@ -35,6 +40,7 @@ class Account::Manage::ChildrenController < ApplicationController
 
   # PATCH/PUT /account/children/1
   def update
+    authorize @account, :dashboard?
     if @account_child.update(account_child_params)
       redirect_to account_dashboard_path(@account), notice: 'Child was successfully updated.'
     else
@@ -45,6 +51,7 @@ class Account::Manage::ChildrenController < ApplicationController
 
   # DELETE /account/children/1
   def destroy
+    authorize @account, :dashboard?
     @account_child.destroy
     redirect_to account_dashboard_path(@account), notice: 'Child was successfully removed.'
   end
