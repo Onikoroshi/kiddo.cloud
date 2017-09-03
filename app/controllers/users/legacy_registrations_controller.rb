@@ -53,6 +53,7 @@ class Users::LegacyRegistrationsController < Devise::RegistrationsController
   def legacy_authenticatable?
     active = false
     email = params[:legacy_user][:email]
+    email = email.downcase
     if LegacyUser.where(email: email).exists? && !User.where(email: email).exists?
       active = true
     end
