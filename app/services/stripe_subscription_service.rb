@@ -1,5 +1,4 @@
 class StripeSubscriptionService
-
   attr_writer :customer_service
 
   attr_reader :account, :stripe_token, :program
@@ -21,22 +20,21 @@ class StripeSubscriptionService
   def subscribe_to_custom_plan(stripe_customer)
 
     plan = Stripe::Plan.create(
-      :name => "#{program.name} custom plan",
-      :id => "#{stripe_customer.id}_#{program.short_code}",
-      :interval => "month",
-      :currency => "usd",
-      :amount => price.to_i * 100
+      name: "#{program.name} custom plan",
+      id: "#{stripe_customer.id}_#{program.short_code}",
+      interval: "month",
+      currency: "usd",
+      amount: price.to_i * 100,
     )
 
     customer.subscriptions.create(
       source: stripe_token,
       plan: plan,
     )
-
   end
 
   def price
-    ChildEnrollment::EnrollmentPriceCalculator.new(account.children, account.center.current_program).calculate
+    ChildEnrollment::EnrollmentPriceCalculator.new(account).calculate
   end
 
   def customer
@@ -45,8 +43,6 @@ class StripeSubscriptionService
     else
       Stripe::Customer.create(email: account.primary_email)
     end
-
     customer
   end
-
 end

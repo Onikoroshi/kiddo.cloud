@@ -1,15 +1,18 @@
 module ChildEnrollment
   class DropInPriceCalculator
-
-    attr_reader :children, :program
-    def initialize(children, program)
-      @children = children
-      @program = program
+    attr_reader :children, :program, :account
+    def initialize(account)
+      @account = account
+      @children = account.children
+      @program = account.center.current_program
     end
 
     def calculate
       assign_prices
-      base_price
+      total = Money.new("0.00")
+      total += base_price
+      total += Money.new("80.00") unless account.user.legacy?
+      total
     end
 
     def assign_prices
@@ -34,6 +37,5 @@ module ChildEnrollment
       end
       total
     end
-
   end
 end

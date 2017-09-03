@@ -22,6 +22,7 @@ gem "cocoon"
 gem "stamp"
 gem "stripe"
 gem "kaminari"
+gem "roo"
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
