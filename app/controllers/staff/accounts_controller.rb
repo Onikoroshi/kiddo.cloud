@@ -7,6 +7,7 @@ class Staff::AccountsController < ApplicationController
     @accounts = Account
                 .includes(:parents)
                 .where(center: @center)
+                .where(signup_complete: true)
                 .order(created_at: :desc)
                 .page(params[:page])
                 .per(50)
