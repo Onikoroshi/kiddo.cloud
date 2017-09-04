@@ -27,7 +27,7 @@
       .col-xs-2.admin-parents
         =a.location.name if a.location.present?
       .col-xs-1.admin-parents
-        =a.created_at.stamp("11/05/2017 12:56:27pm")
+        =a.created_at.stamp("11/05/2017 12:56:27pm").in_time_zone("Pacific Time (US & Canada)")
       %br.cleaner
       %hr
 
