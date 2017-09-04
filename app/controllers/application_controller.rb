@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   layout :get_layout
   include Pundit
 
+  before_action :set_raven_context
   before_action :set_center
   before_action :configure_permitted_parameters, if: :devise_controller?
 
@@ -57,6 +58,13 @@ class ApplicationController < ActionController::Base
     flash.discard(:notice)
     flash[:error] = "Sign in unsuccessful."
     new_user_session_url
+  end
+
+  def set_raven_context
+    Raven.user_context(id: current_user.try(:id), email: current_user.try(:email))
+    Raven.extra_context(params: params.to_unsafe_h, url: request.url)
+  rescue => exception
+    puts exception
   end
 
 end

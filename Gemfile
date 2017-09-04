@@ -23,6 +23,8 @@ gem "stamp"
 gem "stripe"
 gem "kaminari"
 gem "roo"
+# Error Reporting
+gem "sentry-raven"
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
