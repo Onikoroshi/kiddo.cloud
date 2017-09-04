@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170904163315) do
+ActiveRecord::Schema.define(version: 20170904211318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "hstore"
 
   create_table "accounts", force: :cascade do |t|
     t.bigint "user_id"
@@ -316,7 +317,9 @@ ActiveRecord::Schema.define(version: 20170904163315) do
     t.boolean "paid", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.hstore "itemizations"
     t.index ["account_id"], name: "index_transactions_on_account_id"
+    t.index ["itemizations"], name: "index_transactions_on_itemizations", using: :gin
     t.index ["program_id"], name: "index_transactions_on_program_id"
   end
 

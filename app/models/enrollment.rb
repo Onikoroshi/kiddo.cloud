@@ -17,7 +17,7 @@ class Enrollment < ApplicationRecord
       thursday: thursday,
       friday: friday,
       saturday: saturday,
-      sunday: sunday
+      sunday: sunday,
     }
 
     selected = Array.new

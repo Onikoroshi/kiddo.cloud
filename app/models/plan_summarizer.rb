@@ -1,5 +1,4 @@
 class PlanSummarizer
-
   attr_reader :account
   def initialize(account)
     @account = account
@@ -31,6 +30,12 @@ class PlanSummarizer
     string
   end
 
+  def itemize_enrollments
+    calculator = ChildEnrollment::EnrollmentPriceCalculator.new(account).new
+    calculator.calculate
+    calculator.itemize
+  end
+
   def total!
     total_string = ""
     if account.drop_ins.any?
@@ -42,5 +47,4 @@ class PlanSummarizer
     end
     total_string
   end
-
 end

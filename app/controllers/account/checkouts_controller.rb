@@ -7,7 +7,9 @@ class Account::CheckoutsController < ApplicationController
   end
 
   def create
-    amount = ChildEnrollment::EnrollmentPriceCalculator.new(@account).calculate
+    calculator = ChildEnrollment::EnrollmentPriceCalculator.new(@account)
+    amount = calculator.calculate
+    itemizations = calculator.itemize
 
     # Token is created using Stripe.js or Checkout!
     # Get the payment token ID submitted by the form:
@@ -64,6 +66,7 @@ class Account::CheckoutsController < ApplicationController
           year: Time.zone.now.year,
           amount: amount,
           paid: true,
+          itemizations: itemizations,
         )
 
         redirect_to account_dashboard_path(@account), notice: "Thank you, your payment is complete. You will receive an email shortly with a payment receipt."
