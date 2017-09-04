@@ -58,7 +58,7 @@ Rails.application.routes.draw do
     resource :dashboard, only: :show, controller: 'dashboard'
     resources :staff
     resources :transactions, only: [:index, :show]
-    resources :scheduled_children, only: :index
+    resources :enrollments, only: :index
   end
 
   resources :time_entries, only: :create

@@ -8,10 +8,10 @@
             =link_to staff_accounts_path do
               %i.material-icons account_circle
               Parents
-          %li{ class: (controller_name == "scheduled_children") ? "active" : ""}
-            =link_to staff_scheduled_children_path do
+          %li{ class: (controller_name == "enrollments") ? "active" : ""}
+            =link_to staff_enrollments_path do
               %i.material-icons face
-              Scheduled Children
+              Enrollments
           %li{ class: (controller_name == "staff") ? "active" : ""}
             =link_to staff_staff_index_path do
               %i.material-icons accessibility

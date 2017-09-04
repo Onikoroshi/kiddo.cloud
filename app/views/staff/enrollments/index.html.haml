@@ -1,0 +1,43 @@
+%h3.text-center
+  #{@center.current_program.name} Enrollments
+
+.row.text-center
+  = form_tag staff_enrollments_path, method: :get do
+    %h5 Location
+    = select_tag "location_id", options_from_collection_for_select(Location.all, "id", "name", @location_id)
+    = submit_tag "Submit"
+
+  %br
+  %br
+
+- if @enrollments.any?
+  .row
+    .col-xs-2.admin-title
+      Child Name
+    .col-xs-3.admin-title
+      Plan
+    .col-xs-2.admin-title
+      Days
+    .col-xs-2.admin-title
+      Location
+    .col-xs-2.admin-title
+      Sign Up Date
+    %br.cleaner
+    %hr
+  .row
+    - @enrollments.each do |e|
+      .col-xs-2.admin-parents
+        =e.child.full_name
+      .col-xs-3.admin-parents
+        =e.plan.display_name
+      .col-xs-2.admin-parents
+        =e.enrolled_days(humanize: true)
+      .col-xs-2.admin-parents
+        =e.child.account.location.name
+      .col-xs-2.admin-parents
+        =e.created_at.stamp("11/05/2017")
+      .cleaner
+      %hr
+
+.text-center
+  = paginate @enrollments
