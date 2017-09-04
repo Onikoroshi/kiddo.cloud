@@ -23,6 +23,11 @@ class Users::LegacyRegistrationsController < Devise::RegistrationsController
       respond_with resource, location: new_legacy_user_registration_path
     else
 
+      email = params[:legacy_user][:email]
+      email = email.downcase
+      legacy_user = LegacyUser.where(email: email).first
+      legacy_user.update_attributes(reregistered: true) if legacy_user.present?
+
       @center.users << resource if resource.save # Register user for center
 
       yield resource if block_given?

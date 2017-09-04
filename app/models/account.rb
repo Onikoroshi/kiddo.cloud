@@ -40,6 +40,9 @@ class Account < ApplicationRecord
   end
 
   def finalize_signup
+    legacy_user = LegacyUser.find_by(email: user.email)
+    legacy_user.update_attributes(completed_signed_up: true) if legacy_user.present?
+
     mark_signup_complete!
     TransactionalMailer.welcome_customer(self).deliver_now
     TransactionalMailer.waivers_and_agreements(self).deliver_now if mail_agreements
