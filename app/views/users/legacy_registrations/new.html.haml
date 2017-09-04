@@ -1,6 +1,6 @@
 .col-sm-5.col-sm-offset-1
   .login-box
-    %h3 Create account
+    %h3 Setup Your Account
     = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
       = devise_error_messages!
       .form-group.label-floating
@@ -20,7 +20,7 @@
       %br
 
       .actions
-        = f.submit "Sign up", class: "btn btn-block btn-info"
+        = f.submit "Setup my account", class: "btn btn-block btn-info"
 
 .col-sm-5
   .login-box
@@ -28,3 +28,7 @@
       Welcome DKK Member!
     %br
       Please enter your existing email and a new password to begin using our new web application.
+    %hr
+    %h4
+      Are you new to Davis Kids Klub?
+    = link_to "New Registration", ("/sign-up"), class: "btn btn-primary btn-sm"
