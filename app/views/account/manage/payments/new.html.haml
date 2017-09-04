@@ -1,9 +1,9 @@
 .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2
   %h3 Drop-In Payment
-  
+
   .well
     Your total: #{PlanSummarizer.new(@account).total!}
-  
+
   = form_tag account_dashboard_payments_path(@account), id: "payment-form" do |form|
     .form-row
       %label{:for => "card-element"}
@@ -12,4 +12,4 @@
         / a Stripe Element will be inserted here.
       / Used to display Element errors
       #card-errors{:role => "alert"}
-    = submit_tag "Purchase", class: "btn btn-lg btn-success"
+    = submit_tag "Purchase", class: "btn btn-lg btn-success", data: { disable_with: "Processing ..." }

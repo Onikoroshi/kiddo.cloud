@@ -126,6 +126,7 @@ ActiveRecord::Schema.define(version: 20170904163315) do
     t.bigint "account_id"
     t.bigint "program_id"
     t.bigint "child_id"
+    t.bigint "location_id"
     t.date "date"
     t.text "notes"
     t.float "price"
@@ -135,6 +136,7 @@ ActiveRecord::Schema.define(version: 20170904163315) do
     t.string "time_slot"
     t.index ["account_id"], name: "index_drop_ins_on_account_id"
     t.index ["child_id"], name: "index_drop_ins_on_child_id"
+    t.index ["location_id"], name: "index_drop_ins_on_location_id"
     t.index ["program_id"], name: "index_drop_ins_on_program_id"
   end
 
@@ -181,6 +183,7 @@ ActiveRecord::Schema.define(version: 20170904163315) do
 
   create_table "legacy_users", force: :cascade do |t|
     t.string "email"
+    t.date "paid_through"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "reregistered", default: false
@@ -363,6 +366,7 @@ ActiveRecord::Schema.define(version: 20170904163315) do
   add_foreign_key "care_items", "children"
   add_foreign_key "drop_ins", "accounts"
   add_foreign_key "drop_ins", "children"
+  add_foreign_key "drop_ins", "locations"
   add_foreign_key "drop_ins", "programs"
   add_foreign_key "emergency_contacts", "accounts"
   add_foreign_key "enrollments", "children"

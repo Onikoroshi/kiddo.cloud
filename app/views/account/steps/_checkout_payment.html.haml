@@ -21,4 +21,4 @@
     .credit-cards
       = image_tag ("credit-cards.png")
     - button_text = current_user.legacy? ? "Store Card For AutoPay" : "Pay & Finish Registration"
-    = submit_tag button_text, class: "btn btn-info pull-right"
+    = submit_tag button_text, class: "btn btn-info pull-right", data: { disable_with: "Processing ..." }
