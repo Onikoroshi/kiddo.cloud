@@ -1,6 +1,7 @@
 Parent.seed_once(:id) do |p|
   p.id = 10
   p.account_id = 1
+  p.user_id = 10
 end
 
 Child.seed_once(:id) do |c|
