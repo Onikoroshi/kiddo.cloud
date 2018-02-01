@@ -8,8 +8,8 @@ class CenterCheckPoint
   def passes?
     #byebug if center.nil? || user.nil? || user.center_id != center.id
 
-    center.present? &&
-      user.present? &&
+    center.present? ||
+      user.blank? ||
       user.center_id == center.id
   end
 end

@@ -10,12 +10,7 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def set_center
-    subdomain = request.subdomain.include?("staging") ? "daviskidsklub" : request.subdomain
-    @center = Center.find_by(subdomain: subdomain) if (subdomain.present? && !["www", "admin"].include?(subdomain))
-    if !@center.present?
-      flash[:alert] = "You are not authorized to perform this action."
-      redirect_to(request.referrer || root_url(subdomain: "www"))
-    end
+    @center = Center.first
   end
 
   # Add to any controller to require multitenancy. You would leave this out of controllers that manage pages like "team"
@@ -24,7 +19,7 @@ class ApplicationController < ActionController::Base
     checkpoint = CenterCheckPoint.new(center: @center, user: current_user)
     if !checkpoint.passes?
       flash[:alert] = "You are not authorized to perform this action."
-      redirect_to(root_url(subdomain: "www"))
+      redirect_to root_url
     end
   end
 
@@ -33,7 +28,8 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    return root_url unless user_signed_in?
+    puts "in after sign in path"
+    return new_user_session_url unless user_signed_in?
     return handle_signout if user_exists_without_roles? || @center.nil? # center could be nil if session expires but user still available
     stored_location_for(resource) || Receptionist.new(resource, @center).direct
   end
@@ -50,7 +46,7 @@ class ApplicationController < ActionController::Base
 
   def user_not_authorized
     flash[:alert] = "You are not authorized to perform this action."
-    redirect_to(request.referrer || root_url(subdomain: "www"))
+    redirect_to request.referrer || root_url
   end
 
   def handle_signout

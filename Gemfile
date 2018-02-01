@@ -23,6 +23,7 @@ gem "stamp"
 gem "stripe"
 gem "kaminari"
 gem "roo"
+gem "classy_enum"
 # Error Reporting
 gem "sentry-raven"
 

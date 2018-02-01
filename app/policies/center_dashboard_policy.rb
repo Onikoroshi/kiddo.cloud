@@ -1,7 +1,7 @@
 class CenterDashboardPolicy < Struct.new(:user, :dashboard)
 
   def show?
-    user.director?
+    user.role?(:super_admin, :staff, :director)
   end
 
 end

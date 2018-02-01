@@ -10,7 +10,7 @@ User.seed_once(:email) do |user|
   user.email = "bonnie.townsend@gmail.com"
   user.first_name = "Bonnie"
   user.last_name = "Townsend"
-  user.roles = [staff]
+  user.roles = [super_admin]
   user.center = Center.find_by(subdomain: "daviskidsklub")
   user.staff = Staff.create
 end
@@ -20,7 +20,7 @@ User.seed_once(:email) do |user|
   user.email = "olive.wagner@gmail.com"
   user.first_name = "Olive"
   user.last_name = "Wagner"
-  user.roles = [staff]
+  user.roles = [director]
   user.center = Center.find_by(subdomain: "daviskidsklub")
   user.staff = Staff.create
 end
@@ -74,9 +74,14 @@ User.seed_once(:email) do |user|
   user.last_name = "One"
   user.roles = [parent]
   user.center = Center.find_by(subdomain: "daviskidsklub")
-  user.parent = Parent.create
 end
 
+Account.seed_once(:id) do |a|
+  a.id = 1
+  a.user_id = 10
+  a.center = Center.find(1)
+  a.signup_complete = true
+end
 
 User.all.map { |u| u.update_attributes!(password: "asdfasdf") }
 # https://stackoverflow.com/questions/6004216/devise-how-do-i-forbid-certain-users-from-signing-in

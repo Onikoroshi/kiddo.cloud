@@ -22,9 +22,7 @@ class Receptionist
   def direct_by_role(role)
     return root_path unless role.present?
     case role.name
-    when "root"
-      root_path
-    when "director"
+    when "super_admin", "director", "staff"
       staff_dashboard_path
     when "parent"
       if current_user.account.signup_complete?
