@@ -8,7 +8,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
     if !@center.present?
       flash[:alert] = "You are not authorized to perform this action."
-      redirect_to(request.referrer || root_url(subdomain: "www"))
+      redirect_to request.referrer || root_url
     end
   end
 

@@ -79,7 +79,7 @@ end
 Account.seed_once(:id) do |a|
   a.id = 1
   a.user_id = 10
-  a.center = Center.find(2)
+  a.center = Center.find(1)
   a.signup_complete = true
 end
 
