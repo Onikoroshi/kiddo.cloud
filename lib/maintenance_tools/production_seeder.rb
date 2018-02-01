@@ -14,7 +14,6 @@ class MaintenanceTools::ProductionSeeder
   def seed_all
     begin
       @center = Center.where(name: "Davis Kids Klub", subdomain: "daviskidsklub").first_or_create!
-      Center.where(name: "Kiddo.Cloud", subdomain: "www").first_or_create!
       @program = seed_program
       seed_program_plans
       seed_roles
@@ -72,7 +71,7 @@ class MaintenanceTools::ProductionSeeder
       email: "jason@codinglabs.com",
       first_name: "Jason",
       last_name: "Eastwood",
-      center: Center.find_by(subdomain: "www"),
+      center: Center.find_by(subdomain: "daviskidsklub"),
       password: "asdfasdf",
       password_confirmation: "asdfasdf"
     )
@@ -83,7 +82,7 @@ class MaintenanceTools::ProductionSeeder
       email: "ian.kilpatrick@gmail.com",
       first_name: "Ian",
       last_name: "kilpatrick",
-      center: Center.find_by(subdomain: "www"),
+      center: Center.find_by(subdomain: "daviskidsklub"),
       password: "asdfasdf",
       password_confirmation: "asdfasdf"
     )
