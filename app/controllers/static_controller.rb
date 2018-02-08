@@ -3,13 +3,17 @@ class StaticController < ApplicationController
   def home
     if user_signed_in?
       if current_user.roles.any?
-        redirect_to Receptionist.new(current_user, @center).direct and return
+        url = Receptionist.new(current_user, @center).direct
+        ap "redirecting to #{url}"
+        redirect_to url and return
       else
         sign_out(current_user)
         flash[:error] = "You do not appear to have any roles assigned."
+        ap "redirecting to new user session url: #{new_user_session_url}"
         redirect_to new_user_session_url and return
       end
     else
+      ap "redirecting to new user session url: #{new_user_session_url}"
       redirect_to new_user_session_url and return
     end
   end
