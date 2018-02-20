@@ -14,6 +14,7 @@ class Account::EnrollmentTypeController < ApplicationController
 
   def fetch_account
     @account = Account.find(params[:account_id])
+    find_registering_program
   end
 
 end

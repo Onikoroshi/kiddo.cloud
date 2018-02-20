@@ -58,6 +58,7 @@ class Account::ChildrenController < ApplicationController
 
     def set_account
       @account = Account.find(params[:account_id])
+      find_registering_program
     end
 
     # Only allow a trusted parameter "white list" through.

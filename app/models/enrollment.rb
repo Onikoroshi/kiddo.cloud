@@ -2,11 +2,39 @@ class Enrollment < ApplicationRecord
   belongs_to :location
   belongs_to :child
   belongs_to :plan
+  has_one :program, through: :plan
 
-  after_create :copy_attendance_selections
+  validate :validate_dates
+
+  scope :by_program, ->(program) { joins(plan: :program).where("programs.id = ?", program.present? ? program.id : nil) }
+
+  def self.by_program_and_plan_type(program, plan_type)
+    self.joins(:program).where("plans.plan_type = ? AND programs.id = ?", plan_type.to_s, program.id)
+  end
+
+  def plan_type
+    plan.plan_type if plan.present?
+  end
 
   def to_s
-    "#{child.full_name} is enrolled in the #{plan.display_name} plan on #{enrolled_days(humanize: true)} at #{child.account.location.name}."
+    case plan.plan_type.to_s
+    when PlanType[:weekly].to_s
+      "#{child.full_name} is enrolled in a Weekly #{plan.display_name} plan #{display_dates} at #{location.name}"
+    when PlanType[:drop_in].to_s
+      "#{child.full_name} is enrolled in a #{plan.display_name} on #{starts_at.stamp("Monday, Feb. 3rd, 2018")} at #{location.name}"
+    else
+      "#{child.full_name} is enrolled in the #{plan.display_name} plan on #{enrolled_days(humanize: true)} at #{location.name}."
+    end
+  end
+
+  def display_dates
+    if plan_type.drop_in?
+      "on #{starts_at.stamp("Monday, Feb. 3rd, 2018")}"
+    elsif plan_type.weekly?
+      "for the week of #{starts_at.stamp("Monday, Feb. 3rd, 2018")} to #{ends_at.stamp("Monday, Feb. 3rd, 2018")}"
+    else
+      "from #{starts_at.stamp("Monday, Feb. 3rd, 2018")} to #{ends_at.stamp("Monday, Feb. 3rd, 2018")}"
+    end
   end
 
   def enrolled_days(humanize = false)
@@ -47,14 +75,20 @@ class Enrollment < ApplicationRecord
     send(dictionary[today])
   end
 
-  def copy_attendance_selections
-    as = child.attendance_selection
-    update_attributes(
-      monday: as.monday,
-      tuesday: as.tuesday,
-      wednesday: as.wednesday,
-      thursday: as.thursday,
-      friday: as.friday,
-    )
+  private
+
+  def validate_dates
+    if plan_type.present? && plan_type.drop_in?
+      ends_at = starts_at
+    end
+
+    if starts_at.blank? || ends_at.blank?
+      errors.add(:starts_at, "can't be blank") unless starts_at.present?
+      errors.add(:ends_at, "can't be blank") unless ends_at.present?
+    elsif program.present?
+      if (starts_at.present? && starts_at < program.starts_at) || (ends_at.present? && ends_at > program.ends_at)
+        errors.add(:base, "#{program.name} only runs from #{program.starts_at} to #{program.ends_at}")
+      end
+    end
   end
 end

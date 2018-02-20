@@ -20,6 +20,6 @@ class Center < ApplicationRecord
   end
 
   def current_program
-    programs.where(short_code: "dkk_fall_2017").first
+    programs.open_for_registration.first || programs.in_session.first || programs.first
   end
 end

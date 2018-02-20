@@ -46,6 +46,7 @@ class Account::DropInsController < ApplicationController
 
     def fetch_account
       @account = Account.find(params[:account_id])
+      find_registering_program
     end
 
     def children_have_dropins?

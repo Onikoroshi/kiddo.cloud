@@ -15,11 +15,11 @@
     = form.text_field :phone, id: :time_dispute_phone, class: "form-control"
   .field
     = form.label :date, class: "control-label"
-    = form.text_field :date, id: "flatpickr-input"
+    = form.text_field :date, class: "flatpickr-input"
   .field
     = form.label :message, class: "control-label"
     = form.text_area :message, id: :time_dispute_message, class: "form-control"
   .cleaner
-    
+
   .actions
     = form.submit :submit, class: "btn btn-info btn-sm pull-right"
