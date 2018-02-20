@@ -4,6 +4,7 @@ class Enrollment < ApplicationRecord
   belongs_to :plan
   has_one :program, through: :plan
 
+  validates :starts_at, :ends_at, presence: true
   validate :validate_dates
 
   scope :by_program, ->(program) { joins(plan: :program).where("programs.id = ?", program.present? ? program.id : nil) }
@@ -82,10 +83,7 @@ class Enrollment < ApplicationRecord
       ends_at = starts_at
     end
 
-    if starts_at.blank? || ends_at.blank?
-      errors.add(:starts_at, "can't be blank") unless starts_at.present?
-      errors.add(:ends_at, "can't be blank") unless ends_at.present?
-    elsif program.present?
+    if program.present?
       if (starts_at.present? && starts_at < program.starts_at) || (ends_at.present? && ends_at > program.ends_at)
         errors.add(:base, "#{program.name} only runs from #{program.starts_at} to #{program.ends_at}")
       end
