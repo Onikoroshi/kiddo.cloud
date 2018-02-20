@@ -56,6 +56,10 @@ gem 'turbolinks', '~> 5'
 # gem 'capistrano-rails', group: :development
 gem 'bootstrap-sass', '~> 3.3', '>= 3.3.7'
 
+group :development, :beta do
+  gem "letter_opener"
+end
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
@@ -81,7 +85,6 @@ group :development do
   # Generates an `rspec` binstub for using spring
   gem "spring-commands-rspec"
   gem 'spring-watcher-listen', '~> 2.0.0'
-  gem "letter_opener"
 end
 
 group :test do
