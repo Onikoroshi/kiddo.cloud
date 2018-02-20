@@ -1,0 +1,21 @@
+.nested-fields
+  .row
+    = f.hidden_field :monday, value: true
+    = f.hidden_field :tuesday, value: true
+    = f.hidden_field :wednesday, value: true
+    = f.hidden_field :thursday, value: true
+    = f.hidden_field :friday, value: true
+    .col-sm-3
+      = f.hidden_field :starts_at, value: f.object.starts_at || @program.starts_at, class: "weekly-starts"
+      = f.hidden_field :ends_at, value: f.object.ends_at || @program.starts_at + 4.days, class: "weekly-ends"
+      = select_tag "weeks", options_for_select(program_week_options(@program), "#{f.object.starts_at} to #{f.object.ends_at}"), {class: "weekly-select"}
+    .col-sm-1
+      For the
+    .col-sm-2
+      = f.select :plan_id, @program.plans.by_plan_type(@plan_type).select_options
+    .col-sm-1
+      At
+    .col-sm-2
+      = f.select :location_id, options_from_collection_for_select(@program.locations, 'id', 'name', f.object.location)
+    .col-sm-1
+      = link_to_remove_association "Remove", f

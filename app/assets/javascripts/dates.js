@@ -6,7 +6,7 @@ document.addEventListener("turbolinks:load", function() {
     altInput: true
   });
 
-  flatpickr('#flatpickr-input', {
+  flatpickr('.flatpickr-input', {
     dateFormat: "Y-m-d",
     altInput: true
   });

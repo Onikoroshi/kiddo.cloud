@@ -13,6 +13,7 @@ class Account < ApplicationRecord
   validates :location_id, presence: true, if: :validate_location?
 
   belongs_to :location
+  belongs_to :program # only used during the enrollment process
 
   has_many :children
   has_many :emergency_contacts, dependent: :destroy
@@ -69,7 +70,7 @@ class Account < ApplicationRecord
         result << c.enrollments.where(plan: p).first.to_s
       end
     end
-    result.flatten.reject(&:empty?)
+    result.flatten.reject(&:blank?)
   end
 
   def children_enrolled?(program)

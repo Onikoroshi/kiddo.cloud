@@ -28,7 +28,7 @@ Child.find_each do |child|
   Enrollment.seed_once(:id) do |e|
     e.id = Enrollment.maximum(:id).to_i + 1
     e.child_id = child.id
-    e.location_id = child.locations.all.sample.id
+    e.location_id = Location.all.sample.id
     e.plan_id = chosen_plan.id
   end
 end

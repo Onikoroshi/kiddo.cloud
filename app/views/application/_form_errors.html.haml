@@ -5,7 +5,5 @@
         .hidden #{pluralize(object.errors.count, "error")} encountered:
         .danger
           %ul
-            - object.errors.messages.each do |attribute, msg|
-              - msg.each do |value|
-                %li
-                  #{attribute.to_s.humanize} #{value}
+            - object.errors.full_messages.each do |msg|
+              %li= msg

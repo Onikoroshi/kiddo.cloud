@@ -1,0 +1,24 @@
+%h3.text-center Drop-in for #{@program.name}
+%br
+
+.col-md-6.col-md-offset-3.col-xs-8.col-xs-offset-2
+  = form_for(@account, url: account_dashboard_enrollments_path, method: "POST") do |f|
+    = hidden_field_tag :plan_type, @plan_type.to_s
+    = render "application/form_errors", object: @account
+
+    = f.fields_for :children, @account.children do |children_fields|
+
+      .account-box
+        .dropin-name
+          = children_fields.object.full_name
+
+        .row{style: "padding-left: 20px;"}
+          = children_fields.fields_for :enrollments do |enrollment_fields|
+            - if enrollment_fields.object.program == @program && enrollment_fields.object.plan_type.to_s == @plan_type.to_s
+              = render "enrollment_fields", f: enrollment_fields
+
+          .links
+            .pull-right= link_to_add_association 'Add Day', children_fields, :enrollments, {style: "padding-right: 20px;"}
+
+    = link_to "Cancel", account_step_path(@account, :plan), class: "btn"
+    = f.submit "Submit", class: "btn btn-info pull-right"

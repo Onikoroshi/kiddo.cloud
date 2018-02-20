@@ -2,7 +2,7 @@ class Account::StepsController < ApplicationController
   include Wicked::Wizard
   steps :parents, :children, :medical, :plan, :summary, :payment
   before_action :authenticate_user!
-  before_action :find_account
+  before_action :set_variables
   before_action :guard_signup_complete
 
   def show
@@ -47,7 +47,11 @@ class Account::StepsController < ApplicationController
   end
 
   def delegate_to_account_children_controller
-    redirect_to new_account_child_path(@account)
+    if @account.children.any?
+      redirect_to account_children_path(@account)
+    else
+      redirect_to new_account_child_path(@account)
+    end
   end
 
   def delegate_to_attendance_selections
@@ -107,9 +111,10 @@ class Account::StepsController < ApplicationController
     end
   end
 
-  def find_account
+  def set_variables
     raise Pundit::NotAuthorizedError if !user_signed_in?
     @account ||= current_user.account
+    find_registering_program
   end
 
   def finalize_signup

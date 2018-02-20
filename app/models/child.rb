@@ -24,6 +24,7 @@ class Child < ApplicationRecord
   validates :gender, presence: true
   validates :birthdate, presence: true
 
+  accepts_nested_attributes_for :enrollments, allow_destroy: true
   accepts_nested_attributes_for :care_items, allow_destroy: true
   accepts_nested_attributes_for :attendance_selection, allow_destroy: true
   accepts_nested_attributes_for :drop_ins, allow_destroy: true, reject_if: :all_blank
@@ -66,5 +67,29 @@ class Child < ApplicationRecord
   def on_clock?
     return false unless last_time_entry.present?
     last_time_entry.record_type == "entry"
+  end
+
+  def overlapping_enrollment_dates(program)
+    enrollments = self.enrollments.by_program(program)
+    ignore = []
+    failed_messages = []
+
+    enrollments.find_each do |a|
+      enrollments.where.not(id: ignore + [a.id]).find_each do |b|
+        overlap = (a.starts_at <= b.starts_at && a.ends_at >= b.ends_at)    ||  # a completely contains b
+                  (a.starts_at <= b.starts_at && a.ends_at >= b.starts_at)  ||  # a contains b start (b contains a end)
+                  (a.starts_at <= b.ends_at && a.ends_at >= b.ends_at)      ||  # a contains b end (b contains a end)
+                  (b.starts_at <= a.starts_at && b.ends_at >= a.ends_at)        # b completely contains a
+
+        if overlap
+          ignore << a
+          ignore << b
+          ignore = ignore.uniq
+          failed_messages << "#{a.plan_type.text} enrollment #{a.display_dates} overlaps with a #{b.plan_type.text} enrollment #{b.display_dates}"
+        end
+      end
+    end
+
+    failed_messages
   end
 end

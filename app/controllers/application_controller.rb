@@ -38,6 +38,20 @@ class ApplicationController < ActionController::Base
     @center.present? ? @center.name.parameterize.underscore : "application"
   end
 
+  def find_registering_program
+    @program = Program.find_by(short_code: params[:program])
+
+    if @account.present? && @program.present?
+      @account.update_attribute(:program, @program)
+    end
+
+    if @account.present? && @program.blank?
+      @program = @account.program
+    end
+
+    @program = @center.current_program if @center.present? && @program.blank?
+  end
+
   private
 
   def user_exists_without_roles?

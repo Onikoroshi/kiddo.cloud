@@ -30,7 +30,7 @@ class Receptionist
       else
         last_step = current_user.account.last_registration_step_completed
         last_step = last_step.blank? ? :parents : last_step.to_sym
-        account_step_path(current_user.account, last_step)
+        account_step_path(current_user.account, SignupStep.find(last_step.to_sym).next_step)
       end
     end
   end

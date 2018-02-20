@@ -18,7 +18,7 @@ Drop-in for #{@center.current_program.name}
 
           = dif.hidden_field :account_id, value: @account.id
           %td
-            = dif.text_field :date, id: "flatpickr-input"
+            = dif.text_field :date, class: "flatpickr-input"
             %br
             = dif.label :date
 

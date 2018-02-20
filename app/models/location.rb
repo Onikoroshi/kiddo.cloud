@@ -10,6 +10,9 @@ class Location < ApplicationRecord
   has_many :staff_locations
   has_many :staff, through: :staff_locations
 
+  has_many :program_locations
+  has_many :programs, through: :program_locations
+
   def default?
     default
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170904211318) do
+ActiveRecord::Schema.define(version: 20180214220435) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,7 +39,9 @@ ActiveRecord::Schema.define(version: 20170904211318) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "location_id"
+    t.bigint "program_id"
     t.index ["center_id"], name: "index_accounts_on_center_id"
+    t.index ["program_id"], name: "index_accounts_on_program_id"
     t.index ["user_id"], name: "index_accounts_on_user_id"
   end
 
@@ -166,6 +168,8 @@ ActiveRecord::Schema.define(version: 20170904211318) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "sibling_club", default: false
+    t.date "starts_at"
+    t.date "ends_at"
     t.index ["child_id"], name: "index_enrollments_on_child_id"
     t.index ["location_id"], name: "index_enrollments_on_location_id"
     t.index ["plan_id"], name: "index_enrollments_on_plan_id"
@@ -236,6 +240,15 @@ ActiveRecord::Schema.define(version: 20170904211318) do
     t.index ["program_id"], name: "index_plans_on_program_id"
   end
 
+  create_table "program_locations", force: :cascade do |t|
+    t.bigint "program_id"
+    t.bigint "location_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_program_locations_on_location_id"
+    t.index ["program_id"], name: "index_program_locations_on_program_id"
+  end
+
   create_table "programs", force: :cascade do |t|
     t.bigint "center_id"
     t.string "short_code"
@@ -244,6 +257,8 @@ ActiveRecord::Schema.define(version: 20170904211318) do
     t.date "ends_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "registration_opens"
+    t.date "registration_closes"
     t.index ["center_id"], name: "index_programs_on_center_id"
   end
 
@@ -364,6 +379,7 @@ ActiveRecord::Schema.define(version: 20170904211318) do
   end
 
   add_foreign_key "accounts", "centers"
+  add_foreign_key "accounts", "programs"
   add_foreign_key "accounts", "users"
   add_foreign_key "attendance_selections", "children"
   add_foreign_key "care_items", "children"
