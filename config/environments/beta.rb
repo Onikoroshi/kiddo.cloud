@@ -88,16 +88,7 @@ Rails.application.configure do
   #Mailer asset host
   config.action_mailer.asset_host = "https://kiddocloud-staging.herokuapp.com"
 
-  ActionMailer::Base.smtp_settings = {
-      :port =>           '587',
-      :address =>        'smtp.sendgrid.net',
-      :user_name =>      ENV['SENDGRID_USERNAME'],
-      :password =>       ENV['SENDGRID_PASSWORD'],
-      :domain =>         'kiddo.cloud',
-      :authentication => :plain,
-      :enable_starttls_auto => true
-  }
-  ActionMailer::Base.delivery_method = :smtp
+  config.action_mailer.delivery_method = :letter_opener
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
