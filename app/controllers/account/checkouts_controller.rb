@@ -69,7 +69,7 @@ class Account::CheckoutsController < ApplicationController
         )
 
         enrollments.each do |enrollment|
-          EnrollmentTransaction.create(enrollment_id: enrollment.id, transaction_id: transaction.id, amount: enrollment.plan.price)
+          EnrollmentTransaction.create(enrollment_id: enrollment.id, my_transaction_id: transaction.id, amount: enrollment.plan.price)
           enrollment.update_attribute(:paid, true)
         end
 
