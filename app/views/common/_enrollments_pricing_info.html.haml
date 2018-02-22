@@ -1,0 +1,10 @@
+%table{style: "text-align: left;"}
+  - calculator.enrollments.each do |enrollment|
+    %tr
+      %td= enrollment.to_short
+      %td{style: "padding-left: 10px; text-align: right"}= enrollment.plan.price
+
+  - calculator.itemizations.each do |key, value|
+    %tr
+      %td= key.to_s.humanize.capitalize
+      %td{style: "text-align: right"}= value

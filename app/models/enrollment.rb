@@ -4,13 +4,20 @@ class Enrollment < ApplicationRecord
   belongs_to :plan
   has_one :program, through: :plan
 
+  has_many :enrollment_transactions
+  has_many :transactions, through: :enrollment_transactions, source: :my_transaction, foreign_key: :transaction_id
+
   validates :starts_at, :ends_at, presence: true
   validate :validate_dates
 
   scope :by_program, ->(program) { joins(plan: :program).where("programs.id = ?", program.present? ? program.id : nil) }
+  scope :by_program_and_plan_type, ->(program, plan_type) { joins(:program).where("plans.plan_type = ? AND programs.id = ?", plan_type.to_s, program.id) }
+  scope :paid, -> { where(paid: true) }
+  scope :unpaid, -> { where.not(paid: true) }
 
-  def self.by_program_and_plan_type(program, plan_type)
-    self.joins(:program).where("plans.plan_type = ? AND programs.id = ?", plan_type.to_s, program.id)
+  # get a unique list of programs associated with a set of enrollments
+  def self.programs
+    Program.where(id: self.joins(plan: :program).pluck("programs.id").uniq)
   end
 
   def plan_type
@@ -22,19 +29,44 @@ class Enrollment < ApplicationRecord
     when PlanType[:weekly].to_s
       "#{child.full_name} is enrolled in a Weekly #{plan.display_name} plan #{display_dates} at #{location.name}"
     when PlanType[:drop_in].to_s
-      "#{child.full_name} is enrolled in a #{plan.display_name} on #{starts_at.stamp("Monday, Feb. 3rd, 2018")} at #{location.name}"
+      "#{child.full_name} is enrolled in a #{plan.display_name} Drop-In on #{starts_at.stamp("Monday, Feb. 3rd, 2018")} at #{location.name}"
     else
       "#{child.full_name} is enrolled in the #{plan.display_name} plan on #{enrolled_days(humanize: true)} at #{location.name}."
     end
   end
 
+  def to_short
+    case plan.plan_type.to_s
+    when PlanType[:weekly].to_s
+      "Weekly #{plan.display_name} plan #{display_dates} at #{location.name}"
+    when PlanType[:drop_in].to_s
+      "#{plan.display_name} Drop-In on #{starts_at.stamp("Monday, Feb. 3rd, 2018")} at #{location.name}"
+    else
+      "#{plan.display_name} plan on #{enrolled_days(humanize: true)} at #{location.name}."
+    end
+  end
+
+  def type_display
+    "#{plan_type.text} #{plan.display_name}"
+  end
+
+  def service_dates
+    if plan_type.drop_in?
+      starts_at.stamp("Monday, Feb. 3rd, 2018")
+    elsif plan_type.weekly?
+      "#{starts_at.stamp("Monday, Feb. 3rd, 2018")} to #{ends_at.stamp("Monday, Feb. 3rd, 2018")}"
+    else
+      "#{starts_at.stamp("Monday, Feb. 3rd, 2018")} to #{ends_at.stamp("Monday, Feb. 3rd, 2018")}"
+    end
+  end
+
   def display_dates
     if plan_type.drop_in?
-      "on #{starts_at.stamp("Monday, Feb. 3rd, 2018")}"
+      "on #{service_dates}"
     elsif plan_type.weekly?
-      "for the week of #{starts_at.stamp("Monday, Feb. 3rd, 2018")} to #{ends_at.stamp("Monday, Feb. 3rd, 2018")}"
+      "for the week of #{service_dates}"
     else
-      "from #{starts_at.stamp("Monday, Feb. 3rd, 2018")} to #{ends_at.stamp("Monday, Feb. 3rd, 2018")}"
+      "from #{service_dates}"
     end
   end
 

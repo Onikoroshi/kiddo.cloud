@@ -1,0 +1,17 @@
+- if @transactions.any?
+  .col-xs-12
+    .account-box
+      %table{style: "width: 100%;"}
+        %thead
+          %th Transaction Type
+          %th Payment Date
+          %th Payment Amount
+          %th
+
+        %tbody
+          - @transactions.each do |transaction|
+            %tr
+              %td= transaction.transaction_type.text
+              %td= transaction.created_at.to_date.to_s
+              %td= transaction.amount
+              %td= link_to "Details", account_dashboard_payment_path(@account, transaction)

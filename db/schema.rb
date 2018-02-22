@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180214220435) do
+ActiveRecord::Schema.define(version: 20180222003246) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -153,6 +153,16 @@ ActiveRecord::Schema.define(version: 20180214220435) do
     t.index ["account_id"], name: "index_emergency_contacts_on_account_id"
   end
 
+  create_table "enrollment_transactions", force: :cascade do |t|
+    t.bigint "enrollment_id"
+    t.bigint "my_transaction_id"
+    t.float "amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["enrollment_id"], name: "index_enrollment_transactions_on_enrollment_id"
+    t.index ["my_transaction_id"], name: "index_enrollment_transactions_on_my_transaction_id"
+  end
+
   create_table "enrollments", force: :cascade do |t|
     t.bigint "child_id"
     t.bigint "plan_id"
@@ -259,6 +269,7 @@ ActiveRecord::Schema.define(version: 20180214220435) do
     t.datetime "updated_at", null: false
     t.date "registration_opens"
     t.date "registration_closes"
+    t.float "registration_fee"
     t.index ["center_id"], name: "index_programs_on_center_id"
   end
 
@@ -388,6 +399,7 @@ ActiveRecord::Schema.define(version: 20180214220435) do
   add_foreign_key "drop_ins", "locations"
   add_foreign_key "drop_ins", "programs"
   add_foreign_key "emergency_contacts", "accounts"
+  add_foreign_key "enrollment_transactions", "transactions", column: "my_transaction_id"
   add_foreign_key "enrollments", "children"
   add_foreign_key "enrollments", "locations"
   add_foreign_key "enrollments", "plans"

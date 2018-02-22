@@ -10,6 +10,7 @@ class Account::CheckoutsController < ApplicationController
     calculator = ChildEnrollment::EnrollmentPriceCalculator.new(@account)
     amount = calculator.calculate
     itemizations = calculator.itemize
+    enrollments = calculator.enrollments
 
     # Token is created using Stripe.js or Checkout!
     # Get the payment token ID submitted by the form:
@@ -56,19 +57,24 @@ class Account::CheckoutsController < ApplicationController
           card_exp_year: params[:account][:card_exp_year],
           card_last4: params[:account][:card_last4],
         )
-        @account.record_step(:payment)
-        @account.finalize_signup
-        @account.transactions << Transaction.create(
+
+        transaction = Transaction.create(
           account: @account,
-          program: @account.center.current_program,
-          transaction_type: "monthly enrollment",
+          transaction_type: TransactionType[:one_time],
           month: Time.zone.now.month,
           year: Time.zone.now.year,
           amount: amount,
           paid: true,
-          itemizations: itemizations,
+          itemizations: itemizations
         )
 
+        enrollments.each do |enrollment|
+          EnrollmentTransaction.create(enrollment_id: enrollment.id, transaction_id: transaction.id, amount: enrollment.plan.price)
+          enrollment.update_attribute(:paid, true)
+        end
+
+        @account.finalize_signup
+        @account.record_step(:payment)
         redirect_to account_dashboard_path(@account), notice: "Thank you, your payment is complete. You will receive an email shortly with a payment receipt."
       else
         render :new

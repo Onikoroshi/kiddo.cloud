@@ -3,6 +3,14 @@ class Account::Manage::PaymentsController < ApplicationController
   before_action :guard_center!
   before_action :fetch_account
 
+  def index
+    @transactions = @account.transactions
+  end
+
+  def show
+    @transaction = Transaction.find(params[:id])
+  end
+
   def new
     authorize @account, :dashboard?
   end

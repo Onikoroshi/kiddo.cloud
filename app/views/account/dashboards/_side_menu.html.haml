@@ -5,8 +5,8 @@
     = link_to "Enrollments", account_dashboard_enrollments_path(@account)
   %li{ class: (controller_name == "registrations") ? "active" : ""}
     = link_to "Edit Email/Password", edit_user_registration_path
-  %li{ class: (controller_name == "change") ? "active" : ""}
-    = mail_to "daviskidsklub@aol.com", "Request a Change"
+  %li{ class: (controller_name == "payments") ? "active" : ""}
+    = link_to "Payments", account_dashboard_payments_path(@account)
 
 .cleaner
 %br

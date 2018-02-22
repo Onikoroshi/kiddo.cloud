@@ -16,6 +16,7 @@ class Account < ApplicationRecord
   belongs_to :program # only used during the enrollment process
 
   has_many :children
+  has_many :enrollments, through: :children
   has_many :emergency_contacts, dependent: :destroy
 
   has_many :drop_ins

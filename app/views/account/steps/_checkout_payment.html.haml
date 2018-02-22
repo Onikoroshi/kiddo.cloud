@@ -1,14 +1,16 @@
 .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.text-center
-
+  - calculator = ChildEnrollment::EnrollmentPriceCalculator.new(@account)
+  - calculator.calculate
   - if !current_user.legacy?
     %h3 Payment
+
+    = render "common/enrollments_pricing_info", calculator: calculator
 
     %h5
       Your total:
       %strong
-        #{PlanSummarizer.new(@account).total!}
-      - unless @account.user.legacy?
-        (Includes a 1-time, non-refundable $80 sign-up fee.)
+        #{calculator.total}
+
   %br.cleaner
   = form_tag account_checkout_path(@account), id: "payment-form" do |form|
     .form-group.label-floating

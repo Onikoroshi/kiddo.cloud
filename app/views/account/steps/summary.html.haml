@@ -136,18 +136,26 @@
       #plan
         %h3 Plan Information #{link_to "Edit", account_step_path(@account, :plan), class: "btn btn-xs btn-round"}
 
-        %h5
-          = @center.current_program.name
-        - summarizer = PlanSummarizer.new(@account)
-        = summarizer.summarize.html_safe
-        %br
-        - if !current_user.legacy?
-          (Includes a 1-time, non-refundable $80 sign-up fee.)
+        - @account.enrollments.unpaid.programs.each do |program|
+          %h5= program.name
 
-        - if !current_user.legacy?
-          %h5
-            %strong
-              Total today: #{summarizer.total!}
+          - @account.children.each do |child|
+            %strong= child.full_name
+            - enrollments = child.enrollments.unpaid.by_program(program)
+            - if enrollments.any?
+              %ul
+              - enrollments.each do |enrollment|
+                %li= enrollment.to_short
+            %br
+
+        - price_calculator = ChildEnrollment::EnrollmentPriceCalculator.new(@account)
+        - price_calculator.calculate
+        - if price_calculator.itemizations[:one_time_signup_fee].to_i > 0
+          (Includes a 1-time, non-refundable #{Money.new(price_calculator.itemizations[:one_time_signup_fee])} sign-up fee.)
+
+        %h5
+          %strong
+            Total today: #{price_calculator.total}
 
   .col-md-4.col-sm-6
     .account-box

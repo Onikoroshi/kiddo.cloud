@@ -9,6 +9,8 @@ class Program < ApplicationRecord
   has_many :program_locations
   has_many :locations, through: :program_locations
 
+  money_column :registration_fee
+
   scope :open_for_registration, -> { where("registration_opens <= ? AND registration_closes >= ?", Time.zone.today, Time.zone.today) }
   scope :in_session, -> { where("starts_at <= ? AND ends_at >= ?", Time.zone.today, Time.zone.today) }
 

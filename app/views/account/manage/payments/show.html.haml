@@ -1,0 +1,30 @@
+%h3.text-center Payment Receipt
+%h4.text-center Paid to Davis Kids Klub
+%h4.text-center EIN: 03-0451515
+%h4.text-center 417 Mace Blvd Ste J PMB 174, Davis CA 95618
+%hr
+
+.col-md-12.col-md-offset-3.col-sm-8.col-sm-offset-2.text-center
+  %table.enrollments-table
+    %thead
+      %th Type
+      %th Date(s) of Service
+      %th Amount
+
+    %tbody
+      - @transaction.enrollments.each do |enrollment|
+        %tr
+          %td= enrollment.type_display
+          %td= enrollment.service_dates
+          %td.right-just= enrollment.plan.price
+
+      - @transaction.itemizations.each do |key, value|
+        %tr{style: "padding-bottom: 10px;"}
+          %td= key.to_s.humanize.capitalize
+          %td= @transaction.created_at.stamp("Monday, Feb. 3rd, 2018")
+          %td{style: "text-align: right"}= value
+
+      %tr.total
+        %td Total
+        %td
+        %td.right-just= @transaction.amount

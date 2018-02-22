@@ -1,13 +1,9 @@
 - if @enrollments.any?
   .col-xs-12
-    %h3 My Monthly Programs
-    %br
     .account-box
       %ul
       - @enrollments.each do |enrollment|
         %li
-          =enrollment.to_s
+          = enrollment.to_s
           .pull-right
-            =enrollment.plan.price
-    %br
-    =link_to "Change Request", "http://daviskidsklub.com/change-request", :class => "btn btn-info"
+            = enrollment.plan.price

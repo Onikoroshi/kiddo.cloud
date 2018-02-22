@@ -10,7 +10,4 @@
           %i.material-icons clear
       Please add your credit card information for auto-pay! If you have previously paid, you won't be charged again.
 
-- if @account.drop_ins.any?
-  = render "drop_in_payment"
-- else
-  = render "checkout_payment"
+= render "checkout_payment"

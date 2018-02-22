@@ -23,7 +23,7 @@ class PlanSummarizer
 
   def summarize_enrollments
     string = ""
-    account.summarize_enrollments(account.center.current_program).each_with_index do |item, index|
+    account.summarize_enrollments(@program).each_with_index do |item, index|
       string += item.to_s
       string += "<br/>"
     end
@@ -31,20 +31,15 @@ class PlanSummarizer
   end
 
   def itemize_enrollments
-    calculator = ChildEnrollment::EnrollmentPriceCalculator.new(account).new
+    calculator = ChildEnrollment::EnrollmentPriceCalculator.new(account)
     calculator.calculate
     calculator.itemize
   end
 
   def total!
     total_string = ""
-    if account.drop_ins.any?
-      amount = ChildEnrollment::DropInPriceCalculator.new(account).calculate
-      total_string += "#{amount} one-time payment"
-    else
-      amount = ChildEnrollment::EnrollmentPriceCalculator.new(account).calculate
-      total_string += "#{amount}"
-    end
+    amount = ChildEnrollment::EnrollmentPriceCalculator.new(account).calculate
+    total_string += "#{amount} one time payment"
     total_string
   end
 end
