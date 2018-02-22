@@ -1,8 +1,7 @@
 class Parent < ApplicationRecord
   belongs_to :account
   belongs_to :user
-  has_many :children_parents
-  has_many :children, through: :children_parents
+  has_and_belongs_to_many :children
   has_one :address, as: :addressable
 
   def full_name

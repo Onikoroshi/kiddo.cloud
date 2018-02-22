@@ -137,14 +137,18 @@ class MaintenanceTools::ProductionSeeder
   # end
 
   def backout
+    CareItem.destroy_all
     DropIn.destroy_all
     Enrollment.destroy_all
+    Child.destroy_all
+    Parent.destroy_all
+    User.destroy_all
     Plan.destroy_all
     Program.destroy_all
     Center.destroy_all
     Role.destroy_all
+    Permission.destroy_all
     Location.destroy_all
-    User.destroy_all
   end
 
 end

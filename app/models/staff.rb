@@ -1,8 +1,8 @@
 class Staff < ApplicationRecord
   belongs_to :user
-  has_many :time_entries, as: :time_recordable
+  has_many :time_entries, as: :time_recordable, dependent: :destroy
 
-  has_many :staff_locations
+  has_many :staff_locations, dependent: :destroy
   has_many :locations, through: :staff_locations
 
   delegate :full_name, to: :user

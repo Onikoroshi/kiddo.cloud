@@ -1,21 +1,20 @@
 class Child < ApplicationRecord
   belongs_to :account
-  has_many :children_parents
-  has_many :parents, through: :children_parents
+  has_and_belongs_to_many :parents
   has_one :attendance_selection, dependent: :destroy
 
   has_many :drop_ins, dependent: :destroy
 
-  has_many :child_locations
+  has_many :child_locations, dependent: :destroy
   has_many :locations, through: :child_locations
 
-  has_many :enrollments
+  has_many :enrollments, dependent: :destroy
   has_many :plans, through: :enrollments
 
   has_many :time_entries, as: :time_recordable
   has_many :care_items, dependent: :destroy
 
-  has_many :late_checkin_notifications
+  has_many :late_checkin_notifications, dependent: :destroy
 
   after_initialize :build_default_care_items
 
