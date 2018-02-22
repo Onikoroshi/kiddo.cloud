@@ -5,7 +5,7 @@ class Enrollment < ApplicationRecord
   has_one :program, through: :plan
 
   has_many :enrollment_transactions, dependent: :destroy
-  has_many :transactions, through: :enrollment_transactions, source: :my_transaction, foreign_key: :transaction_id
+  has_many :transactions, through: :enrollment_transactions, source: :my_transaction
 
   validates :starts_at, :ends_at, presence: true
   validate :validate_dates
