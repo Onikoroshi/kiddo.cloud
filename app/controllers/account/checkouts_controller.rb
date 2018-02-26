@@ -75,14 +75,14 @@ class Account::CheckoutsController < ApplicationController
 
         @account.finalize_signup
         @account.record_step(:payment)
-        redirect_to account_dashboard_path(@account), notice: "Thank you, your payment is complete. You will receive an email shortly with a payment receipt."
+        redirect_to account_dashboard_path(@account), notice: "Thank you, your payment is complete. You will receive a receipt for payment, and welcome email for summer camp. If you don't receive these, please call our office (1-530-220-4731)"
       else
         render :new
       end
     else
       @account.record_step(:payment)
       @account.finalize_signup
-      redirect_to account_dashboard_path(@account), notice: "Thank you, your payment is complete. You will receive an email shortly with a payment receipt."
+      redirect_to account_dashboard_path(@account), notice: "Thank you, your payment is complete. You will receive a receipt for payment, and welcome email for summer camp. If you don't receive these, please call our office (1-530-220-4731)"
     end
   end
 

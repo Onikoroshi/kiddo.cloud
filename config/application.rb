@@ -17,5 +17,6 @@ module Kidsclub
     config.autoload_paths += Dir[Rails.root.join('app', 'exceptions', '**/')]
     config.autoload_paths += Dir[Rails.root.join('app', 'enums', '**/')]
     config.eager_load_paths << "#{Rails.root}/lib"
+    config.assets.paths << "#{Rails.root}/app/assets"
   end
 end

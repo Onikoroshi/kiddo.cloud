@@ -23,17 +23,14 @@
       .actions
         = f.submit "Sign up", class: "btn btn-block btn-info"
 
-
-
-
 .col-sm-5
   .login-box
     %h3
       Have an account?
     %br
     = render "devise/shared/links"
-    %hr
-    %h4
-      Already paid?
-
-    = link_to "Setup Account", ("/legacy/confirm/sign-up"), class: "btn btn-sm btn-danger"
+    -# %hr
+    -# %h4
+    -#   Already paid?
+    -#
+    -# = link_to "Setup Account", ("/legacy/confirm/sign-up"), class: "btn btn-sm btn-danger"

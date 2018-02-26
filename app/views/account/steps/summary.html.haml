@@ -3,27 +3,6 @@
 = render partial: "agreement"
 
 .row
-  .account-alert
-    %h3.text-center
-      Review &amp; Sign
-    %p.text-center
-      If everything looks correct in the summary below, please type your full name and continue to payment.
-    .cleaner
-    .col-md-6.col-md-offset-3
-      #signature-form
-        = form_for @account_summary_form, method: :put, url: wizard_path do |f|
-          = render "application/form_errors", object: @account_summary_form
-          = f.label :signature
-
-          = f.text_field :signature, value: @account.signature, class: "text_field", placeholder: "Type your full name"
-          %br
-          - button_text = current_user.legacy? ? "Continue to Save Payment Method For AutoPay" : "Continue to Payment"
-          = f.submit button_text, class: "btn btn-info pull-right"
-    .cleaner
-
-
-  .cleaner
-.row
   %h3.text-center Summary
   .col-md-4.col-sm-6
     .account-box
@@ -193,3 +172,22 @@
             = @account.insurance_policy_number
 
   .cleaner
+
+  .row
+    .account-alert
+      %h3.text-center
+        Review &amp; Sign
+      %p.text-center
+        If you agree to all the waivers and agreements above, and everything looks correct in the summary, please type your full name and continue to payment.
+      .cleaner
+      .col-md-6.col-md-offset-3
+        #signature-form
+          = form_for @account_summary_form, method: :put, url: wizard_path do |f|
+            = render "application/form_errors", object: @account_summary_form
+            = f.label :signature
+
+            = f.text_field :signature, value: @account.signature, class: "text_field", placeholder: "Type your full name"
+            %br
+            - button_text = current_user.legacy? ? "Continue to Save Payment Method For AutoPay" : "Continue to Payment"
+            = f.submit button_text, class: "btn btn-info pull-right"
+      .cleaner
