@@ -82,18 +82,18 @@ Rails.application.configure do
   end
 
   # Default url options
-  config.action_mailer.default_url_options = {:host => 'www.kiddo.cloud'}
-  config.action_controller.default_url_options = {:host => 'www.kiddo.cloud'}
+  config.action_mailer.default_url_options = {:host => 'www.daviskidsklub.com'}
+  config.action_controller.default_url_options = {:host => 'www.daviskidsklub.com'}
 
   #Mailer asset host
-  config.action_mailer.asset_host = "https://www.kiddo.cloud"
+  config.action_mailer.asset_host = "https://www.daviskidsklub.com"
 
   ActionMailer::Base.smtp_settings = {
       :port =>           '587',
       :address =>        'smtp.sendgrid.net',
       :user_name =>      ENV['SENDGRID_USERNAME'],
       :password =>       ENV['SENDGRID_PASSWORD'],
-      :domain =>         'kiddo.cloud',
+      :domain =>         'daviskidsklub.com',
       :authentication => :plain,
       :enable_starttls_auto => true
   }
