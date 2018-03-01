@@ -32,7 +32,7 @@ class Account::Manage::ChildrenController < ApplicationController
 
     if @account_child.save
       @account.parents.map { |p| p.children << @account_child }
-      redirect_to account_dashboard_path(@account), notice: "#{@account_child.first_name} was added."
+      redirect_to new_account_dashboard_enrollment_path(@account), notice: "#{@account_child.first_name} was added."
     else
       render :new
     end
@@ -42,7 +42,7 @@ class Account::Manage::ChildrenController < ApplicationController
   def update
     authorize @account, :dashboard?
     if @account_child.update(account_child_params)
-      redirect_to account_dashboard_path(@account), notice: 'Child was successfully updated.'
+      redirect_to new_account_dashboard_enrollment_path(@account), notice: 'Child was successfully updated.'
     else
 
       render :edit

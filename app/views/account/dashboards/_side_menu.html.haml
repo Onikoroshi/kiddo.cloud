@@ -1,5 +1,5 @@
 %ul.nav.nav-pills.nav-pills-rose
-  %li{ class: (controller_name == "dashboards" && action_name == "show")  ? "active" : "" }
+  %li{ class: ((controller_name == "dashboards" && action_name == "show") || controller_name == "children")  ? "active" : "" }
     = link_to "My Kids", account_dashboard_path(@account)
   %li{ class: (controller_name == "enrollments" && action_name == "index") ? "active" : "" }
     = link_to "Enrollments", account_dashboard_enrollments_path(@account)
