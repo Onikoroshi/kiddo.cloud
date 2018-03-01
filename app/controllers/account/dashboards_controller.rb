@@ -9,6 +9,9 @@ class Account::DashboardsController < ApplicationController
     authorize @account, :dashboard?
   end
 
+  def change_request
+  end
+
   private
 
   def guard_signup_complete

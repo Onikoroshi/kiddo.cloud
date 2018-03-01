@@ -1,11 +1,13 @@
 %ul.nav.nav-pills.nav-pills-rose
-  %li{ class: (controller_name == "dashboards") ? "active" : ""}
+  %li{ class: (controller_name == "dashboards" && action_name == "show")  ? "active" : "" }
     = link_to "My Kids", account_dashboard_path(@account)
-  %li{ class: (controller_name == "enrollments") ? "active" : ""}
+  %li{ class: (controller_name == "enrollments") ? "active" : "" }
     = link_to "Enrollments", account_dashboard_enrollments_path(@account)
-  %li{ class: (controller_name == "registrations") ? "active" : ""}
+  %li{ class: (controller_name == "dashboards" && action_name == "change_request")  ? "active" : "" }
+    = link_to "Reduce Attendance", change_request_account_dashboard_path(@account)
+  %li{ class: (controller_name == "registrations") ? "active" : "" }
     = link_to "Edit Email/Password", edit_user_registration_path
-  %li{ class: (controller_name == "payments") ? "active" : ""}
+  %li{ class: (controller_name == "payments") ? "active" : "" }
     = link_to "Payment History/Receipts", account_dashboard_payments_path(@account)
 
 .cleaner
