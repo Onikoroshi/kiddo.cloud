@@ -31,6 +31,12 @@ class Child < ApplicationRecord
   scope :low_grade, -> { where(grade_entering: ["1", "2", "3"]) }
   scope :high_grade, -> { where(grade_entering: ["4", "5", "6"]) }
 
+  AVAILABLE_GRADES = (["TK", "K"] + (1..6).to_a.map(&:to_s))
+
+  def self.available_grades
+    AVAILABLE_GRADES
+  end
+
   def full_name
     "#{first_name} #{last_name}"
   end

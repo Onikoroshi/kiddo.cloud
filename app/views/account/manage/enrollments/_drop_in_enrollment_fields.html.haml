@@ -5,7 +5,7 @@
     .col-sm-6
       .field
         = f.label :starts_at, "Date"
-        = f.text_field :starts_at, class: "drop_in-date-select flatpickr-input"
+        = f.text_field :starts_at, class: "drop_in-date-select flatpickr-date"
         = f.hidden_field :ends_at, value: f.object.ends_at, class: "drop_in-ends"
 
         = f.hidden_field :monday, value: false, class: "drop_in-days drop_in-1"
@@ -23,6 +23,6 @@
         = f.label :location, "at"
         = f.select :location_id, options_from_collection_for_select(@program.locations, 'id', 'name', f.object.location)
         %br
-        = link_to_remove_association "Remove", f
+        = link_to_remove_association "Remove Drop In Day", f
   %hr
   .cleaner

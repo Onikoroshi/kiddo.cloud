@@ -22,7 +22,7 @@
         %tr{style: "padding-bottom: 10px;"}
           %td= key.to_s.humanize.capitalize
           %td= @transaction.created_at.stamp("Monday, Feb. 3rd, 2018")
-          %td{style: "text-align: right"}= value
+          %td.right-just= value
 
       %tr.total
         %td Total

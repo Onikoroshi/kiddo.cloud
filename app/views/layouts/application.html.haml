@@ -23,24 +23,11 @@
               %span.icon-bar
               %span.icon-bar
               %span.icon-bar
-  
+
             -# =link_to Receptionist.new(current_user, @center).direct_by_role(current_user.roles.first) do
-                
-  
-          - if user_signed_in?
-            .collapse.navbar-collapse
-              %ul.nav.navbar-nav.navbar-right
-                %li.dropdown
-                  %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
-                    %i.material-icons account_circle
-                    My Account
-                    %b.caret
-                  %ul.dropdown-menu.dropdown-with-icons
-                    %li
-                      = link_to destroy_user_session_path do
-                        %i.material-icons eject
-                        Log Out
+
+          = render "layouts/account_nav"
       %p.notice= notice
       %p.alert= alert
-      
+
       = yield

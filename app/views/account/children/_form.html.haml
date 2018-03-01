@@ -29,12 +29,13 @@
         .select.form-group.label-floating
           = form.label :grade_entering
           %br
-          = form.select :grade_entering, (1..10).to_a, include_blank: false, class: "selectpicker"
+          = form.select :grade_entering, Child.available_grades, include_blank: false, class: "selectpicker"
 
         .form-group.label-floating
           = form.label :birthdate, "Birth Date", class: "control-label"
           %br
-          = form.text_field :birthdate, id: "flatpickr-dob-input", class: "form-control"
+          = form.text_field :birthdate, class: "form-control flatpickr-date"
+          Click on the year in the calendar above for more options
 
 
       .col-md-6

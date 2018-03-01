@@ -6,6 +6,7 @@ class Transaction < ApplicationRecord
   has_many :enrollments, through: :enrollment_transactions
 
   classy_enum_attr :transaction_type
+  money_column :amount
 
   def itemization_total
     total = 0.00

@@ -1,0 +1,20 @@
+- if user_signed_in?
+  .collapse.navbar-collapse
+    %ul.nav.navbar-nav.navbar-right
+      %li.dropdown
+        %li
+          = link_to destroy_user_session_path do
+            %i.material-icons eject
+            Log Out
+  -# .collapse.navbar-collapse
+  -#   %ul.nav.navbar-nav.navbar-right
+  -#     %li.dropdown
+  -#       %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+  -#         %i.material-icons account_circle
+  -#         My Account
+  -#         %b.caret
+  -#       %ul.dropdown-menu.dropdown-with-icons
+  -#         %li
+  -#           = link_to destroy_user_session_path do
+  -#             %i.material-icons eject
+  -#             Log Out

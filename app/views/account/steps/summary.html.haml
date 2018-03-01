@@ -1,7 +1,5 @@
 = render partial: "step_navigation"
 
-= render partial: "agreement"
-
 .row
   %h3.text-center Summary
   .col-md-4.col-sm-6
@@ -178,7 +176,9 @@
       %h3.text-center
         Review &amp; Sign
       %p.text-center
-        If you agree to all the waivers and agreements above, and everything looks correct in the summary, please type your full name and continue to payment.
+        If you agree to #{link_to "all waivers and agreements", asset_path("assets/images/Davis-Kids-Klub_Waivers-Agreements.pdf"), target: "_blank"}, and everything looks correct in the summary, please type your full name and continue to payment.
+      %p.text-center
+        = link_to "Download all waivers and agreements", asset_path("assets/images/Davis-Kids-Klub_Waivers-Agreements.pdf"), target: "_blank"
       .cleaner
       .col-md-6.col-md-offset-3
         #signature-form
