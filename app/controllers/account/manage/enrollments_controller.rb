@@ -13,15 +13,12 @@ class Account::Manage::EnrollmentsController < ApplicationController
     @plan_type = PlanType[params[:plan_type]]
 
     @account.children.each do |child|
-      enrollments = child.enrollments.by_program_and_plan_type(@program, @plan_type)
-      ap enrollments
-
-      next if enrollments.any?
+      next if child.enrollments.by_program_and_plan_type(@program, @plan_type).any?
 
       child.enrollments.build(program: @program, plan: Plan.by_plan_type(@plan_type).first)
     end
 
-    render layout: get_layout
+    render layout: @account.signup_complete? ? "dkk_customer_dashboard" : "davis_kids_klub"
   end
 
   def create
@@ -39,7 +36,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
       end
 
       if success
-        redirect_to root_path, notice: "enrollment successful!"
+        redirect_to @account.signup_complete? ? (@account.enrollments.unpaid.any? ? new_account_dashboard_payment_path(@account) : account_dashboard_enrollments_path(@account)) : account_step_path(@account, :plan), notice: "enrollment successful!"
       else
         @plan_type = PlanType[params[:plan_type]]
         render "new"

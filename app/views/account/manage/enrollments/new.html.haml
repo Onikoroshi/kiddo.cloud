@@ -1,3 +1,7 @@
-= render partial: "account/steps/step_navigation"
+- unless @account.signup_complete?
+  = render partial: "account/steps/step_navigation"
 
-= render "#{@plan_type.to_s}"
+- if @plan_type.present?
+  = render "#{@plan_type.to_s}"
+- else
+  = render "account/enrollment_type/list_types"

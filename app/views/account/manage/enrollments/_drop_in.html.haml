@@ -13,12 +13,16 @@
           = children_fields.object.full_name
 
         .row{style: "padding-left: 20px;"}
+          - children_fields.object.enrollments.by_program_and_plan_type(@program, @plan_type).paid.each do |enrollment|
+            .row{style: "padding-left: 40px; padding-bottom: 20px; padding-right: 20px;"}
+              %span= enrollment.to_s
+
           = children_fields.fields_for :enrollments do |enrollment_fields|
-            - if enrollment_fields.object.program == @program && enrollment_fields.object.plan_type.to_s == @plan_type.to_s
+            - if enrollment_fields.object.program == @program && enrollment_fields.object.plan_type.to_s == @plan_type.to_s && enrollment_fields.object.unpaid?
               = render "enrollment_fields", f: enrollment_fields
 
           .links
             .pull-right= link_to_add_association 'Add Day', children_fields, :enrollments, {style: "padding-right: 20px;"}
 
-    = link_to "Cancel", account_step_path(@account, :plan), class: "btn"
+    = link_to "Cancel", @account.signup_complete? ? new_account_dashboard_enrollment_path(@account) : account_step_path(@account, :plan), class: "btn"
     = f.submit "Submit", class: "btn btn-info pull-right"

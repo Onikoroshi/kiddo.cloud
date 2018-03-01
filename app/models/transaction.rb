@@ -8,6 +8,8 @@ class Transaction < ApplicationRecord
   classy_enum_attr :transaction_type
   money_column :amount
 
+  scope :reverse_chronological, -> { order("created_at DESC") }
+
   def itemization_total
     total = 0.00
     itemizations.each do |_k, v|

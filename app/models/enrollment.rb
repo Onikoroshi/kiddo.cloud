@@ -24,6 +24,10 @@ class Enrollment < ApplicationRecord
     plan.plan_type if plan.present?
   end
 
+  def unpaid?
+    !paid?
+  end
+
   def to_s
     case plan.plan_type.to_s
     when PlanType[:weekly].to_s
@@ -122,7 +126,7 @@ class Enrollment < ApplicationRecord
       end
     end
 
-    if ([5, 6] & (starts_at.wday..ends_at.wday).to_a).any?
+    if starts_at.present? && ends_at.present? && ([5, 6] & (starts_at.wday..ends_at.wday).to_a).any?
       errors.add(:base, "weekdays only")
     end
   end

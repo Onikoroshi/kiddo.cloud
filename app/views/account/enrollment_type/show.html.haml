@@ -1,12 +1,3 @@
 = render "account/steps/step_navigation"
 
-.col-xs-12
-  %h3.text-center
-    How will your children be attending?
-
-.col-md-8.col-md-offset-2.col-xs-10.col-xs-offset-1
-  #attendance-selection-chooser
-    - type_width = (12 / @program.plan_types.count).to_i
-    - @program.plan_types.each do |plan_type|
-      .text-center{class: "col-xs-#{type_width}"}
-        = link_to plan_type.text, plan_selection_path(plan_type, @account), class: "btn btn-lg btn-block btn-info"
+= render "account/enrollment_type/list_types"

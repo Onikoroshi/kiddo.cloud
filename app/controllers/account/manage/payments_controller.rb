@@ -4,7 +4,7 @@ class Account::Manage::PaymentsController < ApplicationController
   before_action :fetch_account
 
   def index
-    @transactions = @account.transactions
+    @transactions = @account.transactions.reverse_chronological
   end
 
   def show
@@ -13,19 +13,25 @@ class Account::Manage::PaymentsController < ApplicationController
 
   def new
     authorize @account, :dashboard?
+    @calculator = ChildEnrollment::EnrollmentPriceCalculator.new(@account)
+    @calculator.calculate
   end
 
   def create
     authorize @account, :dashboard?
-    amount = ChildEnrollment::DropInPriceCalculator.new(@account).calculate
+
+    calculator = ChildEnrollment::EnrollmentPriceCalculator.new(@account)
+    amount = calculator.calculate
+    itemizations = calculator.itemize
+    enrollments = calculator.enrollments
 
     # Token is created using Stripe.js or Checkout!
     # Get the payment token ID submitted by the form:
     token = params[:stripeToken]
 
     begin
-      # Create a Customer:
-      customer = StripeCustomerService.new(@account).find_or_create_customer(token)
+      # Retrieve their Customer:
+      customer = StripeCustomerService.new(@account).find_customer
 
       # Charge the Customer instead of the card:
       charge = Stripe::Charge.create(
@@ -47,17 +53,22 @@ class Account::Manage::PaymentsController < ApplicationController
     end
 
     if charge.present?
-      @account.drop_ins.where(paid: false).map { |d| d.update_attributes(paid: true) }
-      @account.transactions << Transaction.create(
+      transaction = Transaction.create(
         account: @account,
-        program: @account.center.current_program,
-        transaction_type: "dropin payment",
+        transaction_type: TransactionType[:one_time],
         month: Time.zone.now.month,
         year: Time.zone.now.year,
         amount: amount,
-        paid: true
+        paid: true,
+        itemizations: itemizations
       )
-      redirect_to my_dropins_account_dashboard_path(@account), notice: 'Your drop-in days have been added'
+
+      enrollments.each do |enrollment|
+        EnrollmentTransaction.create(enrollment_id: enrollment.id, my_transaction_id: transaction.id, amount: enrollment.plan.price)
+        enrollment.update_attribute(:paid, true)
+      end
+
+      redirect_to account_dashboard_payments_path(@account), notice: "Thank you, your payment is complete. You will receive a receipt for payment sent to your registered email address. If you don't receive it, please call our office (1-530-220-4731)"
     else
       render :new
     end
