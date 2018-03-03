@@ -2,7 +2,8 @@
   - calculator = ChildEnrollment::EnrollmentPriceCalculator.new(@account)
   - calculator.calculate
   - if !current_user.legacy?
-    %h3 Payment
+    %h2 Payment
+    %h4.text-center{style: "color: #ef6240"} Friendly Reminder: New this year, swimming and weekly field trips are included in the weekly fees!
 
     = render "common/enrollments_pricing_info", calculator: calculator
 

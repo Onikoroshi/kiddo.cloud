@@ -3,9 +3,9 @@
     = link_to "My Kids", account_dashboard_path(@account)
   %li{ class: (controller_name == "enrollments" && action_name == "index") ? "active" : "" }
     = link_to "Enrollments", account_dashboard_enrollments_path(@account)
-  %li{ class: (controller_name == "enrollments" && action_name == "new" && @plan_type.to_s == "weekly") ? "active" : "" }
+  %li{ class: (controller_name == "enrollments" && action_name == "new" && (@plan_type.to_s.blank? || @plan_type.to_s == "weekly")) ? "active" : "" }
     = link_to "Add Summer Camp Weeks", new_account_dashboard_enrollment_path(@account, plan_type: "weekly")
-  %li{ class: (controller_name == "enrollments" && action_name == "new" && @plan_type.to_s == "drop_in") ? "active" : "" }
+  %li{ class: (controller_name == "enrollments" && action_name == "new" && (@plan_type.to_s.blank? || @plan_type.to_s == "drop_in")) ? "active" : "" }
     = link_to "Add Summer Camp Drop-In Days", new_account_dashboard_enrollment_path(@account, plan_type: "drop_in")
   %li{ class: (controller_name == "dashboards" && action_name == "change_request")  ? "active" : "" }
     = link_to "Reduce Attendance", change_request_account_dashboard_path(@account)

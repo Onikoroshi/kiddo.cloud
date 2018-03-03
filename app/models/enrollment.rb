@@ -117,7 +117,7 @@ class Enrollment < ApplicationRecord
   def validate_dates
     if plan_type.present? && plan_type.drop_in?
       ends_at = starts_at
-      errors.add(:base, "closed on July 4th") if starts_at == Time.zone.parse("2018-07-04")
+      errors.add(:base, "closed on July 4th") if starts_at == Time.zone.parse("2018-07-04").to_date
     end
 
     if program.present?

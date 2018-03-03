@@ -32,7 +32,7 @@
         .form-group.label-floating
           = form.label :birthdate, "Birth Date", class: "control-label"
           = form.text_field :birthdate, class: "form-control flatpickr-date"
-
+          Remember to click on the day to set the birthdate
 
       .col-md-6
         = form.fields_for :care_items, @account_child.care_items do |c|
