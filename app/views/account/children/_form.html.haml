@@ -19,10 +19,10 @@
           = form.label :gender
           .radio
             %label
-              = form.radio_button :gender, "Male", checked: @account_child.gender == "Male" || @account_child.gender.nil?
+              = form.radio_button :gender, Gender[:male].to_s, checked: !@account_child.gender.respond_to?(:male?) || @account_child.gender.male?
               Male
             %label
-              = form.radio_button :gender, "Female"
+              = form.radio_button :gender, Gender[:female].to_s
               Female
 
 

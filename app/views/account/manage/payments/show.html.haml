@@ -4,30 +4,28 @@
 %h4.text-center 417 Mace Blvd Ste J PMB 174, Davis CA 95618
 %hr
 
-.row
-  .col-md-12.col-md-offset-3.col-sm-8.col-sm-offset-2.text-center
-    %table.enrollments-table
-      %thead
-        %th Type
-        %th Date(s) of Service
-        %th Amount
+%table.enrollments-table
+  %thead
+    %th Type
+    %th Date(s) of Service
+    %th.right-just Amount
 
-      %tbody
-        - @transaction.enrollments.each do |enrollment|
-          %tr
-            %td= enrollment.type_display
-            %td= enrollment.service_dates
-            %td.right-just= enrollment.plan.price
+  %tbody
+    - @transaction.enrollments.each do |enrollment|
+      %tr
+        %td= enrollment.type_display
+        %td= enrollment.service_dates
+        %td.right-just= enrollment.plan.price
 
-        - @transaction.itemizations.each do |key, value|
-          %tr{style: "padding-bottom: 10px;"}
-            %td= key.to_s.humanize.capitalize
-            %td= @transaction.created_at.stamp("Monday, Feb. 3rd, 2018")
-            %td.right-just= value
+    - @transaction.itemizations.each do |key, value|
+      %tr{style: "padding-bottom: 10px;"}
+        %td= key.to_s.humanize.capitalize
+        %td= @transaction.created_at.stamp("Monday, Feb. 3rd, 2018")
+        %td.right-just= value
 
-        %tr.total
-          %td Total
-          %td
-          %td.right-just= @transaction.amount
+    %tr.total
+      %td Total
+      %td
+      %td.right-just= @transaction.amount
 
 %h4.text-center{style: "color: #ef6240; padding-top: 40px;"} If you need a signed copy, please contact daviskidsklub@aol.com

@@ -1,5 +1,5 @@
 class Account::Manage::EnrollmentsController < ApplicationController
-  layout "dkk_customer_dashboard"
+  layout :set_layout
   before_action :guard_center!
   before_action :fetch_account
   before_action :find_registering_program, except: :index
@@ -18,7 +18,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
       child.enrollments.build(program: @program, plan: Plan.by_plan_type(@plan_type).first)
     end
 
-    render layout: @account.signup_complete? ? "dkk_customer_dashboard" : "davis_kids_klub"
+    render layout: current_user.parent? ? (@account.signup_complete? ? "dkk_customer_dashboard" : "davis_kids_klub") : "dkk_staff_dashboard"
   end
 
   def create
@@ -48,6 +48,10 @@ class Account::Manage::EnrollmentsController < ApplicationController
   end
 
   private
+
+  def set_layout
+    current_user.parent? ? "dkk_customer_dashboard" : "dkk_staff_dashboard"
+  end
 
   def fetch_account
     @account = Account.find(params[:account_id])

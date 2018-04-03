@@ -1,8 +1,5 @@
-= render partial: "step_navigation"
-
 .row
-  %h2.text-center Summary
-  %h4.text-center{style: "color: #ef6240"} Friendly Reminder: New this year, swimming and weekly field trips are included in the weekly fees!
+  %h2.text-center Account Summary
 
   .col-md-4.col-sm-6
     .account-box
@@ -66,44 +63,11 @@
               Phone:
             .col-xs-8.account-name
               = contact.phone
-    .account-box
-      #medical
-        %h3 Medical #{link_to "Edit", account_step_path(@account, :medical), class: "btn btn-xs btn-round"}
-        .row.account-row
-          .col-xs-6.account-label
-            Family Physician:
-          .col-xs-6.account-name
-            = @account.family_physician
-        .row.account-row
-          .col-xs-6.account-label
-            Family Physician Phone:
-          .col-xs-6.account-name
-            = @account.physician_phone
-        .row.account-row
-          .col-xs-6.account-label
-            Family Dentist:
-          .col-xs-6.account-name
-            = @account.family_dentist
-        .row.account-row
-          .col-xs-6.account-label
-            Family Dentist Phone:
-          .col-xs-6.account-name
-            = @account.dentist_phone
-        .row.account-row
-          .col-xs-6.account-label
-            Insurance Company:
-          .col-xs-6.account-name
-            = @account.insurance_company
-        .row.account-row
-          .col-xs-6.account-label
-            Insurance Policy Number:
-          .col-xs-6.account-name
-            = @account.insurance_policy_number
 
   .col-md-4.col-sm-6
     .account-box
       #children
-        %h3 Children #{link_to "Edit", account_children_path(@account), class: "btn btn-xs btn-round"}
+        %h3 Children #{link_to "Edit", account_dashboard_children_path(@account), class: "btn btn-xs btn-round"}
         - @account.children.each do |c|
           .row
             .account-child
@@ -146,48 +110,52 @@
   .col-md-4.col-sm-6
     .account-box
       #plan
-        %h3 Plan Information #{link_to "Edit", account_step_path(@account, :plan), class: "btn btn-xs btn-round"}
+        %h3 Plan Information #{link_to "Edit", account_dashboard_enrollments_path(@account), class: "btn btn-xs btn-round"}
 
-        - @account.enrollments.unpaid.programs.each do |program|
+        - @account.enrollments.paid.programs.each do |program|
           %h5= program.name
 
           - @account.children.each do |child|
             %strong= child.full_name
-            - enrollments = child.enrollments.unpaid.by_program(program)
+            - enrollments = child.enrollments.paid.by_program(program)
             - if enrollments.any?
               %ul
               - enrollments.each do |enrollment|
                 %li= enrollment.to_short
-            %br
 
-        - price_calculator = ChildEnrollment::EnrollmentPriceCalculator.new(@account)
-        - price_calculator.calculate
-        - if price_calculator.itemizations[:one_time_signup_fee].to_i > 0
-          (Includes a 1-time, non-refundable #{Money.new(price_calculator.itemizations[:one_time_signup_fee])} sign-up fee.)
-
-        %h5
-          %strong
-            Total today: #{price_calculator.total}
+  .col-md-4.col-sm-6
+    .account-box
+      #medical
+        %h3 Medical #{link_to "Edit", account_step_path(@account, :medical), class: "btn btn-xs btn-round"}
+        .row.account-row
+          .col-xs-6.account-label
+            Family Physician:
+          .col-xs-6.account-name
+            = @account.family_physician
+        .row.account-row
+          .col-xs-6.account-label
+            Family Physician Phone:
+          .col-xs-6.account-name
+            = @account.physician_phone
+        .row.account-row
+          .col-xs-6.account-label
+            Family Dentist:
+          .col-xs-6.account-name
+            = @account.family_dentist
+        .row.account-row
+          .col-xs-6.account-label
+            Family Dentist Phone:
+          .col-xs-6.account-name
+            = @account.dentist_phone
+        .row.account-row
+          .col-xs-6.account-label
+            Insurance Company:
+          .col-xs-6.account-name
+            = @account.insurance_company
+        .row.account-row
+          .col-xs-6.account-label
+            Insurance Policy Number:
+          .col-xs-6.account-name
+            = @account.insurance_policy_number
 
   .cleaner
-
-  .row
-    .account-alert
-      %h3.text-center
-        Review &amp; Sign
-      %p.text-center
-        If you agree to #{link_to "all waivers and agreements", asset_path("assets/images/Davis-Kids-Klub_Waivers-Agreements.pdf"), target: "_blank"}, and everything looks correct in the summary, please type your full name and continue to payment.
-      %p.text-center
-        = link_to "Download all waivers and agreements", asset_path("assets/images/Davis-Kids-Klub_Waivers-Agreements.pdf"), target: "_blank"
-      .cleaner
-      .col-md-6.col-md-offset-3
-        #signature-form
-          = form_for @account_summary_form, method: :put, url: wizard_path do |f|
-            = render "application/form_errors", object: @account_summary_form
-            = f.label :signature
-
-            = f.text_field :signature, value: @account.signature, class: "text_field", placeholder: "Type your full name"
-            %br
-            - button_text = current_user.legacy? ? "Continue to Save Payment Method For AutoPay" : "Continue to Payment"
-            = f.submit button_text, class: "btn btn-info pull-right"
-      .cleaner

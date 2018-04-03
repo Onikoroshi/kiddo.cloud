@@ -1,5 +1,6 @@
 class Account::DashboardsController < ApplicationController
-  layout "dkk_customer_dashboard"
+  layout :set_layout
+
   before_action :guard_center!
   before_action :set_account
   before_action :guard_signup_complete
@@ -14,7 +15,13 @@ class Account::DashboardsController < ApplicationController
 
   private
 
+  def set_layout
+    current_user.parent? ? "dkk_customer_dashboard" : "dkk_staff_dashboard"
+  end
+
   def guard_signup_complete
+    return unless current_user.parent?
+
     account = current_user.account
     if !account.signup_complete
       flash[:message] = "Let's finish registering."
@@ -24,6 +31,6 @@ class Account::DashboardsController < ApplicationController
   end
 
   def set_account
-    @account = current_user.account
+    @account = Account.find(params[:account_id])
   end
 end

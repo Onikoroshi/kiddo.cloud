@@ -1,15 +1,17 @@
 class Child < ApplicationRecord
+  include ClassyEnum::ActiveRecord
+
   belongs_to :account
   has_and_belongs_to_many :parents
   has_one :attendance_selection, dependent: :destroy
 
   has_many :drop_ins, dependent: :destroy
 
-  has_many :child_locations, dependent: :destroy
-  has_many :locations, through: :child_locations
+  has_many :child_locations, dependent: :destroy # don't use these anymore
 
   has_many :enrollments, dependent: :destroy
   has_many :plans, through: :enrollments
+  has_many :locations, through: :enrollments
 
   has_many :time_entries, as: :time_recordable
   has_many :care_items, dependent: :destroy
@@ -28,6 +30,8 @@ class Child < ApplicationRecord
   accepts_nested_attributes_for :attendance_selection, allow_destroy: true
   accepts_nested_attributes_for :drop_ins, allow_destroy: true, reject_if: :all_blank
 
+  classy_enum_attr :gender
+
   scope :low_grade, -> { where(grade_entering: ["1", "2", "3"]) }
   scope :high_grade, -> { where(grade_entering: ["4", "5", "6"]) }
 
@@ -37,8 +41,17 @@ class Child < ApplicationRecord
     AVAILABLE_GRADES
   end
 
+  def self.active_locations
+    location_ids = self.joins(enrollments: :program).where("programs.ends_at >= ?", Time.zone.today).distinct.pluck("enrollments.location_id")
+    Location.where(id: location_ids)
+  end
+
   def full_name
     "#{first_name} #{last_name}"
+  end
+
+  def active_enrollment_blurbs
+    enrollments.active_blurbs(self)
   end
 
   def build_default_care_items

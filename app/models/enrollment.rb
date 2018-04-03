@@ -20,6 +20,45 @@ class Enrollment < ApplicationRecord
     Program.where(id: self.joins(plan: :program).pluck("programs.id").uniq)
   end
 
+  def self.active
+    self.joins(:program).where("programs.ends_at >= ?", Time.zone.today).distinct
+  end
+
+  def self.active_blurbs(child)
+    blurbs = []
+
+    all_enrollments = self.joins(:location, plan: :program).where("programs.ends_at >= ?", Time.zone.today)
+
+    program_ids = all_enrollments.pluck("programs.id").uniq
+    Program.where(id: program_ids).find_each do |program|
+      program_enrollments = all_enrollments.where("programs.id = ?", program.id)
+
+      location_ids = program_enrollments.pluck("locations.id").uniq
+      Location.where(id: location_ids).find_each do |location|
+        location_enrollments = program_enrollments.where("locations.id = ?", location.id)
+
+        plan_types = location_enrollments.pluck("plans.plan_type").uniq.sort
+        plan_types.each do |plan_type|
+          plan_type_enrollments = location_enrollments.where("plans.plan_type = ?", plan_type)
+          num_enrolls = plan_type_enrollments.count
+
+          case plan_type.to_s
+          when PlanType[:weekly].to_s
+            blurbs << "#{child.first_name} is attending  #{num_enrolls} #{"Week".pluralize(num_enrolls)} at #{location.name} during #{program.short_name}"
+          when PlanType[:drop_in].to_s
+            blurbs << "#{child.first_name} has #{num_enrolls} #{"Drop-In".pluralize(num_enrolls)} at #{location.name} during #{program.short_name}"
+          else
+            type_obj = PlanType[plan_type]
+            type_text = type_obj.present? ? type_obj.text : plan_type.humanize
+            blurbs << "#{child.first_name} is enrolled in  #{num_enrolls} #{type_text.pluralise(num_enrolls)} at #{location.short_name} during #{program.name}"
+          end
+        end
+      end
+    end
+
+    blurbs.flatten
+  end
+
   def plan_type
     plan.plan_type if plan.present?
   end

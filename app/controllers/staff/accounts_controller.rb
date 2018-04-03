@@ -8,8 +8,11 @@ class Staff::AccountsController < ApplicationController
                 .includes(:parents)
                 .where(center: @center)
                 .where(signup_complete: true)
-                .order(created_at: :desc)
                 .page(params[:page])
                 .per(50)
+  end
+
+  def show
+    @account = Account.find(params[:id])
   end
 end

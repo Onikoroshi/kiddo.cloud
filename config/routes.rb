@@ -45,6 +45,22 @@ Rails.application.routes.draw do
       resources :payments, controller: "account/manage/payments"
       resources :children, controller: 'account/manage/children'
       resources :enrollments, controller: "account/manage/enrollments"
+
+      resources :parents, controller: "account/manage/parents", only: :index do
+        collection do
+          get :edit
+          patch :update
+          put :update
+        end
+      end
+
+      resource :medical, controller: "account/manage/medical", only: :index do
+        collection do
+          get :edit
+          patch :update
+          put :update
+        end
+      end
     end
   end
 
@@ -53,7 +69,7 @@ Rails.application.routes.draw do
   end
 
   namespace :staff do
-    resources :accounts, only: [:index]
+    resources :accounts, only: [:index, :show]
     resources :time_disputes, only: [:index, :new, :create]
     resources :attendance_display, only: :index
     resource :dashboard, only: :show, controller: 'dashboard'

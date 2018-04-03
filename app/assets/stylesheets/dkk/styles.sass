@@ -222,8 +222,8 @@ h7
 
 .admin-title
   color: #7b68ab
-  font-size: 13px
-  font-weight: 400
+  font-size: 13px !important
+  font-weight: 400 !important
   text-transform: uppercase
   overflow: hidden
 
@@ -244,11 +244,28 @@ h7
   td, th
     padding: 10px
 
-  td
+  td, th
     &.right-just
       text-align: right
 
 .flatpickr-input
   width: 100% !important
+
+table
+  width: 100%
+  border: none !important
+
+  th
+    border: none !important
+    padding: 20px !important
+
+  tr
+    background: white !important
+
+    td
+      border: none !important
+      border-top: solid #EEEEEE 1px !important
+      padding: 20px !important
+      vertical-align: top !important
 
 @media (max-width: 992px)
