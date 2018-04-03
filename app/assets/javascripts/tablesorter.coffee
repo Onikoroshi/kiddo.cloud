@@ -1,4 +1,4 @@
-$(document).ready ->
+$(document).on 'turbolinks:load', ->
   $ ->
     $.extend $.tablesorter.defaults,
       theme: 'bootstrap',
