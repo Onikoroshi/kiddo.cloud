@@ -25,6 +25,17 @@ class Account < ApplicationRecord
 
   accepts_nested_attributes_for :children, allow_destroy: true
 
+  scope :by_location, ->(given_location) { given_location.present? ? joins(:enrollments).where("enrollments.location_id = ?", given_location.id) : all }
+
+  def self.to_csv
+    CSV.generate do |csv|
+      csv << ["Primary Parent", "Email", "Phone", "Children", "Location(s)"]
+      self.all.each do |account|
+        csv << [account.primary_parent.full_name, account.user.email, account.primary_parent.phone, account.children.map(&:full_name).to_sentence, account.active_locations.map(&:name).to_sentence]
+      end
+    end
+  end
+
   def primary_email
     user.email
   end
@@ -72,6 +83,11 @@ class Account < ApplicationRecord
       end
     end
     result.flatten.reject(&:blank?)
+  end
+
+  def active_locations
+    location_ids = enrollments.active.pluck(:location_id).uniq
+    Location.where(id: location_ids)
   end
 
   def children_enrolled?(program)

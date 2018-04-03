@@ -69,7 +69,12 @@ Rails.application.routes.draw do
   end
 
   namespace :staff do
-    resources :accounts, only: [:index, :show]
+    resources :accounts, only: [:index, :show] do
+      collection do
+        get :export_to_csv
+      end
+    end
+    
     resources :time_disputes, only: [:index, :new, :create]
     resources :attendance_display, only: :index
     resource :dashboard, only: :show, controller: 'dashboard'

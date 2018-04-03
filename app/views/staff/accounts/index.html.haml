@@ -1,8 +1,17 @@
 %h3.text-center
   Parents
-%br
-- if @accounts.any?
 
+.row
+  .text-center
+    = form_tag staff_accounts_path, method: :get do
+      %h5 Location
+      = select_tag "location_id", options_from_collection_for_select(Location.all, "id", "name", @location_id), include_blank: "All Locations"
+      = submit_tag "Submit"
+
+  .pull-right{style: "padding-right: 40px;"}
+    = link_to "Export to CSV", export_to_csv_staff_accounts_path(location_id: @location_id, format: "csv"), class: "btn btn-primary btn-sm"
+
+- if @accounts.any?
   %table{class: "tablesorter {sortlist: [[3,1]]}"}
     %thead
       %th.admin-title Primary Parent
