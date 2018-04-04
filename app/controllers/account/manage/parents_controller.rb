@@ -1,5 +1,5 @@
 class Account::Manage::ParentsController < ApplicationController
-  layout :set_layout
+  layout :set_layout_by_role
   before_action :guard_center!
   before_action :set_account
 
@@ -23,10 +23,6 @@ class Account::Manage::ParentsController < ApplicationController
   end
 
   private
-
-  def set_layout
-    current_user.role?("parent") ? "dkk_customer_dashboard" : "dkk_staff_dashboard"
-  end
 
   def set_account
     @account = Account.find(params[:account_id])

@@ -1,5 +1,5 @@
 class Account::DashboardsController < ApplicationController
-  layout :set_layout
+  layout :set_layout_by_role
 
   before_action :guard_center!
   before_action :set_account
@@ -14,10 +14,6 @@ class Account::DashboardsController < ApplicationController
   end
 
   private
-
-  def set_layout
-    current_user.parent? ? "dkk_customer_dashboard" : "dkk_staff_dashboard"
-  end
 
   def guard_signup_complete
     return unless current_user.parent?

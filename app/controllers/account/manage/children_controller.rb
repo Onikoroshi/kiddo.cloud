@@ -1,5 +1,5 @@
 class Account::Manage::ChildrenController < ApplicationController
-  layout :set_layout
+  layout :set_layout_by_role
   before_action :guard_center!
   before_action :set_account
   before_action :set_account_child, only: [:show, :edit, :update, :destroy]
@@ -57,10 +57,6 @@ class Account::Manage::ChildrenController < ApplicationController
   end
 
   private
-
-  def set_layout
-    current_user.parent? ? "dkk_customer_dashboard" : "dkk_staff_dashboard"
-  end
 
   def set_account_child
     @account_child = Child.find(params[:id])

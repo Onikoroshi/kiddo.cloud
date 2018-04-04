@@ -25,7 +25,8 @@ class Account < ApplicationRecord
 
   accepts_nested_attributes_for :children, allow_destroy: true
 
-  scope :by_location, ->(given_location) { given_location.present? ? joins(:enrollments).where("enrollments.location_id = ?", given_location.id) : all }
+  scope :by_program, ->(given_program) { given_program.present? ? joins(enrollments: :program).where("programs.id = ?", given_program.id).distinct : all }
+  scope :by_location, ->(given_location) { given_location.present? ? joins(:enrollments).where("enrollments.location_id = ?", given_location.id).distinct : all }
 
   def self.to_csv
     CSV.generate do |csv|

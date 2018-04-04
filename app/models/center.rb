@@ -20,6 +20,6 @@ class Center < ApplicationRecord
   end
 
   def current_program
-    programs.open_for_registration.first || programs.in_session.first || programs.first
+    programs.open_for_registration.first || programs.in_session.first || programs.last
   end
 end

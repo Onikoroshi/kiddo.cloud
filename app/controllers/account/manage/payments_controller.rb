@@ -1,5 +1,5 @@
 class Account::Manage::PaymentsController < ApplicationController
-  layout "dkk_customer_dashboard"
+  layout :set_layout_by_role
   before_action :guard_center!
   before_action :fetch_account
 
@@ -76,8 +76,7 @@ class Account::Manage::PaymentsController < ApplicationController
 
   private
 
-    def fetch_account
-      @account = Account.find(params[:account_id])
-    end
-
+  def fetch_account
+    @account = Account.find(params[:account_id])
+  end
 end

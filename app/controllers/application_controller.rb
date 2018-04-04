@@ -77,4 +77,7 @@ class ApplicationController < ActionController::Base
     puts exception
   end
 
+  def set_layout_by_role
+    current_user.role?("parent") ? "dkk_customer_dashboard" : "dkk_staff_dashboard"
+  end
 end
