@@ -1,8 +1,21 @@
 %table{style: "text-align: left;"}
   - calculator.enrollments.each do |enrollment|
     %tr
-      %td= enrollment.to_short
+      %td= enrollment.description
       %td{style: "padding-left: 10px; text-align: right"}= enrollment.plan.price
+    - enrollment.enrollment_changes.each do |enrollment_change|
+      %tr.merge-top
+        %td{style: "text-align: right"}= enrollment_change.build_description
+        %td{style: "padding-left: 10px; text-align: right"}= enrollment_change.calculated_amount
+
+  - calculator.independent_enrollment_changes.each do |enrollment_change|
+    %tr
+      %td= enrollment_change.enrollment.description
+      %td{style: "padding-left: 10px; text-align: right"}
+
+    %tr.merge-top
+      %td{style: "text-align: right"}= enrollment_change.build_description
+      %td{style: "padding-left: 10px; text-align: right"}= enrollment_change.calculated_amount
 
   - calculator.itemizations.each do |key, value|
     %tr

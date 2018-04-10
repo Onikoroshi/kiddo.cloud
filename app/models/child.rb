@@ -42,7 +42,7 @@ class Child < ApplicationRecord
   end
 
   def self.active_locations
-    location_ids = self.joins(enrollments: :program).where("programs.ends_at >= ?", Time.zone.today).distinct.pluck("enrollments.location_id")
+    location_ids = self.joins(enrollments: :program).where.not(enrollments: {dead: true}).where("programs.ends_at >= ?", Time.zone.today).distinct.pluck("enrollments.location_id").uniq
     Location.where(id: location_ids)
   end
 
@@ -51,7 +51,7 @@ class Child < ApplicationRecord
   end
 
   def active_enrollment_blurbs
-    enrollments.active_blurbs(self)
+    enrollments.alive.active_blurbs(self)
   end
 
   def build_default_care_items
@@ -68,13 +68,11 @@ class Child < ApplicationRecord
   end
 
   def enrolled?(program)
-    enrollments.where(plan: program.plans).present?
+    enrollments.alive.where(plan: program.plans).present?
   end
 
   def scheduled_for_today?(program)
-    drop_ins.today.any? ||
-      enrolled?(program) &&
-        enrollments.where(plan: program.plans).select { |e| e.enrolled_today? }.any?
+    enrollments.alive.where(plan: program.plans).select { |e| e.enrolled_today? }.any?
   end
 
   def last_time_entry
@@ -86,23 +84,22 @@ class Child < ApplicationRecord
     last_time_entry.record_type == "entry"
   end
 
-  def overlapping_enrollment_dates(program)
-    enrollments = self.enrollments.by_program(program)
+  def overlapping_enrollment_dates(given_enrollments)
     ignore = []
     failed_messages = []
 
-    enrollments.find_each do |a|
-      enrollments.where.not(id: ignore + [a.id]).find_each do |b|
+    given_enrollments.each do |a|
+      given_enrollments.reject{ |e| (ignore + [a.id]).include?(e.id) }.each do |b|
         overlap = (a.starts_at <= b.starts_at && a.ends_at >= b.ends_at)    ||  # a completely contains b
                   (a.starts_at <= b.starts_at && a.ends_at >= b.starts_at)  ||  # a contains b start (b contains a end)
                   (a.starts_at <= b.ends_at && a.ends_at >= b.ends_at)      ||  # a contains b end (b contains a end)
                   (b.starts_at <= a.starts_at && b.ends_at >= a.ends_at)        # b completely contains a
 
         if overlap
-          ignore << a
-          ignore << b
+          ignore << a.id
+          ignore << b.id
           ignore = ignore.uniq
-          failed_messages << "#{a.plan_type.text} enrollment #{a.display_dates} overlaps with a #{b.plan_type.text} enrollment #{b.display_dates}"
+          failed_messages << "#{self.first_name}'s #{a.plan_type.text} enrollment #{a.display_dates} overlaps with #{self.gender.possessive} #{b.plan_type.text} enrollment #{b.display_dates}"
         end
       end
     end

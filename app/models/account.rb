@@ -17,6 +17,7 @@ class Account < ApplicationRecord
 
   has_many :children, dependent: :destroy
   has_many :enrollments, through: :children
+  has_many :enrollment_changes, through: :enrollments
   has_many :emergency_contacts, dependent: :destroy
 
   has_many :drop_ins
@@ -66,6 +67,10 @@ class Account < ApplicationRecord
     gateway_customer_id.present?
   end
 
+  def pending_enrollment_changes?
+    enrollments.alive.unpaid.count > 0 || enrollment_changes.pending.count > 0
+  end
+
   def create_default_child_attendance_selections
     children.each do |child|
       AttendanceSelection.where(child_id: child.id).first_or_create!
@@ -80,14 +85,14 @@ class Account < ApplicationRecord
     result = Array.new
     program.plans.each do |p|
       children.each do |c|
-        result << c.enrollments.where(plan: p).first.to_s
+        result << c.enrollments.alive.where(plan: p).first.to_s
       end
     end
     result.flatten.reject(&:blank?)
   end
 
   def active_locations
-    location_ids = enrollments.active.pluck(:location_id).uniq
+    location_ids = enrollments.alive.active.pluck(:location_id).uniq
     Location.where(id: location_ids)
   end
 
@@ -98,7 +103,7 @@ class Account < ApplicationRecord
 
   def mark_paid!
     children.each do |c|
-      c.enrollments.each do |enrollment|
+      c.enrollments.alive.each do |enrollment|
         enrollment.update_attributes(paid: true)
       end
     end

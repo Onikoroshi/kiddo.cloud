@@ -112,12 +112,12 @@
       #plan
         %h3 Plan Information #{link_to "Edit", account_dashboard_enrollments_path(@account), class: "btn btn-xs btn-round"}
 
-        - @account.enrollments.paid.programs.each do |program|
+        - @account.enrollments.alive.paid.programs.each do |program|
           %h5= program.name
 
           - @account.children.each do |child|
             %strong= child.full_name
-            - enrollments = child.enrollments.paid.by_program(program)
+            - enrollments = child.enrollments.alive.paid.by_program(program)
             - if enrollments.any?
               %ul
               - enrollments.each do |enrollment|

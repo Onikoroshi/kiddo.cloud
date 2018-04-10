@@ -27,6 +27,30 @@ body
 
 .container-dkk
 
+.container
+  width: 95%
+
+.layout-row
+  box-sizing: border-box
+  display: -webkit-box
+  display: -webkit-flex
+  display: flex
+  -webkit-box-direction: normal
+  -webkit-box-orient: horizontal
+  -webkit-flex-direction: row
+  flex-direction: row
+
+.centered
+  -webkit-box-align: center
+  -webkit-align-items: center
+  -ms-grid-row-align: center
+  align-items: center
+  -webkit-align-content: center
+  align-content: center
+  -webkit-box-pack: center
+  -webkit-justify-content: center
+  justify-content: center
+
 .numInputWrapper
   span
     &.arrowUp
@@ -267,5 +291,9 @@ table
       border-top: solid #EEEEEE 1px !important
       padding: 20px !important
       vertical-align: top !important
+
+  tr.merge-top
+    td
+      border-top: none !important
 
 @media (max-width: 992px)

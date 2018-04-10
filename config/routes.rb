@@ -44,7 +44,13 @@ Rails.application.routes.draw do
       resource :drop_ins, controller: 'account/manage/drop_ins'
       resources :payments, controller: "account/manage/payments"
       resources :children, controller: 'account/manage/children'
-      resources :enrollments, controller: "account/manage/enrollments"
+      resources :enrollments, controller: "account/manage/enrollments", except: [:edit, :update] do
+        collection do
+          get :edit
+          patch :update
+          put :update
+        end
+      end
 
       resources :parents, controller: "account/manage/parents", only: :index do
         collection do
@@ -74,7 +80,7 @@ Rails.application.routes.draw do
         get :export_to_csv
       end
     end
-    
+
     resources :time_disputes, only: [:index, :new, :create]
     resources :attendance_display, only: :index
     resource :dashboard, only: :show, controller: 'dashboard'

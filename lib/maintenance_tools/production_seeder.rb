@@ -35,7 +35,8 @@ class MaintenanceTools::ProductionSeeder
       ends_at: Chronic.parse("8/24/2018"),
       registration_opens: Chronic.parse("2/1/2018"),
       registration_closes: Chronic.parse("8/24/2018"),
-      registration_fee: 50.0
+      registration_fee: 50.0,
+      change_fee: 49.0
     ).first_or_create!
     # Program.where(
     #   center: center,

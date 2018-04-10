@@ -12,7 +12,7 @@ module ChildEnrollment
 
       children.each do |child|
         enroll_child(child)
-        child.enrollments.update_all(location_id: location.id)
+        child.enrollments.alive.update_all(location_id: location.id)
       end
 
       SiblingClub.new(children, program, location).apply
