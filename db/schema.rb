@@ -170,6 +170,7 @@ ActiveRecord::Schema.define(version: 20180409215439) do
     t.boolean "requires_fee"
     t.boolean "applied", default: false
     t.text "description"
+    t.float "amount"
     t.jsonb "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

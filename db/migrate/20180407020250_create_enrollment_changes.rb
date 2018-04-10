@@ -7,6 +7,7 @@ class CreateEnrollmentChanges < ActiveRecord::Migration[5.1]
       t.boolean :requires_fee
       t.boolean :applied, default: false
       t.text :description
+      t.float :amount
       t.jsonb :data
 
       t.timestamps

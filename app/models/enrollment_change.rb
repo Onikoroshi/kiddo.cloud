@@ -5,20 +5,37 @@ class EnrollmentChange < ApplicationRecord
   has_many :enrollment_change_transactions, dependent: :destroy
   has_many :transactions, through: :enrollment_change_transactions, source: :my_transaction
 
+  money_column :amount
+
   validates :account, :enrollment, presence: true
+
+  after_create :update_amount
+  after_save :update_amount
 
   scope :require_fee, -> { where(requires_fee: true) }
   scope :require_refund, -> { where(requires_refund: true) }
   scope :finalized, -> { where(applied: true) }
   scope :pending, -> { where.not(applied: true) }
 
+  def self.generating_charge
+    self.pending.select{|change| change.amount > 0}
+  end
+
+  def self.generating_refund
+    self.pending.select{|change| change.amount < 0}
+  end
+
+  def self.charge_total
+    pending.require_refund.inject(Money.new(0)){|sum, change| sum + change.charge_amount}
+  end
+
+  def self.refund_total
+    pending.require_refund.inject(Money.new(0)){|sum, change| sum + change.refund_amount}
+  end
+
   def self.transactions
     transaction_ids = self.joins(enrollment: :transactions).pluck("transactions.id").uniq
     Transaction.where(id: transaction_ids)
-  end
-
-  def self.refund_amount
-    all.inject(Money.new(0)){ |sum, enrollment_change| sum + Money.new(enrollment_change.refund_amount) }
   end
 
   def self.build_params
@@ -55,6 +72,10 @@ class EnrollmentChange < ApplicationRecord
     end
 
     params
+  end
+
+  def pending?
+    !applied?
   end
 
   def apply_to_enrollment!
@@ -110,10 +131,23 @@ class EnrollmentChange < ApplicationRecord
   end
 
   def charge_amount
-    [Money.new(0), calculated_amount].max
+    [Money.new(0), amount].max
   end
 
   def refund_amount
-    [Money.new(0), calculated_amount].min.abs
+    [Money.new(0), amount].min.abs
+  end
+
+  private
+
+  def update_amount
+    return unless changed?
+    return unless pending?
+
+    if requires_refund?
+      update_attribute(:amount, calculated_amount)
+    else
+      update_attribute(:amount, 0.0)
+    end
   end
 end

@@ -86,7 +86,15 @@ Rails.application.routes.draw do
     resource :dashboard, only: :show, controller: 'dashboard'
     resources :staff
     resources :transactions, only: [:index, :show]
-    resources :enrollments, only: :index
+    resources :enrollments, only: :index do
+      collection do
+        patch :set_change_fee_requirement
+      end
+      
+      member do
+        patch :set_change_refund_requirement
+      end
+    end
   end
 
   resources :time_entries, only: :create

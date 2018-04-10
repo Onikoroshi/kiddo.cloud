@@ -4,7 +4,7 @@
   .col-md-4.col-sm-6
     .account-box
       #parents
-        %h3 Parents #{link_to "Edit", account_step_path(@account, :parents), class: "btn btn-xs btn-round"}
+        %h3 Parents #{link_to "Edit", edit_account_dashboard_parents_path(@account), class: "btn btn-xs btn-round"}
 
         #primary-parent
           %h5 Primary Parent
@@ -64,6 +64,40 @@
             .col-xs-8.account-name
               = contact.phone
 
+    .account-box
+      #medical
+        %h3 Medical #{link_to "Edit", edit_account_dashboard_medical_path(@account), class: "btn btn-xs btn-round"}
+        .row.account-row
+          .col-xs-6.account-label
+            Family Physician:
+          .col-xs-6.account-name
+            = @account.family_physician
+        .row.account-row
+          .col-xs-6.account-label
+            Family Physician Phone:
+          .col-xs-6.account-name
+            = @account.physician_phone
+        .row.account-row
+          .col-xs-6.account-label
+            Family Dentist:
+          .col-xs-6.account-name
+            = @account.family_dentist
+        .row.account-row
+          .col-xs-6.account-label
+            Family Dentist Phone:
+          .col-xs-6.account-name
+            = @account.dentist_phone
+        .row.account-row
+          .col-xs-6.account-label
+            Insurance Company:
+          .col-xs-6.account-name
+            = @account.insurance_company
+        .row.account-row
+          .col-xs-6.account-label
+            Insurance Policy Number:
+          .col-xs-6.account-name
+            = @account.insurance_policy_number
+
   .col-md-4.col-sm-6
     .account-box
       #children
@@ -110,7 +144,7 @@
   .col-md-4.col-sm-6
     .account-box
       #plan
-        %h3 Plan Information #{link_to "Edit", account_dashboard_enrollments_path(@account), class: "btn btn-xs btn-round"}
+        %h3 Plan Information #{link_to "Edit", edit_account_dashboard_enrollments_path(@account), class: "btn btn-xs btn-round"} #{link_to "Finalize Changes", new_account_dashboard_payment_path(@account), class: "btn btn-xs btn-round" if @account.pending_enrollment_changes?}
 
         - @account.enrollments.alive.paid.programs.each do |program|
           %h5= program.name
@@ -122,40 +156,5 @@
               %ul
               - enrollments.each do |enrollment|
                 %li= enrollment.to_short
-
-  .col-md-4.col-sm-6
-    .account-box
-      #medical
-        %h3 Medical #{link_to "Edit", account_step_path(@account, :medical), class: "btn btn-xs btn-round"}
-        .row.account-row
-          .col-xs-6.account-label
-            Family Physician:
-          .col-xs-6.account-name
-            = @account.family_physician
-        .row.account-row
-          .col-xs-6.account-label
-            Family Physician Phone:
-          .col-xs-6.account-name
-            = @account.physician_phone
-        .row.account-row
-          .col-xs-6.account-label
-            Family Dentist:
-          .col-xs-6.account-name
-            = @account.family_dentist
-        .row.account-row
-          .col-xs-6.account-label
-            Family Dentist Phone:
-          .col-xs-6.account-name
-            = @account.dentist_phone
-        .row.account-row
-          .col-xs-6.account-label
-            Insurance Company:
-          .col-xs-6.account-name
-            = @account.insurance_company
-        .row.account-row
-          .col-xs-6.account-label
-            Insurance Policy Number:
-          .col-xs-6.account-name
-            = @account.insurance_policy_number
 
   .cleaner

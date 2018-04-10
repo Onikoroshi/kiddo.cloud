@@ -76,6 +76,10 @@ class Account::Manage::PaymentsController < ApplicationController
       enrollment.update_attribute(:paid, true)
     end
 
+    calculator.enrollment_changes.generating_charge.each do |enrollment_change|
+      EnrollmentChangeTransaction.create!(enrollment_change_id: enrollment_change.id, my_transaction_id: transaction.id, amount: enrollment_change.charge_amount)
+    end
+
     transaction
   end
 
@@ -84,7 +88,7 @@ class Account::Manage::PaymentsController < ApplicationController
     target_transactions.each do |original_transaction|
       trans_changes = original_transaction.pending_enrollment_changes
 
-      refund_amount = trans_changes.refund_amount
+      refund_amount = trans_changes.refund_total
       refund_transaction = nil
 
       if refund_amount > 0

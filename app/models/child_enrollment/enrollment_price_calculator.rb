@@ -16,6 +16,7 @@ module ChildEnrollment
 
     def calculate
       total = enrollments.inject(Money.new(0)){ |sum, enrollment| sum + Money.new(enrollment.plan.price) }
+      total += enrollment_changes.charge_total
 
       total += first_time_user_fee
       total += change_fee
@@ -24,7 +25,7 @@ module ChildEnrollment
     end
 
     def refund_total
-      @refund_total ||= enrollment_changes.refund_amount
+      @refund_total ||= enrollment_changes.refund_total
     end
 
     # 80% off for August, 20% off for June
