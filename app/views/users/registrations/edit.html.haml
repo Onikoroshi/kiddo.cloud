@@ -30,7 +30,7 @@
       = f.label :current_password, class: "control-label"
       = f.password_field :current_password, autocomplete: "off", class: "form-control", placeholder: "Enter your current password to confirm your changes"
     .actions
-      = link_to "Cancel", account_dashboard_path(@account), class: "btn"
+      = link_to "Cancel", root_path, class: "btn"
       = f.submit "Update", class: "btn btn-info pull-right"
   / %h3 Cancel my account
   / %p

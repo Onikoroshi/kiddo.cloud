@@ -33,5 +33,6 @@
   .layout-row.centered
     - if controller_name == "accounts"
       = link_to "Account Payments", account_dashboard_payments_path(@account), class: "btn"
+      = link_to "Manage Credit Card", account_dashboard_credit_card_path(@account), class: "btn"
     - else
       = link_to "Back to Account Overview", staff_account_path(@account), class: "btn"

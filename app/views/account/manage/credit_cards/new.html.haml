@@ -1,0 +1,11 @@
+= form_tag account_dashboard_credit_card_path(@account), method: :post, id: "payment-form" do |form|
+  .form-group.label-floating
+    %label{:for => "card-element", class: "control-label"}
+      Credit or Debit Card
+    #card-element.form-control
+      / a Stripe Element will be inserted here.
+    / Used to display Element errors
+    #card-errors{:role => "alert"}
+  .credit-cards
+    = image_tag ("credit-cards.png")
+  = submit_tag "Store Card For AutoPay", class: "btn btn-info pull-right", data: { disable_with: "Processing ..." }

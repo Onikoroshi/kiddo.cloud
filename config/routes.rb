@@ -40,7 +40,7 @@ Rails.application.routes.draw do
 
     resource :dashboard, controller: 'account/dashboards' do
       get :my_dropins, to: "account/manage/drop_ins#index"
-      get :change_request
+      resource :credit_card, controller: "account/manage/credit_cards", only: [:show, :new, :create, :destroy]
       resource :drop_ins, controller: 'account/manage/drop_ins'
       resources :payments, controller: "account/manage/payments"
       resources :children, controller: 'account/manage/children'
@@ -90,7 +90,7 @@ Rails.application.routes.draw do
       collection do
         patch :set_change_fee_requirement
       end
-      
+
       member do
         patch :set_change_refund_requirement
       end

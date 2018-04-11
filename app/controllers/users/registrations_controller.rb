@@ -44,7 +44,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
     def after_update_path_for(resource)
       flash[:notice] = "Account succesfully updated"
-      account_dashboard_path(current_user.account)
+      root_path
     end
 
   private
@@ -52,9 +52,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
     # i.e. 'davis_kids_klub' or 'dkk_customer_dashboard'
     def evaluate_layout
       layout_name = @center.name.parameterize.underscore
-      if ["edit", "update"].include?(action_name)
-        layout_name = "dkk_customer_dashboard"
-      end
       layout_name
     end
 end
