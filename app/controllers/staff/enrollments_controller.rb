@@ -1,18 +1,17 @@
 class Staff::EnrollmentsController < ApplicationController
   layout "dkk_staff_dashboard"
   before_action :guard_center!
+  before_action :find_enrollments, only: [:index, :export_to_csv]
 
   def index
-    @location_id = params[:location_id].present? ? params[:location_id] : Location.first.id
-    @enrollments = Enrollment
-      .includes(:location)
-      .where(location_id: @location_id)
-      .order(created_at: :desc)
-      .page(params[:page])
-      .per(50)
   end
 
-  def show; end
+  def export_to_csv
+    send_data @enrollments.to_csv
+  end
+
+  def show
+  end
 
   def set_change_refund_requirement
     respond_to do |format|
@@ -45,5 +44,26 @@ class Staff::EnrollmentsController < ApplicationController
         render json: results
       }
     end
+  end
+
+  private
+
+  def find_enrollments
+    @program = Program.find_by(id: params[:program_id]) || @center.current_program
+    @location = Location.find_by(id: params[:location_id])
+    @location_id = @location.present? ? @location.id : ""
+
+    @enrollments_date = Time.zone.parse(params[:enrollments_date].to_s)
+    @enrollments_date = @enrollments_date.to_date if @enrollments_date.present?
+    @enrollments_date = Time.zone.today if @enrollments_date.blank?
+    @enrollments_date = @program.starts_at if @enrollments_date < @program.starts_at || @enrollments_date > @program.ends_at
+
+    @enrollments = Enrollment.alive
+      .by_program(@program)
+      .by_location(@location)
+      .for_date(@enrollments_date)
+      .order(created_at: :desc)
+      .page(params[:page])
+      .per(50)
   end
 end

@@ -88,6 +88,7 @@ Rails.application.routes.draw do
     resources :transactions, only: [:index, :show]
     resources :enrollments, only: :index do
       collection do
+        get :export_to_csv
         patch :set_change_fee_requirement
       end
 

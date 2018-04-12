@@ -18,11 +18,13 @@ class Enrollment < ApplicationRecord
 
   scope :by_program, ->(program) { joins(plan: :program).where("programs.id = ?", program.present? ? program.id : nil) }
   scope :by_program_and_plan_type, ->(program, plan_type) { joins(:program).where("plans.plan_type = ? AND programs.id = ?", plan_type.to_s, program.id) }
+  scope :by_location, ->(location) { location.present? ? where(location_id: location.id) : all }
   scope :active, -> { joins(:program).where("programs.ends_at >= ?", Time.zone.today).distinct }
   scope :paid, -> { where(paid: true) }
   scope :unpaid, -> { where.not(paid: true) }
   scope :with_changes, -> { joins(:enrollment_changes) }
   scope :without_changes, -> { includes(:enrollment_changes).where(enrollment_changes: {id: nil}) }
+  scope :for_date, ->(date) { date.present? ? where("enrollments.starts_at <= ? AND enrollments.ends_at >= ?", date, date) : all }
 
   # get a unique list of programs associated with a set of enrollments
   def self.programs
@@ -62,6 +64,32 @@ class Enrollment < ApplicationRecord
     end
 
     blurbs.flatten
+  end
+
+  def self.to_csv
+    CSV.generate do |csv|
+      csv << [
+        "Child Name",
+        "Primary Parent",
+        "Email",
+        "Phone",
+        "Plan",
+        "Day(s)",
+        "Location"
+      ]
+
+      self.all.each do |enrollment|
+        csv << [
+          enrollment.child.full_name,
+          enrollment.child.account.primary_parent.full_name,
+          enrollment.child.account.user.email,
+          enrollment.child.account.primary_parent.phone,
+          enrollment.type_display,
+          enrollment.service_dates,
+          enrollment.location.name
+        ]
+      end
+    end
   end
 
   def plan_type
