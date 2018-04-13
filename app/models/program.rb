@@ -13,8 +13,13 @@ class Program < ApplicationRecord
 
   scope :open_for_registration, -> { where("registration_opens <= ? AND registration_closes >= ?", Time.zone.today, Time.zone.today) }
   scope :in_session, -> { where("starts_at <= ? AND ends_at >= ?", Time.zone.today, Time.zone.today) }
+  scope :active, -> { where("ends_at >= ?", Time.zone.today) }
 
   def plan_types
     plans.map{|plan| plan.plan_type}.uniq{|plan| plan.to_s}
+  end
+
+  def short_name
+    name.gsub("Davis Kids Klub ", "")
   end
 end

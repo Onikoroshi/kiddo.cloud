@@ -39,6 +39,10 @@ class User < ApplicationRecord
     role?(:director)
   end
 
+  def parent?
+    role?(:parent)
+  end
+
   def legacy?
     legacy
   end

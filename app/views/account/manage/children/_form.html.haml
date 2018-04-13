@@ -19,10 +19,10 @@
           = form.label :gender
           .radio
             %label
-              = form.radio_button :gender, "Male", checked: @account_child.gender == "Male" || @account_child.gender.nil?
+              = form.radio_button :gender, Gender[:male].to_s, checked: !@account_child.gender.respond_to?(:male?) || @account_child.gender.male?
               Male
             %label
-              = form.radio_button :gender, "Female"
+              = form.radio_button :gender, Gender[:female].to_s
               Female
 
         .form-group.label-floating
@@ -62,5 +62,5 @@
           = form.text_area :additional_info, placeholder: "(optional)"
 
         .navigation
-          = link_to "Cancel", account_dashboard_path(@account), class: "btn" if @account.children.any?
+          = link_to "Cancel", account_dashboard_children_path(@account), class: "btn" if @account.children.any?
           = form.submit @account_child.persisted? ? "Update Child" : "Register Child", class: "btn btn-info pull-right"

@@ -1,5 +1,5 @@
 class Account::Manage::ChildrenController < ApplicationController
-  layout "dkk_customer_dashboard"
+  layout :set_layout_by_role
   before_action :guard_center!
   before_action :set_account
   before_action :set_account_child, only: [:show, :edit, :update, :destroy]
@@ -42,7 +42,7 @@ class Account::Manage::ChildrenController < ApplicationController
   def update
     authorize @account, :dashboard?
     if @account_child.update(account_child_params)
-      redirect_to new_account_dashboard_enrollment_path(@account), notice: 'Child was successfully updated.'
+      redirect_to account_dashboard_children_path(@account), notice: 'Child was successfully updated.'
     else
 
       render :edit
@@ -57,27 +57,27 @@ class Account::Manage::ChildrenController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_account_child
-      @account_child = Child.find(params[:id])
-    end
 
-    def set_account
-      @account = Account.find(params[:account_id])
-    end
+  def set_account_child
+    @account_child = Child.find(params[:id])
+  end
 
-    # Only allow a trusted parameter "white list" through.
-    def account_child_params
-      permitted_attributes = [
-       :first_name,
-       :last_name,
-       :gender,
-       :grade_entering,
-       :birthdate,
-       :additional_info,
-       care_items_attributes: [:id, :name, :active, :explanation],
-       attendance_selections_attributes: []
-      ]
-      params.require(:child).permit(permitted_attributes)
-    end
+  def set_account
+    @account = Account.find(params[:account_id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def account_child_params
+    permitted_attributes = [
+     :first_name,
+     :last_name,
+     :gender,
+     :grade_entering,
+     :birthdate,
+     :additional_info,
+     care_items_attributes: [:id, :name, :active, :explanation],
+     attendance_selections_attributes: []
+    ]
+    params.require(:child).permit(permitted_attributes)
+  end
 end

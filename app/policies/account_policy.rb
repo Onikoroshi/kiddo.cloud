@@ -10,7 +10,7 @@ class AccountPolicy
   end
 
   def dashboard?
-    user_owns_account?
+    user.role?("super_admin", "director", "staff") || user_owns_account?
   end
 
   private

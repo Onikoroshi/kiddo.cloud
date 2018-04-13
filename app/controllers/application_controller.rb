@@ -77,4 +77,19 @@ class ApplicationController < ActionController::Base
     puts exception
   end
 
+  def set_layout_by_role
+    if current_user.present?
+      if current_user.parent?
+        if @account.present? && @account.signup_complete?
+          "dkk_customer_dashboard"
+        else
+          get_layout
+        end
+      else
+        "dkk_staff_dashboard"
+      end
+    else
+      get_layout
+    end
+  end
 end

@@ -1,51 +1,63 @@
 %h3.text-center
   Payments
-%br
-- if @transactions.any?
+
+= form_tag staff_transactions_path, method: :get do
+  .row
+    .col-xs-6.text-center
+      %h5 Program
+      = select_tag "program_id", options_from_collection_for_select(Program.all, "id", "name", @program.id)
+
+    .col-xs-6.text-center
+      %h5 Location
+      = select_tag "location_id", options_from_collection_for_select(@program.locations, "id", "name", @location_id), include_blank: "All Locations"
+
+  .row
+    .text-center{ style: "padding-bottom: 40px;" }
+      = submit_tag "Submit"
+
+- if @accounts.any?
   .row
     .col-xs-2.admin-title
       Primary Parent
-    .col-xs-3.admin-title
+    .col-xs-2.admin-title
       Email
-    .col-xs-1.admin-title
-      Location
-    .col-xs-1.admin-title
-      Program
+    .col-xs-2.admin-title
+      Phone
     .col-xs-1.admin-title
       Amount
-    .col-xs-1.admin-title
-      Card
     .col-xs-1.admin-title
       Status
     .col-xs-1.admin-title
       Type
     .col-xs-1.admin-title
       Date
+    .col-xs-1.admin-title
+
     %br.cleaner
     %hr
-    - @transactions.each do |tx|
-      - account = tx.account
+    - @accounts.each do |account|
+      - tx = FinanceItemPresenter.new(account)
+      - next if tx.blank?
       .col-xs-2.admin-parents
-        =account.primary_parent.full_name if account.primary_parent.present?
-      .col-xs-3.admin-parents
-        =account.user.email if account.user.present?
+        = link_to account.primary_parent.full_name, account_dashboard_payments_path(account) if account.primary_parent.present?
+      .col-xs-2.admin-parents
+        = account.user.email if account.user.present?
+      .col-xs-2.admin-parents
+        = account.primary_parent.phone if account.primary_parent.present?
       .col-xs-1.admin-parents
-        =account.location.name if account.location.present?
+        = tx.amount
       .col-xs-1.admin-parents
-        #{tx.month}/#{tx.year}
+        = tx.status
       .col-xs-1.admin-parents
-        =Money.new(tx.amount).to_s
+        = tx.transaction_type
       .col-xs-1.admin-parents
-        #{account.card_brand} #{account.card_last4}
+        = tx.date
       .col-xs-1.admin-parents
-        =tx.paid ? "Paid" : "Unpaid"
-      .col-xs-1.admin-parents
-        =tx.transaction_type
-      .col-xs-1.admin-parents
-        =tx.created_at.stamp("11/05/2017")
+        = tx.details_link
+
       %br.cleaner
       %hr
-        
+
 
   .text-center
-    = paginate @transactions
+    = paginate @accounts

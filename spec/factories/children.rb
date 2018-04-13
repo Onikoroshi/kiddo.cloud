@@ -5,7 +5,7 @@ FactoryGirl.define do
     grade_entering "1"
     birthdate Time.zone.today - 5.years
     additional_info nil
-    gender "Male"
+    gender "male"
 
     trait :with_time_entry do
       after(:create) do |child|

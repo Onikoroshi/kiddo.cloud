@@ -1,10 +1,43 @@
-%table{style: "text-align: left;"}
+%table.enrollment-pricing-table{style: "text-align: left;"}
   - calculator.enrollments.each do |enrollment|
     %tr
-      %td= enrollment.to_short
+      %td= enrollment.description
       %td{style: "padding-left: 10px; text-align: right"}= enrollment.plan.price
+    - enrollment.enrollment_changes.each do |enrollment_change|
+      %tr.merge-top
+        %td{style: "text-align: right"}= enrollment_change.build_description
+        %td.refund-amount{style: "padding-left: 10px; text-align: right"}= enrollment_change.amount
+        - if policy(:payments).manage?
+          %td.merge-top
+            = check_box_tag :require_refund, true, enrollment_change.requires_refund?, class: "change-refund-requirement", data: {"change-id" => enrollment_change.id}
+            = label_tag :require_refund, "Issue Refund"
+
+  - calculator.independent_enrollment_changes.each do |enrollment_change|
+    %tr
+      %td= enrollment_change.enrollment.description
+      %td{style: "padding-left: 10px; text-align: right"}
+
+    %tr.merge-top
+      %td{style: "text-align: right"}= enrollment_change.build_description
+      %td.refund-amount{style: "padding-left: 10px; text-align: right"}= enrollment_change.amount
+      - if policy(:payments).manage?
+        %td.merge-top
+          = check_box_tag :require_refund, true, enrollment_change.requires_refund?, class: "change-refund-requirement", data: {"change-id" => enrollment_change.id}
+          = label_tag :require_refund, "Issue Refund"
 
   - calculator.itemizations.each do |key, value|
     %tr
       %td= key.to_s.humanize.capitalize
-      %td{style: "text-align: right"}= value
+      %td.fee-amount{style: "text-align: right"}= value
+      - if key.to_s == "change_fee" && policy(:payments).manage?
+        %td.merge-top
+          = check_box_tag :require_change_fee, true, calculator.enrollment_changes.require_fee.any?, class: "change-fee-requirement", data: {"account-id" => @account.id}
+          = label_tag :require_change_fee, "Charge Change Fee"
+
+  - if policy(:payments).manage? && calculator.enrollment_changes.any? && calculator.itemizations[:change_fee].blank?
+    %tr
+      %td Change Fee
+      %td.fee-amount{style: "text-align: right"}= Money.new(0).to_s
+      %td.merge-top
+        = check_box_tag :require_change_fee, true, calculator.enrollment_changes.require_fee.any?, class: "change-fee-requirement", data: {"account-id" => @account.id}
+        = label_tag :require_change_fee, "Charge Change Fee"

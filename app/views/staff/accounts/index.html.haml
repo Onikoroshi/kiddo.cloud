@@ -1,36 +1,33 @@
 %h3.text-center
   Parents
-%br
+
+.row
+  .text-center
+    = form_tag staff_accounts_path, method: :get do
+      %h5 Location
+      = select_tag "location_id", options_from_collection_for_select(Location.all, "id", "name", @location_id), include_blank: "All Locations"
+      = submit_tag "Submit"
+
+  .pull-right{style: "padding-right: 40px;"}
+    = link_to "Export to CSV", export_to_csv_staff_accounts_path(location_id: @location_id, format: "csv"), class: "btn btn-primary btn-sm"
+
 - if @accounts.any?
+  %table{class: "tablesorter {sortlist: [[3,1]]}"}
+    %thead
+      %th.admin-title Primary Parent
+      %th.admin-title Email
+      %th.admin-title.sorter-false Children Enrollment Summary
+      %th.admin-title.sorter-text Created
 
-  .row
-    .col-xs-2.admin-title
-      Primary Parent
-    .col-xs-3.admin-title
-      Email
-    .col-xs-4.admin-title
-      Children
-    .col-xs-2.admin-title
-      Location
-    .col-xs-1.admin-title
-      Created
-    %br.cleaner
-    %hr
+    %tbody
+      - @accounts.each do |a|
+        %tr
+          %td= link_to a.primary_parent.full_name, staff_account_path(a) if a.primary_parent.present?
+          %td= a.user.email if a.user.present?
+          %td= a.children.map(&:active_enrollment_blurbs).flatten.join("<br>").html_safe
+          %td= a.created_at.stamp("2017/11/21 12:56:27pm")
 
-    - @accounts.each do |a|
-      .col-xs-2.admin-parents
-        =a.primary_parent.full_name if a.primary_parent.present?
-      .col-xs-3.admin-parents
-        =a.user.email if a.user.present?
-      .col-xs-4.admin-parents
-        =a.children.collect {|c| c.full_name }.to_sentence
-      .col-xs-2.admin-parents
-        =a.location.name if a.location.present?
-      .col-xs-1.admin-parents
-        =a.created_at.stamp("11/05/2017 12:56:27pm")
-      %br.cleaner
-      %hr
-
+  %hr
 
   .text-center
     = paginate @accounts

@@ -66,6 +66,39 @@
               Phone:
             .col-xs-8.account-name
               = contact.phone
+    .account-box
+      #medical
+        %h3 Medical #{link_to "Edit", account_step_path(@account, :medical), class: "btn btn-xs btn-round"}
+        .row.account-row
+          .col-xs-6.account-label
+            Family Physician:
+          .col-xs-6.account-name
+            = @account.family_physician
+        .row.account-row
+          .col-xs-6.account-label
+            Family Physician Phone:
+          .col-xs-6.account-name
+            = @account.physician_phone
+        .row.account-row
+          .col-xs-6.account-label
+            Family Dentist:
+          .col-xs-6.account-name
+            = @account.family_dentist
+        .row.account-row
+          .col-xs-6.account-label
+            Family Dentist Phone:
+          .col-xs-6.account-name
+            = @account.dentist_phone
+        .row.account-row
+          .col-xs-6.account-label
+            Insurance Company:
+          .col-xs-6.account-name
+            = @account.insurance_company
+        .row.account-row
+          .col-xs-6.account-label
+            Insurance Policy Number:
+          .col-xs-6.account-name
+            = @account.insurance_policy_number
 
   .col-md-4.col-sm-6
     .account-box
@@ -80,7 +113,7 @@
             .col-xs-4.account-label
               Gender:
             .col-xs-8.account-name
-              = c.gender.capitalize
+              = c.gender.respond_to?(:text) ? c.gender.text : (c.gender.respond_to?(:capitalize) ? c.gender.capitalize : c.gender.to_s)
           .row.account-row
             .col-xs-4.account-label
               Grade Entering:
@@ -115,12 +148,12 @@
       #plan
         %h3 Plan Information #{link_to "Edit", account_step_path(@account, :plan), class: "btn btn-xs btn-round"}
 
-        - @account.enrollments.unpaid.programs.each do |program|
+        - @account.enrollments.alive.unpaid.programs.each do |program|
           %h5= program.name
 
           - @account.children.each do |child|
             %strong= child.full_name
-            - enrollments = child.enrollments.unpaid.by_program(program)
+            - enrollments = child.enrollments.alive.unpaid.by_program(program)
             - if enrollments.any?
               %ul
               - enrollments.each do |enrollment|
@@ -135,41 +168,6 @@
         %h5
           %strong
             Total today: #{price_calculator.total}
-
-  .col-md-4.col-sm-6
-    .account-box
-      #medical
-        %h3 Medical #{link_to "Edit", account_step_path(@account, :medical), class: "btn btn-xs btn-round"}
-        .row.account-row
-          .col-xs-6.account-label
-            Family Physician:
-          .col-xs-6.account-name
-            = @account.family_physician
-        .row.account-row
-          .col-xs-6.account-label
-            Family Physician Phone:
-          .col-xs-6.account-name
-            = @account.physician_phone
-        .row.account-row
-          .col-xs-6.account-label
-            Family Dentist:
-          .col-xs-6.account-name
-            = @account.family_dentist
-        .row.account-row
-          .col-xs-6.account-label
-            Family Dentist Phone:
-          .col-xs-6.account-name
-            = @account.dentist_phone
-        .row.account-row
-          .col-xs-6.account-label
-            Insurance Company:
-          .col-xs-6.account-name
-            = @account.insurance_company
-        .row.account-row
-          .col-xs-6.account-label
-            Insurance Policy Number:
-          .col-xs-6.account-name
-            = @account.insurance_policy_number
 
   .cleaner
 

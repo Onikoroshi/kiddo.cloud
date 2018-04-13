@@ -1,0 +1,160 @@
+.row
+  %h2.text-center Account Summary
+
+  .col-md-4.col-sm-6
+    .account-box
+      #parents
+        %h3 Parents #{link_to "Edit", edit_account_dashboard_parents_path(@account), class: "btn btn-xs btn-round"}
+
+        #primary-parent
+          %h5 Primary Parent
+        .row.account-row
+          .col-xs-4.account-label
+            Name:
+          .col-xs-8.account-name
+            = @account.primary_parent.full_name
+        .row.account-row
+          .col-xs-4.account-label
+            Email:
+          .col-xs-8.account-name
+            = @account.primary_parent.user.email
+        .row.account-row
+          .col-xs-4.account-label
+            Phone:
+          .col-xs-8.account-name
+            = @account.primary_parent.phone
+        .row.account-row
+          .col-xs-4.account-label
+            Address:
+          .col-xs-8.account-name
+            = @account.primary_parent.address.full_address
+
+        #guardian
+          %h5 Secondary Contact
+        - if @account.secondary_parent.present?
+          .row.account-row
+            .col-xs-4.account-label
+              Name:
+            .col-xs-8.account-name
+              = @account.secondary_parent.full_name
+          .row.account-row
+            .col-xs-4.account-label
+              Phone:
+            .col-xs-8.account-name
+              = @account.secondary_parent.phone
+          .row.account-row
+            .col-xs-4.account-label
+              Address:
+            .col-xs-8.account-name
+              = @account.secondary_parent.address.full_address
+
+
+        #emergency-contacts
+          %h5 Emergency Contacts
+        - if @account.emergency_contacts.any?
+          - contact = @account.emergency_contacts.first
+          .row.account-row
+            .col-xs-4.account-label
+              Name:
+            .col-xs-8.account-name
+              = contact.full_name
+          .row.account-row
+            .col-xs-4.account-label
+              Phone:
+            .col-xs-8.account-name
+              = contact.phone
+
+    .account-box
+      #medical
+        %h3 Medical #{link_to "Edit", edit_account_dashboard_medical_path(@account), class: "btn btn-xs btn-round"}
+        .row.account-row
+          .col-xs-6.account-label
+            Family Physician:
+          .col-xs-6.account-name
+            = @account.family_physician
+        .row.account-row
+          .col-xs-6.account-label
+            Family Physician Phone:
+          .col-xs-6.account-name
+            = @account.physician_phone
+        .row.account-row
+          .col-xs-6.account-label
+            Family Dentist:
+          .col-xs-6.account-name
+            = @account.family_dentist
+        .row.account-row
+          .col-xs-6.account-label
+            Family Dentist Phone:
+          .col-xs-6.account-name
+            = @account.dentist_phone
+        .row.account-row
+          .col-xs-6.account-label
+            Insurance Company:
+          .col-xs-6.account-name
+            = @account.insurance_company
+        .row.account-row
+          .col-xs-6.account-label
+            Insurance Policy Number:
+          .col-xs-6.account-name
+            = @account.insurance_policy_number
+
+  .col-md-4.col-sm-6
+    .account-box
+      #children
+        %h3 Children #{link_to "Edit", account_dashboard_children_path(@account), class: "btn btn-xs btn-round"}
+        - @account.children.each do |c|
+          .row
+            .account-child
+              .col-xs-12
+                = c.full_name
+          .row.account-row
+            .col-xs-4.account-label
+              Gender:
+            .col-xs-8.account-name
+              = c.gender.respond_to?(:text) ? c.gender.text : (c.gender.respond_to?(:capitalize) ? c.gender.capitalize : c.gender.to_s)
+          .row.account-row
+            .col-xs-4.account-label
+              Grade Entering:
+            .col-xs-8.account-name
+              = c.grade_entering
+          .row.account-row
+            .col-xs-4.account-label
+              Date of Birth:
+            .col-xs-8.account-name
+              = c.birthdate.stamp("November 30th, 1984") if c.birthdate.present?
+          #careitems
+            %h5 Care Items
+            - c.care_items.where(active: true).each do |ci|
+              .row.account-row
+                .col-xs-4.account-label
+                  Name:
+                .col-xs-8.account-name
+                  = ci.name
+              .row.account-row
+                .col-xs-4.account-label
+                  Explanation:
+                .col-xs-8.account-name
+                  = ci.explanation
+          .row.account-row
+            .col-xs-4.account-label
+              Additional Information:
+            .col-xs-8.account-name
+              = c.additional_info
+
+  .col-md-4.col-sm-6
+    .account-box
+      #plan
+        %h3 Plan Information #{link_to "Edit", edit_account_dashboard_enrollments_path(@account), class: "btn btn-xs btn-round"} #{link_to "Finalize Changes", new_account_dashboard_payment_path(@account), class: "btn btn-xs btn-round" if @account.pending_enrollment_changes?}
+
+        - @account.enrollments.alive.paid.programs.each do |program|
+          %h5= program.name
+
+          - @account.children.each do |child|
+            %strong= child.full_name
+            - enrollments = child.enrollments.alive.paid.by_program(program)
+            - if enrollments.any?
+              %ul
+              - enrollments.each do |enrollment|
+                %li= enrollment.to_short
+
+  .cleaner

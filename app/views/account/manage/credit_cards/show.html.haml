@@ -1,0 +1,7 @@
+.row
+  .text-center
+    %h3 You are currently using a #{@card_info[:brand]} card with last 4 numbers #{@card_info[:numbers]} that expires on #{@card_info[:expiration]}
+
+.row
+  .text-center
+    = link_to "Use Different Card", new_account_dashboard_credit_card_path(@account), class: "btn"

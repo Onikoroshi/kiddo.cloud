@@ -10,8 +10,9 @@ class StripeCustomerService
       customer = Stripe::Customer.retrieve(account.gateway_customer_id)
     else
       customer = Stripe::Customer.create(email: account.primary_email, source: token)
-      account.update_attributes(gateway_customer_id: customer.id)
+      account.update_attributes(gateway_customer_id: customer.id, card_brand: customer.sources.data[0].brand, card_last4: customer.sources.data[0].last4)
     end
+    ap customer
     customer
   end
 

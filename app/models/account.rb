@@ -17,6 +17,7 @@ class Account < ApplicationRecord
 
   has_many :children, dependent: :destroy
   has_many :enrollments, through: :children
+  has_many :enrollment_changes, through: :enrollments
   has_many :emergency_contacts, dependent: :destroy
 
   has_many :drop_ins
@@ -24,6 +25,18 @@ class Account < ApplicationRecord
   delegate :name, to: :center, prefix: :center
 
   accepts_nested_attributes_for :children, allow_destroy: true
+
+  scope :by_program, ->(given_program) { given_program.present? ? joins(enrollments: :program).where("programs.id = ?", given_program.id).distinct : all }
+  scope :by_location, ->(given_location) { given_location.present? ? joins(:enrollments).where("enrollments.location_id = ?", given_location.id).distinct : all }
+
+  def self.to_csv
+    CSV.generate do |csv|
+      csv << ["Primary Parent", "Email", "Phone", "Children", "Location(s)"]
+      self.all.each do |account|
+        csv << [account.primary_parent.full_name, account.user.email, account.primary_parent.phone, account.children.map(&:full_name).to_sentence, account.active_locations.map(&:name).to_sentence]
+      end
+    end
+  end
 
   def primary_email
     user.email
@@ -54,6 +67,10 @@ class Account < ApplicationRecord
     gateway_customer_id.present?
   end
 
+  def pending_enrollment_changes?
+    enrollments.alive.unpaid.count > 0 || enrollment_changes.pending.count > 0
+  end
+
   def create_default_child_attendance_selections
     children.each do |child|
       AttendanceSelection.where(child_id: child.id).first_or_create!
@@ -68,10 +85,15 @@ class Account < ApplicationRecord
     result = Array.new
     program.plans.each do |p|
       children.each do |c|
-        result << c.enrollments.where(plan: p).first.to_s
+        result << c.enrollments.alive.where(plan: p).first.to_s
       end
     end
     result.flatten.reject(&:blank?)
+  end
+
+  def active_locations
+    location_ids = enrollments.alive.active.pluck(:location_id).uniq
+    Location.where(id: location_ids)
   end
 
   def children_enrolled?(program)
@@ -81,7 +103,7 @@ class Account < ApplicationRecord
 
   def mark_paid!
     children.each do |c|
-      c.enrollments.each do |enrollment|
+      c.enrollments.alive.each do |enrollment|
         enrollment.update_attributes(paid: true)
       end
     end

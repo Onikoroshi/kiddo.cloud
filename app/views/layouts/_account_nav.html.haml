@@ -1,11 +1,13 @@
 - if user_signed_in?
   .collapse.navbar-collapse
     %ul.nav.navbar-nav.navbar-right
-      %li.dropdown
-        %li
-          = link_to destroy_user_session_path do
-            %i.material-icons eject
-            Log Out
+      %li
+        = link_to "Edit Email/Password", edit_user_registration_path
+
+      %li
+        = link_to destroy_user_session_path do
+          %i.material-icons eject
+          Log Out
   -# .collapse.navbar-collapse
   -#   %ul.nav.navbar-nav.navbar-right
   -#     %li.dropdown
