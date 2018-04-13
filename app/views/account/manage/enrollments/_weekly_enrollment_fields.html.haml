@@ -1,5 +1,6 @@
 .nested-fields
   .row{style: "padding-bottom: 20px;"}
+    = f.hidden_field :child_id, value: f.object.child_id
     = f.hidden_field :monday, value: true
     = f.hidden_field :tuesday, value: true
     = f.hidden_field :wednesday, value: true

@@ -6,4 +6,4 @@
         .danger
           %ul
             - object.errors.full_messages.each do |msg|
-              %li= msg
+              %li= strip_error_message(msg)

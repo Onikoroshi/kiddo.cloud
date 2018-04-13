@@ -2,7 +2,7 @@
   .header.header-info
     / colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger"
     .nav-tabs-navigation
-      .nav-tabs-wrapper
+      .nav-tabs-wrapper.layout-row.centered
         %ul.nav.nav-tabs{"data-tabs" => "tabs"}
           %li{ class: (controller_name == "accounts") ? "active" : ""}
             =link_to staff_accounts_path do
@@ -28,3 +28,11 @@
             =link_to staff_transactions_path do
               %i.material-icons credit_card
               Payments
+
+- if @account.present?
+  .layout-row.centered
+    - if controller_name == "accounts"
+      = link_to "Account Payments", account_dashboard_payments_path(@account), class: "btn"
+      = link_to "Manage Credit Card", account_dashboard_credit_card_path(@account), class: "btn"
+    - else
+      = link_to "Back to Account Overview", staff_account_path(@account), class: "btn"

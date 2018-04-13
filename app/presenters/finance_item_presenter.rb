@@ -4,7 +4,7 @@ class FinanceItemPresenter
 
   def initialize(account)
     @account = account
-    unpaid_enrollments = account.enrollments.unpaid
+    unpaid_enrollments = account.enrollments.active.unpaid
     if unpaid_enrollments.any?
       @is_transaction = false
       @finance_item = ChildEnrollment::EnrollmentPriceCalculator.new(account)
@@ -54,7 +54,7 @@ class FinanceItemPresenter
     if @is_transaction
       @finance_item.created_at.to_date.stamp("04/02/2019")
     else
-      @finance_item.enrollments.minimum(:created_at).to_date.stamp("04/02/2019")
+      @finance_item.enrollments.alive.minimum(:created_at).to_date.stamp("04/02/2019")
     end
   end
 

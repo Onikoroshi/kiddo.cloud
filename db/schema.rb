@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180222003246) do
+ActiveRecord::Schema.define(version: 20180409215439) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -153,6 +153,31 @@ ActiveRecord::Schema.define(version: 20180222003246) do
     t.index ["account_id"], name: "index_emergency_contacts_on_account_id"
   end
 
+  create_table "enrollment_change_transactions", force: :cascade do |t|
+    t.bigint "enrollment_change_id"
+    t.bigint "my_transaction_id"
+    t.float "amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["enrollment_change_id"], name: "index_enrollment_change_transactions_on_enrollment_change_id"
+    t.index ["my_transaction_id"], name: "index_enrollment_change_transactions_on_my_transaction_id"
+  end
+
+  create_table "enrollment_changes", force: :cascade do |t|
+    t.bigint "account_id"
+    t.bigint "enrollment_id"
+    t.boolean "requires_refund"
+    t.boolean "requires_fee"
+    t.boolean "applied", default: false
+    t.text "description"
+    t.float "amount"
+    t.jsonb "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_enrollment_changes_on_account_id"
+    t.index ["enrollment_id"], name: "index_enrollment_changes_on_enrollment_id"
+  end
+
   create_table "enrollment_transactions", force: :cascade do |t|
     t.bigint "enrollment_id"
     t.bigint "my_transaction_id"
@@ -180,6 +205,7 @@ ActiveRecord::Schema.define(version: 20180222003246) do
     t.boolean "sibling_club", default: false
     t.date "starts_at"
     t.date "ends_at"
+    t.boolean "dead", default: false
     t.index ["child_id"], name: "index_enrollments_on_child_id"
     t.index ["location_id"], name: "index_enrollments_on_location_id"
     t.index ["plan_id"], name: "index_enrollments_on_plan_id"
@@ -270,6 +296,7 @@ ActiveRecord::Schema.define(version: 20180222003246) do
     t.date "registration_opens"
     t.date "registration_closes"
     t.float "registration_fee"
+    t.float "change_fee"
     t.index ["center_id"], name: "index_programs_on_center_id"
   end
 
@@ -344,6 +371,9 @@ ActiveRecord::Schema.define(version: 20180222003246) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.hstore "itemizations"
+    t.bigint "parent_id"
+    t.string "gateway_id"
+    t.string "receipt_number"
     t.index ["account_id"], name: "index_transactions_on_account_id"
     t.index ["itemizations"], name: "index_transactions_on_itemizations", using: :gin
     t.index ["program_id"], name: "index_transactions_on_program_id"
@@ -399,6 +429,9 @@ ActiveRecord::Schema.define(version: 20180222003246) do
   add_foreign_key "drop_ins", "locations"
   add_foreign_key "drop_ins", "programs"
   add_foreign_key "emergency_contacts", "accounts"
+  add_foreign_key "enrollment_change_transactions", "transactions", column: "my_transaction_id"
+  add_foreign_key "enrollment_changes", "accounts"
+  add_foreign_key "enrollment_changes", "enrollments"
   add_foreign_key "enrollment_transactions", "transactions", column: "my_transaction_id"
   add_foreign_key "enrollments", "children"
   add_foreign_key "enrollments", "locations"

@@ -1,43 +1,47 @@
 %h3.text-center
   #{@center.current_program.name} Enrollments
 
-.row.text-center
-  = form_tag staff_enrollments_path, method: :get do
-    %h5 Location
-    = select_tag "location_id", options_from_collection_for_select(Location.all, "id", "name", @location_id)
-    = submit_tag "Submit"
+= form_tag staff_enrollments_path, method: :get do
+  .row
+    .col-xs-4.text-center
+      %h5 Program
+      = select_tag "program_id", options_from_collection_for_select(Program.all, "id", "name", @program.id)
+
+    .col-xs-4.text-center
+      %h5 Location
+      = select_tag "location_id", options_from_collection_for_select(@program.locations, "id", "name", @location_id), include_blank: "All Locations"
+
+    .col-xs-4.text-center
+      %h5 Date
+      = text_field_tag :enrollments_date, @enrollments_date, class: "flatpickr-date"
+
+  .row
+    .text-center{ style: "padding-bottom: 40px;" }
+      = submit_tag "Submit"
+
+    .pull-right{style: "padding-right: 40px;"}
+      = link_to "Export to CSV", export_to_csv_staff_enrollments_path(location_id: @location_id, format: "csv"), class: "btn btn-primary btn-sm"
 
   %br
   %br
 
 - if @enrollments.any?
-  .row
-    .col-xs-2.admin-title
-      Child Name
-    .col-xs-2.admin-title
-      Plan
-    .col-xs-4.admin-title
-      Days
-    .col-xs-2.admin-title
-      Location
-    .col-xs-2.admin-title
-      Sign Up Date
-    %br.cleaner
-    %hr
-  .row
-    - @enrollments.each do |e|
-      .col-xs-2.admin-parents
-        = link_to e.child.full_name, staff_account_path(e.child.account)
-      .col-xs-2.admin-parents
-        = e.type_display
-      .col-xs-4.admin-parents
-        = e.service_dates
-      .col-xs-2.admin-parents
-        = e.location.name
-      .col-xs-2.admin-parents
-        = e.created_at.stamp("11/05/2017")
-      .cleaner
-      %hr
+  %table{class: "tablesorter {sortlist: [[0,0]]}"}
+    %thead
+      %th.admin-title Child Name
+      %th.admin-title Plan
+      %th.admin-title.sorter-text Days
+      %th.admin-title Location
+      %th.admin-title.sorter-text Sign Up Date
+
+    %tbody
+      - @enrollments.each do |e|
+        %tr
+          %td= link_to e.child.full_name, staff_account_path(e.child.account)
+          %td= e.type_display
+          %td= e.service_dates
+          %td= e.location.name
+          %td= e.created_at.stamp("11/05/2017")
 
 .text-center
   = paginate @enrollments

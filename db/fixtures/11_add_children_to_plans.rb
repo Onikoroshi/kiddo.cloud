@@ -39,6 +39,27 @@ Child.find_each do |child|
         e.plan_id = chosen_plan.id
         e.starts_at = starts_at
         e.ends_at = ends_at
+
+        if chosen_plan.plan_type.weekly?
+          e.monday = true
+          e.tuesday = true
+          e.wednesday = true
+          e.thursday = true
+          e.friday = true
+        elsif chosen_plan.plan_type.drop_in?
+          case starts_at.wday
+          when 1
+            e.monday = true
+          when 2
+            e.tuesday = true
+          when 3
+            e.wednesday = true
+          when 4
+            e.thursday = true
+          when 5
+            e.friday = true
+          end
+        end
       end
     end
   end

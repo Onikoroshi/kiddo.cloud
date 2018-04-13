@@ -148,12 +148,12 @@
       #plan
         %h3 Plan Information #{link_to "Edit", account_step_path(@account, :plan), class: "btn btn-xs btn-round"}
 
-        - @account.enrollments.unpaid.programs.each do |program|
+        - @account.enrollments.alive.unpaid.programs.each do |program|
           %h5= program.name
 
           - @account.children.each do |child|
             %strong= child.full_name
-            - enrollments = child.enrollments.unpaid.by_program(program)
+            - enrollments = child.enrollments.alive.unpaid.by_program(program)
             - if enrollments.any?
               %ul
               - enrollments.each do |enrollment|

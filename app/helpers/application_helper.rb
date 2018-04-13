@@ -13,6 +13,9 @@ module ApplicationHelper
     end
   end
 
+  def strip_error_message(msg)
+    msg.gsub(/.*base/, "")
+  end
 end
 
 # monkey patch shopify/money class to properly display monetary amounts

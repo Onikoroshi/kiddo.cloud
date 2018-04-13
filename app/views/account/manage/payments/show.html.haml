@@ -1,31 +1,73 @@
 %h3.text-center Payment Receipt
-%h4.text-center Paid to Davis Kids Klub
+%h4.text-center #{@transaction.refund? ? "Refund from" : "Paid to"} Davis Kids Klub on #{@transaction.created_at.stamp("Monday, Aug. 20th, 2018 ")}
 %h4.text-center EIN: 03-0451515
 %h4.text-center 417 Mace Blvd Ste J PMB 174, Davis CA 95618
 %hr
 
 %table.enrollments-table
+  - has_changes = @transaction.has_changes?
   %thead
+    %th Child
     %th Type
     %th Date(s) of Service
+    - if has_changes
+      %th Change Description
+      %th= @transaction.refund? ? "Original Transaction" : "Change Transaction"
     %th.right-just Amount
 
   %tbody
-    - @transaction.enrollments.each do |enrollment|
+    - @transaction.enrollment_transactions.each do |enrollment_transaction|
       %tr
-        %td= enrollment.type_display
-        %td= enrollment.service_dates
-        %td.right-just= enrollment.plan.price
+        %td= enrollment_transaction.enrollment.child.full_name
+        %td= enrollment_transaction.enrollment.type_display
+        %td= enrollment_transaction.enrollment.service_dates
+        - if has_changes
+          %td
+          %td
+        %td.right-just= Money.new(enrollment_transaction.amount)
+
+      - enrollment_transaction.enrollment.enrollment_changes.each do |enrollment_change|
+        %tr.merge-top
+          %td
+          %td
+          %td= enrollment_change.created_at.stamp("Monday, Feb. 3rd, 2018")
+          %td= enrollment_change.description
+          %td
+            - if enrollment_change.transactions.present?
+              = link_to enrollment_change.transactions.first.receipt_number, account_dashboard_payment_path(@account, enrollment_change.transactions.first)
+          %td
+
+    - @transaction.enrollment_change_transactions.each do |enrollment_change_transaction|
+      %tr
+        %td= enrollment_change_transaction.enrollment_change.enrollment.child.full_name
+        %td= enrollment_change_transaction.enrollment_change.enrollment.type_display
+        %td= enrollment_change_transaction.enrollment_change.enrollment.service_dates
+        %td= enrollment_change_transaction.enrollment_change.description
+        %td
+          - target = @transaction.parent
+          - target = enrollment_change_transaction.enrollment_change.enrollment.transactions.first if target.blank?
+          = link_to target.receipt_number, account_dashboard_payment_path(@account, target) if target.present?
+        %td.right-just= Money.new(enrollment_change_transaction.amount * -1)
 
     - @transaction.itemizations.each do |key, value|
       %tr{style: "padding-bottom: 10px;"}
+        %td
         %td= key.to_s.humanize.capitalize
         %td= @transaction.created_at.stamp("Monday, Feb. 3rd, 2018")
+        - if has_changes
+          %td
+          %td
         %td.right-just= value
 
     %tr.total
+      %td
       %td Total
       %td
-      %td.right-just= @transaction.amount
+      - if has_changes
+        %td
+        %td
+      %td.right-just= @transaction.net_total
 
 %h4.text-center{style: "color: #ef6240; padding-top: 40px;"} If you need a signed copy, please contact daviskidsklub@aol.com
+
+= link_to "Back to Payments", account_dashboard_payments_path(@account), class: "btn"

@@ -6,3 +6,6 @@ end
 
 class TransactionType::Recurring < TransactionType
 end
+
+class TransactionType::Refund < TransactionType
+end
