@@ -4,29 +4,24 @@
 - if @accounts.any?
 
   .row
-    .col-xs-2.admin-title
-      Primary Parent
-    .col-xs-3.admin-title
-      Email
-    .col-xs-4.admin-title
-      Children
-    .col-xs-2.admin-title
-      Location
-    .col-xs-1.admin-title
-      Created
+    - ParentsColumnType.each do |column_type|
+      .admin-title{class: column_type.width_class}
+        = link_to parents_column_path(column_type, params) do
+          = column_type.text
+          %i.material-icons= parents_column_icon(column_type, params)
     %br.cleaner
     %hr
 
     - @accounts.each do |a|
       .col-xs-2.admin-parents
         =a.primary_parent.full_name if a.primary_parent.present?
-      .col-xs-3.admin-parents
+      .col-xs-2.admin-parents
         =a.user.email if a.user.present?
       .col-xs-4.admin-parents
         =a.children.collect {|c| c.full_name }.to_sentence
       .col-xs-2.admin-parents
         =a.location.name if a.location.present?
-      .col-xs-1.admin-parents
+      .col-xs-2.admin-parents
         =a.created_at.stamp("11/05/2017 12:56:27pm")
       %br.cleaner
       %hr

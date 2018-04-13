@@ -23,6 +23,15 @@ class Account < ApplicationRecord
 
   accepts_nested_attributes_for :children, allow_destroy: true
 
+  def self.sort_by_column_type(column_type_str, direction)
+    column_type = ParentsColumnType[column_type_str.to_s.to_sym]
+    if column_type.present?
+      self.includes(column_type.for_includes).order("#{column_type.field_for_sort(direction)}")
+    else
+      self.order(created_at: :asc)
+    end
+  end
+
   def primary_email
     user.email
   end
