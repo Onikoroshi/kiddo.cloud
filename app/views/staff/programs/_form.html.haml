@@ -1,0 +1,49 @@
+.row
+  .col-md-6.col-sm-8.col-md-offset-3.col-sm-offset-2
+    = form_for([:staff, @program]) do |f|
+      = render "application/form_errors", object: @program
+
+      = f.hidden_field :center_id, value: @center.id
+
+      .form-group.label-floating
+        = f.label :name, "Program Name", class: "control-label"
+        = f.text_field :name, class: "form-control"
+
+      .form-group.label-floating
+        = f.label :starts_at, "Start Date", class: "control-label"
+        = f.text_field :starts_at, class: "form-control flatpickr-date"
+
+      .form-group.label-floating
+        = f.label :ends_at, "End Date", class: "control-label"
+        = f.text_field :ends_at, class: "form-control flatpickr-date"
+
+      .form-group.label-floating
+        = f.label :registration_opens, "Registration Opens", class: "control-label"
+        = f.text_field :registration_opens, class: "form-control flatpickr-date"
+
+      .form-group.label-floating
+        = f.label :registration_closes, "Registration Closes", class: "control-label"
+        = f.text_field :registration_closes, class: "form-control flatpickr-date"
+
+      .form-group.label-floating
+        = f.label :registration_fee, "Registration Fee", class: "control-label"
+        = f.text_field :registration_fee, class: "form-control"
+
+      .form-group.label-floating
+        = f.label :change_fee, "Change Fee", class: "control-label"
+        = f.text_field :change_fee, class: "form-control"
+      %br
+      .form-group.label-floating
+        = f.label :locations, "Locations", class: "control-label", style: "padding-bottom: 20px;"
+        = f.collection_check_boxes :location_ids, Location.all, :id, :name, class: "form-control" do |cb|
+          = "#{cb.check_box} #{cb.text}"
+          %br
+      %br
+      .form-group.label-floating
+        = f.label :plans, "Plans - Click the link to edit the plan or remove it from this program", class: "control-label", style: "padding-bottom: 20px;"
+        %ul
+          - @program.plans.each do |plan|
+            %li= link_to plan.full_display_name, edit_staff_plan_path
+
+      = link_to "Cancel", staff_programs_path, class: "btn"
+      = f.submit class: "btn btn-info pull-right"

@@ -10,6 +10,7 @@ class Program < ApplicationRecord
   has_many :locations, through: :program_locations
 
   money_column :registration_fee
+  money_column :change_fee
 
   scope :open_for_registration, -> { where("registration_opens <= ? AND registration_closes >= ?", Time.zone.today, Time.zone.today) }
   scope :in_session, -> { where("starts_at <= ? AND ends_at >= ?", Time.zone.today, Time.zone.today) }
@@ -21,5 +22,14 @@ class Program < ApplicationRecord
 
   def short_name
     name.gsub("Davis Kids Klub ", "")
+  end
+
+  def can_destroy?
+    return false if plans.any?
+    return false if enrollments.any?
+    return false if transactions.any?
+    return false if locations.any?
+
+    true
   end
 end

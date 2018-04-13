@@ -75,6 +75,9 @@ Rails.application.routes.draw do
   end
 
   namespace :staff do
+    resources :programs, except: :show
+    resources :plans, except: :show
+
     resources :accounts, only: [:index, :show] do
       collection do
         get :export_to_csv
