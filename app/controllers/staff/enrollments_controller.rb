@@ -58,7 +58,7 @@ class Staff::EnrollmentsController < ApplicationController
     @enrollments_date = Time.zone.today if @enrollments_date.blank?
     @enrollments_date = @program.starts_at if @enrollments_date < @program.starts_at || @enrollments_date > @program.ends_at
 
-    @enrollments = Enrollment.alive
+    @enrollments = Enrollment.alive.paid
       .by_program(@program)
       .by_location(@location)
       .for_date(@enrollments_date)
