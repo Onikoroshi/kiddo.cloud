@@ -1,0 +1,39 @@
+%h3.text-center
+  Plans
+
+.text-center
+  = link_to "+ Add Plan", new_staff_plan_path, class: "btn btn-primary btn-sm"
+%br
+
+- if @plans.any?
+  %table.admin-table
+    %thead
+      %th
+      %th Type
+      %th Name
+      %th Short Code
+      %th Price
+      %th Days Per Week
+      %th Program
+      %th
+
+    %tbody
+      - @plans.each do |plan|
+        %tr
+          %td
+            = link_to staff_plan_path(plan), method: :delete, :data => { :confirm => 'Are you sure?' } do
+              %i.material-icons delete
+          %td= plan.plan_type.text
+          %td= plan.display_name
+          %td= plan.short_code
+          %td= plan.price
+          %td= plan.display_days_per_week
+          %td= plan.program.name
+          %td
+            = link_to edit_staff_plan_path(plan) do
+              %i.material-icons edit
+
+  %hr
+
+  .text-center
+    = paginate @plans

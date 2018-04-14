@@ -32,6 +32,10 @@
                     = link_to staff_programs_path do
                       %i.material-icons event_note
                       Programs
+                  %li
+                    = link_to staff_plans_path do
+                      %i.material-icons view_list
+                      Plans
           %li{ class: (controller_name == "transactions") ? "active" : ""}
             =link_to staff_transactions_path do
               %i.material-icons credit_card
