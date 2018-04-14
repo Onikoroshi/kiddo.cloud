@@ -22,7 +22,7 @@
         %tr
           %td
             = link_to staff_plan_path(plan), method: :delete, :data => { :confirm => 'Are you sure?' } do
-              %i.material-icons delete
+              %i.material-icons delete_forever
           %td= plan.plan_type.text
           %td= plan.display_name
           %td= plan.short_code

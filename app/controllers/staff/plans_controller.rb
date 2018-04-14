@@ -15,9 +15,11 @@ class Staff::PlansController < ApplicationController
   end
 
   def create
-  end
-
-  def show
+    if @plan.save
+      redirect_to staff_plans_path, notice: "Plan successfully created."
+    else
+      render "new"
+    end
   end
 
   def edit
@@ -25,7 +27,7 @@ class Staff::PlansController < ApplicationController
 
   def update
     if @plan.update_attributes(permitted_params)
-      redirect_to staff_plans_path, notice: "Plan completely updated."
+      redirect_to staff_plans_path, notice: "Plan successfully updated."
     else
       render "edit"
     end
@@ -63,6 +65,6 @@ class Staff::PlansController < ApplicationController
   end
 
   def permitted_params
-    @permitted_params ||= params[:plan].present? ? params.require(:plan).permit(:program, :short_code, :display_name, :days_per_week, :price, :plan_type) : {}
+    @permitted_params ||= params[:plan].present? ? params.require(:plan).permit(:program_id, :short_code, :display_name, :days_per_week, :price, :plan_type) : {}
   end
 end

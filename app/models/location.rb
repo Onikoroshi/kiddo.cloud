@@ -14,6 +14,8 @@ class Location < ApplicationRecord
   has_many :program_locations, dependent: :destroy
   has_many :programs, through: :program_locations
 
+  validates :name, presence: true
+
   def default?
     default
   end

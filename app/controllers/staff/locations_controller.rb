@@ -15,9 +15,11 @@ class Staff::LocationsController < ApplicationController
   end
 
   def create
-  end
-
-  def show
+    if @location.save
+      redirect_to staff_locations_path, notice: "Location successfully created."
+    else
+      render "new"
+    end
   end
 
   def edit
@@ -25,7 +27,7 @@ class Staff::LocationsController < ApplicationController
 
   def update
     if @location.update_attributes(permitted_params)
-      redirect_to staff_locations_path, notice: "Location completely updated."
+      redirect_to staff_locations_path, notice: "Location successfully updated."
     else
       render "edit"
     end

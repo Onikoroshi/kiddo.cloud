@@ -1,6 +1,6 @@
 class Transaction < ApplicationRecord
   belongs_to :account
-  belongs_to :program
+  belongs_to :program # not used
 
   has_many :enrollment_transactions, foreign_key: :my_transaction_id, dependent: :destroy
   has_many :enrollments, through: :enrollment_transactions

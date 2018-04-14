@@ -25,7 +25,7 @@
         %tr
           %td
             = link_to staff_program_path(program), method: :delete, :data => { :confirm => 'Are you sure?' } do
-              %i.material-icons delete
+              %i.material-icons delete_forever
           %td= program.name
           %td= program.starts_at.stamp("March 4th, 2018")
           %td= program.ends_at.stamp("March 4th, 2018")

@@ -15,9 +15,11 @@ class Staff::ProgramsController < ApplicationController
   end
 
   def create
-  end
-
-  def show
+    if @program.save
+      redirect_to staff_programs_path, notice: "Program successfully created."
+    else
+      render "new"
+    end
   end
 
   def edit
@@ -25,7 +27,7 @@ class Staff::ProgramsController < ApplicationController
 
   def update
     if @program.update_attributes(permitted_params)
-      redirect_to staff_programs_path, notice: "Program completely updated."
+      redirect_to staff_programs_path, notice: "Program successfully updated."
     else
       render "edit"
     end
@@ -51,7 +53,7 @@ class Staff::ProgramsController < ApplicationController
   end
 
   def set_collection
-    @programs = @center.programs
+    @programs = @center.programs.order("starts_at ASC")
   end
 
   def build_single

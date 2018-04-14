@@ -9,6 +9,8 @@ class Plan < ApplicationRecord
   money_column :price
   classy_enum_attr :plan_type
 
+  validates :display_name, :short_code, :price, :days_per_week, presence: true
+
   scope :by_plan_type, ->(plan_type) { where(plan_type: plan_type.to_s) }
 
   def self.select_options
