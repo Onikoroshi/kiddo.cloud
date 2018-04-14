@@ -77,6 +77,7 @@ Rails.application.routes.draw do
   namespace :staff do
     resources :programs, except: :show
     resources :plans, except: :show
+    resources :locations, except: :show
 
     resources :accounts, only: [:index, :show] do
       collection do

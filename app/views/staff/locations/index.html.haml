@@ -1,0 +1,31 @@
+%h3.text-center
+  Locations
+
+.text-center
+  = link_to "+ Add Location", new_staff_location_path, class: "btn btn-primary btn-sm"
+%br
+
+- if @locations.any?
+  %table.admin-table
+    %thead
+      %th
+      %th Name
+      %th Programs
+      %th
+
+    %tbody
+      - @locations.each do |location|
+        %tr
+          %td
+            = link_to staff_location_path(location), method: :delete, :data => { :confirm => 'Are you sure?' } do
+              %i.material-icons delete_forever
+          %td= location.name
+          %td= location.programs.pluck(:name).join("<br>").html_safe
+          %td
+            = link_to edit_staff_location_path(location) do
+              %i.material-icons edit
+
+  %hr
+
+  .text-center
+    = paginate @locations
