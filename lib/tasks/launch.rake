@@ -1,6 +1,7 @@
 namespace :launch do
   desc "Update program fees and customer transactions"
   task :fix_program_fees_and_transactions => :environment do
+    ap "hello"
     Program.update_all(change_fee: 49.0)
 
     # need to downcase genders so that they work properly with the ClassyEnum
@@ -20,7 +21,7 @@ namespace :launch do
       transaction.update_attribute(:gateway_id, target_charge.id)
     end
   end
-  
+
   desc "Loads initial data for DKK into production"
   task :seed_production => :environment do
     MaintenanceTools::ProductionSeeder.seed
