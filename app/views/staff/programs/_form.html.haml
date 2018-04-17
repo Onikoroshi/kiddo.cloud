@@ -47,7 +47,7 @@
         = f.label :plans, "Plans - Click the link to edit the plan or remove it from this program", class: "control-label", style: "padding-bottom: 20px;"
         %ul
           - @program.plans.each do |plan|
-            %li= link_to plan.full_display_name, edit_staff_plan_path
+            %li= link_to plan.full_display_name, edit_staff_plan_path(plan)
 
       = link_to "Cancel", staff_programs_path, class: "btn"
       = f.submit class: "btn btn-info pull-right"
