@@ -1,8 +1,15 @@
 %h3.text-center
   Plans
 
+.row
+  .text-center
+    = form_tag staff_plans_path, method: :get do
+      %h5 Program
+      = select_tag "program_id", options_from_collection_for_select(Program.all, "id", "name", @program_id), include_blank: "All Programs"
+      = submit_tag "Submit"
+
 .text-center
-  = link_to "+ Add Plan", new_staff_plan_path, class: "btn btn-primary btn-sm"
+  = link_to "+ Add Plan", new_staff_plan_path(program_id: @program_id), class: "btn btn-primary btn-sm"
 %br
 
 - if @plans.any?
@@ -21,7 +28,7 @@
       - @plans.each do |plan|
         %tr
           %td
-            = link_to staff_plan_path(plan), method: :delete, :data => { :confirm => 'Are you sure?' } do
+            = link_to staff_plan_path(plan, program_id: @program_id), method: :delete, :data => { :confirm => 'Are you sure?' } do
               %i.material-icons delete_forever
           %td= plan.plan_type.text
           %td= plan.display_name
@@ -30,7 +37,7 @@
           %td= plan.display_days_per_week
           %td= plan.program.name
           %td
-            = link_to edit_staff_plan_path(plan) do
+            = link_to edit_staff_plan_path(plan, program_id: @program_id) do
               %i.material-icons edit
 
   %hr

@@ -10,8 +10,10 @@ class Plan < ApplicationRecord
   classy_enum_attr :plan_type
 
   validates :display_name, :short_code, :price, :days_per_week, presence: true
+  validate :lock_enrolled_plans
 
   scope :by_plan_type, ->(plan_type) { where(plan_type: plan_type.to_s) }
+  scope :by_program, ->(program) { program.present? ? where(program: program) : all }
 
   def self.select_options
     all.map{|plan| [plan.display_name, plan.id]}
@@ -36,5 +38,15 @@ class Plan < ApplicationRecord
     return false if transactions.any?
 
     true
+  end
+
+  private
+
+  def lock_enrolled_plans
+    if (self.program_id_changed? && self.program_id_was.present?) || (self.plan_type_changed? && self.plan_type.present?)
+      if enrollments.any? || transactions.any?
+        errors.add(:base, "Children are already enrolled in this plan. Cannot change Program or Plan Type.")
+      end
+    end
   end
 end

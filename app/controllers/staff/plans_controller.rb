@@ -16,7 +16,7 @@ class Staff::PlansController < ApplicationController
 
   def create
     if @plan.save
-      redirect_to staff_plans_path, notice: "Plan successfully created."
+      redirect_to staff_plans_path(program_id: params[:program_id]), notice: "Plan successfully created."
     else
       render "new"
     end
@@ -27,7 +27,7 @@ class Staff::PlansController < ApplicationController
 
   def update
     if @plan.update_attributes(permitted_params)
-      redirect_to staff_plans_path, notice: "Plan successfully updated."
+      redirect_to staff_plans_path(program_id: params[:program_id]), notice: "Plan successfully updated."
     else
       render "edit"
     end
@@ -36,9 +36,9 @@ class Staff::PlansController < ApplicationController
   def destroy
     if @plan.can_destroy?
       @plan.destroy
-      redirect_to staff_plans_path, notice: "Plan completely removed."
+      redirect_to staff_plans_path(program_id: params[:program_id]), notice: "Plan completely removed."
     else
-      redirect_to staff_plans_path, notice: "Only Plans with no enrollments or transactions can be removed."
+      redirect_to staff_plans_path(program_id: params[:program_id]), notice: "Only Plans with no enrollments or transactions can be removed."
     end
   end
 
@@ -53,7 +53,10 @@ class Staff::PlansController < ApplicationController
   end
 
   def set_collection
-    @plans = Plan.all
+    @program = Program.find_by(id: params[:program_id])
+    @program_id = @program.present? ? @program.id : ""
+
+    @plans = Plan.by_program(@program)
   end
 
   def build_single
