@@ -1,0 +1,13 @@
+.nested-fields
+  = f.hidden_field :plan_id, value: @plan.id
+
+  .form-group.label-floating
+    = f.label :amount, "Amount to discount", class: "control-label"
+    = f.text_field :amount, class: "form-control"
+
+  .form-group.label-floating
+    = f.label :month, "Month the discount should apply", class: "control-label"
+    = f.select :month, options_from_collection_for_select(DiscountMonth.all, 'to_s', 'text', f.object.month.to_s), class: "form-control"
+
+  .form-group.label-floating
+    = link_to_remove_association "Remove Discount", f

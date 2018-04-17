@@ -57,6 +57,15 @@
         = f.label :program_id, "Program", class: "control-label"
         = f.select :program_id, options_from_collection_for_select(Program.all, 'id', 'name', f.object.program_id || params[:program_id]), class: "form-control"
 
+      %h4 Discounts
+
+      = f.fields_for :discounts do |discount_fields|
+        = render "discount_fields", f: discount_fields
+
+      .links
+        .pull-right= link_to_add_association 'Add Discount', f, :discounts, {style: "padding-right: 20px;"}
+      %br
+
       %h4 Children Already Enrolled:
       %ul
         - @plan.enrollments.find_each do |enrollment|

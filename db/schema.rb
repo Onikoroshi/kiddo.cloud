@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180417180707) do
+ActiveRecord::Schema.define(version: 20180417200012) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -123,6 +123,15 @@ ActiveRecord::Schema.define(version: 20180417180707) do
     t.bigint "child_id", null: false
     t.index ["child_id", "parent_id"], name: "index_children_parents_on_child_id_and_parent_id"
     t.index ["parent_id", "child_id"], name: "index_children_parents_on_parent_id_and_child_id"
+  end
+
+  create_table "discounts", force: :cascade do |t|
+    t.bigint "plan_id"
+    t.float "amount"
+    t.string "month"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["plan_id"], name: "index_discounts_on_plan_id"
   end
 
   create_table "drop_ins", force: :cascade do |t|
