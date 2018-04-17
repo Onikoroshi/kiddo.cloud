@@ -15,16 +15,43 @@
         = f.text_field :display_name, class: "form-control"
 
       .form-group.label-floating
-        = f.label :short_code, "Short Code (no spaces, please)", class: "control-label"
-        = f.text_field :short_code, class: "form-control"
-
-      .form-group.label-floating
         = f.label :price, "Plan Price", class: "control-label"
         = f.text_field :price, class: "form-control"
 
       .form-group.label-floating
-        = f.label :days_per_week, "Number of Days Per Week children will attend (0 for Drop In days)", class: "control-label"
+        = f.label :days_per_week, "Number of Days Per Week children will attend (1 for Drop In days)", class: "control-label"
         = f.text_field :days_per_week, class: "form-control"
+
+      %h4 Allowed Days
+
+      .form-group.label-floating
+        = f.check_box :monday, checked: f.object.monday
+        = f.label :monday
+
+      .form-group.label-floating
+        = f.check_box :tuesday, checked: f.object.tuesday
+        = f.label :tuesday
+
+      .form-group.label-floating
+        = f.check_box :wednesday, checked: f.object.wednesday
+        = f.label :wednesday
+
+      .form-group.label-floating
+        = f.check_box :thursday, checked: f.object.thursday
+        = f.label :thursday
+
+      .form-group.label-floating
+        = f.check_box :friday, checked: f.object.friday
+        = f.label :friday
+
+      .form-group.label-floating
+        = f.check_box :saturday, checked: f.object.saturday
+        = f.label :saturday
+
+      .form-group.label-floating
+        = f.check_box :sunday, checked: f.object.sunday
+        = f.label :sunday
+      %br
 
       .form-group.label-floating
         = f.label :program_id, "Program", class: "control-label"

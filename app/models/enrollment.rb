@@ -158,17 +158,19 @@ class Enrollment < ApplicationRecord
     end
   end
 
-  def enrolled_days(humanize = false)
-    day_hash = {
+  def day_hash
+    {
       monday: monday,
       tuesday: tuesday,
       wednesday: wednesday,
       thursday: thursday,
       friday: friday,
       saturday: saturday,
-      sunday: sunday,
+      sunday: sunday
     }
+  end
 
+  def enrolled_days(humanize = false)
     selected = Array.new
     day_hash.each do |k,v|
       selected << k if v
@@ -189,7 +191,7 @@ class Enrollment < ApplicationRecord
       4 => "thursday",
       5 => "friday",
       6 => "saturday",
-      7 => "sunday",
+      0 => "sunday",
     }
 
     today = Time.zone.now.wday

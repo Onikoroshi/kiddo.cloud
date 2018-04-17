@@ -65,24 +65,24 @@ class MaintenanceTools::ProductionSeeder
   end
 
   def seed_summer_program_plans
-    Plan.where(program: program_summer, short_code: "week_full_day", display_name: "Full Day", days_per_week: 5, price: 229.00, plan_type: "weekly").first_or_create!
-    Plan.where(program: program_summer, short_code: "week_morning", display_name: "Morning", days_per_week: 5, price: 125.00, plan_type: "weekly").first_or_create!
-    Plan.where(program: program_summer, short_code: "week_afternoon", display_name: "Afternoon", days_per_week: 5, price: 125.00, plan_type: "weekly").first_or_create!
-    Plan.where(program: program_summer, short_code: "drop_full_day", display_name: "Full Day", days_per_week: 0, price: 55.00, plan_type: "drop_in").first_or_create!
-    Plan.where(program: program_summer, short_code: "drop_morning", display_name: "Morning", days_per_week: 0, price: 35.00, plan_type: "drop_in").first_or_create!
-    Plan.where(program: program_summer, short_code: "drop_afternoon", display_name: "Afternoon", days_per_week: 0, price: 35.00, plan_type: "drop_in").first_or_create!
+    Plan.where(program: program_summer, display_name: "Full Day", days_per_week: 5, price: 229.00, plan_type: "weekly", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false).first_or_create!
+    Plan.where(program: program_summer, display_name: "Morning", days_per_week: 5, price: 125.00, plan_type: "weekly", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false).first_or_create!
+    Plan.where(program: program_summer, display_name: "Afternoon", days_per_week: 5, price: 125.00, plan_type: "weekly", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false).first_or_create!
+    Plan.where(program: program_summer, display_name: "Full Day", days_per_week: 1, price: 55.00, plan_type: "drop_in", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false).first_or_create!
+    Plan.where(program: program_summer, display_name: "Morning", days_per_week: 1, price: 35.00, plan_type: "drop_in", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false).first_or_create!
+    Plan.where(program: program_summer, display_name: "Afternoon", days_per_week: 1, price: 35.00, plan_type: "drop_in", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false).first_or_create!
   end
 
   def seed_fall_program_plans
-    Plan.where(program: program_fall, short_code: "week_5", display_name: "Five Days a Week", days_per_week: 5, price: 285.00, plan_type: "contract").first_or_create!
-    Plan.where(program: program_fall, short_code: "week_4", display_name: "Four Days a Week", days_per_week: 4, price: 259.00, plan_type: "contract").first_or_create!
-    Plan.where(program: program_fall, short_code: "week_3", display_name: "Three Days a Week", days_per_week: 3, price: 229.00, plan_type: "contract").first_or_create!
-    Plan.where(program: program_fall, short_code: "week_2", display_name: "Two Days a Week", days_per_week: 2, price: 172.00, plan_type: "contract").first_or_create!
-    Plan.where(program: program_fall, short_code: "week_1", display_name: "One Day a Week", days_per_week: 1, price: 115.00, plan_type: "contract").first_or_create!
-    Plan.where(program: program_fall, short_code: "week_1_wed", display_name: "Wednesday; One Day a Week", days_per_week: 1, price: 129.00, plan_type: "contract").first_or_create!
-    Plan.where(program: program_fall, short_code: "sibling", display_name: "Sibling Club", days_per_week: 4, price: 40.00, plan_type: "contract").first_or_create!
-    Plan.where(program: program_fall, short_code: "drop_1", display_name: "(M, T, TH, F)", days_per_week: 0, price: 30.00, plan_type: "drop_in").first_or_create!
-    Plan.where(program: program_fall, short_code: "drop_1_wed", display_name: "(Wednesday)", days_per_week: 0, price: 35.00, plan_type: "drop_in").first_or_create!
+    Plan.where(program: program_fall, display_name: "Five Days a Week", days_per_week: 5, price: 285.00, plan_type: "contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false).first_or_create!
+    Plan.where(program: program_fall, display_name: "Four Days a Week", days_per_week: 4, price: 259.00, plan_type: "contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false).first_or_create!
+    Plan.where(program: program_fall, display_name: "Three Days a Week", days_per_week: 3, price: 229.00, plan_type: "contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false).first_or_create!
+    Plan.where(program: program_fall, display_name: "Two Days a Week", days_per_week: 2, price: 172.00, plan_type: "contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false).first_or_create!
+    Plan.where(program: program_fall, display_name: "One Day a Week", days_per_week: 1, price: 115.00, plan_type: "contract", monday: true, tuesday: true, wednesday: false, thursday: true, friday: true, saturday: false, sunday: false).first_or_create!
+    Plan.where(program: program_fall, display_name: "Wednesday; One Day a Week", days_per_week: 1, price: 129.00, plan_type: "contract", monday: false, tuesday: false, wednesday: true, thursday: false, friday: false, saturday: false, sunday: false).first_or_create!
+    Plan.where(program: program_fall, display_name: "Sibling Club", days_per_week: 4, price: 40.00, plan_type: "contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false).first_or_create!
+    Plan.where(program: program_fall, display_name: "(M, T, TH, F)", days_per_week: 1, price: 30.00, plan_type: "drop_in", monday: true, tuesday: true, wednesday: false, thursday: true, friday: true, saturday: false, sunday: false).first_or_create!
+    Plan.where(program: program_fall, display_name: "(Wednesday)", days_per_week: 1, price: 35.00, plan_type: "drop_in", monday: false, tuesday: false, wednesday: true, thursday: false, friday: false, saturday: false, sunday: false).first_or_create!
   end
 
   def seed_roles

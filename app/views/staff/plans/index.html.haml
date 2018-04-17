@@ -18,9 +18,9 @@
       %th
       %th Type
       %th Name
-      %th Short Code
       %th Price
       %th Days Per Week
+      %th Allowed Days
       %th Program
       %th
 
@@ -32,9 +32,9 @@
               %i.material-icons delete_forever
           %td= plan.plan_type.text
           %td= plan.display_name
-          %td= plan.short_code
           %td= plan.price
           %td= plan.display_days_per_week
+          %td= plan.allowed_days(true)
           %td= plan.program.name
           %td
             = link_to edit_staff_plan_path(plan, program_id: @program_id) do

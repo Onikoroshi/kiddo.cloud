@@ -9,7 +9,7 @@ class Plan < ApplicationRecord
   money_column :price
   classy_enum_attr :plan_type
 
-  validates :display_name, :short_code, :price, :days_per_week, presence: true
+  validates :display_name, :price, :days_per_week, presence: true
   validate :lock_enrolled_plans
 
   scope :by_plan_type, ->(plan_type) { where(plan_type: plan_type.to_s) }
@@ -30,6 +30,31 @@ class Plan < ApplicationRecord
       "All"
     else
       days_per_week.to_s
+    end
+  end
+
+  def day_hash
+    {
+      monday: monday,
+      tuesday: tuesday,
+      wednesday: wednesday,
+      thursday: thursday,
+      friday: friday,
+      saturday: saturday,
+      sunday: sunday
+    }
+  end
+
+  def allowed_days(humanize = false)
+    selected = Array.new
+    day_hash.each do |k,v|
+      selected << k if v
+    end
+
+    if humanize
+      selected.any? ? selected.map{|day_key| day_key.to_s[0...(day_key.to_s.starts_with?("t") ? 2 : 1)].capitalize}.join(", ") : "None"
+    else
+      selected
     end
   end
 

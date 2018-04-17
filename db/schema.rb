@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180409215439) do
+ActiveRecord::Schema.define(version: 20180417180707) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -266,13 +266,19 @@ ActiveRecord::Schema.define(version: 20180409215439) do
 
   create_table "plans", force: :cascade do |t|
     t.bigint "program_id"
-    t.string "short_code"
     t.string "display_name"
     t.integer "days_per_week"
     t.float "price"
     t.string "plan_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "monday", default: false
+    t.boolean "tuesday", default: false
+    t.boolean "wednesday", default: false
+    t.boolean "thursday", default: false
+    t.boolean "friday", default: false
+    t.boolean "saturday", default: false
+    t.boolean "sunday", default: false
     t.index ["program_id"], name: "index_plans_on_program_id"
   end
 
