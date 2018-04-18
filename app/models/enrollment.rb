@@ -57,7 +57,7 @@ class Enrollment < ApplicationRecord
           else
             type_obj = PlanType[plan_type]
             type_text = type_obj.present? ? type_obj.text : plan_type.humanize
-            blurbs << "#{child.first_name} is enrolled in  #{num_enrolls} #{type_text.pluralise(num_enrolls)} at #{location.short_name} during #{program.name}"
+            blurbs << "#{child.first_name} is enrolled in  #{num_enrolls} #{type_text.pluralize(num_enrolls)} at #{location.name} during #{program.name}"
           end
         end
       end
@@ -160,13 +160,13 @@ class Enrollment < ApplicationRecord
 
   def day_hash
     {
-      monday: monday,
-      tuesday: tuesday,
-      wednesday: wednesday,
-      thursday: thursday,
-      friday: friday,
-      saturday: saturday,
-      sunday: sunday
+      Monday: monday,
+      Tuesday: tuesday,
+      Wednesday: wednesday,
+      Thursday: thursday,
+      Friday: friday,
+      Saturday: saturday,
+      Sunday: sunday
     }
   end
 
@@ -177,7 +177,7 @@ class Enrollment < ApplicationRecord
     end
 
     if humanize
-      value = selected.to_sentence.titleize
+      value = selected.to_sentence
     else
       selected
     end

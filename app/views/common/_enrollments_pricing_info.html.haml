@@ -27,17 +27,19 @@
 
   - calculator.itemizations.each do |key, value|
     %tr
-      %td= key.to_s.humanize.capitalize
+      %td= key.to_s
       %td.fee-amount{style: "text-align: right"}= value
-      - if key.to_s == "change_fee" && policy(:payments).manage?
+      - if key.to_s.include?("Change Fee") && policy(:payments).manage?
         %td.merge-top
-          = check_box_tag :require_change_fee, true, calculator.enrollment_changes.require_fee.any?, class: "change-fee-requirement", data: {"account-id" => @account.id}
+          = check_box_tag :require_change_fee, true, calculator.enrollment_changes.require_fee.any?, class: "change-fee-requirement", data: {"account-id" => @account.id, "program-id" => Program.find_by(name: key.to_s.gsub("Change Fee for ", "")).id}
           = label_tag :require_change_fee, "Charge Change Fee"
 
-  - if policy(:payments).manage? && calculator.enrollment_changes.any? && calculator.itemizations[:change_fee].blank?
-    %tr
-      %td Change Fee
-      %td.fee-amount{style: "text-align: right"}= Money.new(0).to_s
-      %td.merge-top
-        = check_box_tag :require_change_fee, true, calculator.enrollment_changes.require_fee.any?, class: "change-fee-requirement", data: {"account-id" => @account.id}
-        = label_tag :require_change_fee, "Charge Change Fee"
+  - if policy(:payments).manage? && calculator.changed_programs.count > 0 && calculator.itemizations.keys.select{|k| k.to_s.include?("Change Fee")}.count != calculator.changed_programs.count
+    - calculator.changed_programs.each do |program|
+      - next if calculator.itemizations.keys.select{|k| k.to_s.include?("Change Fee for #{program.name}")}.any?
+      %tr
+        %td Change Fee for #{program.name}
+        %td.fee-amount{style: "text-align: right"}= Money.new(0).to_s
+        %td.merge-top
+          = check_box_tag :require_change_fee, true, calculator.enrollment_changes.require_fee.any?, class: "change-fee-requirement", data: {"account-id" => @account.id, "program-id" => program.id}
+          = label_tag :require_change_fee, "Charge Change Fee"

@@ -53,10 +53,11 @@ document.addEventListener 'turbolinks:load', ->
   $(".enrollment-pricing-table").on "change", ".change-fee-requirement", (event) ->
     elem = $(event.currentTarget)
     account_id = elem.data("account-id")
+    program_id = elem.data("program-id")
     require_fee = elem.is(':checked')
 
     $.ajax
-      url: "/staff/enrollments/set_change_fee_requirement?account_id=#{account_id}&require_fee=#{require_fee}"
+      url: "/staff/enrollments/set_change_fee_requirement?account_id=#{account_id}&program_id=#{program_id}&require_fee=#{require_fee}"
       type: "PATCH"
       dataType: 'json'
       headers:

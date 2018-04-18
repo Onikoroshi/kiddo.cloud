@@ -43,27 +43,40 @@ module ChildEnrollment
     end
 
     def first_time_user_fee
+      total_fee = Money.new(0)
+
       unpaid_program_ids = account.enrollments.alive.unpaid.programs.pluck(:id)
       paid_program_ids = account.enrollments.alive.paid.programs.pluck(:id)
 
       first_time_programs = Program.where(id: (unpaid_program_ids - paid_program_ids))
-      fee = first_time_programs.inject(Money.new(0)){|sum, program| sum + Money.new(program.registration_fee)}
-      if fee > 0
-        itemizations[:one_time_signup_fee] = fee
-      else
-        Money.new(0)
+      first_time_programs.each do |program|
+        fee = Money.new(program.registration_fee)
+        if fee > 0
+          itemizations["One Time Signup Fee for #{program.name}"] = fee
+          total_fee += fee
+        end
       end
+
+      total_fee
+    end
+
+    def changed_programs
+      program_ids = enrollment_changes.require_fee.joins(enrollment: :program).pluck("programs.id").uniq
+      @changed_programs ||= Program.where(id: program_ids)
     end
 
     def change_fee
-      program_ids = enrollment_changes.require_fee.joins(enrollment: :program).pluck("programs.id").uniq
-      fee = Program.where(id: program_ids).inject(Money.new(0)){|sum, program| sum + Money.new(program.change_fee)}
+      total_fee = Money.new(0)
 
-      if fee > 0
-        itemizations[:change_fee] = fee
-      else
-        Money.new(0)
+      changed_programs.each do |program|
+        fee = Money.new(program.change_fee)
+        if fee > 0
+          itemizations["Change Fee for #{program.name}"] = fee
+          total_fee += fee
+        end
       end
+
+      total_fee
     end
 
     def itemize

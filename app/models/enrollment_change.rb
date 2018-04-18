@@ -16,6 +16,7 @@ class EnrollmentChange < ApplicationRecord
   scope :require_refund, -> { where(requires_refund: true) }
   scope :finalized, -> { where(applied: true) }
   scope :pending, -> { where.not(applied: true) }
+  scope :by_program, ->(given_program) { given_program.present? ? joins(enrollment: :program).where("programs.id = ?", given_program.id) : all }
 
   def self.generating_charge
     self.pending.select{|change| change.amount > 0}

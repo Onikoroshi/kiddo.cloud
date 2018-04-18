@@ -52,7 +52,7 @@
     - @transaction.itemizations.each do |key, value|
       %tr{style: "padding-bottom: 10px;"}
         %td
-        %td= key.to_s.humanize.capitalize
+        %td= key.to_s
         %td= @transaction.created_at.stamp("Monday, Feb. 3rd, 2018")
         - if has_changes
           %td

@@ -150,11 +150,14 @@
           %h5= program.name
 
           - @account.children.each do |child|
+            %br
             %strong= child.full_name
             - enrollments = child.enrollments.alive.paid.by_program(program)
             - if enrollments.any?
               %ul
               - enrollments.each do |enrollment|
                 %li= enrollment.to_short
+            - else
+              %br
 
   .cleaner
