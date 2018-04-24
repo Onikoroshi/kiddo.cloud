@@ -34,28 +34,30 @@ class MaintenanceTools::ProductionSeeder
   def seed_summer_program
     @program_summer = Program.where(
       center: center,
-      short_code: "dkk_summer_2018",
-      name: "Davis Kids Klub Summer 2018",
+      name: "Summer Recreation Camp 2018",
       starts_at: Chronic.parse("6/11/2018"),
       ends_at: Chronic.parse("8/24/2018"),
       registration_opens: Chronic.parse("2/1/2018"),
       registration_closes: Chronic.parse("8/24/2018"),
       registration_fee: 50.0,
-      change_fee: 49.0
+      change_fee: 49.0,
+      earliest_payment_offset: -15,
+      latest_payment_offset: 14
     ).first_or_create!
   end
 
   def seed_fall_program
     @program_fall = Program.where(
       center: center,
-      short_code: "dkk_fall_2018",
-      name: "Davis Kids Klub Fall 2018",
+      name: "School Year 2018",
       starts_at: Chronic.parse("8/20/2018"),
       ends_at: Chronic.parse("6/20/2019"),
       registration_opens: Chronic.parse("5/1/2018"),
       registration_closes: Chronic.parse("6/2/2019"),
       registration_fee: 50.0,
-      change_fee: 49.0
+      change_fee: 49.0,
+      earliest_payment_offset: -15,
+      latest_payment_offset: 14
     ).first_or_create!
   end
 

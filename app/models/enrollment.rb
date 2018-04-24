@@ -9,6 +9,8 @@ class Enrollment < ApplicationRecord
 
   has_many :enrollment_changes, dependent: :destroy
 
+  before_validation :deduce_plan_for_recurring
+
   validates :starts_at, :ends_at, presence: true
   validate :validate_dates
 
@@ -18,6 +20,7 @@ class Enrollment < ApplicationRecord
 
   scope :by_program, ->(program) { joins(plan: :program).where("programs.id = ?", program.present? ? program.id : nil) }
   scope :by_program_and_plan_type, ->(program, plan_type) { joins(:program).where("plans.plan_type = ? AND programs.id = ?", plan_type.to_s, program.id) }
+  scope :by_child, ->(child) { child.present? ? where(child_id: child.id) : none }
   scope :by_location, ->(location) { location.present? ? where(location_id: location.id) : all }
   scope :active, -> { joins(:program).where("programs.ends_at >= ?", Time.zone.today).distinct }
   scope :paid, -> { where(paid: true) }
@@ -25,6 +28,10 @@ class Enrollment < ApplicationRecord
   scope :with_changes, -> { joins(:enrollment_changes) }
   scope :without_changes, -> { includes(:enrollment_changes).where(enrollment_changes: {id: nil}) }
   scope :for_date, ->(date) { date.present? ? where("enrollments.starts_at <= ? AND enrollments.ends_at >= ?", date, date) : all }
+
+  def self.total_amount_due_today
+    self.all.inject(Money.new(0)){ |sum, enrollment| sum + Money.new(enrollment.amount_due_today) }
+  end
 
   # get a unique list of programs associated with a set of enrollments
   def self.programs
@@ -108,6 +115,89 @@ class Enrollment < ApplicationRecord
     update_attribute(:dead, true)
   end
 
+  def payment_plan_hash
+    info = {}
+
+    if plan_type.recurring?
+      target_date = self.starts_at.beginning_of_month
+      month_name = target_date.stamp("February")
+
+      while target_date < self.ends_at
+        enrollment_transaction = transaction_for_target_date(target_date)
+        if enrollment_transaction.present?
+          info[month_name] = "Paid #{enrollment_transaction.amount} on #{enrollment_transaction.created_at.to_date.stamp("Aug. 1st, 2019")}"
+        else
+          info[month_name] = "#{plan.price_for_date(target_date)} Due on #{(target_date + child.account.payment_offset.days).stamp("Aug. 1st, 2019")}"
+        end
+
+        target_date = target_date.end_of_month + 1.day
+        month_name = target_date.stamp("February")
+      end
+    else
+      if self.paid?
+        info["One Time"] = "Paid #{last_paid_amount} on #{created_at.to_date.stamp("Aug. 1st, 2019")}"
+      else
+        info["One Time"] = "#{plan.price_for_date(target_date)} Due Today"
+      end
+    end
+
+    info
+  end
+
+  def next_payment_date
+    if plan_type.recurring?
+      target_date = last_payment_target_date
+      if target_date.present?
+        target_date = target_date.end_of_month + 1.day # move forward a month
+      else # unless we don't have any yet - then do the first one
+        target_date = [self.starts_at.beginning_of_month, Time.zone.today.beginning_of_month].max
+      end
+      # alter by the payment offset chosen
+      target_date += child.account.payment_offset.days
+    else
+      created_at.to_date
+    end
+  end
+
+  def amount_due_today
+    target_date = next_payment_date
+    return Money.new(0) if paid? || target_date > Time.zone.today
+
+    plan.price_for_date(target_date)
+  end
+
+  def display_amount_due_today
+    target_date = next_payment_date
+    if target_date > Time.zone.today
+      "#{Time.zone.today > self.starts_at ? "Next" : "First"} Payment on #{target_date.stamp("March 3rd, 2019")}"
+    else
+      amount_due_today.to_s
+    end
+  end
+
+  def transaction_for_target_date(given_date)
+    enrollment_transactions.paid.where(target_date: given_date).reverse_chronological.first
+  end
+
+  def last_transaction
+    transactions.paid.reverse_chronological.first
+  end
+
+  def last_payment_target_date
+    enrollment_transaction = enrollment_transactions.paid.by_target_date.last
+    (enrollment_transaction.present? && enrollment_transaction.target_date.present?) ? enrollment_transaction.target_date : nil
+  end
+
+  def last_payment_date
+    transaction = transactions.paid.reverse_chronological.first
+    transaction.present? ? transaction.created_at.to_date : nil
+  end
+
+  def last_paid_amount
+    enrollment_transaction = enrollment_transactions.paid.reverse_chronological.first
+    enrollment_transaction.present? ? enrollment_transaction.amount : Money.new(0)
+  end
+
   def to_s
     case plan.plan_type.to_s
     when PlanType[:weekly].to_s
@@ -126,7 +216,7 @@ class Enrollment < ApplicationRecord
     when PlanType[:drop_in].to_s
       "#{plan.display_name} Drop-In on #{starts_at.stamp("Monday, Feb. 3rd, 2018")} at #{location.name}"
     else
-      "#{plan.display_name} plan on #{enrolled_days(humanize: true)} at #{location.name}."
+      "#{plan.display_name} #{plan.plan_type.text} plan on #{enrolled_days(humanize: true)} from #{service_dates} at #{location.name}."
     end
   end
 
@@ -144,7 +234,7 @@ class Enrollment < ApplicationRecord
     elsif plan_type.weekly?
       DateTool.display_week(starts_at, ends_at)
     else
-      DateTool.display_week(starts_at, ends_at)
+      DateTool.display_range(starts_at, ends_at)
     end
   end
 
@@ -160,13 +250,13 @@ class Enrollment < ApplicationRecord
 
   def day_hash
     {
-      Monday: monday,
-      Tuesday: tuesday,
-      Wednesday: wednesday,
-      Thursday: thursday,
-      Friday: friday,
-      Saturday: saturday,
-      Sunday: sunday
+      monday: monday,
+      tuesday: tuesday,
+      wednesday: wednesday,
+      thursday: thursday,
+      friday: friday,
+      saturday: saturday,
+      sunday: sunday
     }
   end
 
@@ -177,7 +267,11 @@ class Enrollment < ApplicationRecord
     end
 
     if humanize
-      value = selected.to_sentence
+      if plan_type.recurring?
+        selected.map{|d| d.to_s.capitalize.pluralize}.to_sentence
+      else
+        selected.map{|d| d.to_s.capitalize}.to_sentence
+      end
     else
       selected
     end
@@ -199,6 +293,29 @@ class Enrollment < ApplicationRecord
   end
 
   private
+
+  def deduce_plan_for_recurring
+    return if plan.blank? || !plan.plan_type.recurring?
+
+    target_program = plan.program
+    target_plan_type = plan.plan_type
+
+    success = false
+    target_days = enrolled_days
+    num_days = target_days.count
+    possible_plans = program.plans.by_plan_type(target_plan_type)
+    possible_plans.find_each do |possible_plan|
+      if possible_plan.days_per_week.to_i == num_days && (target_days & possible_plan.allowed_days).any?
+        self.plan_id = possible_plan.id
+        success = true
+        break
+      end
+    end
+
+    unless success
+      errors.add(:base, "No payment plans cover the days selected for #{self.child.full_name}. Try a different combination of days.")
+    end
+  end
 
   def validate_dates
     if plan_type.present? && plan_type.drop_in?

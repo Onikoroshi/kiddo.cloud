@@ -155,15 +155,19 @@
             %strong= child.full_name
             - enrollments = child.enrollments.alive.unpaid.by_program(program)
             - if enrollments.any?
-              %ul
-              - enrollments.each do |enrollment|
-                %li= enrollment.to_short
-            %br
+              %table
+                - enrollments.each do |enrollment|
+                  %tr.merge-top
+                    %td= enrollment.to_short
+                  - enrollment.payment_plan_hash.each do |key, value|
+                    %tr.merge-top.short
+                      %td.right-just= value
+            %hr
 
         - price_calculator = ChildEnrollment::EnrollmentPriceCalculator.new(@account)
         - price_calculator.calculate
-        - if price_calculator.itemizations[:one_time_signup_fee].to_i > 0
-          (Includes a 1-time, non-refundable #{Money.new(price_calculator.itemizations[:one_time_signup_fee])} sign-up fee.)
+        - if price_calculator.first_time_user_fee > 0
+          (Includes a 1-time, non-refundable #{price_calculator.first_time_user_fee} sign-up fee.)
 
         %h5
           %strong

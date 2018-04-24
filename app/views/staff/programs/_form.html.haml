@@ -10,10 +10,6 @@
         = f.text_field :name, class: "form-control"
 
       .form-group.label-floating
-        = f.label :short_code, "Short Code", class: "control-label"
-        = f.text_field :short_code, class: "form-control"
-
-      .form-group.label-floating
         = f.label :starts_at, "Start Date", class: "control-label"
         = f.text_field :starts_at, class: "form-control flatpickr-date"
 
@@ -36,13 +32,29 @@
       .form-group.label-floating
         = f.label :change_fee, "Change Fee", class: "control-label"
         = f.text_field :change_fee, class: "form-control"
+
       %br
+
+      .form-group.label-floating
+        = f.label :earliest_payment_offset, "Earliest day automatic payments can be charged", class: "control-label"
+        = f.select :earliest_payment_offset, options_from_collection_for_select(@payment_offsets, 'to_i', 'to_s', f.object.earliest_payment_offset.to_i), class: "form-control"
+
+      %br
+
+      .form-group.label-floating
+        = f.label :latest_payment_offset, "Latest day automatic payments can be charged", class: "control-label"
+        = f.select :latest_payment_offset, options_from_collection_for_select(@payment_offsets, 'to_i', 'to_s', f.object.latest_payment_offset.to_i), class: "form-control"
+
+      %br
+
       .form-group.label-floating
         = f.label :locations, "Locations", class: "control-label", style: "padding-bottom: 20px;"
         = f.collection_check_boxes :location_ids, Location.all, :id, :name, class: "form-control" do |cb|
           = "#{cb.check_box} #{cb.text}"
           %br
+
       %br
+
       .form-group.label-floating
         = f.label :plans, "Plans - Click the link to edit the plan or remove it from this program", class: "control-label", style: "padding-bottom: 20px;"
         %ul

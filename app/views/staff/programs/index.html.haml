@@ -10,6 +10,7 @@
     %thead
       %th
       %th Name
+      %th Sign UP URL
       %th Start Date
       %th End Date
       %th Registration Opens
@@ -27,6 +28,7 @@
             = link_to staff_program_path(program), method: :delete, :data => { :confirm => 'Are you sure?' } do
               %i.material-icons delete_forever
           %td= program.name
+          %td= new_user_registration_url(program_id: program.id)
           %td= program.starts_at.stamp("March 4th, 2018")
           %td= program.ends_at.stamp("March 4th, 2018")
           %td= program.registration_opens.stamp("March 4th, 2018")

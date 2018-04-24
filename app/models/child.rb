@@ -95,6 +95,12 @@ class Child < ApplicationRecord
                   (a.starts_at <= b.ends_at && a.ends_at >= b.ends_at)      ||  # a contains b end (b contains a end)
                   (b.starts_at <= a.starts_at && b.ends_at >= a.ends_at)        # b completely contains a
 
+        # recurring plans are a special case - they can overlap others' dates, but not overlap the specific day of the week
+        # Example: Contract for M, W, F in Program from 4/1/2018 - 5/1/2018 could overlap a Drop-In on 4/17/2018, but since that is a Tuesday, it doesn't actually overlap because the contract is not on Tuesdays.
+        if overlap && (a.plan_type.recurring? || b.plan_type.recurring?)
+          overlap = (a.enrolled_days & b.enrolled_days).any?
+        end
+
         if overlap
           ignore << a.id
           ignore << b.id

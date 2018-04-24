@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180417200012) do
+ActiveRecord::Schema.define(version: 20180422000036) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20180417200012) do
     t.datetime "updated_at", null: false
     t.integer "location_id"
     t.bigint "program_id"
+    t.integer "payment_offset", default: 0
     t.index ["center_id"], name: "index_accounts_on_center_id"
     t.index ["program_id"], name: "index_accounts_on_program_id"
     t.index ["user_id"], name: "index_accounts_on_user_id"
@@ -193,6 +194,7 @@ ActiveRecord::Schema.define(version: 20180417200012) do
     t.float "amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "target_date"
     t.index ["enrollment_id"], name: "index_enrollment_transactions_on_enrollment_id"
     t.index ["my_transaction_id"], name: "index_enrollment_transactions_on_my_transaction_id"
   end
@@ -302,7 +304,6 @@ ActiveRecord::Schema.define(version: 20180417200012) do
 
   create_table "programs", force: :cascade do |t|
     t.bigint "center_id"
-    t.string "short_code"
     t.string "name"
     t.date "starts_at"
     t.date "ends_at"
@@ -312,6 +313,8 @@ ActiveRecord::Schema.define(version: 20180417200012) do
     t.date "registration_closes"
     t.float "registration_fee"
     t.float "change_fee"
+    t.integer "earliest_payment_offset", default: -15
+    t.integer "latest_payment_offset", default: 15
     t.index ["center_id"], name: "index_programs_on_center_id"
   end
 

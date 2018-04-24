@@ -41,8 +41,13 @@ class Transaction < ApplicationRecord
     transaction_type.present? && transaction_type.refund?
   end
 
-  def net_total
+  def adjusted_amount
     refund? ? amount * -1 : amount
+  end
+
+  def net_total
+    total_refund = refunds.inject(Money.new(0)){|sum, refund| sum + refund.amount}
+    amount - total_refund
   end
 
   private

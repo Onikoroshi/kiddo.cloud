@@ -12,7 +12,7 @@ class Program < ApplicationRecord
   money_column :registration_fee
   money_column :change_fee
 
-  validates :name, :starts_at, :ends_at, :registration_opens, :registration_closes, :short_code, :registration_fee, :change_fee, presence: true
+  validates :name, :starts_at, :ends_at, :registration_opens, :registration_closes, :registration_fee, :change_fee, presence: true
 
   scope :open_for_registration, -> { where("registration_opens <= ? AND registration_closes >= ?", Time.zone.today, Time.zone.today) }
   scope :in_session, -> { where("starts_at <= ? AND ends_at >= ?", Time.zone.today, Time.zone.today) }

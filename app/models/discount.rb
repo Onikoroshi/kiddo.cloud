@@ -6,6 +6,8 @@ class Discount < ApplicationRecord
 
   validates :plan, :amount, :month, presence: true
 
+  scope :by_month, ->(given_date) { given_date.respond_to?(:stamp) ? where(month: given_date.stamp("january")) : none }
+
   def to_s
     "#{amount.to_s} for #{month.text}"
   end

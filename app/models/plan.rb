@@ -27,6 +27,14 @@ class Plan < ApplicationRecord
     "#{plan_type.text} #{display_name}"
   end
 
+  def price_for_date(given_date)
+    net_price = self.price
+
+    net_price -= discounts.by_month(given_date).inject(Money.new(0)){ |sum, discount| sum + discount.amount }
+
+    net_price
+  end
+
   def display_days_per_week
     if days_per_week == 0
       "Any"

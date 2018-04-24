@@ -121,7 +121,7 @@ class EnrollmentChange < ApplicationRecord
   def calculated_amount
     return Money.new(0) unless data.is_a?(Hash)
     if data["_destroy"].present?
-      enrollment.plan.price * -1 # this will be the refund amount
+      enrollment.last_paid_amount * -1 # this will be the refund amount
     elsif data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
       old_plan = enrollment.plan
       new_plan = Plan.find_by(id: data["plan_id"])

@@ -5,6 +5,7 @@ class Staff::ProgramsController < ApplicationController
   before_action :build_single, only: [:new, :create]
   before_action :find_single, only: [:show, :edit, :update, :destroy]
   before_action :authorize_single, except: :index
+  before_action :build_payment_offsets, only: [:new, :edit]
 
   def index
     set_collection
@@ -18,6 +19,7 @@ class Staff::ProgramsController < ApplicationController
     if @program.save
       redirect_to staff_programs_path, notice: "Program successfully created."
     else
+      build_payment_offsets
       render "new"
     end
   end
@@ -29,6 +31,7 @@ class Staff::ProgramsController < ApplicationController
     if @program.update_attributes(permitted_params)
       redirect_to staff_programs_path, notice: "Program successfully updated."
     else
+      build_payment_offsets
       render "edit"
     end
   end
@@ -64,7 +67,11 @@ class Staff::ProgramsController < ApplicationController
     @program = Program.find(params[:id])
   end
 
+  def build_payment_offsets
+    @payment_offsets = PaymentOffsetPresenter.build(-15, 14)
+  end
+
   def permitted_params
-    @permitted_params ||= params[:program].present? ? params.require(:program).permit(:center_id, :short_code, :name, :starts_at, :ends_at, :registration_opens, :registration_closes, :registration_fee, :change_fee, location_ids: [], plan_ids: []) : {}
+    @permitted_params ||= params[:program].present? ? params.require(:program).permit(:center_id, :name, :starts_at, :ends_at, :registration_opens, :registration_closes, :registration_fee, :change_fee, :earliest_payment_offset, :latest_payment_offset, location_ids: [], plan_ids: []) : {}
   end
 end

@@ -15,20 +15,10 @@ class Account::Manage::EnrollmentsController < ApplicationController
   end
 
   def create
-    if @account.update_attributes(enrollment_params)
-      success = true
-
-      @account.children.each do |child|
-        overlapping = child.overlapping_enrollment_dates(child.enrollments.by_program(@program))
-        if overlapping.any?
-          success = false
-          overlapping.each do |message|
-            @account.errors.add(:base, message)
-          end
-        end
-      end
-
-      if success
+    @account.attributes = enrollment_params
+    if @account.valid?
+      unless overlapping_enrollments?
+        @account.save
         redirect_to @account.signup_complete? ? (@account.enrollments.unpaid.any? ? new_account_dashboard_payment_path(@account) : account_dashboard_path(@account)) : account_step_path(@account, :plan), notice: "enrollment successful!"
       else
         render "new"
@@ -53,24 +43,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
     # don't apply any extra scopes to associations, or these changes will be lost
     @account.attributes = enrollment_params
     if @account.valid?
-      success = true
-
-      @account.children.each do |child|
-        target_enrollments = []
-        # do NOT add any scopes to this. It will lose the attributes assigned above
-        child.enrollments.each do |enrollment|
-          target_enrollments << enrollment if enrollment.alive? && enrollment.program == @program
-        end
-        overlapping = child.overlapping_enrollment_dates(target_enrollments)
-        if overlapping.any?
-          success = false
-          overlapping.each do |message|
-            @account.errors.add(:base, message)
-          end
-        end
-      end
-
-      if success
+      unless overlapping_enrollments?
         @account.children.each do |child|
           ap "looking at child #{child.id}"
           # do NOT add any scopes to this. It will lose the attributes assigned above
@@ -100,7 +73,6 @@ class Account::Manage::EnrollmentsController < ApplicationController
                 enrollment_change.update_attributes(data: change_hash)
               end
             end
-
           end
         end
 
@@ -115,6 +87,27 @@ class Account::Manage::EnrollmentsController < ApplicationController
 
   private
 
+  def overlapping_enrollments?
+    overlaps = false
+
+    @account.children.each do |child|
+      target_enrollments = []
+      # do NOT add any scopes to this. It will lose the attributes assigned
+      child.enrollments.each do |enrollment|
+        target_enrollments << enrollment if enrollment.alive? && enrollment.program == @program
+      end
+      overlapping = child.overlapping_enrollment_dates(target_enrollments)
+      if overlapping.any?
+        overlaps = true
+        overlapping.each do |message|
+          @account.errors.add(:base, message)
+        end
+      end
+    end
+
+    overlaps
+  end
+
   def fetch_account
     @account = Account.find(params[:account_id])
   end
@@ -124,14 +117,17 @@ class Account::Manage::EnrollmentsController < ApplicationController
   end
 
   def build_missing_enrollments
-    # @account.children.each do |child|
-    #   next if child.enrollments.by_program_and_plan_type(@program, @plan_type).any?
-    #
-    #   child.enrollments.build(program: @program, plan: Plan.by_plan_type(@plan_type).first)
-    # end
+    # only recurring types need pre-built objects for the form to work
+    return if @plan_type.blank? || !@plan_type.recurring?
+
+    @account.children.each do |child|
+      next if child.enrollments.by_program_and_plan_type(@program, @plan_type).any?
+
+      child.enrollments.build(program: @program, plan: Plan.by_plan_type(@plan_type).first)
+    end
   end
 
   def enrollment_params
-    params.require(:account).permit(children_attributes: [:id, enrollments_attributes: [:id, :plan_id, :child_id, :location_id, :starts_at, :ends_at, :monday, :tuesday, :wednesday, :thursday, :friday, :_destroy]])
+    params.require(:account).permit(:payment_offset, children_attributes: [:id, enrollments_attributes: [:id, :plan_id, :child_id, :location_id, :starts_at, :ends_at, :monday, :tuesday, :wednesday, :thursday, :friday, :_destroy]])
   end
 end
