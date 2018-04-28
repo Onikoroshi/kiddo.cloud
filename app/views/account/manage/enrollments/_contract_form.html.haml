@@ -1,0 +1,62 @@
+= form_for(@account, url: account_dashboard_enrollments_path, method: defined?(target_method) ? target_method : "POST") do |f|
+  = hidden_field_tag :plan_type, @plan_type.to_s
+
+  %h4.text-center Payments will be automatically charged to your card once a month. To make this process as smooth and convenient as possible, we can offset that date by a certain amount. Please choose your ideal offset below.
+
+  .text-center= f.select :payment_offset, options_from_collection_for_select(PaymentOffsetPresenter.build(@program.earliest_payment_offset, @program.latest_payment_offset), 'to_i', 'to_s', f.object.payment_offset.to_i)
+
+  %br
+
+  = render "application/form_errors", object: @account
+
+  = f.fields_for :children do |children_fields|
+    .plan-box
+      .row
+        .col-sm-12
+          .dropin-name{style: "padding-left: 20px;"}
+            = children_fields.object.full_name
+
+      .row
+        = children_fields.fields_for :enrollments do |enrollment_fields|
+          - if enrollment_fields.object.alive? && enrollment_fields.object.program == @program && enrollment_fields.object.plan_type.to_s == @plan_type.to_s && (defined?(target_method) || enrollment_fields.object.unpaid?)
+            = enrollment_fields.hidden_field :plan_id, value: enrollment_fields.object.plan_id
+            = enrollment_fields.hidden_field :child_id, value: enrollment_fields.object.child_id
+
+            = enrollment_fields.hidden_field :starts_at, value: [(enrollment_fields.object.starts_at || @program.starts_at).to_date, (enrollment_fields.object.created_at || Time.zone.today).to_date].max
+            = enrollment_fields.hidden_field :ends_at, value: enrollment_fields.object.ends_at || @program.ends_at
+
+            .col-sm-9
+              .checkbox
+                %label
+                  = enrollment_fields.check_box :monday, checked: enrollment_fields.object.monday
+                  = enrollment_fields.label :monday
+
+              .checkbox
+                %label
+                  = enrollment_fields.check_box :tuesday, checked: enrollment_fields.object.tuesday
+                  = enrollment_fields.label :tuesday
+
+              .checkbox
+                %label
+                  = enrollment_fields.check_box :wednesday, checked: enrollment_fields.object.wednesday
+                  = enrollment_fields.label :wednesday
+
+              .checkbox
+                %label
+                  = enrollment_fields.check_box :thursday, checked: enrollment_fields.object.thursday
+                  = enrollment_fields.label :thursday
+
+              .checkbox
+                %label
+                  = enrollment_fields.check_box :friday, checked: enrollment_fields.object.friday
+                  = enrollment_fields.label :friday
+
+            .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px;"}
+              .col-xs-3{style: "padding-left: 0px !important"}
+                = f.label :location_id, "At"
+              .col-xs-9{style: "padding-left: 0px !important"}
+                = enrollment_fields.select :location_id, options_from_collection_for_select(@program.locations, 'id', 'name', enrollment_fields.object.location_id)
+            .cleaner
+
+  = link_to "Cancel", @account.signup_complete? ? (defined?(target_method) ? edit_account_dashboard_enrollments_path(@account) : new_account_dashboard_enrollment_path(@account)) : account_step_path(@account, :plan), class: "btn"
+  = f.submit "Submit", class: "btn btn-info pull-right"

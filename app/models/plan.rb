@@ -38,8 +38,10 @@ class Plan < ApplicationRecord
   end
 
   def display_days_per_week
-    if days_per_week == 0
+    if days_per_week < 0
       "Any"
+    elsif days_per_week == 0
+      "None"
     elsif days_per_week == 5
       "All"
     else

@@ -18,6 +18,12 @@ class PlanType::Contract < PlanType
   end
 end
 
+class PlanType::SiblingClub < PlanType
+  def recurring?
+    true
+  end
+end
+
 class PlanType::Weekly < PlanType
 end
 

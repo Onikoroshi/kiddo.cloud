@@ -125,6 +125,10 @@ class Enrollment < ApplicationRecord
     end
   end
 
+  def resurrect!
+    update_attribute(:dead, false)
+  end
+
   def payment_plan_hash
     info = {}
 
@@ -249,6 +253,11 @@ class Enrollment < ApplicationRecord
     else
       target_date = next_target_date
       payment_date = next_payment_date
+
+      # create a blank transaction for other changes to refer back to
+      if payment_date >= Time.zone.today
+        EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: Money.new(0), target_date: self.starts_at, description_data: {"description" => self.to_short, "start_date" => self.starts_at, "stop_date" => self.ends_at})
+      end
 
       while target_date <= program.ends_at && payment_date <= Time.zone.today
         stop_date = target_date.end_of_month
@@ -391,8 +400,11 @@ class Enrollment < ApplicationRecord
     target_days = enrolled_days
     num_days = target_days.count
 
+    return if num_days == 0
+
     # leave the current plan if it is "allowed"
-    return if self.plan.days_per_week.to_i == num_days && (target_days & self.plan.allowed_days).any?
+    # -1 plan days_per_week means that they want to allow any number of days.
+    return if [-1, num_days].include?(self.plan.days_per_week.to_i) && (target_days & self.plan.allowed_days).any?
 
     target_program = plan.program
     target_plan_type = plan.plan_type
@@ -401,7 +413,7 @@ class Enrollment < ApplicationRecord
     success = false
 
     possible_plans.find_each do |possible_plan|
-      if possible_plan.days_per_week.to_i == num_days && (target_days & possible_plan.allowed_days).any?
+      if [-1, num_days].include?(possible_plan.days_per_week.to_i) && (target_days & possible_plan.allowed_days).any?
         self.plan_id = possible_plan.id
         success = true
         break

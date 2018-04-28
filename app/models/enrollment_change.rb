@@ -69,6 +69,16 @@ class EnrollmentChange < ApplicationRecord
       existing_enrollment_params = params["children_attributes"][child_index]["enrollments_attributes"][enrollment_index]
       target_enrollment_params = existing_enrollment_params.merge!(enrollment_change.data)
 
+      if enrollment_change.data.keys.include?("_destroy")
+        target_enrollment_params.merge!({
+          "monday" => false,
+          "tuesday" => false,
+          "wednesday" => false,
+          "thursday" => false,
+          "friday" => false,
+        })
+      end
+
       params["children_attributes"][child_index]["enrollments_attributes"][enrollment_index] = target_enrollment_params
     end
 
@@ -87,6 +97,7 @@ class EnrollmentChange < ApplicationRecord
       enrollment.kill!
     else
       enrollment.update_attributes!(data)
+      enrollment.resurrect!
     end
 
     update_attribute(:applied, true)
@@ -141,10 +152,12 @@ class EnrollmentChange < ApplicationRecord
   end
 
   def calculated_amount
+    return Money.new(0) if enrollment.plan_type.recurring? # don't refund recurring plans
     return Money.new(0) unless data.is_a?(Hash)
+
     if data["_destroy"].present?
       enrollment.last_paid_amount * -1 # this will be the refund amount
-    elsif data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
+    elsif !enrollment.plan.recurring? && data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
       old_plan = enrollment.plan
       new_plan = Plan.find_by(id: data["plan_id"])
 

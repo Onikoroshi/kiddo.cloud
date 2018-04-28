@@ -12,27 +12,42 @@ class Account::Manage::EnrollmentsController < ApplicationController
   end
 
   def new
+    if @plan_type.present?
+      changed_params = @account.enrollment_changes.pending.build_params
+      @account.attributes = changed_params
+    end
   end
 
   def create
     # apply any enrollment-independent changes
     @account.update_attributes(account_params)
+
+    # assign attributes without saving to the database.
+    # don't apply any extra scopes to associations, or these changes will be lost
+
+    # first, apply any other changes that are pending
+    unapplied_change_params = @account.enrollment_changes.pending.build_params
+    @account.attributes = unapplied_change_params
+
+    # now apply the ones we just chose
     @account.attributes = enrollment_params
     if @account.valid?
       unless overlapping_enrollments?
         @account.save
         redirect_to @account.signup_complete? ? (@account.enrollments.unpaid.any? ? new_account_dashboard_payment_path(@account) : account_dashboard_path(@account)) : account_step_path(@account, :plan), notice: "enrollment successful!"
       else
+        build_missing_enrollments
         render "new"
       end
     else
+      build_missing_enrollments
       render "new"
     end
   end
 
   def edit
     if @plan_type.present?
-      changed_params = @account.enrollment_changes.build_params
+      changed_params = @account.enrollment_changes.pending.build_params
       @account.attributes = changed_params
     end
   end
@@ -45,6 +60,12 @@ class Account::Manage::EnrollmentsController < ApplicationController
 
     # assign attributes without saving to the database.
     # don't apply any extra scopes to associations, or these changes will be lost
+
+    # first, apply any other changes that are pending
+    unapplied_change_params = @account.enrollment_changes.pending.build_params
+    @account.attributes = unapplied_change_params
+
+    # now apply the ones we just chose
     @account.attributes = enrollment_params
     if @account.valid?
       unless overlapping_enrollments?
@@ -59,13 +80,13 @@ class Account::Manage::EnrollmentsController < ApplicationController
               enrollment.save
             elsif enrollment.unpaid? && enrollment.transactions.none? # we can have an unpaid recurring enrollment that still needs changed
               if enrollment._destroy
-                ap "destroying unpaid"
+                ap "destroying unpaid #{enrollment.id}"
                 enrollment.destroy
               elsif enrollment.changed?
-                ap "saving unpaid"
+                ap "saving unpaid #{enrollment.id}"
                 enrollment.save
               else
-                ap "unpaid didn't change"
+                ap "unpaid #{enrollment.id} didn't change"
               end
 
               EnrollmentChange.where(account: @account, enrollment: enrollment, applied: false).destroy_all
@@ -85,7 +106,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
                 enrollment_change.update_attributes(data: change_hash)
               end
             elsif !enrollment.changed?
-              ap "not changed, destroying extraneous changes"
+              ap "#{enrollment.plan_type} #{enrollment.id} not changed, destroying extraneous changes"
               EnrollmentChange.where(account: @account, enrollment: enrollment, applied: false).destroy_all
             else
               ap "nothing"
@@ -95,9 +116,11 @@ class Account::Manage::EnrollmentsController < ApplicationController
 
         redirect_to edit_account_dashboard_enrollments_path(@account), notice: "Change has been initialized. Don't forget to finalize it!"
       else
+        build_missing_enrollments
         render "edit"
       end
     else
+      build_missing_enrollments
       render "edit"
     end
   end
@@ -138,14 +161,41 @@ class Account::Manage::EnrollmentsController < ApplicationController
     return if @plan_type.blank? || !@plan_type.recurring?
 
     @account.children.each do |child|
-      next if child.enrollments.by_program_and_plan_type(@program, @plan_type).any?
+      found = false
+      # step through without scopes, in case we have unapplied changes waiting
+      child.enrollments.each do |enrollment|
+        if enrollment.alive? && enrollment.program == @program && enrollment.plan_type == @plan_type
+          found = true
+          break;
+        end
+      end
 
-      child.enrollments.build(program: @program, plan: Plan.by_plan_type(@plan_type).first)
+      child.enrollments.build(program: @program, plan: Plan.by_plan_type(@plan_type).first) unless found
     end
   end
 
   def enrollment_params
-    params.require(:account).permit(children_attributes: [:id, enrollments_attributes: [:id, :plan_id, :child_id, :location_id, :starts_at, :ends_at, :monday, :tuesday, :wednesday, :thursday, :friday, :_destroy]])
+    sanitized_params = params
+
+    if sanitized_params["account"]["children_attributes"].present?
+      sanitized_params["account"]["children_attributes"].each do |child_key, enrollment_attrs|
+        if enrollment_attrs.present? && enrollment_attrs["enrollments_attributes"].present?
+          enrollment_attrs["enrollments_attributes"].each do |enrollment_key, values|
+            any_days = values.select{|key, value| ["monday", "tuesday", "wednesday", "thursday", "friday"].include?(key.to_s)}.values.reject{|v| v == "0"}.any?
+
+            unless any_days
+              if values["id"].present?
+                sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] = "true"
+              else
+                sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"].delete(enrollment_key)
+              end
+            end
+          end
+        end
+      end
+    end
+
+    sanitized_params.require(:account).permit(children_attributes: [:id, enrollments_attributes: [:id, :plan_id, :child_id, :location_id, :starts_at, :ends_at, :monday, :tuesday, :wednesday, :thursday, :friday, :_destroy]])
   end
 
   def account_params
