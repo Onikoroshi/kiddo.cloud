@@ -5,7 +5,7 @@ namespace :launch do
 
   task :initialize_enrollment_transaction_descriptions => :environment do
     EnrollmentTransaction.find_each do |et|
-      ap "processing enrollment transaction #{et} for enrollment #{et.enrollment.to_short}"
+      ap "processing enrollment transaction #{et.id} for enrollment #{et.enrollment.to_short}"
       et.update_attributes(description_data: {"description" => et.enrollment.to_short, "start_date" => et.enrollment.starts_at, "stop_date" => et.enrollment.ends_at})
     end
   end

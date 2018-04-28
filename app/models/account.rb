@@ -3,17 +3,15 @@ class Account < ApplicationRecord
   belongs_to :user
   belongs_to :center
 
+  # belongs_to :location # not used anymore
+  belongs_to :program # only used during the enrollment process
+
   has_many :parents, dependent: :destroy
   has_one :primary_parent, -> { where primary: true }, class_name: "Parent"
   has_one :secondary_parent, -> { where secondary: true }, class_name: "Parent"
   has_one :subscription, dependent: :destroy
   has_many :transactions, dependent: :destroy
   has_many :late_checkin_notifications, dependent: :destroy
-
-  validates :location_id, presence: true, if: :validate_location?
-
-  belongs_to :location
-  belongs_to :program # only used during the enrollment process
 
   has_many :children, dependent: :destroy
   has_many :enrollments, through: :children
@@ -25,6 +23,10 @@ class Account < ApplicationRecord
   delegate :name, to: :center, prefix: :center
 
   accepts_nested_attributes_for :children, allow_destroy: true
+
+  before_validation :force_send_agreements
+
+  validates :location_id, presence: true, if: :validate_location?
 
   after_save :update_enrollment_payment_dates
 
@@ -116,6 +118,10 @@ class Account < ApplicationRecord
   end
 
   private
+
+  def force_send_agreements
+    self.mail_agreements = true
+  end
 
   def update_enrollment_payment_dates
     if payment_offset_changed?
