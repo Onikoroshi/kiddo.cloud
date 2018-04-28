@@ -5,7 +5,8 @@ namespace :launch do
 
   task :initialize_enrollment_transaction_descriptions => :environment do
     EnrollmentTransaction.find_each do |et|
-      et.update_attribute(:description, et.enrollment.to_short)
+      ap "processing enrollment transaction #{et} for enrollment #{et.enrollment.to_short}"
+      et.update_attributes(description_data: {"description" => et.enrollment.to_short, "start_date" => et.enrollment.starts_at, "stop_date" => et.enrollment.ends_at})
     end
   end
 
@@ -14,7 +15,7 @@ namespace :launch do
       transaction.itemizations.keys.each do |key|
         key_string = key.to_s
         if key_string == "one_time_signup_fee" # original
-          ap "#{key_string} is an original change fee"
+          ap "#{key_string} is an original signup fee"
           summer_program = Program.first
           transaction.itemizations["signup_fee_#{summer_program.id}"] = transaction.itemizations[key]
           transaction.itemizations.delete(key)
