@@ -34,8 +34,8 @@
               = enrollment_fields.hidden_field :plan_id, value: enrollment_fields.object.plan_id
               = enrollment_fields.hidden_field :child_id, value: enrollment_fields.object.child_id
 
-              = enrollment_fields.hidden_field :starts_at, value: [@program.starts_at, Time.zone.today].max
-              = enrollment_fields.hidden_field :ends_at, value: @program.ends_at
+              = enrollment_fields.hidden_field :starts_at, value: [(enrollment_fields.object.starts_at || @program.starts_at).to_date, (enrollment_fields.object.created_at || Time.zone.today).to_date].max
+              = enrollment_fields.hidden_field :ends_at, value: enrollment_fields.object.ends_at || @program.ends_at
               .col-sm-9
                 .checkbox
                   %label
@@ -66,7 +66,7 @@
                 .col-xs-3{style: "padding-left: 0px !important"}
                   = f.label :location_id, "At"
                 .col-xs-9{style: "padding-left: 0px !important"}
-                  = enrollment_fields.select :location_id, options_from_collection_for_select(@program.locations, 'id', 'name', enrollment_fields.object.location.id)
+                  = enrollment_fields.select :location_id, options_from_collection_for_select(@program.locations, 'id', 'name', enrollment_fields.object.location_id)
               .cleaner
 
     = link_to "Cancel", @account.signup_complete? ? (defined?(target_method) ? edit_account_dashboard_enrollments_path(@account) : new_account_dashboard_enrollment_path(@account)) : account_step_path(@account, :plan), class: "btn"

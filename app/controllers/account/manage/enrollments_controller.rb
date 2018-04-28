@@ -15,6 +15,8 @@ class Account::Manage::EnrollmentsController < ApplicationController
   end
 
   def create
+    # apply any enrollment-independent changes
+    @account.update_attributes(account_params)
     @account.attributes = enrollment_params
     if @account.valid?
       unless overlapping_enrollments?
@@ -31,13 +33,15 @@ class Account::Manage::EnrollmentsController < ApplicationController
   def edit
     if @plan_type.present?
       changed_params = @account.enrollment_changes.build_params
-      ap changed_params
       @account.attributes = changed_params
     end
   end
 
   def update
     redirect_to new_account_dashboard_enrollment_path(@account, plan_type: @plan_type.to_s) unless @account.signup_complete?
+
+    # apply any enrollment-independent changes
+    @account.update_attributes(account_params)
 
     # assign attributes without saving to the database.
     # don't apply any extra scopes to associations, or these changes will be lost
@@ -50,13 +54,21 @@ class Account::Manage::EnrollmentsController < ApplicationController
           child.enrollments.each do |enrollment|
             next unless enrollment.alive?
 
-            ap "enrollment destroy: #{enrollment._destroy}"
             if enrollment.id.blank?
               ap "creating"
               enrollment.save
-            elsif enrollment.unpaid?
-              ap "applying to unpaid"
-              enrollment.save
+            elsif enrollment.unpaid? && enrollment.transactions.none? # we can have an unpaid recurring enrollment that still needs changed
+              if enrollment._destroy
+                ap "destroying unpaid"
+                enrollment.destroy
+              elsif enrollment.changed?
+                ap "saving unpaid"
+                enrollment.save
+              else
+                ap "unpaid didn't change"
+              end
+
+              EnrollmentChange.where(account: @account, enrollment: enrollment, applied: false).destroy_all
             elsif enrollment._destroy || enrollment.changed?
               enrollment_change = EnrollmentChange.where(account: @account, enrollment: enrollment, applied: false).first_or_create!
               enrollment_change.update_attributes(requires_fee: true, requires_refund: true)
@@ -72,6 +84,11 @@ class Account::Manage::EnrollmentsController < ApplicationController
                 end
                 enrollment_change.update_attributes(data: change_hash)
               end
+            elsif !enrollment.changed?
+              ap "not changed, destroying extraneous changes"
+              EnrollmentChange.where(account: @account, enrollment: enrollment, applied: false).destroy_all
+            else
+              ap "nothing"
             end
           end
         end
@@ -128,6 +145,10 @@ class Account::Manage::EnrollmentsController < ApplicationController
   end
 
   def enrollment_params
-    params.require(:account).permit(:payment_offset, children_attributes: [:id, enrollments_attributes: [:id, :plan_id, :child_id, :location_id, :starts_at, :ends_at, :monday, :tuesday, :wednesday, :thursday, :friday, :_destroy]])
+    params.require(:account).permit(children_attributes: [:id, enrollments_attributes: [:id, :plan_id, :child_id, :location_id, :starts_at, :ends_at, :monday, :tuesday, :wednesday, :thursday, :friday, :_destroy]])
+  end
+
+  def account_params
+    params.require(:account).permit(:payment_offset)
   end
 end

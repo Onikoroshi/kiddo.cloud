@@ -26,6 +26,8 @@ class Account < ApplicationRecord
 
   accepts_nested_attributes_for :children, allow_destroy: true
 
+  after_save :update_enrollment_payment_dates
+
   scope :by_program, ->(given_program) { given_program.present? ? joins(enrollments: :program).where("programs.id = ?", given_program.id).distinct : all }
   scope :by_location, ->(given_location) { given_location.present? ? joins(:enrollments).where("enrollments.location_id = ?", given_location.id).distinct : all }
 
@@ -111,5 +113,14 @@ class Account < ApplicationRecord
 
   def validate_location?
     validate_location.present? && validate_location == true
+  end
+
+  private
+
+  def update_enrollment_payment_dates
+    if payment_offset_changed?
+      consider_enrollments = enrollments.alive.active.recurring
+      consider_enrollments.map{|e| e.set_next_target_and_payment_date!}
+    end
   end
 end

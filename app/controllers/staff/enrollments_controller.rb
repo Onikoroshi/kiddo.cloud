@@ -38,7 +38,7 @@ class Staff::EnrollmentsController < ApplicationController
 
       calculator = ChildEnrollment::EnrollmentPriceCalculator.new(account)
       calculator.calculate
-      change_fee = calculator.itemizations.select{|key, value| key.to_s.include?("Change Fee for #{program.name}")}.values.inject(Money.new(0)){|sum, amount| sum + amount}
+      change_fee = calculator.itemizations_by_program(program).select{|key, value| key.to_s.split("_fee_")[0] == "change"}.values.inject(Money.new(0)){|sum, amount| sum + amount}
       results = {amount: change_fee.to_s, total_charge_amount: calculator.total.to_s, total_refund_amount: calculator.refund_total}
 
       format.js {

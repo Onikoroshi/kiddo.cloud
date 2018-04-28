@@ -18,6 +18,8 @@ class Plan < ApplicationRecord
 
   scope :by_plan_type, ->(plan_type) { where(plan_type: plan_type.to_s) }
   scope :by_program, ->(program) { program.present? ? where(program: program) : all }
+  scope :deduceable, -> { where(deduce: true) }
+  scope :choosable, -> { where(deduce: false) }
 
   def self.select_options
     all.map{|plan| [plan.display_name, plan.id]}
@@ -75,6 +77,14 @@ class Plan < ApplicationRecord
     return false if transactions.any?
 
     true
+  end
+
+  def deduceable?
+    deduce?
+  end
+
+  def choosable?
+    !deduceable?
   end
 
   private

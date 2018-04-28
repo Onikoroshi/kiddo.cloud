@@ -19,6 +19,15 @@
         = f.text_field :price, class: "form-control"
 
       .form-group.label-floating
+        = f.label :deduce, "Should the system deduce this plan? Choose 'Yes' if the system should figure out which plan to use based on the days the parent chooses. Choose 'No' to display this plan as a choice the parent can make."
+        = f.label :deduce, "Yes", :value => "true"
+        = f.radio_button :deduce, true, checked: f.object.deduce?
+        = f.label :deduce, "No", :value => "false"
+        = f.radio_button :deduce, false, checked: !f.object.deduce?
+
+      %br
+
+      .form-group.label-floating
         = f.label :days_per_week, "Number of Days Per Week children will attend (1 for Drop In days)", class: "control-label"
         = f.text_field :days_per_week, class: "form-control"
 

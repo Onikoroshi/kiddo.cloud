@@ -72,11 +72,7 @@ class Account::Manage::PaymentsController < ApplicationController
     )
 
     calculator.enrollments.each do |enrollment|
-      amount_to_pay = enrollment.amount_due_today
-      if amount_to_pay > Money.new(0)
-        EnrollmentTransaction.create!(enrollment_id: enrollment.id, my_transaction_id: transaction.id, amount: amount_to_pay)
-      end
-      enrollment.update_attribute(:paid, true)
+      enrollment.craft_enrollment_transactions(transaction)
     end
 
     calculator.enrollment_changes.generating_charge.each do |enrollment_change|

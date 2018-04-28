@@ -16,12 +16,15 @@
 
     .col-sm-6
       .field
-        = f.label :plan_id, "for the"
-        = f.select :plan_id, @program.plans.by_plan_type(@plan_type).select_options
-        %br
-        %br
+        - if @program.plans.by_plan_type(@plan_type).choosable.any?
+          = f.label :plan_id, "for the"
+          = f.select :plan_id, @program.plans.by_plan_type(@plan_type).choosable.select_options
+          %br
+          %br
+        - else
+          = f.hidden_field :plan_id, value: f.object.plan_id || @program.plans.by_plan_type(@plan_type).first.id
         = f.label :location, "at"
-        = f.select :location_id, options_from_collection_for_select(@program.locations, 'id', 'name', f.object.location)
+        = f.select :location_id, options_from_collection_for_select(@program.locations, 'id', 'name', f.object.location_id)
         %br
         = link_to_remove_association "Remove Drop In Day", f
   %hr

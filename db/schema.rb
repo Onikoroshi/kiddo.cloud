@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180422000036) do
+ActiveRecord::Schema.define(version: 20180426033812) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -195,6 +195,8 @@ ActiveRecord::Schema.define(version: 20180422000036) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "target_date"
+    t.hstore "description_data"
+    t.index ["description_data"], name: "index_enrollment_transactions_on_description_data", using: :gin
     t.index ["enrollment_id"], name: "index_enrollment_transactions_on_enrollment_id"
     t.index ["my_transaction_id"], name: "index_enrollment_transactions_on_my_transaction_id"
   end
@@ -217,6 +219,8 @@ ActiveRecord::Schema.define(version: 20180422000036) do
     t.date "starts_at"
     t.date "ends_at"
     t.boolean "dead", default: false
+    t.date "next_target_date"
+    t.date "next_payment_date"
     t.index ["child_id"], name: "index_enrollments_on_child_id"
     t.index ["location_id"], name: "index_enrollments_on_location_id"
     t.index ["plan_id"], name: "index_enrollments_on_plan_id"
@@ -290,6 +294,7 @@ ActiveRecord::Schema.define(version: 20180422000036) do
     t.boolean "friday", default: false
     t.boolean "saturday", default: false
     t.boolean "sunday", default: false
+    t.boolean "deduce", default: false
     t.index ["program_id"], name: "index_plans_on_program_id"
   end
 

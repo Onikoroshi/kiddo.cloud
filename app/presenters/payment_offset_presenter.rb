@@ -21,8 +21,10 @@ class PaymentOffsetPresenter
   end
 
   def to_s
-    if @number < 0
-      "#{pluralize(@number.abs, "Day")} before the end of the previous month"
+    if @number < -1
+      "#{pluralize((@number + 1).abs, "Day")} before the end of the previous month"
+    elsif @number == -1
+      "Last day of the previous month"
     else
       "#{(@number + 1).ordinalize} of the month"
     end

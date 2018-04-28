@@ -63,17 +63,14 @@ class Account::CheckoutsController < ApplicationController
           transaction_type: TransactionType[:one_time],
           month: Time.zone.now.month,
           year: Time.zone.now.year,
+          gateway_id: charge.id,
           amount: amount,
           paid: true,
           itemizations: itemizations
         )
 
         enrollments.each do |enrollment|
-          amount_to_pay = enrollment.amount_due_today
-          if amount_to_pay > Money.new(0)
-            EnrollmentTransaction.create(enrollment_id: enrollment.id, my_transaction_id: transaction.id, amount: amount_to_pay)
-          end
-          enrollment.update_attribute(:paid, true)
+          enrollment.craft_enrollment_transactions(transaction)
         end
 
         @account.finalize_signup

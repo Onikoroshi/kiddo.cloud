@@ -1,4 +1,8 @@
 class PlanType < ClassyEnum::Base
+  def self.recurring
+    PlanType.select{|pt| pt.recurring?}
+  end
+
   def recurring?
     false
   end
@@ -8,7 +12,7 @@ class PlanType::Contract < PlanType
   def text
     "School Year Contract"
   end
-  
+
   def recurring?
     true
   end

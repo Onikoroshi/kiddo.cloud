@@ -25,7 +25,6 @@ class AccountForm
     :emergency_contact_phone,
 
     :waiver_agreement,
-    :mail_agreements,
     :step
   )
 
@@ -67,7 +66,6 @@ class AccountForm
 
   def sign_waivers
     account.waiver_agreement = waiver_agreement.present? && waiver_agreement == "1"
-    account.mail_agreements = mail_agreements.present? && mail_agreements == "1"
   end
 
   def save_parent

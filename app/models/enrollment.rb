@@ -9,7 +9,9 @@ class Enrollment < ApplicationRecord
 
   has_many :enrollment_changes, dependent: :destroy
 
-  before_validation :deduce_plan_for_recurring
+  before_validation :deduce_plan
+
+  after_create :set_next_target_and_payment_date!
 
   validates :starts_at, :ends_at, presence: true
   validate :validate_dates
@@ -18,16 +20,20 @@ class Enrollment < ApplicationRecord
   scope :alive, -> { where.not(dead: true) }
   scope :dead, -> { where(dead: true) }
 
-  scope :by_program, ->(program) { joins(plan: :program).where("programs.id = ?", program.present? ? program.id : nil) }
+  scope :by_program, ->(program) { program.present? ? joins(:program).where("programs.id = ?", program.id) : none }
   scope :by_program_and_plan_type, ->(program, plan_type) { joins(:program).where("plans.plan_type = ? AND programs.id = ?", plan_type.to_s, program.id) }
+  scope :by_program_and_location, ->(program, location) { (program.present? && location.present?) ? joins(:program).joins(:location).where("programs.id = ? AND locations.id = ?", program.id, location.id) : none }
   scope :by_child, ->(child) { child.present? ? where(child_id: child.id) : none }
   scope :by_location, ->(location) { location.present? ? where(location_id: location.id) : all }
-  scope :active, -> { joins(:program).where("programs.ends_at >= ?", Time.zone.today).distinct }
+  scope :active, -> { where("enrollments.ends_at >= ?", Time.zone.today).distinct }
   scope :paid, -> { where(paid: true) }
+  scope :ever_paid, -> { joins(:transactions).where("transactions.paid IS TRUE").distinct }
   scope :unpaid, -> { where.not(paid: true) }
+  scope :never_paid, -> { includes(:transactions).where("transactions.paid IS FALSE OR transactions.id IS NULL").references(:transactions).distinct }
   scope :with_changes, -> { joins(:enrollment_changes) }
   scope :without_changes, -> { includes(:enrollment_changes).where(enrollment_changes: {id: nil}) }
   scope :for_date, ->(date) { date.present? ? where("enrollments.starts_at <= ? AND enrollments.ends_at >= ?", date, date) : all }
+  scope :recurring, -> { joins(:plan).where(plans: {plan_type: PlanType.recurring.map(&:to_s)}).distinct }
 
   def self.total_amount_due_today
     self.all.inject(Money.new(0)){ |sum, enrollment| sum + Money.new(enrollment.amount_due_today) }
@@ -35,7 +41,7 @@ class Enrollment < ApplicationRecord
 
   # get a unique list of programs associated with a set of enrollments
   def self.programs
-    Program.where(id: self.joins(plan: :program).pluck("programs.id").uniq)
+    Program.where(id: self.joins(:program).pluck("programs.id").uniq)
   end
 
   def self.active_blurbs(child)
@@ -112,58 +118,119 @@ class Enrollment < ApplicationRecord
   end
 
   def kill!
-    update_attribute(:dead, true)
+    if unpaid?
+      destroy
+    else
+      update_attribute(:dead, true)
+    end
   end
 
   def payment_plan_hash
     info = {}
 
     if plan_type.recurring?
-      target_date = self.starts_at.beginning_of_month
-      month_name = target_date.stamp("February")
+      target_date = self.starts_at
+      month_name = target_date.stamp("February, 2019")
 
       while target_date < self.ends_at
-        enrollment_transaction = transaction_for_target_date(target_date)
+        info[month_name] = {} # let us pass on more complex information
+
+        enrollment_transaction = transaction_covers_date(target_date)
         if enrollment_transaction.present?
-          info[month_name] = "Paid #{enrollment_transaction.amount} on #{enrollment_transaction.created_at.to_date.stamp("Aug. 1st, 2019")}"
+          info[month_name]["message"] = "Paid #{enrollment_transaction.amount} on #{enrollment_transaction.created_at.to_date.stamp("Aug. 1st, 2019")} for the month of #{month_name}"
         else
-          info[month_name] = "#{plan.price_for_date(target_date)} Due on #{(target_date + child.account.payment_offset.days).stamp("Aug. 1st, 2019")}"
+          target_payment_date = target_date.beginning_of_month + child.account.payment_offset.days
+          target_payment_past = target_payment_date < Time.zone.today
+          target_payment_today = target_payment_date == Time.zone.today
+
+          if target_payment_past || target_payment_today
+            info[month_name]["overdue"] = true
+          end
+
+          info[month_name]["message"] = "#{plan.price_for_date(target_date)}#{" was" if target_payment_past} Due #{target_payment_today ? "Today" : "on #{target_payment_date.stamp("Aug. 1st, 2019")}"} for the month of #{month_name}"
         end
 
         target_date = target_date.end_of_month + 1.day
-        month_name = target_date.stamp("February")
+        month_name = target_date.stamp("February, 2019")
       end
     else
+      info["One Time"] = {}
       if self.paid?
-        info["One Time"] = "Paid #{last_paid_amount} on #{created_at.to_date.stamp("Aug. 1st, 2019")}"
+        info["One Time"]["message"] = "Paid #{last_paid_amount} on #{created_at.to_date.stamp("Aug. 1st, 2019")}"
       else
-        info["One Time"] = "#{plan.price_for_date(target_date)} Due Today"
+        info["One Time"]["message"] = "#{plan.price_for_date(target_date)} Due Today"
+        info["One Time"]["overdue"] = true
       end
     end
 
     info
   end
 
-  def next_payment_date
+  def set_next_target_and_payment_date(given_enrollment_transaction = nil)
     if plan_type.recurring?
-      target_date = last_payment_target_date
-      if target_date.present?
-        target_date = target_date.end_of_month + 1.day # move forward a month
+      # update starts_at to make sure
+      self.starts_at = [(self.starts_at || @program.starts_at).to_date, (created_at || Time.zone.today).to_date].max
+      self.ends_at ||= @program.ends_at
+      stop_date = nil
+
+      latest_enrollment_transaction = given_enrollment_transaction || enrollment_transactions.paid.by_target_date.last
+      stop_date = latest_enrollment_transaction.description_data["stop_date"] if latest_enrollment_transaction.present?
+
+      if stop_date.present?
+        target_date = stop_date.to_date.end_of_month + 1.day # move forward a month
       else # unless we don't have any yet - then do the first one
-        target_date = [self.starts_at.beginning_of_month, Time.zone.today.beginning_of_month].max
+        target_date = self.starts_at # figured that out above
       end
-      # alter by the payment offset chosen
-      target_date += child.account.payment_offset.days
+
+      self.next_target_date = target_date
+      self.next_payment_date = target_date + child.account.payment_offset.days
+
+      self.paid = false if next_payment_date <= Time.zone.today
     else
-      created_at.to_date
+      self.next_target_date ||= (created_at || Time.zone.today).to_date
+      self.next_payment_date ||= (created_at || Time.zone.today).to_date
     end
   end
 
-  def amount_due_today
-    target_date = next_payment_date
-    return Money.new(0) if paid? || target_date > Time.zone.today
+  def set_next_target_and_payment_date!(given_enrollment_transaction = nil)
+    set_next_target_and_payment_date(given_enrollment_transaction)
+    save
+  end
 
-    plan.price_for_date(target_date)
+  def deduce_current_service_dates
+    unless plan_type.recurring?
+      return starts_at, ends_at
+    end
+
+    start_date = next_target_date
+    stop_date = start_date
+    target_date = stop_date
+    payment_date = next_payment_date
+    while target_date <= program.ends_at && payment_date <= Time.zone.today
+      stop_date = target_date
+      target_date = target_date.end_of_month + 1.day
+      payment_date = target_date + child.account.payment_offset.days
+    end
+
+    return start_date, stop_date
+  end
+
+  def amount_due_today
+    unless plan_type.recurring?
+      return paid? ? Money.new(0) : plan.price_for_date(next_target_date)
+    end
+
+    result = Money.new(0)
+
+    target_date = next_target_date
+    payment_date = next_payment_date
+    while target_date <= program.ends_at && payment_date <= Time.zone.today
+      result += plan.price_for_date(target_date)
+      target_date = target_date.end_of_month + 1.day
+      payment_date = target_date + child.account.payment_offset.days
+    end
+
+    result
   end
 
   def display_amount_due_today
@@ -175,8 +242,32 @@ class Enrollment < ApplicationRecord
     end
   end
 
+  def craft_enrollment_transactions(parent_transaction)
+    unless plan_type.recurring?
+      return if paid?
+      EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: plan.price_for_date(next_target_date), target_date: self.next_target_date, description_data: {"description" => self.to_short, "start_date" => self.starts_at, "stop_date" => self.ends_at})
+    else
+      target_date = next_target_date
+      payment_date = next_payment_date
+
+      while target_date <= program.ends_at && payment_date <= Time.zone.today
+        stop_date = target_date.end_of_month
+        EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: plan.price_for_date(target_date), target_date: target_date, description_data: {"description" => self.to_short, "start_date" => target_date, "stop_date" => stop_date})
+        target_date = stop_date + 1.day
+        payment_date = target_date + child.account.payment_offset.days
+      end
+    end
+
+    self.update_attribute(:paid, true)
+    self.set_next_target_and_payment_date!
+  end
+
   def transaction_for_target_date(given_date)
     enrollment_transactions.paid.where(target_date: given_date).reverse_chronological.first
+  end
+
+  def transaction_covers_date(given_date)
+    enrollment_transactions.paid.where("description_data->'start_date' <= ? AND description_data->'stop_date' >= ?", given_date, given_date).reverse_chronological.first
   end
 
   def last_transaction
@@ -214,9 +305,9 @@ class Enrollment < ApplicationRecord
     when PlanType[:weekly].to_s
       "Weekly #{plan.display_name} plan #{display_dates} at #{location.name}"
     when PlanType[:drop_in].to_s
-      "#{plan.display_name} Drop-In on #{starts_at.stamp("Monday, Feb. 3rd, 2018")} at #{location.name}"
+      "Drop-In on #{starts_at.stamp("Monday, Feb. 3rd, 2018")} at #{location.name}"
     else
-      "#{plan.display_name} #{plan.plan_type.text} plan on #{enrolled_days(humanize: true)} from #{service_dates} at #{location.name}."
+      "#{"#{plan.display_name} " unless plan.deduceable?}#{plan.plan_type.text} plan on #{enrolled_days(humanize: true)} from #{service_dates} at #{location.name}."
     end
   end
 
@@ -225,7 +316,7 @@ class Enrollment < ApplicationRecord
   end
 
   def type_display
-    "#{plan_type.text} #{plan.display_name}"
+    "#{plan_type.text}#{" #{plan.display_name}" unless plan.deduceable?}"
   end
 
   def service_dates
@@ -294,16 +385,21 @@ class Enrollment < ApplicationRecord
 
   private
 
-  def deduce_plan_for_recurring
-    return if plan.blank? || !plan.plan_type.recurring?
+  def deduce_plan
+    return if self.plan.blank? || self.plan.choosable? # don't worry about restrictions if the plan is a manual choice
+
+    target_days = enrolled_days
+    num_days = target_days.count
+
+    # leave the current plan if it is "allowed"
+    return if self.plan.days_per_week.to_i == num_days && (target_days & self.plan.allowed_days).any?
 
     target_program = plan.program
     target_plan_type = plan.plan_type
+    possible_plans = program.plans.by_plan_type(target_plan_type)
 
     success = false
-    target_days = enrolled_days
-    num_days = target_days.count
-    possible_plans = program.plans.by_plan_type(target_plan_type)
+
     possible_plans.find_each do |possible_plan|
       if possible_plan.days_per_week.to_i == num_days && (target_days & possible_plan.allowed_days).any?
         self.plan_id = possible_plan.id
@@ -330,7 +426,6 @@ class Enrollment < ApplicationRecord
     end
 
     if starts_at.present? && ends_at.present? && ([0, 6] & (starts_at.wday..ends_at.wday).to_a).any?
-      ap (starts_at.wday..ends_at.wday).to_a
       errors.add(:base, "#{child.first_name} cannot attend on #{starts_at.stamp("Mar. 3rd, 2018")} because we are only in session on weekdays")
     end
   end

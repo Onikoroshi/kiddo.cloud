@@ -26,14 +26,13 @@ module ChildEnrollment
       if @first_time_user_fee.blank?
         total_fee = Money.new(0)
 
-        unpaid_program_ids = account.enrollments.alive.unpaid.programs.pluck(:id)
-        paid_program_ids = account.enrollments.alive.paid.programs.pluck(:id)
+        first_time_programs = []
+        account.enrollments.alive.programs.find_each do |program|
+          next if account.transactions.paid_signup_fee_for_program(program).any?
 
-        first_time_programs = Program.where(id: (unpaid_program_ids - paid_program_ids))
-        first_time_programs.each do |program|
           fee = Money.new(program.registration_fee)
           if fee > 0
-            itemizations["One Time Signup Fee for #{program.name}"] = fee
+            itemizations["signup_fee_#{program.id}".to_sym] = fee
             total_fee += fee
           end
         end
@@ -51,7 +50,7 @@ module ChildEnrollment
         changed_programs.each do |program|
           fee = Money.new(program.change_fee)
           if fee > 0
-            itemizations["Change Fee for #{program.name}"] = fee
+            itemizations["change_fee_#{program.id}".to_sym] = fee
             total_fee += fee
           end
         end
@@ -101,7 +100,7 @@ module ChildEnrollment
     end
 
     def itemizations_by_program(program)
-      itemizations.select{|key, value| key.to_s.include?(program.name)}
+      itemizations.select{|key, value| key.to_s.split("_fee_")[1] == program.id.to_s}
     end
   end
 end

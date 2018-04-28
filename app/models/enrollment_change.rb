@@ -107,8 +107,30 @@ class EnrollmentChange < ApplicationRecord
       end
     end
 
-    if data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
+    if enrollment.plan.choosable? && data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
       messages << "Change#{"d" if past} from #{enrollment.plan.display_name} to #{Plan.find_by(id: data["plan_id"]).display_name}"
+    end
+
+    if enrollment.plan_type.recurring?
+      affected_days = (["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"] & data.keys.map(&:to_s))
+
+      if affected_days.any?
+        added_days = []
+        removed_days = []
+
+        affected_days.each do |day_str|
+          if data[day_str]
+            added_days << day_str
+          else
+            removed_days << day_str
+          end
+        end
+
+        before_days = enrollment.enrolled_days.map(&:to_s)
+        after_days = (before_days + added_days) - removed_days
+
+        messages << "Change#{"d" if past} from #{before_days.map{|d| d.to_s.capitalize.pluralize}.to_sentence} to #{after_days.map{|d| d.to_s.capitalize.pluralize}.to_sentence}"
+      end
     end
 
     if data["location_id"].present? && Location.find_by(id: data["location_id"]).present?
