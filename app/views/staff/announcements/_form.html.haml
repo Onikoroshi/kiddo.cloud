@@ -11,7 +11,7 @@
 
       .form-group.label-floating
         = f.label :message, "Message", class: "control-label"
-        = f.text_area :message
+        = f.text_area :message, rows: 20
 
       = link_to "Cancel", staff_announcements_path, class: "btn"
       = f.submit class: "btn btn-info pull-right"
