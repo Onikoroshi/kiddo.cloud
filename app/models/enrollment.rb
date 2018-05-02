@@ -83,6 +83,7 @@ class Enrollment < ApplicationRecord
     CSV.generate do |csv|
       csv << [
         "Child Name",
+        "Child Birthdate",
         "Primary Parent",
         "Email",
         "Phone",
@@ -94,6 +95,7 @@ class Enrollment < ApplicationRecord
       self.all.each do |enrollment|
         csv << [
           enrollment.child.full_name,
+          enrollment.child.birthdate.stamp("2018-03-04"),
           enrollment.child.account.primary_parent.full_name,
           enrollment.child.account.user.email,
           enrollment.child.account.primary_parent.phone,

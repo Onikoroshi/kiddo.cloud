@@ -20,7 +20,7 @@
       = submit_tag "Submit"
 
     .pull-right{style: "padding-right: 40px;"}
-      = link_to "Export to CSV", export_to_csv_staff_enrollments_path(location_id: @location_id, format: "csv"), class: "btn btn-primary btn-sm"
+      = link_to "Export to CSV", export_to_csv_staff_enrollments_path(program_id: @program.id, location_id: @location_id, enrollments_date: @enrollments_date, format: "csv"), class: "btn btn-primary btn-sm"
 
   %br
   %br
