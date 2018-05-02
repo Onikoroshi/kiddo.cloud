@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180426033812) do
+ActiveRecord::Schema.define(version: 20180502214556) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,6 +63,14 @@ ActiveRecord::Schema.define(version: 20180426033812) do
     t.datetime "updated_at", null: false
     t.index ["addressable_id", "addressable_type"], name: "index_addresses_on_addressable_id_and_addressable_type", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable_type_and_addressable_id"
+  end
+
+  create_table "announcements", force: :cascade do |t|
+    t.bigint "program_id"
+    t.text "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["program_id"], name: "index_announcements_on_program_id"
   end
 
   create_table "attendance_selections", force: :cascade do |t|
@@ -445,6 +453,7 @@ ActiveRecord::Schema.define(version: 20180426033812) do
   add_foreign_key "accounts", "centers"
   add_foreign_key "accounts", "programs"
   add_foreign_key "accounts", "users"
+  add_foreign_key "announcements", "programs"
   add_foreign_key "attendance_selections", "children"
   add_foreign_key "care_items", "children"
   add_foreign_key "drop_ins", "accounts"

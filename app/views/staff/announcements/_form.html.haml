@@ -1,0 +1,17 @@
+.row
+  .col-md-6.col-sm-8.col-md-offset-3.col-sm-offset-2
+    = form_for([:staff, @announcement]) do |f|
+      = render "application/form_errors", object: @announcement
+
+      = f.hidden_field :center_id, value: @center.id
+
+      .form-group.label-floating
+        = f.label :program_id, "Program", class: "control-label"
+        = f.select :program_id, options_from_collection_for_select(Program.all, 'id', 'name', f.object.program_id || params[:program_id]), class: "form-control"
+
+      .form-group.label-floating
+        = f.label :message, "Message", class: "control-label"
+        = f.text_area :message
+
+      = link_to "Cancel", staff_announcements_path, class: "btn"
+      = f.submit class: "btn btn-info pull-right"

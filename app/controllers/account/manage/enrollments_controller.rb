@@ -134,7 +134,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
       target_enrollments = []
       # do NOT add any scopes to this. It will lose the attributes assigned
       child.enrollments.each do |enrollment|
-        target_enrollments << enrollment if enrollment.alive? && enrollment.program == @program
+        target_enrollments << enrollment if !enrollment._destroy && enrollment.alive? && enrollment.program == @program
       end
       overlapping = child.overlapping_enrollment_dates(target_enrollments)
       if overlapping.any?
@@ -181,6 +181,10 @@ class Account::Manage::EnrollmentsController < ApplicationController
       sanitized_params["account"]["children_attributes"].each do |child_key, enrollment_attrs|
         if enrollment_attrs.present? && enrollment_attrs["enrollments_attributes"].present?
           enrollment_attrs["enrollments_attributes"].each do |enrollment_key, values|
+            if sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] == "1"
+              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] = "true"
+            end
+
             any_days = values.select{|key, value| ["monday", "tuesday", "wednesday", "thursday", "friday"].include?(key.to_s)}.values.reject{|v| v == "0"}.any?
 
             unless any_days
@@ -195,7 +199,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
       end
     end
 
-    sanitized_params.require(:account).permit(children_attributes: [:id, enrollments_attributes: [:id, :plan_id, :child_id, :location_id, :starts_at, :ends_at, :monday, :tuesday, :wednesday, :thursday, :friday, :_destroy]])
+    sanitized_params.require(:account).permit(children_attributes: [:id, enrollments_attributes: [:id, :plan_id, :child_id, :location_id, :starts_at, :ends_at, :monday, :tuesday, :wednesday, :thursday, :friday, :_destroy, :dead]])
   end
 
   def account_params

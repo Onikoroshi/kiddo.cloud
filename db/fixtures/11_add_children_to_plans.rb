@@ -78,3 +78,7 @@ Child.find_each do |child|
     end
   end
 end
+
+Enrollment.find_each do |enrollment|
+  enrollment.set_next_target_and_payment_date!
+end

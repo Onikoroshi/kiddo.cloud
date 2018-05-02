@@ -1,4 +1,13 @@
 .row
+  - account_announcements = @account.announcements
+  - if account_announcements.any?
+    .col-sx-12{style: "padding-left: 15px; padding-right: 15px; color: #ef6240"}
+      .account-box
+        - account_announcements.each do |program_name, announcements|
+          %h3.text-center= "Friendly #{"Reminder".pluralize(announcements.count)} for #{program_name}"
+          - announcements.each do |message|
+            %h4= simple_format(message)
+
   .col-md-4.col-sm-6
     .account-box
       #parents

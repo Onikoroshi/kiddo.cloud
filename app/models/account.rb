@@ -117,6 +117,21 @@ class Account < ApplicationRecord
     validate_location.present? && validate_location == true
   end
 
+  def announcements
+    enrolled_programs = enrollments.alive.active.programs
+
+    hash = {}
+
+    enrolled_programs.each do |program|
+      program.announcements.find_each do |announcement|
+        hash[program.name] = [] if hash[program.name].nil?
+        hash[program.name] << announcement.message
+      end
+    end
+
+    hash
+  end
+
   private
 
   def force_send_agreements

@@ -5,6 +5,7 @@ class Program < ApplicationRecord
   has_many :children, through: :enrollments
   has_many :transactions, through: :enrollments
   has_many :drop_ins
+  has_many :announcements
 
   has_many :program_locations, dependent: :destroy
   has_many :locations, through: :program_locations
