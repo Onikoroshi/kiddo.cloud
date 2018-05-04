@@ -53,7 +53,7 @@ class MaintenanceTools::ProductionSeeder
       name: "School Year 2018",
       starts_at: Chronic.parse("8/20/2018"),
       ends_at: Chronic.parse("6/20/2019"),
-      registration_opens: Chronic.parse("5/1/2018"),
+      registration_opens: Chronic.parse("5/10/2018"),
       registration_closes: Chronic.parse("6/2/2019"),
       registration_fee: 50.0,
       change_fee: 49.0,
