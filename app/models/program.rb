@@ -1,4 +1,5 @@
 class Program < ApplicationRecord
+  include ClassyEnum::ActiveRecord
   belongs_to :center
   has_many :plans
   has_many :enrollments, through: :plans
@@ -12,6 +13,8 @@ class Program < ApplicationRecord
 
   money_column :registration_fee
   money_column :change_fee
+
+  classy_enum_attr :plan_type
 
   before_add_for_locations << ->(method, owner, change) { owner.send(:on_add_location, change) }
   before_remove_for_locations << ->(method, owner, change) { owner.send(:on_remove_location, change) }
@@ -27,6 +30,9 @@ class Program < ApplicationRecord
   scope :open_for_registration, -> { where("registration_opens <= ? AND registration_closes >= ?", Time.zone.today, Time.zone.today) }
   scope :in_session, -> { where("starts_at <= ? AND ends_at >= ?", Time.zone.today, Time.zone.today) }
   scope :active, -> { where("ends_at >= ?", Time.zone.today) }
+
+  scope :for_fall, -> { where(program_type: ProgramType[:fall].to_s) }
+  scope :for_summer, -> { where(program_type: ProgramType[:summer].to_s) }
 
   def plan_types
     plans.map{|plan| plan.plan_type}.uniq{|plan| plan.to_s}

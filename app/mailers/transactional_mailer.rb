@@ -4,7 +4,12 @@ class TransactionalMailer < ApplicationMailer
     mail(to: "officepersonal@dkk.com", subject: "time dispute")
   end
 
-  def welcome_customer(account)
+  def welcome_summer_customer(account)
+    @account = account
+    mail(to: @account.primary_email, subject: "Welcome to #{account.center_name}!")
+  end
+
+  def welcome_fall_customer(account)
     @account = account
     mail(to: @account.primary_email, subject: "Welcome to #{account.center_name}!")
   end

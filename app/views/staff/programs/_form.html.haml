@@ -6,6 +6,11 @@
       = f.hidden_field :center_id, value: @center.id
 
       .form-group.label-floating
+        = f.label :program_type, "Summer or Fall?", class: "control-label"
+        = f.select :program_type, options_from_collection_for_select(ProgramType.all, 'to_s', 'text', f.object.program_type.to_s), class: "form-control"
+      %br
+
+      .form-group.label-floating
         = f.label :name, "Program Name", class: "control-label"
         = f.text_field :name, class: "form-control"
 

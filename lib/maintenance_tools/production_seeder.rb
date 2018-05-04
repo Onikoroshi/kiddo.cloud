@@ -42,7 +42,8 @@ class MaintenanceTools::ProductionSeeder
       registration_fee: 50.0,
       change_fee: 49.0,
       earliest_payment_offset: -15,
-      latest_payment_offset: 14
+      latest_payment_offset: 14,
+      program_type: "summer"
     ).first_or_create!
   end
 
@@ -57,7 +58,8 @@ class MaintenanceTools::ProductionSeeder
       registration_fee: 50.0,
       change_fee: 49.0,
       earliest_payment_offset: -15,
-      latest_payment_offset: 14
+      latest_payment_offset: 14,
+      program_type: "fall"
     ).first_or_create!
   end
 

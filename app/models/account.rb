@@ -63,8 +63,10 @@ class Account < ApplicationRecord
     legacy_user.update_attributes(completed_signed_up: true) if legacy_user.present?
 
     mark_signup_complete!
-    TransactionalMailer.welcome_customer(self).deliver_now
-    TransactionalMailer.waivers_and_agreements(self).deliver_now if mail_agreements
+    enrolled_programs = enrollments.alive.active.programs
+    TransactionalMailer.welcome_summer_customer(self).deliver_now if enrolled_programs.for_summer.any?
+    TransactionalMailer.welcome_fall_customer(self).deliver_now if enrolled_programs.for_fall.any?
+    TransactionalMailer.waivers_and_agreements(self).deliver_now # if mail_agreements # send them automatically
   end
 
   def customer?
