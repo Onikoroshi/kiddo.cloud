@@ -228,6 +228,8 @@ class Enrollment < ApplicationRecord
 
     result = Money.new(0)
 
+    set_next_target_and_payment_date if next_target_date.blank? || next_payment_date.blank? # don't save it since they're not ready
+
     target_date = next_target_date
     payment_date = next_payment_date
     while target_date <= program.ends_at && payment_date <= Time.zone.today
@@ -240,6 +242,8 @@ class Enrollment < ApplicationRecord
   end
 
   def display_amount_due_today
+    set_next_target_and_payment_date if next_target_date.blank? # don't save it since they're not ready
+
     target_date = next_payment_date
     if target_date > Time.zone.today
       "#{Time.zone.today > self.starts_at ? "Next" : "First"} Payment on #{target_date.stamp("March 3rd, 2019")}"
