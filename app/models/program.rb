@@ -14,7 +14,7 @@ class Program < ApplicationRecord
   money_column :registration_fee
   money_column :change_fee
 
-  classy_enum_attr :plan_type
+  classy_enum_attr :program_type
 
   before_add_for_locations << ->(method, owner, change) { owner.send(:on_add_location, change) }
   before_remove_for_locations << ->(method, owner, change) { owner.send(:on_remove_location, change) }
