@@ -1,0 +1,48 @@
+%h3.text-center
+  Programs
+
+.text-center
+  = link_to "+ Add Program", new_staff_program_path, class: "btn btn-primary btn-sm"
+%br
+
+- if @programs.any?
+  %table.admin-table
+    %thead
+      %th
+      %th Name
+      %th Start Date
+      %th End Date
+      %th Registration Opens
+      %th Registration Closes
+      %th Registration Fee
+      %th Change Fee
+      %th Locations
+      %th Plans
+      %th
+
+    %tbody
+      - @programs.each do |program|
+        %tr
+          %td
+            = link_to staff_program_path(program), method: :delete, :data => { :confirm => 'Are you sure?' } do
+              %i.material-icons delete_forever
+          %td
+            = program.name
+            %br
+            = new_user_registration_url(program_id: program.id)
+          %td= program.starts_at.stamp("March 4th, 2018")
+          %td= program.ends_at.stamp("March 4th, 2018")
+          %td= program.registration_opens.stamp("March 4th, 2018")
+          %td= program.registration_closes.stamp("March 4th, 2018")
+          %td= program.registration_fee
+          %td= program.change_fee
+          %td= program.locations.pluck(:name).join("<br>").html_safe
+          %td= program.plans.map(&:full_display_name).join("<br>").html_safe
+          %td
+            = link_to edit_staff_program_path(program) do
+              %i.material-icons edit
+
+  %hr
+
+  .text-center
+    = paginate @programs

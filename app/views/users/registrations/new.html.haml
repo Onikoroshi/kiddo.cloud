@@ -1,6 +1,6 @@
 .col-sm-5.col-sm-offset-1
   .login-box
-    %h3 Create Summer Camp Account
+    %h3= @program.id.to_s == params[:program_id].to_s ? "Create Account and register for #{@program.name}" : "Create Davis Kids Klub Account"
     %br
     = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
       = devise_error_messages!
@@ -27,7 +27,7 @@
 .col-sm-6
   .login-box
     %h3
-      Already Created a Summer Camp Account?
+      Already have an Account?
     %br
     = render "devise/shared/links"
     -# %hr

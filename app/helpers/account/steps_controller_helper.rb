@@ -1,11 +1,9 @@
 module Account::StepsControllerHelper
-  def plan_selection_path(plan_type, account)
-    if plan_type.drop_in?
-      new_account_dashboard_enrollment_path(account, plan_type: plan_type.to_s)
-    elsif plan_type.weekly?
-      new_account_dashboard_enrollment_path(account, plan_type: plan_type.to_s)
+  def plan_selection_path(plan_type, account, program, action = "new")
+    if action == "new"
+      new_account_dashboard_enrollment_path(account, plan_type: plan_type.to_s, program_id: program.id)
     else
-      edit_account_attendance_selection_path(account)
+      edit_account_dashboard_enrollments_path(account, plan_type: plan_type.to_s, program_id: program.id)
     end
   end
 

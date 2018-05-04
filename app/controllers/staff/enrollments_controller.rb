@@ -32,12 +32,13 @@ class Staff::EnrollmentsController < ApplicationController
   def set_change_fee_requirement
     respond_to do |format|
       account = Account.find(params[:account_id])
+      program = Program.find(params[:program_id])
       require_fee = params[:require_fee] == "true"
-      account.enrollment_changes.pending.update_all(requires_fee: require_fee)
+      account.enrollment_changes.by_program(program).pending.update_all(requires_fee: require_fee)
 
       calculator = ChildEnrollment::EnrollmentPriceCalculator.new(account)
       calculator.calculate
-      change_fee = calculator.itemizations[:change_fee] || Money.new(0)
+      change_fee = calculator.itemizations_by_program(program).select{|key, value| key.to_s.split("_fee_")[0] == "change"}.values.inject(Money.new(0)){|sum, amount| sum + amount}
       results = {amount: change_fee.to_s, total_charge_amount: calculator.total.to_s, total_refund_amount: calculator.refund_total}
 
       format.js {

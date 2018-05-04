@@ -3,17 +3,15 @@ class Account < ApplicationRecord
   belongs_to :user
   belongs_to :center
 
+  # belongs_to :location # not used anymore
+  belongs_to :program # only used during the enrollment process
+
   has_many :parents, dependent: :destroy
   has_one :primary_parent, -> { where primary: true }, class_name: "Parent"
   has_one :secondary_parent, -> { where secondary: true }, class_name: "Parent"
   has_one :subscription, dependent: :destroy
   has_many :transactions, dependent: :destroy
   has_many :late_checkin_notifications, dependent: :destroy
-
-  validates :location_id, presence: true, if: :validate_location?
-
-  belongs_to :location
-  belongs_to :program # only used during the enrollment process
 
   has_many :children, dependent: :destroy
   has_many :enrollments, through: :children
@@ -25,6 +23,12 @@ class Account < ApplicationRecord
   delegate :name, to: :center, prefix: :center
 
   accepts_nested_attributes_for :children, allow_destroy: true
+
+  before_validation :force_send_agreements
+
+  validates :location_id, presence: true, if: :validate_location?
+
+  after_save :update_enrollment_payment_dates
 
   scope :by_program, ->(given_program) { given_program.present? ? joins(enrollments: :program).where("programs.id = ?", given_program.id).distinct : all }
   scope :by_location, ->(given_location) { given_location.present? ? joins(:enrollments).where("enrollments.location_id = ?", given_location.id).distinct : all }
@@ -59,8 +63,10 @@ class Account < ApplicationRecord
     legacy_user.update_attributes(completed_signed_up: true) if legacy_user.present?
 
     mark_signup_complete!
-    TransactionalMailer.welcome_customer(self).deliver_now
-    TransactionalMailer.waivers_and_agreements(self).deliver_now if mail_agreements
+    enrolled_programs = enrollments.alive.active.programs
+    TransactionalMailer.welcome_summer_customer(self).deliver_now if enrolled_programs.for_summer.any?
+    TransactionalMailer.welcome_fall_customer(self).deliver_now if enrolled_programs.for_fall.any?
+    TransactionalMailer.waivers_and_agreements(self).deliver_now # if mail_agreements # send them automatically
   end
 
   def customer?
@@ -111,5 +117,33 @@ class Account < ApplicationRecord
 
   def validate_location?
     validate_location.present? && validate_location == true
+  end
+
+  def announcements
+    enrolled_programs = enrollments.alive.active.programs
+
+    hash = {}
+
+    enrolled_programs.each do |program|
+      program.announcements.find_each do |announcement|
+        hash[program.name] = [] if hash[program.name].nil?
+        hash[program.name] << announcement.message
+      end
+    end
+
+    hash
+  end
+
+  private
+
+  def force_send_agreements
+    self.mail_agreements = true
+  end
+
+  def update_enrollment_payment_dates
+    if payment_offset_changed?
+      consider_enrollments = enrollments.alive.active.recurring
+      consider_enrollments.map{|e| e.set_next_target_and_payment_date!}
+    end
   end
 end

@@ -39,7 +39,7 @@ class ApplicationController < ActionController::Base
   end
 
   def find_registering_program
-    @program = Program.find_by(short_code: params[:program])
+    @program = Program.find_by(id: params[:program_id])
 
     if @account.present? && @program.present?
       @account.update_attribute(:program, @program)

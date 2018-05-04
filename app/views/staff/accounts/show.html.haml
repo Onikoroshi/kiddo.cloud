@@ -146,15 +146,19 @@
       #plan
         %h3 Plan Information #{link_to "Edit", edit_account_dashboard_enrollments_path(@account), class: "btn btn-xs btn-round"} #{link_to "Finalize Changes", new_account_dashboard_payment_path(@account), class: "btn btn-xs btn-round" if @account.pending_enrollment_changes?}
 
-        - @account.enrollments.alive.paid.programs.each do |program|
+        - @account.enrollments.alive.programs.each do |program|
           %h5= program.name
 
           - @account.children.each do |child|
             %strong= child.full_name
-            - enrollments = child.enrollments.alive.paid.by_program(program)
+            - enrollments = child.enrollments.alive.by_program(program)
             - if enrollments.any?
-              %ul
-              - enrollments.each do |enrollment|
-                %li= enrollment.to_short
+              %table
+                - enrollments.each do |enrollment|
+                  %tr.merge-top
+                    %td= enrollment.to_short
+                  - enrollment.payment_plan_hash.each do |month_name, data|
+                    %tr.merge-top.short
+                      %td.right-just{style: "color: #{data["overdue"] == true ? 'red' : 'inherit'}"}= data["message"]
 
   .cleaner

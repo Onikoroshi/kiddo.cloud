@@ -1,3 +1,3 @@
 - if @account.pending_enrollment_changes?
   #change-batch-alert
-    %h3 You have pending enrollment changes. #{link_to "Click Here", new_account_dashboard_payment_path(@account)} to finalize them!
+    %h3= enrollment_changes_message(@account)

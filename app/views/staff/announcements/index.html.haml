@@ -1,0 +1,31 @@
+%h3.text-center
+  Announcements
+
+.text-center
+  = link_to "+ Add Announcement", new_staff_announcement_path, class: "btn btn-primary btn-sm"
+%br
+
+- if @announcements.any?
+  %table.admin-table
+    %thead
+      %th
+      %th Program
+      %th Message
+      %th
+
+    %tbody
+      - @announcements.each do |announcement|
+        %tr
+          %td
+            = link_to staff_announcement_path(announcement), method: :delete, :data => { :confirm => 'Are you sure?' } do
+              %i.material-icons delete_forever
+          %td= announcement.program.name
+          %td= announcement.message
+          %td
+            = link_to edit_staff_announcement_path(announcement) do
+              %i.material-icons edit
+
+  %hr
+
+  .text-center
+    = paginate @announcements

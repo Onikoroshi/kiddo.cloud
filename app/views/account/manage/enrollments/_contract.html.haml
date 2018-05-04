@@ -1,0 +1,8 @@
+.col-md-10.col-md-offset-1.col-xs-12
+  %h2.text-center
+    School Year Contracts for #{@program.name}
+
+  %h4.text-center
+    Select which days(s) your child(ren) will be attending during each week.
+
+  = render "contract_form", target_method: defined?(target_method) ? target_method : "POST"

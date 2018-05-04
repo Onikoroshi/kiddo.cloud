@@ -20,10 +20,30 @@
             =link_to staff_dashboard_path do
               %i.material-icons done
               Attendance
-          %li{ class: (controller_name == "time_disputes") ? "active" : ""}
-            =link_to new_staff_time_dispute_path do
-              %i.material-icons thumbs_up_down
-              Time Disputes
+          %li
+            %ul.nav.navbar-nav{ class: ["programs", "locations", "plans"].include?(controller_name) ? "active" : ""}
+              %li.dropdown
+                %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+                  %i.material-icons menu
+                  Manage
+                  %b.caret
+                %ul.dropdown-menu.dropdown-with-icons
+                  %li
+                    = link_to staff_programs_path do
+                      %i.material-icons date_range
+                      Programs
+                  %li
+                    = link_to staff_plans_path do
+                      %i.material-icons view_list
+                      Plans
+                  %li
+                    = link_to staff_locations_path do
+                      %i.material-icons business
+                      Locations
+                  %li
+                    = link_to staff_announcements_path do
+                      %i.material-icons warning
+                      Announcements
           %li{ class: (controller_name == "transactions") ? "active" : ""}
             =link_to staff_transactions_path do
               %i.material-icons credit_card

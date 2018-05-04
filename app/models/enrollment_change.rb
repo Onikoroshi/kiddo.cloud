@@ -16,6 +16,7 @@ class EnrollmentChange < ApplicationRecord
   scope :require_refund, -> { where(requires_refund: true) }
   scope :finalized, -> { where(applied: true) }
   scope :pending, -> { where.not(applied: true) }
+  scope :by_program, ->(given_program) { given_program.present? ? joins(enrollment: :program).where("programs.id = ?", given_program.id) : all }
 
   def self.generating_charge
     self.pending.select{|change| change.amount > 0}
@@ -68,6 +69,16 @@ class EnrollmentChange < ApplicationRecord
       existing_enrollment_params = params["children_attributes"][child_index]["enrollments_attributes"][enrollment_index]
       target_enrollment_params = existing_enrollment_params.merge!(enrollment_change.data)
 
+      if enrollment_change.data.keys.include?("_destroy")
+        target_enrollment_params.merge!({
+          "monday" => false,
+          "tuesday" => false,
+          "wednesday" => false,
+          "thursday" => false,
+          "friday" => false,
+        })
+      end
+
       params["children_attributes"][child_index]["enrollments_attributes"][enrollment_index] = target_enrollment_params
     end
 
@@ -86,6 +97,7 @@ class EnrollmentChange < ApplicationRecord
       enrollment.kill!
     else
       enrollment.update_attributes!(data)
+      enrollment.resurrect!
     end
 
     update_attribute(:applied, true)
@@ -106,8 +118,30 @@ class EnrollmentChange < ApplicationRecord
       end
     end
 
-    if data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
+    if enrollment.plan.choosable? && data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
       messages << "Change#{"d" if past} from #{enrollment.plan.display_name} to #{Plan.find_by(id: data["plan_id"]).display_name}"
+    end
+
+    if enrollment.plan_type.recurring?
+      affected_days = (["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"] & data.keys.map(&:to_s))
+
+      if affected_days.any?
+        added_days = []
+        removed_days = []
+
+        affected_days.each do |day_str|
+          if data[day_str]
+            added_days << day_str
+          else
+            removed_days << day_str
+          end
+        end
+
+        before_days = enrollment.enrolled_days.map(&:to_s)
+        after_days = (before_days + added_days) - removed_days
+
+        messages << "Change#{"d" if past} from #{before_days.map{|d| d.to_s.capitalize.pluralize}.to_sentence} to #{after_days.map{|d| d.to_s.capitalize.pluralize}.to_sentence}"
+      end
     end
 
     if data["location_id"].present? && Location.find_by(id: data["location_id"]).present?
@@ -118,10 +152,12 @@ class EnrollmentChange < ApplicationRecord
   end
 
   def calculated_amount
+    return Money.new(0) if enrollment.plan_type.recurring? # don't refund recurring plans
     return Money.new(0) unless data.is_a?(Hash)
+
     if data["_destroy"].present?
-      enrollment.plan.price * -1 # this will be the refund amount
-    elsif data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
+      enrollment.last_paid_amount * -1 # this will be the refund amount
+    elsif !enrollment.plan.recurring? && data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
       old_plan = enrollment.plan
       new_plan = Plan.find_by(id: data["plan_id"])
 

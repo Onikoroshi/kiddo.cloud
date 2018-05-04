@@ -1,0 +1,84 @@
+.row
+  .col-md-6.col-sm-8.col-md-offset-3.col-sm-offset-2
+    = form_for([:staff, @plan]) do |f|
+      = render "application/form_errors", object: @plan
+
+      = hidden_field_tag :program_id, params[:program_id]
+
+      .form-group.label-floating
+        = f.label :plan_type, "Plan Type", class: "control-label"
+        = f.select :plan_type, options_from_collection_for_select(PlanType.all, 'to_s', 'text', f.object.plan_type.to_s), class: "form-control"
+      %br
+
+      .form-group.label-floating
+        = f.label :display_name, "Display Name", class: "control-label"
+        = f.text_field :display_name, class: "form-control"
+
+      .form-group.label-floating
+        = f.label :price, "Plan Price", class: "control-label"
+        = f.text_field :price, class: "form-control"
+
+      .form-group.label-floating
+        = f.label :deduce, "Should the system deduce this plan? Choose 'Yes' if the system should figure out which plan to use based on the days the parent chooses. Choose 'No' to display this plan as a choice the parent can make."
+        = f.label :deduce, "Yes", :value => "true"
+        = f.radio_button :deduce, true, checked: f.object.deduce?
+        = f.label :deduce, "No", :value => "false"
+        = f.radio_button :deduce, false, checked: !f.object.deduce?
+
+      %br
+
+      .form-group.label-floating
+        = f.label :days_per_week, "Number of Days Per Week children will attend (1 for Drop In days). NOTE: If you want to allow children to attend *any* number of days, enter -1.", class: "control-label"
+        = f.text_field :days_per_week, class: "form-control"
+
+      %h4 Allowed Days
+
+      .form-group.label-floating
+        = f.check_box :monday, checked: f.object.monday
+        = f.label :monday
+
+      .form-group.label-floating
+        = f.check_box :tuesday, checked: f.object.tuesday
+        = f.label :tuesday
+
+      .form-group.label-floating
+        = f.check_box :wednesday, checked: f.object.wednesday
+        = f.label :wednesday
+
+      .form-group.label-floating
+        = f.check_box :thursday, checked: f.object.thursday
+        = f.label :thursday
+
+      .form-group.label-floating
+        = f.check_box :friday, checked: f.object.friday
+        = f.label :friday
+
+      .form-group.label-floating
+        = f.check_box :saturday, checked: f.object.saturday
+        = f.label :saturday
+
+      .form-group.label-floating
+        = f.check_box :sunday, checked: f.object.sunday
+        = f.label :sunday
+      %br
+
+      .form-group.label-floating
+        = f.label :program_id, "Program", class: "control-label"
+        = f.select :program_id, options_from_collection_for_select(Program.all, 'id', 'name', f.object.program_id || params[:program_id]), class: "form-control"
+
+      %h4 Discounts
+
+      = f.fields_for :discounts do |discount_fields|
+        = render "discount_fields", f: discount_fields
+
+      .links
+        .pull-right= link_to_add_association 'Add Discount', f, :discounts, {style: "padding-right: 20px;"}
+      %br
+
+      %h4 Children Already Enrolled:
+      %ul
+        - @plan.enrollments.find_each do |enrollment|
+          %li= link_to enrollment.child.full_name, staff_account_path(enrollment.child.account)
+
+      = link_to "Cancel", staff_plans_path(program_id: params[:program_id]), class: "btn"
+      = f.submit class: "btn btn-info pull-right"

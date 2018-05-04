@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180409215439) do
+ActiveRecord::Schema.define(version: 20180504164326) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20180409215439) do
     t.datetime "updated_at", null: false
     t.integer "location_id"
     t.bigint "program_id"
+    t.integer "payment_offset", default: 0
     t.index ["center_id"], name: "index_accounts_on_center_id"
     t.index ["program_id"], name: "index_accounts_on_program_id"
     t.index ["user_id"], name: "index_accounts_on_user_id"
@@ -62,6 +63,14 @@ ActiveRecord::Schema.define(version: 20180409215439) do
     t.datetime "updated_at", null: false
     t.index ["addressable_id", "addressable_type"], name: "index_addresses_on_addressable_id_and_addressable_type", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable_type_and_addressable_id"
+  end
+
+  create_table "announcements", force: :cascade do |t|
+    t.bigint "program_id"
+    t.text "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["program_id"], name: "index_announcements_on_program_id"
   end
 
   create_table "attendance_selections", force: :cascade do |t|
@@ -125,6 +134,15 @@ ActiveRecord::Schema.define(version: 20180409215439) do
     t.index ["parent_id", "child_id"], name: "index_children_parents_on_parent_id_and_child_id"
   end
 
+  create_table "discounts", force: :cascade do |t|
+    t.bigint "plan_id"
+    t.float "amount"
+    t.string "month"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["plan_id"], name: "index_discounts_on_plan_id"
+  end
+
   create_table "drop_ins", force: :cascade do |t|
     t.bigint "account_id"
     t.bigint "program_id"
@@ -184,6 +202,9 @@ ActiveRecord::Schema.define(version: 20180409215439) do
     t.float "amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "target_date"
+    t.hstore "description_data"
+    t.index ["description_data"], name: "index_enrollment_transactions_on_description_data", using: :gin
     t.index ["enrollment_id"], name: "index_enrollment_transactions_on_enrollment_id"
     t.index ["my_transaction_id"], name: "index_enrollment_transactions_on_my_transaction_id"
   end
@@ -206,6 +227,8 @@ ActiveRecord::Schema.define(version: 20180409215439) do
     t.date "starts_at"
     t.date "ends_at"
     t.boolean "dead", default: false
+    t.date "next_target_date"
+    t.date "next_payment_date"
     t.index ["child_id"], name: "index_enrollments_on_child_id"
     t.index ["location_id"], name: "index_enrollments_on_location_id"
     t.index ["plan_id"], name: "index_enrollments_on_plan_id"
@@ -266,13 +289,20 @@ ActiveRecord::Schema.define(version: 20180409215439) do
 
   create_table "plans", force: :cascade do |t|
     t.bigint "program_id"
-    t.string "short_code"
     t.string "display_name"
     t.integer "days_per_week"
     t.float "price"
     t.string "plan_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "monday", default: false
+    t.boolean "tuesday", default: false
+    t.boolean "wednesday", default: false
+    t.boolean "thursday", default: false
+    t.boolean "friday", default: false
+    t.boolean "saturday", default: false
+    t.boolean "sunday", default: false
+    t.boolean "deduce", default: false
     t.index ["program_id"], name: "index_plans_on_program_id"
   end
 
@@ -287,7 +317,6 @@ ActiveRecord::Schema.define(version: 20180409215439) do
 
   create_table "programs", force: :cascade do |t|
     t.bigint "center_id"
-    t.string "short_code"
     t.string "name"
     t.date "starts_at"
     t.date "ends_at"
@@ -297,6 +326,9 @@ ActiveRecord::Schema.define(version: 20180409215439) do
     t.date "registration_closes"
     t.float "registration_fee"
     t.float "change_fee"
+    t.integer "earliest_payment_offset", default: -15
+    t.integer "latest_payment_offset", default: 15
+    t.string "program_type"
     t.index ["center_id"], name: "index_programs_on_center_id"
   end
 
@@ -422,6 +454,7 @@ ActiveRecord::Schema.define(version: 20180409215439) do
   add_foreign_key "accounts", "centers"
   add_foreign_key "accounts", "programs"
   add_foreign_key "accounts", "users"
+  add_foreign_key "announcements", "programs"
   add_foreign_key "attendance_selections", "children"
   add_foreign_key "care_items", "children"
   add_foreign_key "drop_ins", "accounts"

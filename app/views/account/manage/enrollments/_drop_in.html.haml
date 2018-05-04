@@ -25,5 +25,5 @@
           .links
             .pull-right= link_to_add_association 'Add Day', children_fields, :enrollments, {style: "padding-right: 20px;"}
 
-    = link_to "Cancel", @account.signup_complete? ? new_account_dashboard_enrollment_path(@account) : account_step_path(@account, :plan), class: "btn"
+    = link_to "Cancel", @account.signup_complete? ? (defined?(target_method) ? edit_account_dashboard_enrollments_path(@account) : new_account_dashboard_enrollment_path(@account)) : account_step_path(@account, :plan), class: "btn"
     = f.submit "Submit", class: "btn btn-info pull-right"

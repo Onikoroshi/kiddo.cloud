@@ -146,9 +146,8 @@
                       I have read and agree with #{link_to "all waivers and agreements", asset_path("assets/images/Davis-Kids-Klub_Waivers-Agreements.pdf"), target: "_blank"}
                 .col-sm-12
                   .form-group.label-floating
-                    = f.check_box :mail_agreements, checked: @account.last_registration_step_completed == "parents" ? @account.mail_agreements : true, class: "pull-left checkbox-padding"
                     = f.label :mail_agreements do
-                      Have all waivers and agreements mailed to me
+                      All waivers and agreements will automatically be emailed to you.
 
       .col-sm-12
         = f.submit 'Next Step', class: "btn btn-block btn-info"

@@ -1,43 +1,53 @@
 %table.enrollment-pricing-table{style: "text-align: left;"}
-  - calculator.enrollments.each do |enrollment|
+  - calculator.programs.each do |program|
     %tr
-      %td= enrollment.description
-      %td{style: "padding-left: 10px; text-align: right"}= enrollment.plan.price
-    - enrollment.enrollment_changes.each do |enrollment_change|
+      %td{style: "padding-left: 0px !important;"}
+        %h3= program.name
+    - calculator.children_by_program(program).each do |child|
       %tr.merge-top
-        %td{style: "text-align: right"}= enrollment_change.build_description
-        %td.refund-amount{style: "padding-left: 10px; text-align: right"}= enrollment_change.amount
-        - if policy(:payments).manage?
+        %td{style: "padding-left: 10px; padding-top: 0px !important"}
+          %h4= child.full_name
+      - calculator.enrollments_by_program_and_child(program, child).each do |enrollment|
+        %tr
+          %td{style: "padding-left: 20px !important;"}= enrollment.to_short
+          %td{style: "padding-left: 10px; text-align: right"}= enrollment.display_amount_due_today
+        - enrollment.enrollment_changes.each do |enrollment_change|
+          %tr.merge-top
+            %td{style: "text-align: right"}= enrollment_change.build_description
+            %td.refund-amount{style: "padding-left: 10px; text-align: right"}= enrollment_change.amount
+            - if policy(:payments).manage?
+              %td.merge-top
+                = check_box_tag :require_refund, true, enrollment_change.requires_refund?, class: "change-refund-requirement", data: {"change-id" => enrollment_change.id}
+                = label_tag :require_refund, "Issue Refund"
+
+      - calculator.independent_enrollment_changes_by_program_and_child(program, child).each do |enrollment_change|
+        %tr
+          %td{style: "padding-left: 20px !important;"}= enrollment_change.enrollment.to_short
+          %td{style: "padding-left: 10px; text-align: right"}
+
+        %tr.merge-top
+          %td{style: "text-align: right"}= enrollment_change.build_description
+          %td.refund-amount{style: "padding-left: 10px; text-align: right"}= enrollment_change.amount
+          - if policy(:payments).manage?
+            %td.merge-top
+              = check_box_tag :require_refund, true, enrollment_change.requires_refund?, class: "change-refund-requirement", data: {"change-id" => enrollment_change.id}
+              = label_tag :require_refund, "Issue Refund"
+
+    - calculator.itemizations_by_program(program).each do |key, value|
+      %tr
+        %td{style: "padding-left: 10px !important;"}= display_itemization_title(key.to_s)
+        %td.fee-amount{style: "text-align: right"}= value
+        - if key.to_s.include?("change_fee") && policy(:payments).manage?
           %td.merge-top
-            = check_box_tag :require_refund, true, enrollment_change.requires_refund?, class: "change-refund-requirement", data: {"change-id" => enrollment_change.id}
-            = label_tag :require_refund, "Issue Refund"
+            = check_box_tag :require_change_fee, true, calculator.enrollment_changes.require_fee.any?, class: "change-fee-requirement", data: {"account-id" => @account.id, "program-id" => key.to_s.split("_fee_")[1]}
+            = label_tag :require_change_fee, "Charge Change Fee"
 
-  - calculator.independent_enrollment_changes.each do |enrollment_change|
-    %tr
-      %td= enrollment_change.enrollment.description
-      %td{style: "padding-left: 10px; text-align: right"}
-
-    %tr.merge-top
-      %td{style: "text-align: right"}= enrollment_change.build_description
-      %td.refund-amount{style: "padding-left: 10px; text-align: right"}= enrollment_change.amount
-      - if policy(:payments).manage?
-        %td.merge-top
-          = check_box_tag :require_refund, true, enrollment_change.requires_refund?, class: "change-refund-requirement", data: {"change-id" => enrollment_change.id}
-          = label_tag :require_refund, "Issue Refund"
-
-  - calculator.itemizations.each do |key, value|
-    %tr
-      %td= key.to_s.humanize.capitalize
-      %td.fee-amount{style: "text-align: right"}= value
-      - if key.to_s == "change_fee" && policy(:payments).manage?
-        %td.merge-top
-          = check_box_tag :require_change_fee, true, calculator.enrollment_changes.require_fee.any?, class: "change-fee-requirement", data: {"account-id" => @account.id}
-          = label_tag :require_change_fee, "Charge Change Fee"
-
-  - if policy(:payments).manage? && calculator.enrollment_changes.any? && calculator.itemizations[:change_fee].blank?
-    %tr
-      %td Change Fee
-      %td.fee-amount{style: "text-align: right"}= Money.new(0).to_s
-      %td.merge-top
-        = check_box_tag :require_change_fee, true, calculator.enrollment_changes.require_fee.any?, class: "change-fee-requirement", data: {"account-id" => @account.id}
-        = label_tag :require_change_fee, "Charge Change Fee"
+    - if policy(:payments).manage? && calculator.changed_programs.count > 0 && calculator.itemizations.keys.select{|k| k.to_s.include?("change_fee")}.count != calculator.changed_programs.count
+      - calculator.changed_programs.each do |program|
+        - next if calculator.itemizations_by_program(program).any?
+        %tr
+          %td{style: "padding-left: 20px !important;"} Change Fee for #{program.name}
+          %td.fee-amount{style: "text-align: right"}= Money.new(0).to_s
+          %td.merge-top
+            = check_box_tag :require_change_fee, true, calculator.enrollment_changes.require_fee.any?, class: "change-fee-requirement", data: {"account-id" => @account.id, "program-id" => program.id}
+            = label_tag :require_change_fee, "Charge Change Fee"

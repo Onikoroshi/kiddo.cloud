@@ -268,9 +268,9 @@ h7
   td, th
     padding: 10px
 
-  td, th
-    &.right-just
-      text-align: right
+td, th
+  &.right-just
+    text-align: right
 
 .flatpickr-input
   width: 100% !important
@@ -281,7 +281,7 @@ table
 
   th
     border: none !important
-    padding: 20px !important
+    padding: 20px 10px 20px 10px !important
 
   tr
     background: white !important
@@ -289,7 +289,8 @@ table
     td
       border: none !important
       border-top: solid #EEEEEE 1px !important
-      padding: 20px !important
+
+      padding: 20px 10px 20px 10px !important
       vertical-align: top !important
 
   tr.merge-top
@@ -298,5 +299,33 @@ table
 
   td.merge-top
     border-top: none !important
+
+  tr.short
+    td
+      padding: 5px !important
+
+  &.admin-table
+    th
+      color: #7b68ab
+      font-size: 13px !important
+      font-weight: 400 !important
+      text-transform: uppercase
+      overflow: hidden
+
+.nav-tabs-wrapper
+  ul.navbar-nav
+    &.active
+      background-color: #61C5D2 !important
+
+    li
+      a.dropdown-toggle
+        padding: 10px
+        color: white !important
+
+        &:hover
+          background-color: inherit !important
+
+select
+  padding-top: 20px
 
 @media (max-width: 992px)

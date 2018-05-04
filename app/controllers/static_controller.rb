@@ -15,7 +15,7 @@ class StaticController < ApplicationController
     else
       ap "redirecting to new user session url: #{new_user_session_url}"
       # redirect_to new_user_session_url and return
-      redirect_to new_user_registration_url(program: "dkk_summer_2018") and return
+      redirect_to new_user_registration_url and return
     end
   end
 
