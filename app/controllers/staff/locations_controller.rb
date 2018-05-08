@@ -65,6 +65,6 @@ class Staff::LocationsController < ApplicationController
   end
 
   def permitted_params
-    @permitted_params ||= params[:location].present? ? params.require(:location).permit(:program, :name) : {}
+    @permitted_params ||= params[:location].present? ? params.require(:location).permit(:name, program_ids: []) : {}
   end
 end
