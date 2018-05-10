@@ -34,7 +34,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
     if @account.valid?
       unless overlapping_enrollments?
         @account.save
-        redirect_to @account.signup_complete? ? (@account.enrollments.unpaid.any? ? new_account_dashboard_payment_path(@account) : account_dashboard_path(@account)) : account_step_path(@account, :plan), notice: "enrollment successful!"
+        redirect_to @account.signup_complete? ? (@account.enrollments.unpaid.any? ? new_account_dashboard_payment_path(@account) : account_dashboard_path(@account)) : account_step_path(@account, :summary), notice: "enrollment successful!"
       else
         build_missing_enrollments
         render "new"
