@@ -12,6 +12,11 @@ class Account::CheckoutsController < ApplicationController
     itemizations = calculator.itemize
     enrollments = calculator.enrollments
 
+    if amount.to_i == 0
+      flash[:error] = "Your children aren't enrolled in anything yet."
+      redirect_to account_step_path(@account, :plan) and return
+    end
+
     # Token is created using Stripe.js or Checkout!
     # Get the payment token ID submitted by the form:
     token = params[:stripeToken]
@@ -32,12 +37,12 @@ class Account::CheckoutsController < ApplicationController
       puts e.message
       puts e.backtrace
       flash[:notice] = e.message
-      redirect_to account_step_path(@account, :payment) && return
+      redirect_to account_step_path(@account, :payment) and return
     rescue => e
       puts e.message
       puts e.backtrace
       flash[:error] = "There seems to be a problem with your payment information. Please try again."
-      redirect_to account_step_path(@account, :payment) && return
+      redirect_to account_step_path(@account, :payment) and return
     end
 
     # YOUR CODE: Save the customer ID and other info in a database for later.

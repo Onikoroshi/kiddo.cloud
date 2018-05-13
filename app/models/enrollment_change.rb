@@ -45,6 +45,7 @@ class EnrollmentChange < ApplicationRecord
     max_child_index = 0
     max_enrollment_index = 0
     self.find_each do |enrollment_change|
+      enrollment_change.update_attribute(:data, {}) if enrollment_change.data.nil?
       enrollment = enrollment_change.enrollment
 
       child_index = params["children_attributes"].select{|key, values| values["id"] == enrollment.child_id}.keys.first
@@ -157,7 +158,7 @@ class EnrollmentChange < ApplicationRecord
 
     if data["_destroy"].present?
       enrollment.last_paid_amount * -1 # this will be the refund amount
-    elsif !enrollment.plan.recurring? && data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
+    elsif !enrollment.plan_type.recurring? && data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
       old_plan = enrollment.plan
       new_plan = Plan.find_by(id: data["plan_id"])
 

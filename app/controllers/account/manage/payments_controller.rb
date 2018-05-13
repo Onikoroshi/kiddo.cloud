@@ -31,6 +31,7 @@ class Account::Manage::PaymentsController < ApplicationController
     begin
       charge_transaction = handle_charges(calculator, customer)
       handle_refunds(calculator, customer, charge_transaction)
+      send_emails(charge_transaction)
     rescue Stripe::CardError => e
       puts e.message
       puts e.backtrace
@@ -50,6 +51,14 @@ class Account::Manage::PaymentsController < ApplicationController
 
   def fetch_account
     @account = Account.find(params[:account_id])
+  end
+
+  def send_emails(transaction)
+    program_ids = transaction.itemizations.keys.select{|key| key.to_s.include?("signup_fee_")}.map{|key| key.to_s.gsub("signup_fee_", "")}
+
+    signed_up_programs = Program.where(id: program_ids).distinct
+    TransactionalMailer.welcome_summer_customer(@account).deliver_now if signed_up_programs.for_summer.any?
+    TransactionalMailer.welcome_fall_customer(@account).deliver_now if signed_up_programs.for_fall.any?
   end
 
   def handle_charges(calculator, customer)
