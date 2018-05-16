@@ -39,6 +39,10 @@ class Enrollment < ApplicationRecord
     self.all.inject(Money.new(0)){ |sum, enrollment| sum + Money.new(enrollment.amount_due_today) }
   end
 
+  def self.next_payment_date
+    self.reorder("next_payment_date ASC").first.next_payment_date
+  end
+
   # get a unique list of programs associated with a set of enrollments
   def self.programs
     Program.where(id: self.joins(:program).pluck("programs.id").uniq)
@@ -260,9 +264,9 @@ class Enrollment < ApplicationRecord
       target_date = next_target_date
       payment_date = next_payment_date
 
-      # create a blank transaction for other changes to refer back to
-      if payment_date >= Time.zone.today
-        EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: Money.new(0), target_date: self.starts_at, description_data: {"description" => self.to_short, "start_date" => self.starts_at, "stop_date" => self.ends_at})
+      # create a blank transaction - that runs from today to the day before the enrollment starts (at which point another transaction should be created for that first payment) - for other changes to refer back to
+      if payment_date > Time.zone.today
+        EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: Money.new(0), target_date: Time.zone.today, description_data: {"description" => self.to_short, "start_date" => Time.zone.today, "stop_date" => self.starts_at - 1.day})
       end
 
       while target_date <= program.ends_at && payment_date <= Time.zone.today
