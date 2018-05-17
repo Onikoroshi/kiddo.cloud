@@ -96,12 +96,24 @@ class Program < ApplicationRecord
       enrollments.recurring.find_each do |enrollment|
         if starts_at_changed?
           enrollment.update_attribute(:starts_at, [self.starts_at, enrollment.created_at.to_date].max)
-          enrollment.set_next_target_and_payment_date!
         end
 
         if ends_at_changed?
-          enrollment.update_attribute(:ends_at, [self.starts_at, Time.zone.today].max)
+          enrollment.update_attribute(:ends_at, [self.ends_at, Time.zone.today].max)
+        end
+        
+        if starts_at_changed? || ends_at_changed?
           enrollment.set_next_target_and_payment_date!
+
+          enrollment.enrollment_transactions.find_each do |et|
+            data_hash = et.description_data
+            # keep the descriptions updated
+            data_hash.merge!({"description" => et.enrollment.to_short})
+            if et.placeholder? # only change the date if it's the initial placeholder
+              data_hash.merge!({"stop_date" => [et.enrollment.starts_at - 1.day, data_hash["start_date"].to_date].max})
+            end
+            et.update_attributes(description_data: data_hash)
+          end
         end
 
         if earliest_payment_offset_changed? && enrollment.child.account.payment_offset < earliest_payment_offset

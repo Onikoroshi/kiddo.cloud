@@ -196,12 +196,10 @@ class Enrollment < ApplicationRecord
       end
 
       self.next_target_date = target_date
-      self.next_payment_date = target_date + child.account.payment_offset.days
+      self.next_payment_date = target_date.beginning_of_month + child.account.payment_offset.days
 
       if next_payment_date <= Time.zone.today
         self.paid = false
-        latest_enrollment_transaction.destroy if latest_enrollment_transaction
-      else
       end
     else
       self.next_target_date ||= (created_at || Time.zone.today).to_date
@@ -271,21 +269,24 @@ class Enrollment < ApplicationRecord
       target_date = next_target_date
       payment_date = next_payment_date
 
+      created_transaction = nil
+
       # create a blank transaction - that runs from today to the day before the enrollment starts (at which point another transaction should be created for that first payment) - for other changes to refer back to
-      if payment_date > Time.zone.today
-        EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: Money.new(0), target_date: Time.zone.today, description_data: {"description" => self.to_short, "start_date" => Time.zone.today, "stop_date" => self.starts_at - 1.day})
+      if payment_date > Time.zone.today && enrollment_transactions.placeholders.blank?
+        created_transaction = EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: Money.new(0), target_date: Time.zone.today, description_data: {"description" => self.to_short, "start_date" => Time.zone.today, "stop_date" => self.starts_at - 1.day})
       end
 
       while target_date <= program.ends_at && payment_date <= Time.zone.today
         stop_date = target_date.end_of_month
-        EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: plan.price_for_date(target_date), target_date: target_date, description_data: {"description" => self.to_short, "start_date" => target_date, "stop_date" => stop_date})
+        created_transaction = EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: plan.price_for_date(target_date), target_date: target_date, description_data: {"description" => self.to_short, "start_date" => target_date, "stop_date" => stop_date})
         target_date = stop_date + 1.day
         payment_date = target_date + child.account.payment_offset.days
       end
     end
 
-    self.update_attribute(:paid, true)
-    self.set_next_target_and_payment_date!
+    ap "marking enrollment #{self.id} paid"
+    self.paid = true
+    self.save
   end
 
   def transaction_for_target_date(given_date)
@@ -293,7 +294,7 @@ class Enrollment < ApplicationRecord
   end
 
   def transaction_covers_date(given_date)
-    enrollment_transactions.paid.where("description_data->'start_date' <= ? AND description_data->'stop_date' >= ?", given_date, given_date).reverse_chronological.first
+    enrollment_transactions.paid.where("enrollment_transactions.amount > 0 AND description_data->'start_date' <= ? AND description_data->'stop_date' >= ?", given_date, given_date).reverse_chronological.first
   end
 
   def last_transaction

@@ -8,6 +8,13 @@ class EnrollmentTransaction < ApplicationRecord
   scope :by_target_date, -> { order("enrollment_transactions.target_date ASC") }
   scope :paid, -> { joins(:my_transaction).where("transactions.paid IS TRUE") }
 
+  # used to populate receipts where people signed up before the first payment date
+  scope :placeholders, -> { where("amount <= ?", 0) }
+
+  def placeholder?
+    amount <= 0
+  end
+
   def description
     description_data.present? && description_data["description"].present? ? description_data["description"] : enrollment.to_short
   end

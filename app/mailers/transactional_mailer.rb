@@ -25,4 +25,14 @@ class TransactionalMailer < ApplicationMailer
     @account = account
     mail(to: @account.primary_email, subject: "Alert about your child")
   end
+
+  def successful_recurring_payment(account)
+    @account = account
+    mail(to: @account.primary_email, subject: "Recurring Payment Successful")
+  end
+
+  def failed_recurring_payment(account)
+    @account = account
+    mail(to: @account.primary_email, subject: "Recurring Payment Failed")
+  end
 end
