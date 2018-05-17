@@ -35,6 +35,8 @@ class Enrollment < ApplicationRecord
   scope :for_date, ->(date) { date.present? ? where("enrollments.starts_at <= ? AND enrollments.ends_at >= ?", date, date) : all }
   scope :recurring, -> { joins(:plan).where(plans: {plan_type: PlanType.recurring.map(&:to_s)}).distinct }
 
+  scope :due_by_today, -> { where("enrollments.next_payment_date <= ?", Time.zone.today) }
+
   def self.total_amount_due_today
     self.all.inject(Money.new(0)){ |sum, enrollment| sum + Money.new(enrollment.amount_due_today) }
   end
@@ -180,7 +182,8 @@ class Enrollment < ApplicationRecord
       stop_date = nil
 
       latest_enrollment_transaction = given_enrollment_transaction || enrollment_transactions.paid.by_target_date.last
-      stop_date = latest_enrollment_transaction.description_data["stop_date"] if latest_enrollment_transaction.present?
+
+      stop_date = latest_enrollment_transaction.description_data["stop_date"] if latest_enrollment_transaction.present? && latest_enrollment_transaction.amount > 0
 
       if stop_date.present?
         target_date = stop_date.to_date.end_of_month + 1.day # move forward a month
@@ -191,7 +194,11 @@ class Enrollment < ApplicationRecord
       self.next_target_date = target_date
       self.next_payment_date = target_date + child.account.payment_offset.days
 
-      self.paid = false if next_payment_date <= Time.zone.today
+      if next_payment_date <= Time.zone.today
+        self.paid = false
+        latest_enrollment_transaction.destroy if latest_enrollment_transaction
+      else
+      end
     else
       self.next_target_date ||= (created_at || Time.zone.today).to_date
       self.next_payment_date ||= (created_at || Time.zone.today).to_date

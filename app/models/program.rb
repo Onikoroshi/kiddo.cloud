@@ -96,10 +96,12 @@ class Program < ApplicationRecord
       enrollments.recurring.find_each do |enrollment|
         if starts_at_changed?
           enrollment.update_attribute(:starts_at, [self.starts_at, enrollment.created_at.to_date].max)
+          enrollment.set_next_target_and_payment_date!
         end
 
         if ends_at_changed?
           enrollment.update_attribute(:ends_at, [self.starts_at, Time.zone.today].max)
+          enrollment.set_next_target_and_payment_date!
         end
 
         if earliest_payment_offset_changed? && enrollment.child.account.payment_offset < earliest_payment_offset
