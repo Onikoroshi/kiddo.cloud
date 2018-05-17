@@ -11,6 +11,7 @@ class Account::CheckoutsController < ApplicationController
     amount = calculator.calculate
     itemizations = calculator.itemize
     enrollments = calculator.enrollments
+    recurring_enrollments = enrollments.recurring.to_a # freeze this list because the relation will change once they're paid
 
     if amount.to_i == 0
       flash[:error] = "Your children aren't enrolled in anything yet."
@@ -53,41 +54,40 @@ class Account::CheckoutsController < ApplicationController
     #   :currency => "usd",
     #   :customer => customer_id, # Previously stored, then retrieved
     # )
-    if !current_user.legacy? && !current_user.legacy_enrollment_chargeable?
-      if charge.present?
-        @account.update_attributes(
-          gateway_customer_id: customer.id,
-          card_brand: params[:account][:card_brand],
-          card_exp_month: params[:account][:card_exp_month],
-          card_exp_year: params[:account][:card_exp_year],
-          card_last4: params[:account][:card_last4],
-        )
+    if charge.present?
+      @account.update_attributes(
+        gateway_customer_id: customer.id,
+        card_brand: params[:account][:card_brand],
+        card_exp_month: params[:account][:card_exp_month],
+        card_exp_year: params[:account][:card_exp_year],
+        card_last4: params[:account][:card_last4],
+      )
 
-        transaction = Transaction.create(
-          account: @account,
-          transaction_type: TransactionType[:one_time],
-          month: Time.zone.now.month,
-          year: Time.zone.now.year,
-          gateway_id: charge.id,
-          amount: amount,
-          paid: true,
-          itemizations: itemizations
-        )
+      transaction = Transaction.create(
+        account: @account,
+        transaction_type: TransactionType[:one_time],
+        month: Time.zone.now.month,
+        year: Time.zone.now.year,
+        gateway_id: charge.id,
+        amount: amount,
+        paid: true,
+        itemizations: itemizations
+      )
 
-        enrollments.each do |enrollment|
-          enrollment.craft_enrollment_transactions(transaction)
-        end
-
-        @account.finalize_signup
-        @account.record_step(:payment)
-        redirect_to account_dashboard_path(@account), notice: "Thank you, your payment is complete. You will receive a receipt for payment, and welcome email for summer camp. If you don't receive these, please call our office (1-530-220-4731)"
-      else
-        render :new
+      enrollments.each do |enrollment|
+        enrollment.craft_enrollment_transactions(transaction)
       end
-    else
-      @account.record_step(:payment)
+
       @account.finalize_signup
-      redirect_to account_dashboard_path(@account), notice: "Thank you, your payment is complete. You will receive a receipt for payment, and welcome email for summer camp. If you don't receive these, please call our office (1-530-220-4731)"
+      @account.record_step(:payment)
+
+      if recurring_enrollments.any?
+        flash[:error] = "All of your enrollments have been finalized. Your card will not be charged again until #{recurring_enrollments.sort{|e| e.next_payment_date}.last.next_payment_date.stamp("Jul. 28th, 2018")}. No further action is necessary on your part."
+      end
+
+      redirect_to account_dashboard_path(@account), notice: "Thank you, your payment is complete. You will receive a receipt for payment and welcome email to your registered email address. If you don't receive these, please call our office (1-530-220-4731)"
+    else
+      render :new
     end
   end
 

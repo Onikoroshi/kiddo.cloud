@@ -22,6 +22,7 @@ class Account::Manage::PaymentsController < ApplicationController
 
     calculator = ChildEnrollment::EnrollmentPriceCalculator.new(@account)
     calculator.calculate
+    recurring_enrollments = calculator.enrollments.recurring.to_a # freeze this list because the relation will change once they're paid
 
     # Token is created using Stripe.js or Checkout!
     # Get the payment token ID submitted by the form:
@@ -44,6 +45,10 @@ class Account::Manage::PaymentsController < ApplicationController
       redirect_to new_account_dashboard_payment_path(@account) and return
     end
 
+    if recurring_enrollments.any?
+      flash[:error] = "All of your enrollments have been finalized. Your card will not be charged again until #{recurring_enrollments.sort{|e| e.next_payment_date}.last.next_payment_date.stamp("Jul. 28th, 2018")}. No further action is necessary on your part."
+    end
+
     redirect_to account_dashboard_payments_path(@account), notice: "Thank you, your payment is complete. You will receive a receipt for payment sent to your registered email address. If you don't receive it, please call our office (1-530-220-4731)"
   end
 
@@ -63,18 +68,20 @@ class Account::Manage::PaymentsController < ApplicationController
 
   def handle_charges(calculator, customer)
     amount = calculator.total
-    return if amount <= 0
 
-    charge = Stripe::Charge.create(
-      :amount => (amount * 100).to_i,
-      :currency => "usd",
-      :customer => customer.id,
-    )
+    charge = nil
+    if amount > 0
+      charge = Stripe::Charge.create(
+        :amount => (amount * 100).to_i,
+        :currency => "usd",
+        :customer => customer.id,
+      )
+    end
 
     transaction = Transaction.create!(
       account: @account,
       transaction_type: TransactionType[:one_time],
-      gateway_id: charge.id,
+      gateway_id: charge.present? ? charge.id : "",
       amount: amount,
       paid: true,
       itemizations: calculator.itemizations
