@@ -3,23 +3,24 @@ namespace :scheduler do
   task process_recurring_payments: :environment do
     due_enrollments = Enrollment.alive.active.recurring.due_by_today.includes(child: :account).references(:accounts)
     enroll_hash = due_enrollments.to_a.group_by{|e| e.child.account.id}
-    ap enroll_hash
+    messages = []
+    messages << enroll_hash
 
     total_accounts = enroll_hash.count
     index = 1
     enroll_hash.each do |account_id, enrollments|
-      ap "processing account #{index} of #{total_accounts} (#{account_id})"
+      messages << "processing account #{index} of #{total_accounts} (#{account_id})"
 
       if enrollments.count == 0
-        ap "no enrollments due for this account"
+        messages << "no enrollments due for this account"
         next
       else
-        ap "#{enrollments.count} enrollments due for this account"
+        messages << "#{enrollments.count} enrollments due for this account"
       end
 
       account = enrollments.first.child.account || Account.find_by(id: account_id)
       if account.blank?
-        ap "no associated account found"
+        messages << "no associated account found"
         next
       end
 
@@ -27,7 +28,7 @@ namespace :scheduler do
 
       success = false
       if total <= Money.new(0)
-        ap "enrollments #{enrollments.map(&:id).join(" ")} have $0 due."
+        messages << "enrollments #{enrollments.map(&:id).join(" ")} have $0 due."
         enrollments.each do |enrollment|
           enrollment.set_next_target_and_payment_date!
         end
@@ -35,7 +36,7 @@ namespace :scheduler do
         # don't send an email if they didn't actually owe anything
         next
       elsif account.gateway_customer_id.present?
-        ap "total of #{total} due"
+        messages << "total of #{total} due"
 
         stripe_customer = StripeCustomerService.new(account).find_customer
         if stripe_customer.present?
@@ -61,8 +62,8 @@ namespace :scheduler do
 
             success = true
           rescue => e
-            ap e.message
-            ap e.backtrace
+            messages << e.message
+            messages << e.backtrace
           end
         end
       end
@@ -71,7 +72,7 @@ namespace :scheduler do
         TransactionalMailer.successful_recurring_payment(account).deliver_now
       else
         enrollments.each do |enrollment|
-          ap "making enrollment #{enrollment.id} unpaid"
+          messages << "marking enrollment #{enrollment.id} unpaid"
           enrollment.update_attribute(:paid, false)
         end
         TransactionalMailer.failed_recurring_payment(account).deliver_now
@@ -79,6 +80,8 @@ namespace :scheduler do
 
       index += 1
     end
+
+    TransactionalMailer.recurring_payment_report(messages).deliver_now
   end
 
   desc "This task is called by the Heroku scheduler add-on"

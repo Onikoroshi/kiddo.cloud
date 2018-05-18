@@ -284,7 +284,6 @@ class Enrollment < ApplicationRecord
       end
     end
 
-    ap "marking enrollment #{self.id} paid"
     self.paid = true
     self.save
   end

@@ -35,4 +35,9 @@ class TransactionalMailer < ApplicationMailer
     @account = account
     mail(to: @account.primary_email, subject: "Recurring Payment Failed")
   end
+
+  def recurring_payment_report(messages)
+    @messages = messages
+    mail(to: "petertcormack@gmail.com", subject: "DKK Recurring Payment Report")
+  end
 end
