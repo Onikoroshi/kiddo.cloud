@@ -80,9 +80,8 @@ class Staff::StaffController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def permitted_params
     user_attributes = [:id, :email, :first_name, :last_name, :password, :password_confirmation]
-    ap user_attributes
     user_attributes += [role_ids: []] if policy(Staff).super_manage?
-    ap user_attributes
+
     @permitted_params ||= params[:staff].present? ? params.require(:staff).permit(user_attributes: user_attributes, location_ids: []) : {}
   end
 end

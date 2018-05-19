@@ -10,7 +10,7 @@ class StaffPolicy < ApplicationPolicy
     return true if !staff.is_a?(Staff) && user.role?("director")
     return false if user.role?("staff", "parent")
 
-    user.role?("director") && (staff.user.blank? || staff.user.role?("staff"))
+    user.role?("director") && (staff.user.blank? || staff.user.roles.blank? || staff.user.role?("staff"))
   end
 
   alias_method :index?, :manage?

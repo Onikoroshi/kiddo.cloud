@@ -13,7 +13,8 @@
       %th.admin-title Email
       %th.admin-title Role
       %th.admin-title Locations
-      %th.admin-title Time Entries
+      - if policy(TimeEntry).view?
+        %th.admin-title Time Entries
       %th.admin-title Date Created
       %th.admin-title Actions
 
@@ -24,7 +25,10 @@
           %td= s.user.email
           %td= s.user.roles.pluck(:name).map(&:humanize).join(", ")
           %td= s.locations.collect {|l| l.name }.to_sentence
-          %td= link_to "Hello", staff_time_entries_path(staff_id: s.id)
+          - if policy(TimeEntry).view?
+            %td
+              = link_to staff_time_entries_path(staff_id: s.id) do
+                %i.material-icons alarm
           %td= s.created_at.stamp("11/05/2017")
           %td
             - if policy(s).manage?
