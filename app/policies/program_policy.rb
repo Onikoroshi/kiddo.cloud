@@ -2,7 +2,7 @@ class ProgramPolicy < ApplicationPolicy
   alias_method :program, :record
 
   def manage?
-    user.role?("super_admin")
+    user.super_admin?
   end
 
   alias_method :index?, :manage?

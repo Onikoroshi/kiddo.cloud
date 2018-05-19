@@ -5,7 +5,7 @@
   .text-center
     = form_tag staff_accounts_path, method: :get do
       %h5 Location
-      = select_tag "location_id", options_from_collection_for_select(Location.all, "id", "name", @location_id), include_blank: "All Locations"
+      = select_tag "location_id", options_from_collection_for_select(@locations, "id", "name", @location_id), include_blank: current_user.super_admin? ? "All Locations" : false
       = submit_tag "Submit"
 
   .pull-right{style: "padding-right: 40px;"}

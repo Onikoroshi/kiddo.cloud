@@ -37,6 +37,10 @@ class User < ApplicationRecord
     permissions.find_by(name: p).present? # Use db query instead of array filtering
   end
 
+  def super_admin?
+    role?(:super_admin)
+  end
+
   def director?
     role?(:director)
   end
@@ -55,5 +59,15 @@ class User < ApplicationRecord
 
   def legacy_enrollment_chargeable?
     false
+  end
+
+  def manageable_locations
+    if super_admin?
+      Location.all
+    elsif director? && staff.present?
+      staff.locations
+    else
+      Location.none
+    end
   end
 end

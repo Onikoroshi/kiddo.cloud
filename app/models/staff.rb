@@ -11,6 +11,16 @@ class Staff < ApplicationRecord
 
   after_create :initialize_pin_number
 
+  def manageable_locations
+    if user.super_admin?
+      Location.all
+    elsif user.director?
+      locations
+    else
+      Location.none
+    end
+  end
+
   def last_time_entry
     self.time_entries.last
   end

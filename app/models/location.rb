@@ -16,6 +16,11 @@ class Location < ApplicationRecord
 
   validates :name, presence: true
 
+  # get a unique list of programs associated with a set of locations
+  def self.programs
+    Program.where(id: self.joins(:programs).pluck("programs.id").uniq)
+  end
+
   def default?
     default
   end

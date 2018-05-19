@@ -20,8 +20,11 @@ class Staff::AccountsController < ApplicationController
   private
 
   def set_collection
+    @locations = current_user.manageable_locations
     @location_id = params[:location_id]
     target_location = Location.find_by(id: @location_id)
+    target_location = @locations.first if !current_user.super_admin? && !@locations.include?(target_location)
+
     @accounts = Account
                 .includes(:parents)
                 .where(center: @center)

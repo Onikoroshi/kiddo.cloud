@@ -8,7 +8,7 @@ class TimeEntryPolicy < ApplicationPolicy
   alias_method :index?, :view?
 
   def manage?
-    user.role?("super_admin")
+    user.super_admin?
   end
 
   alias_method :new?, :manage?
