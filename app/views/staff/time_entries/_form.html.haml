@@ -1,0 +1,23 @@
+.row
+  .col-md-6.col-sm-8.col-md-offset-3.col-sm-offset-2
+    = form_for([:staff, @time_entry]) do |f|
+      = render "application/form_errors", object: @time_entry
+
+      = hidden_field_tag :staff_id, @staff.id
+      = f.hidden_field :time_recordable_id, value: @staff.id
+      = f.hidden_field :time_recordable_type, value: "Staff"
+
+      .form-group.label-floating
+        = f.label :location_id, "Location", class: "control-label", style: "padding-bottom: 20px;"
+        = f.collection_select :location_id, @staff.locations, :id, :name, class: "form-control"
+
+      .form-group.label-floating
+        = f.label :time, "Time", class: "control-label"
+        = f.text_field :time, class: "form-control flatpickr-datetime"
+
+      .form-group.label-floating
+        = f.label :record_type, "Action", class: "control-label", style: "padding-bottom: 20px;"
+        = f.select :record_type, TimeEntryType.select_options, class: "form-control"
+
+      = link_to "Cancel", staff_time_entries_path(staff_id: @staff.id), class: "btn"
+      = f.submit class: "btn btn-info pull-right"

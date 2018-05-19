@@ -17,13 +17,23 @@
           = u.text_field :email, class: "form-control"
         .form-group
           = f.label :location_ids, "Locations"
-          = f.collection_select :location_ids, Location.all, :id, :name
-        - if @staff.new_record?
+          = f.collection_select :location_ids, Location.all, :id, :name, { selected: @staff.location_ids }, { multiple: true }
+        - if policy(@staff).super_manage?
+          .form-group
+            = u.label :role_ids, "Role"
+            = u.collection_select :role_ids, Role.staff_types, :id, :display_name, { selected: @staff.user.role_ids }, { multiple: true }
+
+        - if @staff.new_record? && policy(@staff).super_manage?
           .form-group.label-floating
             = u.label :password, "Password", class: "control-label"
             = u.password_field :password, class: "form-control"
           .form-group.label-floating
             = u.label :password, "Password Confirmation", class: "control-label"
             = u.password_field :password_confirmation, class: "form-control"
+        - elsif @staff.new_record?
+          = u.hidden_field :password, value: "asdfasdf"
 
+        %h4 PIN Number: #{@staff.pin_number}
+
+        = link_to "Cancel", staff_staff_index_path, class: "btn"
         = f.submit class: "btn btn-info pull-right"

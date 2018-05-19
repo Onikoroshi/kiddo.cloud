@@ -79,6 +79,7 @@ Rails.application.routes.draw do
     resources :plans, except: :show
     resources :locations, except: :show
     resources :announcements, except: :show
+    resources :time_entries, except: :show
 
     resources :accounts, only: [:index, :show] do
       collection do

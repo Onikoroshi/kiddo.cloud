@@ -81,7 +81,7 @@ class Child < ApplicationRecord
 
   def on_clock?
     return false unless last_time_entry.present?
-    last_time_entry.record_type == "entry"
+    last_time_entry.record_type.entry?
   end
 
   def overlapping_enrollment_dates(given_enrollments)

@@ -1,41 +1,36 @@
 %h3.text-center
   Staff
-  
+
 .text-center
   = link_to "+ Add Staff Member", new_staff_staff_path, class: "btn btn-primary btn-sm"
 %br
-  
+
 
 - if @staff.any?
-  .row
-    .col-xs-2.admin-title
-      Name
-    .col-xs-3.admin-title
-      Email
-    .col-xs-3.admin-title
-      Location
-    .col-xs-2.admin-title
-      Date Created
-    .col-xs-2.admin-title
-      Actions
-    %br.cleaner
-    %hr
-  .row
-    - @staff.each do |s|
-      .col-xs-2.admin-parents
-        =s.user.full_name
-      .col-xs-3.admin-parents
-        =s.user.email
-      .col-xs-3.admin-parents
-        =s.locations.collect {|l| l.name }.to_sentence
-      .col-xs-2.admin-parents
-        =s.created_at.stamp("11/05/2017")
-      .col-xs-2.admin-parents
-        =link_to "Edit", edit_staff_staff_path(s), class: "btn btn-xs"
-      .cleaner
-      %hr
+  %table
+    %thead
+      %th.admin-title Name
+      %th.admin-title Email
+      %th.admin-title Role
+      %th.admin-title Locations
+      %th.admin-title Time Entries
+      %th.admin-title Date Created
+      %th.admin-title Actions
 
-
+    %tbody
+      - @staff.each do |s|
+        %tr
+          %td= s.user.full_name
+          %td= s.user.email
+          %td= s.user.roles.pluck(:name).map(&:humanize).join(", ")
+          %td= s.locations.collect {|l| l.name }.to_sentence
+          %td= link_to "Hello", staff_time_entries_path(staff_id: s.id)
+          %td= s.created_at.stamp("11/05/2017")
+          %td
+            - if policy(s).manage?
+              = link_to "Edit", edit_staff_staff_path(s), class: "btn btn-xs"
+            - else
+              .btn.btn-xs{style: "opacity: 0.0;"} Placeholder
 
 .text-center
   = paginate @staff

@@ -18,6 +18,6 @@
         .col-xs-6.text-right
           .togglebutton
             %label
-              = check_box_tag :on_clock, true, enrollment.child.on_clock?, :data => {:remote => true, :url => url_for( controller: "/time_entries", :action => 'create', params: {"time_entry[location_id]" => "1", "time_entry[time_recordable_id]" => enrollment.child.id, "time_entry[time_recordable_type]" => "Child"}), :method => :post}, :class => 'input-large'
+              = check_box_tag :on_clock, true, enrollment.child.on_clock?, :data => {:remote => true, :url => url_for( controller: "/time_entries", :action => 'create', params: {"time_entry[location_id]" => @location.id, "time_entry[time_recordable_id]" => enrollment.child.id, "time_entry[time_recordable_type]" => "Child"}), :method => :post}, :class => 'input-large'
         .cleaner
 .cleaner
