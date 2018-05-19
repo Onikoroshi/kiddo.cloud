@@ -42,6 +42,10 @@ class Program < ApplicationRecord
     name.gsub("Davis Kids Klub ", "")
   end
 
+  def to_s
+    short_name
+  end
+
   def can_destroy?
     return false if plans.any?
     return false if enrollments.any?
@@ -101,7 +105,7 @@ class Program < ApplicationRecord
         if ends_at_changed?
           enrollment.update_attribute(:ends_at, [self.ends_at, Time.zone.today].max)
         end
-        
+
         if starts_at_changed? || ends_at_changed?
           enrollment.set_next_target_and_payment_date!
 

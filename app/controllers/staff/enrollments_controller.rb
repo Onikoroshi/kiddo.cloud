@@ -50,6 +50,7 @@ class Staff::EnrollmentsController < ApplicationController
   private
 
   def find_enrollments
+    ap "finding program with id #{params[:program_id]}: #{Program.find_by(id: params[:program_id]).to_s}"
     @program = Program.find_by(id: params[:program_id]) || @center.current_program
     @location = Location.find_by(id: params[:location_id])
     @location_id = @location.present? ? @location.id : ""

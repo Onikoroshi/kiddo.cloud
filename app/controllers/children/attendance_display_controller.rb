@@ -10,6 +10,7 @@ class Children::AttendanceDisplayController < ApplicationController
       @location = @center.default_location
     end
 
+    @enrollments = @location.enrollments.alive.paid.for_date(Time.zone.today)
   end
 
 end

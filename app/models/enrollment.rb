@@ -16,6 +16,8 @@ class Enrollment < ApplicationRecord
   validates :starts_at, :ends_at, presence: true
   validate :validate_dates
 
+  DAY_DICTIONARY = ["", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+
   # enrollments can be removed after being paid for, so we need to keep their information around
   scope :alive, -> { where.not(dead: true) }
   scope :dead, -> { where(dead: true) }
@@ -32,7 +34,7 @@ class Enrollment < ApplicationRecord
   scope :never_paid, -> { includes(:transactions).where("transactions.paid IS FALSE OR transactions.id IS NULL").references(:transactions).distinct }
   scope :with_changes, -> { joins(:enrollment_changes) }
   scope :without_changes, -> { includes(:enrollment_changes).where(enrollment_changes: {id: nil}) }
-  scope :for_date, ->(date) { date.present? ? where("enrollments.starts_at <= ? AND enrollments.ends_at >= ?", date, date) : all }
+  scope :for_date, ->(date) { date.present? ? where("enrollments.starts_at <= ? AND enrollments.ends_at >= ? AND enrollments.#{DAY_DICTIONARY[date.wday]} IS TRUE", date, date) : all }
   scope :recurring, -> { joins(:plan).where(plans: {plan_type: PlanType.recurring.map(&:to_s)}).distinct }
 
   scope :due_by_today, -> { where("enrollments.next_payment_date <= ?", Time.zone.today) }
@@ -395,18 +397,8 @@ class Enrollment < ApplicationRecord
   end
 
   def enrolled_today?
-    dictionary = {
-      1 => "monday",
-      2 => "tuesday",
-      3 => "wednesday",
-      4 => "thursday",
-      5 => "friday",
-      6 => "saturday",
-      0 => "sunday",
-    }
-
     today = Time.zone.now.wday
-    send(dictionary[today])
+    send(DAY_DICTIONARY[today])
   end
 
   private

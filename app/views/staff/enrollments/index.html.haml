@@ -1,5 +1,5 @@
 %h3.text-center
-  #{@center.current_program.name} Enrollments
+  #{@program.name} Enrollments
 
 = form_tag staff_enrollments_path, method: :get do
   .row
@@ -18,6 +18,9 @@
   .row
     .text-center{ style: "padding-bottom: 40px;" }
       = submit_tag "Submit"
+
+    .pull-left
+      %h5 Total of #{@enrollments.count} children attending
 
     .pull-right{style: "padding-right: 40px;"}
       = link_to "Export to CSV", export_to_csv_staff_enrollments_path(program_id: @program.id, location_id: @location_id, enrollments_date: @enrollments_date, format: "csv"), class: "btn btn-primary btn-sm"

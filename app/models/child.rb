@@ -32,7 +32,7 @@ class Child < ApplicationRecord
 
   classy_enum_attr :gender
 
-  scope :low_grade, -> { where(grade_entering: ["1", "2", "3"]) }
+  scope :low_grade, -> { where(grade_entering: ["TK", "K", "1", "2", "3"]) }
   scope :high_grade, -> { where(grade_entering: ["4", "5", "6"]) }
 
   AVAILABLE_GRADES = (["TK", "K"] + (1..6).to_a.map(&:to_s))

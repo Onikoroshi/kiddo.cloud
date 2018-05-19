@@ -4,21 +4,20 @@
 
   %h5.text-center
     Select Your Location
-  
+
   #location-switcher.text-center
     = form_tag children_attendance_display_index_path, method: :get do
-      = select_tag "child-location-switcher", options_from_collection_for_select(@center.locations, 'id', 'name', @location.try(:id)),
-        { class: "location-switcher" }
-  
+      = select_tag "child-location-switcher", options_from_collection_for_select(@center.locations, 'id', 'name', @location.try(:id)), { class: "location-switcher" }
+
   #time-entry-message
-  
+
   #time-entries
-    - @location.children.each do |c|
+    - @enrollments.each do |enrollment|
       .checkin-name
-        .col-xs-6= c.full_name
+        .col-xs-6= link_to enrollment.child.full_name, staff_account_path(enrollment.child.account)
         .col-xs-6.text-right
           .togglebutton
             %label
-              = check_box_tag :on_clock, true, c.on_clock?, :data => {:remote => true, :url => url_for( controller: "/time_entries", :action => 'create', params: {"time_entry[location_id]" => "1", "time_entry[time_recordable_id]" => c.id, "time_entry[time_recordable_type]" => "Child"}), :method => :post}, :class => 'input-large'
+              = check_box_tag :on_clock, true, enrollment.child.on_clock?, :data => {:remote => true, :url => url_for( controller: "/time_entries", :action => 'create', params: {"time_entry[location_id]" => "1", "time_entry[time_recordable_id]" => enrollment.child.id, "time_entry[time_recordable_type]" => "Child"}), :method => :post}, :class => 'input-large'
         .cleaner
 .cleaner
