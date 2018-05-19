@@ -18,8 +18,9 @@ class User < ApplicationRecord
 
   has_many :time_disputes
 
+  scope :by_role, ->(role_name) { joins(:roles).where("roles.name = ?", role_name) }
   scope :staff, -> { joins(:staff) }
-  scope :parent_users, -> { joins(:roles).where("roles.name = ?", "parent") }
+  scope :parent_users, -> { by_role("parent") }
 
   def full_name
     "#{first_name} #{last_name}"

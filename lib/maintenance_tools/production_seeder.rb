@@ -14,6 +14,7 @@ class MaintenanceTools::ProductionSeeder
 
   def seed_all
     begin
+      seed_roles
       seed_programs
       seed_program_plans
       seed_roles
@@ -24,6 +25,14 @@ class MaintenanceTools::ProductionSeeder
       puts e.backtrace
     end
     puts "Completed production seed."
+  end
+
+  def seed_roles
+    # Roles are based on identity. For example, I can "act in" a role of staff.
+    role_names = ["super_admin", "director", "staff", "parent"]
+    role_names.each do |role_name|
+      Role.where(name: role_name).first_or_create!
+    end
   end
 
   def seed_programs
