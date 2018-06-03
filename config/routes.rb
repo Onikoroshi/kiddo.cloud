@@ -79,7 +79,11 @@ Rails.application.routes.draw do
     resources :plans, except: :show
     resources :locations, except: :show
     resources :announcements, except: :show
-    resources :time_entries, except: :show
+    resources :time_entries, except: :show do
+      collection do
+        get :ratio_report
+      end
+    end
 
     resources :accounts, only: [:index, :show] do
       collection do

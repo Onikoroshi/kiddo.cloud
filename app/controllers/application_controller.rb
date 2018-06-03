@@ -3,6 +3,8 @@ class ApplicationController < ActionController::Base
   layout :get_layout
   include Pundit
 
+  before_action :logout_not_signed_in
+
   before_action :set_raven_context
   before_action :set_center
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -53,6 +55,15 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def logout_not_signed_in
+    allowed_paths = [
+      root_path,
+      new_user_session_path,
+      new_user_registration_path
+    ]
+    redirect_to root_path and return if current_user.blank? && !allowed_paths.include?(request.path)
+  end
 
   def user_exists_without_roles?
     current_user.present? && current_user.roles.count == 0

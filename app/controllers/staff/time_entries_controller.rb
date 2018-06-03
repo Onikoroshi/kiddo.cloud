@@ -1,11 +1,28 @@
 class Staff::TimeEntriesController < ApplicationController
   layout "dkk_staff_dashboard"
   before_action :guard_center!
-  before_action :find_staff
-  before_action :authorize_multiple, only: :index
+  before_action :find_staff, except: :ratio_report
+  before_action :authorize_multiple, only: [:ratio_report, :index]
   before_action :build_single, only: [:new, :create]
   before_action :find_single, only: [:show, :edit, :update, :destroy]
-  before_action :authorize_single, except: :index
+  before_action :authorize_single, except: [:ratio_report, :index]
+
+  def ratio_report
+    @target_date = Time.zone.parse(params[:date].to_s)
+    @target_date = @target_date.present? ? @target_date.to_date : Time.zone.today
+    ap @target_date
+
+    @location = Location.find_by_id(params[:location_id])
+    @location = Location.first if @location.blank?
+    @location_id = @location.id
+
+    @time_entries = TimeEntry.for_date(@target_date).for_location(@location)
+
+    if @time_entries.any?
+      @first_time = @time_entries.order(:time).first.time.beginning_of_hour
+      @last_time = @time_entries.order(:time).last.time.beginning_of_hour + 1.hour
+    end
+  end
 
   def index
     set_collection

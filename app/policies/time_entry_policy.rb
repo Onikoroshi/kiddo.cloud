@@ -11,6 +11,7 @@ class TimeEntryPolicy < ApplicationPolicy
     user.super_admin?
   end
 
+  alias_method :ratio_report?, :manage?
   alias_method :new?, :manage?
   alias_method :create?, :manage?
   alias_method :edit?, :manage?
