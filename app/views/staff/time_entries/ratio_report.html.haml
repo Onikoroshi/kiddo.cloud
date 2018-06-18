@@ -1,0 +1,38 @@
+%h3.text-center
+  Teacher / Child Ratio Report
+
+= form_tag ratio_report_staff_time_entries_path, method: :get do
+  .row
+    .col-xs-6.text-center
+      %h5 Location
+      = select_tag "location_id", options_from_collection_for_select(Location.all, "id", "name", @location_id), include_blank: false
+
+    .col-xs-6.text-center
+      %h5 Date
+      = text_field_tag :date, @target_date, class: "flatpickr-date"
+
+  .row
+    .text-center{ style: "padding-bottom: 40px;" }
+      = submit_tag "Submit"
+
+    .pull-left
+      %h5 Total of #{@time_entries.entering.for_children.count} Children Attending
+      %h5 Total of #{@time_entries.for_staff.entering.count} Staff Working
+
+  %br
+  %br
+
+- if @time_entries.any?
+  %table
+    %thead
+      %th.admin-title Time
+      %th.admin-title Teachers
+      %th.admin-title Children
+
+    %tbody
+      - previous_time = nil
+      - (@first_time.to_i .. @last_time.to_i).step(15.minutes).to_a.each do |time|
+        %tr
+          %td= Time.at(time).stamp("3:00 PM")
+          %td= @time_entries.for_staff.count_checked_in_at(Time.at(time))
+          %td= @time_entries.for_children.count_checked_in_at(Time.at(time))

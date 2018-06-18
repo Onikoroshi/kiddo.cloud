@@ -11,16 +11,23 @@
 
   #time-entry-message
 
-  #time-entries
-    - @location.staff.all.each do |s|
-      .checkin-name
-        .col-xs-6= s.full_name
+  #time-entries.staff-time-entries
+    %table
+      %thead
+        %th Name
+        %th PIN
+        %th Clock In/Out
 
-        .col-xs-6.text-right
-          .togglebutton
-            %label
-              = check_box_tag :on_clock, true, s.on_clock?, :data => {:remote => true, :url => url_for( controller: "/time_entries", :action => 'create', params: {"time_entry[location_id]" => "1", "time_entry[time_recordable_id]" => s.id, "time_entry[time_recordable_type]" => "Staff"}), :method => :post}, :class => 'input-large'
-        .cleaner
+      %tbody
+        - @location.staff.all.each do |s|
+          %tr
+            %td.checkin-name= s.full_name
+            %td.text-left
+              = text_field_tag :pin_number, "", id: "pin_number_#{s.id}"
+              %div{id: "pin_error_#{s.id}", style: "display: none; color: red;"} PIN Number Incorrect
+            %td.togglebutton.text-center
+              %label
+                = check_box_tag :on_clock, true, s.on_clock?, :data => {"location_id" => @location.id, "time_recordable_id" => s.id, "time_recordable_type" => "Staff"}, :class => 'input-large clock-toggle'
 
 .cleaner
 %br

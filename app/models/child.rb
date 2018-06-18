@@ -32,7 +32,7 @@ class Child < ApplicationRecord
 
   classy_enum_attr :gender
 
-  scope :low_grade, -> { where(grade_entering: ["1", "2", "3"]) }
+  scope :low_grade, -> { where(grade_entering: ["TK", "K", "1", "2", "3"]) }
   scope :high_grade, -> { where(grade_entering: ["4", "5", "6"]) }
 
   AVAILABLE_GRADES = (["TK", "K"] + (1..6).to_a.map(&:to_s))
@@ -81,7 +81,7 @@ class Child < ApplicationRecord
 
   def on_clock?
     return false unless last_time_entry.present?
-    last_time_entry.record_type == "entry"
+    last_time_entry.record_type.entry?
   end
 
   def overlapping_enrollment_dates(given_enrollments)

@@ -1,3 +1,8 @@
+# Just for development, make sure both programs are in session
+Program.find_each do |program|
+  program.update_attribute(:starts_at, Time.zone.today - 1.month)
+end
+
 days = [:monday, :tuesday, :wednesday, :thursday, :friday]
 sans_wednesday = [:monday, :tuesday, :thursday, :friday]
 
@@ -81,4 +86,5 @@ end
 
 Enrollment.find_each do |enrollment|
   enrollment.set_next_target_and_payment_date!
+  enrollment.update_attribute(:paid, true)
 end

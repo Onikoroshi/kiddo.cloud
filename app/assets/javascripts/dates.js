@@ -5,4 +5,8 @@ document.addEventListener("turbolinks:load", function() {
     altInput: true
   });
 
+  flatpickr('.flatpickr-datetime', {
+    altInput: true,
+    enableTime: true
+  });
 });

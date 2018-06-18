@@ -1,0 +1,38 @@
+%h3.text-center
+  Time Entries for #{@staff.full_name}
+
+- if policy(TimeEntry).manage?
+  .text-center
+    = link_to "+ Add Time Entry", new_staff_time_entry_path(staff_id: @staff.id), class: "btn btn-primary btn-sm"
+%br
+
+- if @time_entries.any?
+  %table.admin-table
+    %thead
+      - if policy(TimeEntry).manage?
+        %th
+      %th Location
+      %th Time
+      %th Action
+      - if policy(TimeEntry).manage?
+        %th
+
+    %tbody
+      - @time_entries.each do |time_entry|
+        %tr
+          - if policy(TimeEntry).manage?
+            %td
+              = link_to staff_time_entry_path(time_entry, staff_id: @staff.id), method: :delete, :data => { :confirm => 'Are you sure?' } do
+                %i.material-icons delete_forever
+          %td= time_entry.location.name
+          %td= time_entry.time.stamp("March 4th, 2018 2:58 pm")
+          %td= time_entry.record_type.try(:text)
+          - if policy(TimeEntry).manage?
+            %td
+              = link_to edit_staff_time_entry_path(time_entry, staff_id: @staff.id) do
+                %i.material-icons edit
+
+  %hr
+
+  .text-center
+    = paginate @time_entries

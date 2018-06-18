@@ -4,4 +4,10 @@ class Role < ApplicationRecord
 
   validates_presence_of :name
   validates_uniqueness_of :name
+
+  scope :staff_types, -> { where.not(name: "parent") }
+
+  def display_name
+    name.humanize
+  end
 end

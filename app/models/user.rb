@@ -18,7 +18,9 @@ class User < ApplicationRecord
 
   has_many :time_disputes
 
+  scope :by_role, ->(role_name) { joins(:roles).where("roles.name = ?", role_name) }
   scope :staff, -> { joins(:staff) }
+  scope :parent_users, -> { by_role("parent") }
 
   def full_name
     "#{first_name} #{last_name}"
@@ -33,6 +35,10 @@ class User < ApplicationRecord
   def permission?(*p)
     p = p.flatten if p.present?
     permissions.find_by(name: p).present? # Use db query instead of array filtering
+  end
+
+  def super_admin?
+    role?(:super_admin)
   end
 
   def director?
@@ -53,5 +59,15 @@ class User < ApplicationRecord
 
   def legacy_enrollment_chargeable?
     false
+  end
+
+  def manageable_locations
+    if super_admin?
+      Location.all
+    elsif director? && staff.present?
+      staff.locations
+    else
+      Location.none
+    end
   end
 end

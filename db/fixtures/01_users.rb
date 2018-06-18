@@ -67,20 +67,40 @@ end
 
 #-----------------------------------------------------------
 
-User.seed_once(:email) do |user|
-  user.id = 10
-  user.email = "parent.one@gmail.com"
-  user.first_name = "Parent"
-  user.last_name = "One"
-  user.roles = [parent]
-  user.center = Center.find_by(subdomain: "daviskidsklub")
-end
+dict = [
+  "Zero",
+  "One",
+  "Two",
+  "Three",
+  "Four",
+  "Five",
+  "Six",
+  "Seven",
+  "Eight",
+  "Nine",
+  "Ten",
+  "Eleven",
+  "Twelve",
+  "Thirteen",
+  "Fourteen",
+  "Fifteen",
+  "Sixteen",
+  "Seventeen",
+  "Eighteen",
+  "Nineteen",
+  "Twenty"
+]
 
-Account.seed_once(:id) do |a|
-  a.id = 1
-  a.user_id = 10
-  a.center = Center.find(1)
-  a.signup_complete = true
+(1..20).each do |num|
+  num_str = dict[num]
+  User.seed_once(:email) do |user|
+    user.id = 10 + num
+    user.email = "parent.#{num_str.downcase}@gmail.com"
+    user.first_name = "Parent"
+    user.last_name = num_str
+    user.roles = [parent]
+    user.center = Center.find_by(subdomain: "daviskidsklub")
+  end
 end
 
 User.all.map { |u| u.update_attributes!(password: "asdfasdf") }

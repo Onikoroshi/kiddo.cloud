@@ -2,7 +2,7 @@ class AnnouncementPolicy < ApplicationPolicy
   alias_method :announcement, :record
 
   def manage?
-    user.role?("super_admin")
+    user.super_admin?
   end
 
   alias_method :index?, :manage?
