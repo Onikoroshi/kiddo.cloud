@@ -1,4 +1,6 @@
 class TransactionalMailer < ApplicationMailer
+  helper Account::DashboardsHelper
+
   def time_dispute_email(time_dispute)
     @time_dispute = time_dispute
     mail(to: "officepersonal@dkk.com", subject: "time dispute")
@@ -39,5 +41,12 @@ class TransactionalMailer < ApplicationMailer
   def recurring_payment_report(messages)
     @messages = messages
     mail(to: "petertcormack@gmail.com", subject: "DKK Recurring Payment Report")
+  end
+
+  def enrollment_change_report(transaction)
+    @transaction = transaction
+    @account = transaction.account
+
+    mail(to: ["daviskidsklub@aol.com", "dkk.vsantos@aol.com"], subject: "DKK Enrollment Change Report")
   end
 end

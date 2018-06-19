@@ -5,6 +5,8 @@ class Staff::AccountsController < ApplicationController
 
   # GET /account/dashboards/1
   def index
+    authorize Account
+
     @accounts = @accounts.page(params[:page])
                 .per(50)
   end
@@ -15,6 +17,8 @@ class Staff::AccountsController < ApplicationController
 
   def show
     @account = Account.find(params[:id])
+
+    authorize @account
   end
 
   private

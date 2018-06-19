@@ -1,0 +1,69 @@
+%table.enrollments-table
+  - has_changes = @transaction.has_changes?
+  %thead
+    %th Child
+    %th Type
+    %th Program
+    %th Date(s) of Service
+    - if has_changes
+      %th Change Description
+      %th= @transaction.refund? ? "Original Transaction" : "Change Transaction"
+    %th.right-just Amount
+
+  %tbody
+    - @transaction.enrollment_transactions.each do |enrollment_transaction|
+      %tr
+        %td= enrollment_transaction.enrollment.child.full_name
+        %td= enrollment_transaction.description
+        %td= enrollment_transaction.enrollment.program.name
+        %td= enrollment_transaction.service_dates
+        - if has_changes
+          %td
+          %td
+        %td.right-just= Money.new(enrollment_transaction.amount)
+
+      - enrollment_transaction.enrollment.enrollment_changes.finalized.each do |enrollment_change|
+        %tr.merge-top
+          %td
+          %td
+          %td
+          %td= enrollment_change.created_at.stamp("Monday, Feb. 3rd, 2018")
+          %td= enrollment_change.description
+          %td
+            - if enrollment_change.transactions.present?
+              = link_to enrollment_change.transactions.first.receipt_number, account_dashboard_payment_url(@account, enrollment_change.transactions.first)
+          %td
+
+    - @transaction.enrollment_change_transactions.each do |enrollment_change_transaction|
+      %tr
+        %td= enrollment_change_transaction.enrollment_change.enrollment.child.full_name
+        %td= enrollment_change_transaction.enrollment_change.enrollment.type_display
+        %td= enrollment_change_transaction.enrollment_change.enrollment.program.name
+        %td= enrollment_change_transaction.enrollment_change.enrollment.service_dates
+        %td= enrollment_change_transaction.enrollment_change.description
+        %td
+          - target = @transaction.parent
+          - target = enrollment_change_transaction.enrollment_change.enrollment.transactions.first if target.blank?
+          = link_to target.receipt_number, account_dashboard_payment_url(@account, target) if target.present?
+        %td.right-just= Money.new(enrollment_change_transaction.amount * -1)
+
+    - @transaction.itemizations.each do |key, value|
+      %tr{style: "padding-bottom: 10px;"}
+        %td
+        %td= display_itemization_title(key.to_s)
+        %td
+        %td= @transaction.created_at.stamp("Monday, Feb. 3rd, 2018")
+        - if has_changes
+          %td
+          %td
+        %td.right-just= value
+
+    %tr.total
+      %td
+      %td Total
+      %td
+      %td
+      - if has_changes
+        %td
+        %td
+      %td.right-just= @transaction.adjusted_amount

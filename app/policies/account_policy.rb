@@ -5,12 +5,24 @@ class AccountPolicy
     @account = account
   end
 
+  def authorized_staff?
+    user.role?("super_admin", "director", "staff")
+  end
+
+  def index?
+    authorized_staff?
+  end
+
   def register?
     user_owns_account?
   end
 
   def dashboard?
-    user.role?("super_admin", "director", "staff") || user_owns_account?
+    authorized_staff? || user_owns_account?
+  end
+
+  def show?
+    dashboard?
   end
 
   private
@@ -20,5 +32,4 @@ class AccountPolicy
     account.present? &&
     user.account.id == account.id
   end
-
 end

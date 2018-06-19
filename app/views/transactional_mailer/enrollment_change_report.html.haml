@@ -1,0 +1,6 @@
+%p
+  #{@account.primary_parent.full_name} has made a change to their enrollments. Click
+  = link_to "Here", staff_account_url(@account)
+  to see their account summary. Below is a summary of the change(s):
+
+= render "account/manage/payments/payment_info"
