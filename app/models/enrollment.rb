@@ -287,7 +287,7 @@ class Enrollment < ApplicationRecord
     end
 
     self.paid = true
-    self.save
+    self.set_next_target_and_payment_date!
   end
 
   def transaction_for_target_date(given_date)

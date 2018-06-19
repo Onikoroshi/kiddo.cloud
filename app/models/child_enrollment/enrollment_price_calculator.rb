@@ -26,7 +26,6 @@ module ChildEnrollment
       if @first_time_user_fee.blank?
         total_fee = Money.new(0)
 
-        first_time_programs = []
         account.enrollments.alive.programs.find_each do |program|
           next if account.transactions.paid_signup_fee_for_program(program).any?
 
@@ -35,6 +34,21 @@ module ChildEnrollment
             itemizations["signup_fee_#{program.id}".to_sym] = fee
             total_fee += fee
           end
+        end
+
+        # if they haven't chosen an enrollment, but there is a summer program available,
+        # allow them to register for summer without choosing any enrollments
+        if @enrollments.blank? && @enrollment_changes.blank?
+          Program.open_for_registration.for_summer.each do |program|
+            next if account.transactions.paid_signup_fee_for_program(program).any?
+            
+            fee = Money.new(program.registration_fee)
+            if fee > 0
+              itemizations["signup_fee_#{program.id}".to_sym] = fee
+              total_fee += fee
+            end
+          end
+        else
         end
 
         @first_time_user_fee = total_fee
@@ -68,7 +82,8 @@ module ChildEnrollment
     def programs
       program_ids = enrollments.programs.pluck(:id)
       program_ids += independent_enrollment_changes.joins(enrollment: :program).pluck("programs.id")
-      program_ids = program_ids.uniq
+      program_ids += itemizations.select{|key, value| key.to_s.include?("_fee_")}.map{|key, value| key.to_s.split("_fee_")[1]}
+      program_ids = program_ids.map(&:to_s).uniq
 
       @programs ||= Program.where(id: program_ids)
     end

@@ -46,7 +46,7 @@ class Account::Manage::PaymentsController < ApplicationController
     end
 
     if recurring_enrollments.any?
-      flash[:error] = "All of your enrollments have been finalized. Your card will not be charged again until #{recurring_enrollments.sort{|e| e.next_payment_date}.last.next_payment_date.stamp("Jul. 28th, 2018")}. No further action is necessary on your part."
+      flash[:error] = "All of your enrollments have been finalized. Your card will not be charged again until #{recurring_enrollments.map(&:reload).sort{|e| e.next_payment_date}.last.next_payment_date.stamp("Jul. 28th, 2018")}. No further action is necessary on your part."
     end
 
     redirect_to account_dashboard_payments_path(@account), notice: "Thank you, your payment is complete. You will receive a receipt for payment sent to your registered email address. If you don't receive it, please call our office (1-530-220-4731)"

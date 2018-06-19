@@ -1,15 +1,12 @@
 .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.text-center
-  - calculator = ChildEnrollment::EnrollmentPriceCalculator.new(@account)
-  - calculator.calculate
-  - if !current_user.legacy?
-    %h2 Payment
+  %h2 Payment
 
-    = render "common/enrollments_pricing_info", calculator: calculator
+  = render "common/enrollments_pricing_info", calculator: @calculator
 
-    %h5
-      Your total (please contact us if different from your expectation):
-      %strong
-        #{calculator.total}
+  %h5
+    Your total (please contact us if different from your expectation):
+    %strong
+      #{@calculator.total}
 
   %br.cleaner
   = form_tag account_checkout_path(@account), id: "payment-form" do |form|

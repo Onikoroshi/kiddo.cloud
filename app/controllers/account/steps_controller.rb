@@ -92,6 +92,14 @@ class Account::StepsController < ApplicationController
   end
 
   def show_payment
+    @calculator = ChildEnrollment::EnrollmentPriceCalculator.new(@account)
+    @calculator.calculate
+
+    # we allow people to register for Summer without enrollments, but should warn them
+    if @calculator.enrollments.none? && @calculator.total > 0
+      flash[:error] = "You are registering for our Summer program without enrolling your children in any activities. Please keep in mind that they will NOT be allowed to attend unless they are enrolled. You can log in and enroll them in activities at any time."
+    end
+
     render_wizard
   end
 
