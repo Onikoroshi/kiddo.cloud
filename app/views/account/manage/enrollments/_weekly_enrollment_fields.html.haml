@@ -7,8 +7,8 @@
     = f.hidden_field :thursday, value: true
     = f.hidden_field :friday, value: true
     %span{style: "padding-left: 40px;"}
-      = f.hidden_field :starts_at, value: f.object.starts_at || @program.starts_at, class: "weekly-starts"
-      = f.hidden_field :ends_at, value: f.object.ends_at || @program.starts_at + 4.days, class: "weekly-ends"
+      = f.hidden_field :starts_at, value: f.object.starts_at || program_first_monday(@program), class: "weekly-starts"
+      = f.hidden_field :ends_at, value: f.object.ends_at || program_first_monday(@program) + 4.days, class: "weekly-ends"
       = select_tag "weeks", options_for_select(program_week_options(@program), "#{f.object.starts_at} to #{f.object.ends_at}"), {class: "weekly-select"}
     %span{style: "padding-left: 10px;"}
       For the

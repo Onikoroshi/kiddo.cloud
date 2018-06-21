@@ -22,4 +22,10 @@ module Account::StepsControllerHelper
 
     weeks
   end
+
+  def program_first_monday(program)
+    (program.starts_at..program.ends_at).each do |date|
+      return date if date.monday?
+    end
+  end
 end
