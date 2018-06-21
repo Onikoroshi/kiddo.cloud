@@ -82,11 +82,11 @@ Rails.application.configure do
   end
 
   # Default url options
-  config.action_mailer.default_url_options = {:host => 'https://kiddocloud.herokuapp.com'}
-  config.action_controller.default_url_options = {:host => 'https://kiddocloud.herokuapp.com'}
+  config.action_mailer.default_url_options = {:host => 'https://manage.daviskidsklub.com'}
+  config.action_controller.default_url_options = {:host => 'https://manage.daviskidsklub.com'}
 
   #Mailer asset host
-  config.action_mailer.asset_host = "https://kiddocloud.herokuapp.com"
+  config.action_mailer.asset_host = "https://manage.daviskidsklub.com"
 
   ActionMailer::Base.smtp_settings = {
       :port =>           '587',
