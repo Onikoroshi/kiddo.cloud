@@ -3,8 +3,16 @@ class PlanType < ClassyEnum::Base
     PlanType.select{|pt| pt.recurring?}
   end
 
+  def self.one_time
+    PlanType.select{|pt| pt.one_time?}
+  end
+
   def recurring?
     false
+  end
+
+  def one_time?
+    !recurring?
   end
 end
 

@@ -20,7 +20,7 @@ class Account::Manage::PaymentsController < ApplicationController
   def create
     authorize @account, :dashboard?
 
-    calculator = ChildEnrollment::EnrollmentPriceCalculator.new(@account)
+    calculator = ChildEnrollment::EnrollmentPriceCalculator.new(@account, params.permit!.to_h)
     calculator.calculate
     recurring_enrollments = calculator.enrollments.recurring.to_a # freeze this list because the relation will change once they're paid
 
@@ -47,6 +47,11 @@ class Account::Manage::PaymentsController < ApplicationController
 
     if recurring_enrollments.any?
       flash[:error] = "All of your enrollments have been finalized. Your card will not be charged again until #{recurring_enrollments.map(&:reload).sort{|e| e.next_payment_date}.last.next_payment_date.stamp("Jul. 28th, 2018")}. No further action is necessary on your part."
+    end
+
+    unless @account.signup_complete?
+      @account.finalize_signup
+      @account.record_step(:payment)
     end
 
     TransactionalMailer.enrollment_change_report(charge_transaction).deliver_now
@@ -90,7 +95,7 @@ class Account::Manage::PaymentsController < ApplicationController
     )
 
     calculator.enrollments.each do |enrollment|
-      enrollment.craft_enrollment_transactions(transaction)
+      enrollment.craft_enrollment_transactions(transaction, calculator.find_altered_enrollment_cost(enrollment))
     end
 
     calculator.enrollment_changes.generating_charge.each do |enrollment_change|

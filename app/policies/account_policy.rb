@@ -30,6 +30,7 @@ class AccountPolicy
   def user_owns_account?
     user.present? &&
     account.present? &&
+    user.account.present? &&
     user.account.id == account.id
   end
 end

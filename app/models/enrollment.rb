@@ -36,6 +36,7 @@ class Enrollment < ApplicationRecord
   scope :without_changes, -> { includes(:enrollment_changes).where(enrollment_changes: {id: nil}) }
   scope :for_date, ->(date) { date.present? ? where("enrollments.starts_at <= ? AND enrollments.ends_at >= ? AND enrollments.#{DAY_DICTIONARY[date.wday]} IS TRUE", date, date) : all }
   scope :recurring, -> { joins(:plan).where(plans: {plan_type: PlanType.recurring.map(&:to_s)}).distinct }
+  scope :one_time, -> { joins(:plan).where(plans: {plan_type: PlanType.one_time.map(&:to_s)}).distinct }
 
   scope :due_by_today, -> { where("enrollments.next_payment_date <= ?", Time.zone.today) }
 
@@ -117,6 +118,14 @@ class Enrollment < ApplicationRecord
 
   def plan_type
     plan.plan_type if plan.present?
+  end
+
+  def recurring?
+    plan_type.present? && plan_type.recurring?
+  end
+
+  def one_time?
+    !recurring?
   end
 
   def alive?
@@ -263,10 +272,10 @@ class Enrollment < ApplicationRecord
     end
   end
 
-  def craft_enrollment_transactions(parent_transaction)
+  def craft_enrollment_transactions(parent_transaction, given_amount = nil)
     unless plan_type.recurring?
       return if paid?
-      EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: plan.price_for_date(next_target_date), target_date: self.next_target_date, description_data: {"description" => self.to_short, "start_date" => self.starts_at, "stop_date" => self.ends_at})
+      EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: given_amount || amount_due_today, target_date: self.next_target_date, description_data: {"description" => self.to_short, "start_date" => self.starts_at, "stop_date" => self.ends_at})
     else
       target_date = next_target_date
       payment_date = next_payment_date

@@ -45,6 +45,10 @@ class User < ApplicationRecord
     role?(:director)
   end
 
+  def staff?
+    role?(:staff)
+  end
+
   def parent?
     role?(:parent)
   end

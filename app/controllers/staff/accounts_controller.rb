@@ -7,8 +7,7 @@ class Staff::AccountsController < ApplicationController
   def index
     authorize Account
 
-    @accounts = @accounts.page(params[:page])
-                .per(50)
+    @accounts = @accounts.page(params[:page]).per(50)
   end
 
   def export_to_csv
@@ -29,10 +28,10 @@ class Staff::AccountsController < ApplicationController
     target_location = Location.find_by(id: @location_id)
     target_location = @locations.first if !current_user.super_admin? && !@locations.include?(target_location)
 
-    @accounts = Account
-                .includes(:parents)
-                .where(center: @center)
-                .where(signup_complete: true)
-                .by_location(target_location).distinct
+    @show_unregistered = params["show_unregistered"].present?
+
+    @accounts = Account.includes(:parents).where(center: @center).by_location(target_location)
+    @accounts = @show_unregistered ? @accounts.where.not(signup_complete: true) : @accounts.where(signup_complete: true)
+    @accounts = @accounts.distinct
   end
 end

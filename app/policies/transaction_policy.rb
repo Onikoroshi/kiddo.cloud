@@ -1,0 +1,14 @@
+class TransactionPolicy < ApplicationPolicy
+  alias_method :transaction, :record
+
+  def manage?
+    @manage ||= user.super_admin?
+  end
+
+  alias_method :index?, :manage?
+  alias_method :new?, :manage?
+  alias_method :create?, :manage?
+  alias_method :edit?, :manage?
+  alias_method :update?, :manage?
+  alias_method :destroy?, :manage?
+end

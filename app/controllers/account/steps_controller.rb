@@ -122,6 +122,7 @@ class Account::StepsController < ApplicationController
   def set_variables
     raise Pundit::NotAuthorizedError if !user_signed_in?
     @account ||= current_user.account
+    @account = Account.find(params[:account_id]) if @account.blank? && current_user.super_admin?
     find_registering_program
   end
 

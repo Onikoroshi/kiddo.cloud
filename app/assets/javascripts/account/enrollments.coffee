@@ -32,6 +32,31 @@ document.addEventListener 'turbolinks:load', ->
   $(".account-box").on "change", ".drop_in-date-select", (d) ->
     updateDropIn($(this))
 
+  $(".enrollment-pricing-table").on "keyup", ".addable-amount", (event) ->
+    elem = $(event.currentTarget)
+
+    charge_total = 0.0
+    refund_total = 0.0
+
+    $(".enrollment-pricing-table").find(".addable-amount").each ->
+      amount = parseFloat($(this).val().replace(/[^0-9\.\-]/, ""))
+
+      if amount < 0.0
+        refund_total += amount * -1
+      else
+        charge_total += amount
+
+    charge_total = charge_total.toFixed(2)
+    refund_total = refund_total.toFixed(2)
+
+    $("#total-charge").text("$#{charge_total}")
+
+    if refund_total > 0
+      $("#total-refund").text("$#{refund_total}")
+      $("#refund-block").removeClass("hide")
+    else
+      $("#refund-block").addClass("hide")
+
   $(".enrollment-pricing-table").on "change", ".change-refund-requirement", (event) ->
     elem = $(event.currentTarget)
     change_id = elem.data("change-id")
@@ -47,7 +72,13 @@ document.addEventListener 'turbolinks:load', ->
         amount_div = elem.parent().parent().find(".refund-amount")
         amount_div.text(data["amount"])
         $("#total-charge").text(data["total_charge_amount"])
-        $("#total-refund").text(data["total_refund_amount"])
+
+        if data["total_refund_amount"] > 0
+          $("#total-refund").text(data["total_refund_string"])
+          $("#refund-block").removeClass("hide")
+        else
+          $("#refund-block").addClass("hide")
+
       error: (xhr, status, error) ->
 
   $(".enrollment-pricing-table").on "change", ".change-fee-requirement", (event) ->
@@ -64,7 +95,17 @@ document.addEventListener 'turbolinks:load', ->
         Accept: "text/javascript, */*; q=0.01"
       success: (data) ->
         amount_div = elem.parent().parent().find(".fee-amount")
-        amount_div.text(data["amount"])
+        if amount_div.find(".addable-amount").length > 0
+          amount_div.find(".addable-amount").val(data["amount"])
+        else
+          amount_div.text(data["amount"])
+
         $("#total-charge").text(data["total_charge_amount"])
-        $("#total-refund").text(data["total_refund_amount"])
+
+        if data["total_refund_amount"] > 0
+          $("#total-refund").text(data["total_refund_string"])
+          $("#refund-block").removeClass("hide")
+        else
+          $("#refund-block").addClass("hide")
+
       error: (xhr, status, error) ->

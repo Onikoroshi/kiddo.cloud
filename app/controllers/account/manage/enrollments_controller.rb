@@ -53,7 +53,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
   end
 
   def update
-    redirect_to new_account_dashboard_enrollment_path(@account, plan_type: @plan_type.to_s) unless @account.signup_complete?
+    redirect_to new_account_dashboard_enrollment_path(@account, plan_type: @plan_type.to_s) and return unless @account.signup_complete? || policy(Transaction).manage?
 
     # apply any enrollment-independent changes
     @account.update_attributes(account_params)

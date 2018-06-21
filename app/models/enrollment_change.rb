@@ -19,11 +19,11 @@ class EnrollmentChange < ApplicationRecord
   scope :by_program, ->(given_program) { given_program.present? ? joins(enrollment: :program).where("programs.id = ?", given_program.id) : all }
 
   def self.generating_charge
-    self.pending.select{|change| change.amount > 0}
+    self.pending.require_refund.select{|change| change.amount > 0}
   end
 
   def self.generating_refund
-    self.pending.select{|change| change.amount < 0}
+    self.pending.require_refund.select{|change| change.amount < 0}
   end
 
   def self.charge_total
@@ -158,7 +158,7 @@ class EnrollmentChange < ApplicationRecord
 
     if data["_destroy"].present?
       enrollment.last_paid_amount * -1 # this will be the refund amount
-    elsif !enrollment.plan_type.recurring? && data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
+    elsif data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
       old_plan = enrollment.plan
       new_plan = Plan.find_by(id: data["plan_id"])
 
@@ -180,6 +180,7 @@ class EnrollmentChange < ApplicationRecord
 
   def update_amount
     return unless changed?
+    return if amount_changed?
     return unless pending?
 
     if requires_refund?
