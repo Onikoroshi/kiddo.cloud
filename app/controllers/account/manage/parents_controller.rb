@@ -52,8 +52,7 @@ class Account::Manage::ParentsController < ApplicationController
      :emergency_contact_first_name,
      :emergency_contact_last_name,
      :emergency_contact_phone,
-     :waiver_agreement,
-     :mail_agreements
+     :waiver_agreement
     ]
     params.require(:account_form).permit(permitted_attributes)
   end
