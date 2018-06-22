@@ -8,6 +8,31 @@ class TransactionalMailer < ApplicationMailer
 
   def welcome_summer_customer(account)
     @account = account
+
+    file_path = "app/assets/images/Additional Outside Activities Form.docx"
+    attachments["outside_activities_form.docx"] = File.read(file_path)
+
+    file_path = "app/assets/images/Summer Camp daily schedule.docx"
+    attachments["daily_schedule.docx"] = File.read(file_path)
+
+    file_path = "app/assets/images/Swim information.docx"
+    attachments["swim_information.docx"] = File.read(file_path)
+
+    file_path = "app/assets/images/DKK Chromebook policy.pdf"
+    attachments["chromebook_policy.docx"] = File.read(file_path)
+
+    file_path = "app/assets/images/Class Visit Letter -Davis-1.docx"
+    attachments["class_visit_letter.docx"] = File.read(file_path)
+
+    file_path = "app/assets/images/English & Spanish Application 07-2017-1.pdf"
+    attachments["english_spanish_application.pdf"] = File.read(file_path)
+
+    file_path = "app/assets/images/K-6 Summer Breakfast Cycle Menu 2018.pub"
+    attachments["breakfast_cycle.pub"] = File.read(file_path)
+
+    file_path = "app/assets/images/June 2018 Kidz Club Lunch menu.pub"
+    attachments["lunch_menu.pub"] = File.read(file_path)
+
     mail(to: @account.primary_email, subject: "Welcome to #{account.center_name}!")
   end
 
