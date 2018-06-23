@@ -1,0 +1,24 @@
+.nested-fields
+  = f.hidden_field :plan_id, value: @program.plans.by_plan_type(@plan_type).first.id
+
+  .row
+    .col-sm-6
+      .field
+        = f.label :starts_at, "Date"
+        = f.select :starts_at, TargetDay.by_program_and_plan_type(@program, @plan_type).select_options, {include_blank: "Choose a Date"}, {class: "drop_in-date-select"}
+        = f.hidden_field :ends_at, value: f.object.ends_at, class: "drop_in-ends"
+
+        = f.hidden_field :monday, value: false, class: "drop_in-days drop_in-1"
+        = f.hidden_field :tuesday, value: false, class: "drop_in-days drop_in-2"
+        = f.hidden_field :wednesday, value: false, class: "drop_in-days drop_in-3"
+        = f.hidden_field :thursday, value: false, class: "drop_in-days drop_in-4"
+        = f.hidden_field :friday, value: false, class: "drop_in-days drop_in-5"
+
+    .col-sm-6
+      .field
+        = f.label :location, "at"
+        = f.select :location_id, options_from_collection_for_select(@program.locations, 'id', 'name', f.object.location_id)
+        %br
+        = link_to_remove_association "Remove Drop In Day", f
+  %hr
+  .cleaner

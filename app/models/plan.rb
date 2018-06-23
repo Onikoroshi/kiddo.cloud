@@ -6,7 +6,8 @@ class Plan < ApplicationRecord
   has_many :children, through: :enrollments
   has_many :transactions, through: :enrollments
 
-  has_many :discounts
+  has_many :discounts, dependent: :destroy
+  has_many :target_days, dependent: :destroy
 
   money_column :price
   classy_enum_attr :plan_type
@@ -15,6 +16,7 @@ class Plan < ApplicationRecord
   validate :lock_enrolled_plans
 
   accepts_nested_attributes_for :discounts, allow_destroy: true
+  accepts_nested_attributes_for :target_days, allow_destroy: true
 
   scope :by_plan_type, ->(plan_type) { where(plan_type: plan_type.to_s) }
   scope :by_program, ->(program) { program.present? ? where(program: program) : all }

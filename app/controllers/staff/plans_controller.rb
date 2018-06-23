@@ -68,6 +68,6 @@ class Staff::PlansController < ApplicationController
   end
 
   def permitted_params
-    @permitted_params ||= params[:plan].present? ? params.require(:plan).permit(:program_id, :display_name, :deduce, :days_per_week, :price, :plan_type, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday, discounts_attributes: [:id, :plan_id, :amount, :month, :_destroy]) : {}
+    @permitted_params ||= params[:plan].present? ? params.require(:plan).permit(:program_id, :display_name, :deduce, :days_per_week, :price, :plan_type, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday, discounts_attributes: [:id, :plan_id, :amount, :month, :_destroy], target_days_attributes: [:id, :plan_id, :target_date, :_destroy]) : {}
   end
 end

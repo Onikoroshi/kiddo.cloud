@@ -62,6 +62,15 @@
         = f.label :sunday
       %br
 
+      %h4 Restrict to Dates
+
+      = f.fields_for :target_days do |target_day_fields|
+        = render "target_day_fields", f: target_day_fields
+
+      .links
+        .pull-right= link_to_add_association 'Add Date', f, :target_days, {style: "padding-right: 20px;"}
+      %br
+
       .form-group.label-floating
         = f.label :program_id, "Program", class: "control-label"
         = f.select :program_id, options_from_collection_for_select(Program.all, 'id', 'name', f.object.program_id || params[:program_id]), class: "form-control"

@@ -37,3 +37,6 @@ end
 
 class PlanType::DropIn < PlanType
 end
+
+class PlanType::CampDay < PlanType
+end
