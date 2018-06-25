@@ -16,7 +16,7 @@ class Enrollment < ApplicationRecord
   validates :starts_at, :ends_at, presence: true
   validate :validate_dates
 
-  DAY_DICTIONARY = ["", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+  DAY_DICTIONARY = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 
   # enrollments can be removed after being paid for, so we need to keep their information around
   scope :alive, -> { where.not(dead: true) }
