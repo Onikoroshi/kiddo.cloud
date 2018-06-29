@@ -18,12 +18,10 @@
         .form-group.label-floating
           = form.label :gender
           .radio
-            %label
-              = form.radio_button :gender, Gender[:male].to_s, checked: !@account_child.gender.respond_to?(:male?) || @account_child.gender.male?
-              Male
-            %label
-              = form.radio_button :gender, Gender[:female].to_s
-              Female
+            - Gender.all.each do |gender|
+              %label
+                = form.radio_button :gender, gender.to_s, checked: (@account_child.gender.respond_to?("#{gender}?".to_sym) && @account_child.gender.send("#{gender}?".to_sym)) || gender.male?
+                = gender.text
 
         .form-group.label-floating
           = form.label :grade_entering

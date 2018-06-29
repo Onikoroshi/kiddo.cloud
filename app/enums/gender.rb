@@ -36,3 +36,21 @@ class Gender::Female < Gender
     "hers"
   end
 end
+
+class Gender::Nonbinary < Gender
+  def subject
+    "they"
+  end
+
+  def object
+    "them"
+  end
+
+  def possessive
+    "their"
+  end
+
+  def possessive_absolute
+    "theirs"
+  end
+end
