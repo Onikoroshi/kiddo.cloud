@@ -60,7 +60,10 @@ class ApplicationController < ActionController::Base
     allowed_paths = [
       root_path,
       new_user_session_path,
-      new_user_registration_path
+      new_user_registration_path,
+      new_user_password_path,
+      user_password_path,
+      edit_user_password_path
     ]
     redirect_to root_path and return if current_user.blank? && !allowed_paths.include?(request.path)
   end
