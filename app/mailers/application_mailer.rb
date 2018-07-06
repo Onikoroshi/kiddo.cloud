@@ -1,5 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'info@manage.daviskidsklub.com'
-  default sender: 'daviskidsklub@aol.com'
+  default from: 'donotreply@manage.daviskidsklub.com', sender: 'daviskidsklub@aol.com', reply_to: 'daviskidsklub@aol.com'
   layout 'mailer'
 end
