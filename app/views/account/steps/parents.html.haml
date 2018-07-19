@@ -143,7 +143,7 @@
                   .form-group.label-floating
                     = f.check_box :waiver_agreement, checked: @account.waiver_agreement, class: "pull-left checkbox-padding"
                     = f.label :waiver_agreement do
-                      I have read and agree with #{link_to "all waivers and agreements", asset_path("data/Davis-Kids-Klub_Waivers-Agreements.pdf"), target: "_blank"}
+                      I have read and agree with #{link_to "all waivers and agreements", "https://manage.daviskidsklub.com/Davis-Kids-Klub_Waivers-Agreements.pdf", target: "_blank"}
                 .col-sm-12
                   .form-group.label-floating
                     = f.label :mail_agreements do
