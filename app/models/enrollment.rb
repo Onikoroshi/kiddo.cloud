@@ -23,6 +23,7 @@ class Enrollment < ApplicationRecord
   scope :dead, -> { where(dead: true) }
 
   scope :by_program, ->(program) { program.present? ? joins(:program).where("programs.id = ?", program.id) : none }
+  scope :by_plan_type, ->(plan_type) { joins(:plan).where("plans.plan_type = ?", plan_type.to_s) }
   scope :by_program_and_plan_type, ->(program, plan_type) { joins(:program).where("plans.plan_type = ? AND programs.id = ?", plan_type.to_s, program.id) }
   scope :by_program_and_location, ->(program, location) { (program.present? && location.present?) ? joins(:program).joins(:location).where("programs.id = ? AND locations.id = ?", program.id, location.id) : none }
   scope :by_child, ->(child) { child.present? ? where(child_id: child.id) : none }

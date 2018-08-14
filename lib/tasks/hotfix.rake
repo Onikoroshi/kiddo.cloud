@@ -2,7 +2,7 @@ namespace :hotfix do
   task :fix_enrollment_days => :environment do
     index = 1
     total = Enrollment.count
-    Enrollment.find_each do |enrollment|
+    Enrollment.by_plan_type("sibling_club").find_each do |enrollment|
       ap "Enrollment #{index} of #{total}: #{enrollment.id}"
       if enrollment.plan.blank?
         ap "No Plan!"
@@ -21,7 +21,7 @@ namespace :hotfix do
 
         ap "allowed:"
         ap plan_days
-        
+
         ap "matching days:"
         ap matching_days
 
