@@ -16,6 +16,12 @@ namespace :hotfix do
       extra_days = enrolled_days - plan_days
 
       if extra_days.any?
+        ap "enrolled:"
+        ap enrolled_days
+
+        ap "allowed:"
+        ap plan_days
+        
         ap "matching days:"
         ap matching_days
 
