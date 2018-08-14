@@ -3,7 +3,7 @@ namespace :hotfix do
     index = 1
     total = Enrollment.by_plan_type("sibling_club").count
     Enrollment.by_plan_type("sibling_club").find_each do |enrollment|
-      ap "Enrollment #{index} of #{total}: #{enrollment.id}"
+      ap "Enrollment #{index} of #{total}: #{enrollment.id} for account #{enrollment.child.account.id}"
       if enrollment.plan.blank?
         ap "No Plan!"
         next
