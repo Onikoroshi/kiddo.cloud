@@ -415,14 +415,14 @@ class Enrollment < ApplicationRecord
   def deduce_plan
     return if self.plan.blank? || self.plan.choosable? # don't worry about restrictions if the plan is a manual choice
 
-    target_days = enrolled_days
+    target_days = enrolled_days.sort
     num_days = target_days.count
 
     return if num_days == 0
 
     # leave the current plan if it is "allowed"
     # -1 plan days_per_week means that they want to allow any number of days.
-    return if [-1, num_days].include?(self.plan.days_per_week.to_i) && (target_days & self.plan.allowed_days).any?
+    return if [-1, num_days].include?(self.plan.days_per_week.to_i) && (target_days & self.plan.allowed_days).sort == target_days
 
     target_program = plan.program
     target_plan_type = plan.plan_type
@@ -431,7 +431,7 @@ class Enrollment < ApplicationRecord
     success = false
 
     possible_plans.find_each do |possible_plan|
-      if [-1, num_days].include?(possible_plan.days_per_week.to_i) && (target_days & possible_plan.allowed_days).any?
+      if [-1, num_days].include?(possible_plan.days_per_week.to_i) && (target_days & possible_plan.allowed_days).sort == target_days
         self.plan_id = possible_plan.id
         success = true
         break

@@ -26,30 +26,14 @@
             = enrollment_fields.hidden_field :ends_at, value: enrollment_fields.object.ends_at || @program.ends_at
 
             .col-sm-9
-              .checkbox
-                %label
-                  = enrollment_fields.check_box :monday, checked: enrollment_fields.object.monday
-                  = enrollment_fields.label :monday
-
-              .checkbox
-                %label
-                  = enrollment_fields.check_box :tuesday, checked: enrollment_fields.object.tuesday
-                  = enrollment_fields.label :tuesday
-
-              .checkbox
-                %label
-                  = enrollment_fields.check_box :wednesday, checked: enrollment_fields.object.wednesday
-                  = enrollment_fields.label :wednesday
-
-              .checkbox
-                %label
-                  = enrollment_fields.check_box :thursday, checked: enrollment_fields.object.thursday
-                  = enrollment_fields.label :thursday
-
-              .checkbox
-                %label
-                  = enrollment_fields.check_box :friday, checked: enrollment_fields.object.friday
-                  = enrollment_fields.label :friday
+              - @plan_type.find_available_days.each do |day_name, value|
+                - if value
+                  .checkbox
+                    %label
+                      = enrollment_fields.check_box day_name, checked: enrollment_fields.object.send(day_name)
+                      = enrollment_fields.label day_name
+                - else
+                  = enrollment_fields.hidden_field day_name, value: false
 
             .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px;"}
               .col-xs-3{style: "padding-left: 0px !important"}

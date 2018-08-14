@@ -7,6 +7,28 @@ class PlanType < ClassyEnum::Base
     PlanType.select{|pt| pt.one_time?}
   end
 
+  def find_available_days
+    plans = Plan.where(plan_type: self.to_s)
+
+    days = {
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: false,
+      sunday: false
+    }
+
+    plans.find_each do |plan|
+      plan.allowed_days.each do |plan_day|
+        days[plan_day.to_sym] = true
+      end
+    end
+
+    days
+  end
+
   def recurring?
     false
   end
