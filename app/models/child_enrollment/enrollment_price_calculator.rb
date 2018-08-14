@@ -5,10 +5,25 @@ module ChildEnrollment
     def initialize(account, params = {})
       @account = account
       @enrollments = account.enrollments.alive.unpaid
-      @enrollment_changes = account.enrollment_changes.pending
+      calculate_late_fees
+      @enrollment_changes = account.reload.enrollment_changes.pending
       @itemizations = Hash.new
       @params = params
       @enrollment_price_alterations = Hash.new
+    end
+
+    def calculate_late_fees
+      # start with a clean slate - things may have changed since the last time they were here
+      account.enrollment_changes.pending.late_fees.destroy_all
+
+      @enrollments.each do |enrollment|
+        next unless enrollment.plan.late_fee.to_f > 0.0
+        next unless enrollment.registering_late?
+
+        enrollment.reload
+
+        EnrollmentChange.create!(enrollment: enrollment, account: account, data: {"late_fee" => true}, amount: enrollment.plan.late_fee, requires_fee: false, requires_refund: true, applied: false)
+      end
     end
 
     def calculate

@@ -19,6 +19,7 @@
       %th Type
       %th Name
       %th Price
+      %th Late Fee
       %th Discounts
       %th Days
       %th Allowed Days
@@ -34,6 +35,7 @@
           %td= plan.plan_type.text
           %td= plan.display_name
           %td= plan.price
+          %td= plan.late_fee
           %td= plan.discounts.map{|d| d.to_s}.join("<br>").html_safe
           %td= plan.display_days_per_week
           %td= plan.allowed_days(true)

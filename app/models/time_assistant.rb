@@ -47,4 +47,20 @@ class TimeAssistant
   #     low_grade_swipe_window.cover?(time_entry.time)
   #   end
   # end
+
+  def day_ends(target_date)
+    Chronic.parse("#{target_date} at 4:00pm")
+  end
+
+  # if someone registers for an enrollment later than 8pm the previous day,
+  # they're considered late and will be charged a late fee.
+  def registration_cut_off(start_date)
+    begin
+      start_date = Chronic.parse(start_date.to_s).to_date
+      target_date = start_date - 1.day
+      Chronic.parse("#{target_date} at 3:00pm")
+    rescue => e
+      return nil
+    end
+  end
 end

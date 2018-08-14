@@ -410,6 +410,30 @@ class Enrollment < ApplicationRecord
     send(DAY_DICTIONARY[today])
   end
 
+  def next_date_to_attend
+    target_day = Time.zone.today
+    # if it's later than the day's end, assume we're not attending today anymore
+    target_day += 1.day if Time.zone.now > TimeAssistant.new.day_ends(Time.zone.today)
+
+    return ends_at if ends_at <= target_day
+
+    target_day = starts_at if starts_at >= target_day
+
+    day_diff = 0
+    target = target_day.wday
+
+    while !send(DAY_DICTIONARY[target]) && (target_day + day_diff.days) < ends_at
+      target = (target + 1) % 7
+      day_diff += 1
+    end
+
+    target_day + day_diff.days
+  end
+
+  def registering_late?
+    Time.zone.now > TimeAssistant.new.registration_cut_off(next_date_to_attend)
+  end
+
   private
 
   def deduce_plan

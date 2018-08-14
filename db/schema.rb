@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180623002924) do
+ActiveRecord::Schema.define(version: 20180809221052) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -303,6 +303,7 @@ ActiveRecord::Schema.define(version: 20180623002924) do
     t.boolean "saturday", default: false
     t.boolean "sunday", default: false
     t.boolean "deduce", default: false
+    t.float "late_fee", default: 0.0
     t.index ["program_id"], name: "index_plans_on_program_id"
   end
 

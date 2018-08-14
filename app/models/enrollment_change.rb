@@ -16,10 +16,11 @@ class EnrollmentChange < ApplicationRecord
   scope :require_refund, -> { where(requires_refund: true) }
   scope :finalized, -> { where(applied: true) }
   scope :pending, -> { where.not(applied: true) }
+  scope :late_fees, -> { where("data->>'late_fee' = ?", "true") }
   scope :by_program, ->(given_program) { given_program.present? ? joins(enrollment: :program).where("programs.id = ?", given_program.id) : all }
 
   def self.generating_charge
-    self.pending.require_refund.select{|change| change.amount > 0}
+    self.pending.require_refund.select{|change| change.amount >= 0}
   end
 
   def self.generating_refund
@@ -96,6 +97,8 @@ class EnrollmentChange < ApplicationRecord
 
     if data.keys.include?("_destroy")
       enrollment.kill!
+    elsif data.keys.include?("late_fee")
+      # don't need to do anything here; just storing the late fee
     else
       enrollment.update_attributes!(data)
       enrollment.resurrect!
@@ -108,6 +111,10 @@ class EnrollmentChange < ApplicationRecord
   def build_description(past = false)
     if data["_destroy"].present?
       return "Remove#{"d" if past} this Enrollment"
+    end
+
+    if data["late_fee"].present?
+      return "Late Fee"
     end
 
     messages = []

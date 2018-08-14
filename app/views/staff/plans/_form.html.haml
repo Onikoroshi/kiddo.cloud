@@ -19,6 +19,10 @@
         = f.text_field :price, class: "form-control"
 
       .form-group.label-floating
+        = f.label :late_fee, "Registration Late Fee", class: "control-label"
+        = f.text_field :late_fee, class: "form-control"
+
+      .form-group.label-floating
         = f.label :deduce, "Should the system deduce this plan? Choose 'Yes' if the system should figure out which plan to use based on the days the parent chooses. Choose 'No' to display this plan as a choice the parent can make."
         = f.label :deduce, "Yes", :value => "true"
         = f.radio_button :deduce, true, checked: f.object.deduce?

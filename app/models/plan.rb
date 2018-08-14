@@ -10,6 +10,7 @@ class Plan < ApplicationRecord
   has_many :target_days, dependent: :destroy
 
   money_column :price
+  money_column :late_fee
   classy_enum_attr :plan_type
 
   validates :display_name, :price, :days_per_week, presence: true
