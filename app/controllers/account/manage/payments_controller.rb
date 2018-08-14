@@ -100,6 +100,8 @@ class Account::Manage::PaymentsController < ApplicationController
 
     calculator.enrollment_changes.generating_charge.each do |enrollment_change|
       EnrollmentChangeTransaction.create!(enrollment_change_id: enrollment_change.id, my_transaction_id: transaction.id, amount: enrollment_change.charge_amount)
+
+      enrollment_change.apply_to_enrollment!
     end
 
     transaction
