@@ -185,7 +185,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
               sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] = "true"
             end
 
-            any_days = values.select{|key, value| ["monday", "tuesday", "wednesday", "thursday", "friday"].include?(key.to_s)}.values.reject{|v| v == "0"}.any?
+            any_days = values.select{|key, value| ["monday", "tuesday", "wednesday", "thursday", "friday"].include?(key.to_s)}.values.reject{|v| ["0", "false"].include?v}.any?
 
             unless any_days
               if values["id"].present?
