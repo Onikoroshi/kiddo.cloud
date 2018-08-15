@@ -33,6 +33,6 @@
       - previous_time = nil
       - (@first_time.to_i .. @last_time.to_i).step(15.minutes).to_a.each do |time|
         %tr
-          %td= Time.at(time).stamp("3:00 PM")
-          %td= @time_entries.for_staff.count_checked_in_at(Time.at(time))
-          %td= @time_entries.for_children.count_checked_in_at(Time.at(time))
+          %td= Time.zone.at(time).stamp("3:00 PM")
+          %td= @time_entries.for_staff.count_checked_in_at(Time.zone.at(time))
+          %td= @time_entries.for_children.count_checked_in_at(Time.zone=.at(time))
