@@ -35,4 +35,4 @@
         %tr
           %td= Time.zone.at(time).stamp("3:00 PM")
           %td= @time_entries.for_staff.count_checked_in_at(Time.zone.at(time))
-          %td= @time_entries.for_children.count_checked_in_at(Time.zone=.at(time))
+          %td= @time_entries.for_children.count_checked_in_at(Time.zone.at(time))
