@@ -44,6 +44,40 @@ class TimeEntry < ApplicationRecord
     checked_in_count
   end
 
+  def self.ratio_report_hash
+    first_time = self.order(:time).first.time.beginning_of_hour
+    last_time = self.order(:time).last.time.beginning_of_hour + 1.hour
+
+    hash = {}
+
+    (first_time.to_i .. last_time.to_i).step(15.minutes).to_a.each do |time|
+      hash[Time.zone.at(time).stamp("3:00 PM")] = {
+        "staff_count" => self.for_staff.count_checked_in_at(Time.zone.at(time)),
+        "children_count" => self.for_children.count_checked_in_at(Time.zone.at(time))
+      }
+    end
+
+    hash
+  end
+
+  def self.to_ratio_csv
+    CSV.generate do |csv|
+      csv << ["Time", "Teachers", "Children"]
+      self.ratio_report_hash.each do |time, data|
+        csv << [time, data["staff_count"], data["children_count"]]
+      end
+    end
+  end
+
+  def self.to_csv
+    CSV.generate do |csv|
+      csv << ["Date", "Time In", "Time Out"]
+      self.all.reorder("time ASC").each do |entry|
+        csv << [entry.time.stamp("March 3rd, 2019"), "#{entry.time.stamp("3:00 pm") if entry.checked_in?}", "#{entry.time.stamp("3:00 pm") if entry.checked_out?}"]
+      end
+    end
+  end
+
   def checked_in?
     record_type.present? && record_type.entry?
   end

@@ -12,9 +12,9 @@
   #time-entry-message
 
   #time-entries
-    - @enrollments.each do |enrollment|
+    - @enrollments.includes(:child).reorder("children.first_name ASC").each do |enrollment|
       .checkin-name
-        .col-xs-6= link_to enrollment.child.full_name, staff_account_path(enrollment.child.account)
+        .col-xs-6= link_to enrollment.child.full_name, staff_time_entries_path(recordable_type: "Child", recordable_id: enrollment.child.id)
         .col-xs-6.text-right
           .togglebutton
             %label

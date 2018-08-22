@@ -6,12 +6,14 @@ class TimeEntryPolicy < ApplicationPolicy
   end
 
   alias_method :index?, :view?
+  alias_method :export_to_csv?, :view?
+  alias_method :ratio_report?, :view?
+  alias_method :ratio_csv?, :view?
 
   def manage?
     user.super_admin?
   end
 
-  alias_method :ratio_report?, :manage?
   alias_method :new?, :manage?
   alias_method :create?, :manage?
   alias_method :edit?, :manage?
