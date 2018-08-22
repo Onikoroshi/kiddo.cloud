@@ -82,6 +82,7 @@ Rails.application.routes.draw do
     resources :time_entries, except: :show do
       collection do
         get :ratio_report
+        get :ratio_csv
       end
     end
 

@@ -1,27 +1,19 @@
 class Staff::TimeEntriesController < ApplicationController
   layout "dkk_staff_dashboard"
   before_action :guard_center!
-  before_action :find_staff, except: :ratio_report
-  before_action :authorize_multiple, only: [:ratio_report, :index]
+  before_action :find_staff, except: [:ratio_report, :ratio_csv]
+  before_action :authorize_multiple, only: [:index, :ratio_report, :ratio_csv]
   before_action :build_single, only: [:new, :create]
   before_action :find_single, only: [:show, :edit, :update, :destroy]
-  before_action :authorize_single, except: [:ratio_report, :index]
+  before_action :authorize_single, except: [:index, :ratio_report, :ratio_csv]
+  before_action :build_report_data, only: [:ratio_report, :ratio_csv]
 
   def ratio_report
-    @target_date = Time.zone.parse(params[:date].to_s)
-    @target_date = @target_date.present? ? @target_date.to_date : Time.zone.today
-    ap @target_date
+    @report_hash = @time_entries.ratio_report_hash
+  end
 
-    @location = Location.find_by_id(params[:location_id])
-    @location = Location.first if @location.blank?
-    @location_id = @location.id
-
-    @time_entries = TimeEntry.for_date(@target_date).for_location(@location)
-
-    if @time_entries.any?
-      @first_time = @time_entries.order(:time).first.time.beginning_of_hour
-      @last_time = @time_entries.order(:time).last.time.beginning_of_hour + 1.hour
-    end
+  def ratio_csv
+    send_data @time_entries.to_ratio_csv, filename: "#{@target_date.stamp("Wednesday, March 5th, 2019")}.csv"
   end
 
   def index
@@ -84,5 +76,16 @@ class Staff::TimeEntriesController < ApplicationController
 
   def permitted_params
     @permitted_params ||= params[:time_entry].present? ? params.require(:time_entry).permit(:time_recordable_id, :time_recordable_type, :location_id, :time, :record_type) : {}
+  end
+
+  def build_report_data
+    @target_date = Time.zone.parse(params[:date].to_s)
+    @target_date = @target_date.present? ? @target_date.to_date : Time.zone.today
+
+    @location = Location.find_by_id(params[:location_id])
+    @location = Location.first if @location.blank?
+    @location_id = @location.id
+
+    @time_entries = TimeEntry.for_date(@target_date).for_location(@location)
   end
 end
