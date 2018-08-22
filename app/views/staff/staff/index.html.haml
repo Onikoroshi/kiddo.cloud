@@ -27,7 +27,7 @@
           %td= s.locations.collect {|l| l.name }.to_sentence
           - if policy(TimeEntry).view?
             %td
-              = link_to staff_time_entries_path(staff_id: s.id) do
+              = link_to staff_time_entries_path(recordable_type: "Staff", recordable_id: s.id) do
                 %i.material-icons alarm
           %td= s.created_at.stamp("11/05/2017")
           %td

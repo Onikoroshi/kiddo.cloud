@@ -6,6 +6,7 @@ class TimeEntryPolicy < ApplicationPolicy
   end
 
   alias_method :index?, :view?
+  alias_method :export_to_csv?, :view?
   alias_method :ratio_report?, :view?
   alias_method :ratio_csv?, :view?
 

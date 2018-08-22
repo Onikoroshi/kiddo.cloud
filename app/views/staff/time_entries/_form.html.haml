@@ -3,13 +3,14 @@
     = form_for([:staff, @time_entry]) do |f|
       = render "application/form_errors", object: @time_entry
 
-      = hidden_field_tag :staff_id, @staff.id
-      = f.hidden_field :time_recordable_id, value: @staff.id
-      = f.hidden_field :time_recordable_type, value: "Staff"
+      = hidden_field_tag :recordable_id, @recordable.id
+      = hidden_field_tag :recordable_type, @recordable_type
+      = f.hidden_field :time_recordable_id, value: @recordable.id
+      = f.hidden_field :time_recordable_type, value: @recordable_type
 
       .form-group.label-floating
         = f.label :location_id, "Location", class: "control-label", style: "padding-bottom: 20px;"
-        = f.collection_select :location_id, @staff.locations, :id, :name, class: "form-control"
+        = f.collection_select :location_id, @recordable.locations, :id, :name, class: "form-control"
 
       .form-group.label-floating
         = f.label :time, "Time", class: "control-label"
@@ -19,5 +20,5 @@
         = f.label :record_type, "Action", class: "control-label", style: "padding-bottom: 20px;"
         = f.select :record_type, TimeEntryType.select_options, class: "form-control"
 
-      = link_to "Cancel", staff_time_entries_path(staff_id: @staff.id), class: "btn"
+      = link_to "Cancel", staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id), class: "btn"
       = f.submit class: "btn btn-info pull-right"

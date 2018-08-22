@@ -69,6 +69,15 @@ class TimeEntry < ApplicationRecord
     end
   end
 
+  def self.to_csv
+    CSV.generate do |csv|
+      csv << ["Date", "Time In", "Time Out"]
+      self.all.reorder("time ASC").each do |entry|
+        csv << [entry.time.stamp("March 3rd, 2019"), "#{entry.time.stamp("3:00 pm") if entry.checked_in?}", "#{entry.time.stamp("3:00 pm") if entry.checked_out?}"]
+      end
+    end
+  end
+
   def checked_in?
     record_type.present? && record_type.entry?
   end

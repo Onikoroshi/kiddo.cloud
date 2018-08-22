@@ -1,10 +1,28 @@
 %h3.text-center
-  Time Entries for #{@staff.full_name}
+  Time Entries for #{(@recordable_type == "Child") ? link_to(@recordable.full_name, staff_account_path(@recordable.account)) : @recordable.full_name}
 
 - if policy(TimeEntry).manage?
   .text-center
-    = link_to "+ Add Time Entry", new_staff_time_entry_path(staff_id: @staff.id), class: "btn btn-primary btn-sm"
+    = link_to "+ Add Time Entry", new_staff_time_entry_path(recordable_type: @recordable_type, recordable_id: @recordable.id), class: "btn btn-primary btn-sm"
+
 %br
+
+.pull-right{style: "padding-right: 40px;"}
+  = link_to "Export to CSV", export_to_csv_staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id, format: "csv"), class: "btn btn-primary btn-sm"
+
+%br
+
+- if @recordable_type == "Child"
+  .row
+    - contact = @recordable.account.emergency_contacts.first
+    - if contact.present?
+      .col-xs-6.text-right Emergency Contact: #{contact.full_name}
+      .col-xs-6.pull-left Phone: #{contact.phone}
+    - else
+      .text-center Emergency Contact: None
+
+    %br
+    %br
 
 - if @time_entries.any?
   %table.admin-table
@@ -22,14 +40,14 @@
         %tr
           - if policy(TimeEntry).manage?
             %td
-              = link_to staff_time_entry_path(time_entry, staff_id: @staff.id), method: :delete, :data => { :confirm => 'Are you sure?' } do
+              = link_to staff_time_entry_path(time_entry, recordable_type: @recordable_type, recordable_id: @recordable.id), method: :delete, :data => { :confirm => 'Are you sure?' } do
                 %i.material-icons delete_forever
           %td= time_entry.location.name
           %td= time_entry.time.stamp("March 4th, 2018 2:58 pm")
           %td= time_entry.record_type.try(:text)
           - if policy(TimeEntry).manage?
             %td
-              = link_to edit_staff_time_entry_path(time_entry, staff_id: @staff.id) do
+              = link_to edit_staff_time_entry_path(time_entry, recordable_type: @recordable_type, recordable_id: @recordable.id) do
                 %i.material-icons edit
 
   %hr

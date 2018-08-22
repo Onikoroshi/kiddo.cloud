@@ -1,11 +1,11 @@
 class Staff::TimeEntriesController < ApplicationController
   layout "dkk_staff_dashboard"
   before_action :guard_center!
-  before_action :find_staff, except: [:ratio_report, :ratio_csv]
-  before_action :authorize_multiple, only: [:index, :ratio_report, :ratio_csv]
+  before_action :find_recordable, except: [:ratio_report, :ratio_csv]
+  before_action :authorize_multiple, only: [:index, :export_to_csv, :ratio_report, :ratio_csv]
   before_action :build_single, only: [:new, :create]
   before_action :find_single, only: [:show, :edit, :update, :destroy]
-  before_action :authorize_single, except: [:index, :ratio_report, :ratio_csv]
+  before_action :authorize_single, except: [:index, :export_to_csv, :ratio_report, :ratio_csv]
   before_action :build_report_data, only: [:ratio_report, :ratio_csv]
 
   def ratio_report
@@ -21,12 +21,17 @@ class Staff::TimeEntriesController < ApplicationController
     @time_entries = @time_entries.page(params[:page]).per(50)
   end
 
+  def export_to_csv
+    set_collection
+    send_data @time_entries.to_csv, filename: "Time Entries for #{@recordable.full_name}.csv"
+  end
+
   def new
   end
 
   def create
     if @time_entry.save
-      redirect_to staff_time_entries_path(staff_id: @staff.id), notice: "Time Entry successfully created."
+      redirect_to staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id), notice: "Time Entry successfully created."
     else
       render "new"
     end
@@ -37,7 +42,7 @@ class Staff::TimeEntriesController < ApplicationController
 
   def update
     if @time_entry.update_attributes(permitted_params)
-      redirect_to staff_time_entries_path(staff_id: @staff.id), notice: "Time Entry successfully updated."
+      redirect_to staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id), notice: "Time Entry successfully updated."
     else
       render "edit"
     end
@@ -45,13 +50,21 @@ class Staff::TimeEntriesController < ApplicationController
 
   def destroy
     @time_entry.destroy
-    redirect_to staff_time_entries_path(staff_id: @staff.id), notice: "Time Entry completely removed."
+    redirect_to staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id), notice: "Time Entry completely removed."
   end
 
   private
 
-  def find_staff
-    @staff = Staff.find(params[:staff_id])
+  def find_recordable
+    @recordable_type = params[:recordable_type]
+    case @recordable_type
+    when "Staff"
+      @recordable = Staff.find(params[:recordable_id])
+    when "Child"
+      @recordable = Child.find(params[:recordable_id])
+    else
+      raise ActiveRecord::RecordNotFound
+    end
   end
 
   def authorize_multiple
@@ -63,7 +76,7 @@ class Staff::TimeEntriesController < ApplicationController
   end
 
   def set_collection
-    @time_entries = @staff.time_entries.order("time DESC")
+    @time_entries = @recordable.time_entries.order("time DESC")
   end
 
   def build_single
