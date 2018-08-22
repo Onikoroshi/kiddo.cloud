@@ -1,14 +1,13 @@
 %h3.text-center
   Time Entries for #{(@recordable_type == "Child") ? link_to(@recordable.full_name, staff_account_path(@recordable.account)) : @recordable.full_name}
 
-- if policy(TimeEntry).manage?
-  .text-center
-    = link_to "+ Add Time Entry", new_staff_time_entry_path(recordable_type: @recordable_type, recordable_id: @recordable.id), class: "btn btn-primary btn-sm"
+.row
+  .col-xs-6.text-right
+    - if policy(TimeEntry).manage?
+      = link_to "+ Add Time Entry", new_staff_time_entry_path(recordable_type: @recordable_type, recordable_id: @recordable.id), class: "btn btn-primary btn-sm"
 
-%br
-
-.pull-right{style: "padding-right: 40px;"}
-  = link_to "Export to CSV", export_to_csv_staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id, format: "csv"), class: "btn btn-primary btn-sm"
+  .col-sx-6.text-right{style: "padding-right: 40px;"}
+    = link_to "Export to CSV", export_to_csv_staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id, format: "csv"), class: "btn btn-primary btn-sm"
 
 %br
 
