@@ -13,6 +13,14 @@
 
 - if @recordable_type == "Child"
   .row
+    - parent = @recordable.account.primary_parent
+    - if parent.present?
+      .col-xs-6.text-right Primary Parent: #{parent.full_name}
+      .col-xs-6.pull-left Phone: #{parent.phone}
+    - else
+      .text-center Primary Parent: None
+
+  .row
     - contact = @recordable.account.emergency_contacts.first
     - if contact.present?
       .col-xs-6.text-right Emergency Contact: #{contact.full_name}
