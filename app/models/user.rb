@@ -28,7 +28,7 @@ class User < ApplicationRecord
 
   # Returns true if the user has *any* of the roles
   def role?(*r)
-    roles.find_by(name: r).present? # Use db query instead of array filtering
+    roles.find_by(name: r.map(&:to_s)).present? # Use db query instead of array filtering
   end
 
   # Returns true if the user has *any* of the permissions
@@ -72,6 +72,24 @@ class User < ApplicationRecord
       staff.locations
     else
       Location.none
+    end
+  end
+
+  def email_required?
+    # database query doesn't work here when creating new object
+    if self.roles.map(&:name).include?("staff")
+      false
+    else
+      super
+    end
+  end
+
+  def password_required?
+    # database query doesn't work here when creating new object
+    if self.roles.map(&:name).include?("staff")
+      false
+    else
+      super
     end
   end
 end

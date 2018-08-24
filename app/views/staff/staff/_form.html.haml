@@ -1,8 +1,9 @@
 %h3.text-center
-  Add Staff Member
+  Staff Member
 %br
 .row
   = form_for([:staff, @staff]) do |f|
+    = hidden_field_tag :allowed, params[:allowed]
     = render "application/form_errors", object: @staff
     = f.fields_for :user, @staff.user do |u|
       .col-md-6.col-sm-8.col-md-offset-3.col-sm-offset-2
@@ -12,26 +13,31 @@
         .form-group.label-floating
           = u.label :last_name, "Last Name", class: "control-label"
           = u.text_field :last_name, class: "form-control"
-        .form-group.label-floating
-          = u.label :email, "Email", class: "control-label"
-          = u.text_field :email, class: "form-control"
+        - if params[:allowed] == "any"
+          .form-group.label-floating
+            = u.label :email, "Email", class: "control-label"
+            = u.text_field :email, class: "form-control"
+        - else
+          = u.hidden_field :email, value: u.object.email.blank? ? "staff_#{User.maximum(:id).to_i + 1}@daviskidsklub.com" : u.object.email
         .form-group
           = f.label :location_ids, "Locations"
           = f.collection_select :location_ids, Location.all, :id, :name, { selected: @staff.location_ids }, { multiple: true }
-        - if policy(@staff).super_manage?
+        - if params[:allowed] == "any" && policy(@staff).super_manage?
           .form-group
             = u.label :role_ids, "Role"
             = u.collection_select :role_ids, Role.staff_types, :id, :display_name, { selected: @staff.user.role_ids }, { multiple: true }
 
-        - if @staff.new_record? && policy(@staff).super_manage?
-          .form-group.label-floating
-            = u.label :password, "Password", class: "control-label"
-            = u.password_field :password, class: "form-control"
-          .form-group.label-floating
-            = u.label :password, "Password Confirmation", class: "control-label"
-            = u.password_field :password_confirmation, class: "form-control"
-        - elsif @staff.new_record?
-          = u.hidden_field :password, value: "asdfasdf"
+          - if @staff.new_record?
+            .form-group.label-floating
+              = u.label :password, "Password", class: "control-label"
+              = u.password_field :password, class: "form-control"
+            .form-group.label-floating
+              = u.label :password, "Password Confirmation", class: "control-label"
+              = u.password_field :password_confirmation, class: "form-control"
+        - else
+          .form-group
+            = u.label :role_ids, "Role"
+            = u.collection_select :role_ids, Role.where(name: "staff"), :id, :display_name, { selected: @staff.user.role_ids + [Role.find_by(name: "staff").id] }, { multiple: true }
 
         %h4 PIN Number: #{@staff.pin_number}
 

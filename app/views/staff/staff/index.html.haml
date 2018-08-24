@@ -2,13 +2,17 @@
   Staff
 
 .text-center
-  = link_to "+ Add Staff Member", new_staff_staff_path, class: "btn btn-primary btn-sm"
+  - if pundit_user.super_admin?
+    = link_to "+ Add Admin", new_staff_staff_path(allowed: "any"), class: "btn btn-primary btn-sm"
+  = link_to "+ Add Staff Member", new_staff_staff_path(allowed: "staff_only"), class: "btn btn-primary btn-sm"
 %br
 
 
 - if @staff.any?
   %table
     %thead
+      - if policy(Staff).destroy?
+        %th
       %th.admin-title Name
       %th.admin-title Email
       %th.admin-title Role
@@ -21,6 +25,10 @@
     %tbody
       - @staff.each do |s|
         %tr
+          - if policy(s).destroy?
+            %td
+              = link_to staff_staff_path(s), method: :delete, :data => { :confirm => 'Are you sure?' } do
+                %i.material-icons delete_forever
           %td= s.user.full_name
           %td= s.user.email
           %td= s.user.roles.pluck(:name).map(&:humanize).join(", ")

@@ -24,9 +24,6 @@ class Staff::StaffController < ApplicationController
 
   def create
     if @staff.save
-      unless policy(@staff).super_manage?
-        @staff.user.roles << Role.find_by(name: "staff")
-      end
       @staff.user.update_attributes(center: @center)
       redirect_to staff_staff_index_path, notice: "Staff member was successfully created."
     else
@@ -79,8 +76,7 @@ class Staff::StaffController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def permitted_params
-    user_attributes = [:id, :email, :first_name, :last_name, :password, :password_confirmation]
-    user_attributes += [role_ids: []] if policy(Staff).super_manage?
+    user_attributes = [:id, :email, :first_name, :last_name, :password, :password_confirmation, role_ids: []]
 
     @permitted_params ||= params[:staff].present? ? params.require(:staff).permit(user_attributes: user_attributes, location_ids: []) : {}
   end
