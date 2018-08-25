@@ -12,10 +12,11 @@
             =link_to staff_enrollments_path do
               %i.material-icons face
               Enrollments
-          %li{ class: (controller_name == "staff") ? "active" : ""}
-            =link_to staff_staff_index_path do
-              %i.material-icons accessibility
-              Staff
+          - if current_user.super_admin?
+            %li{ class: (controller_name == "staff") ? "active" : ""}
+              =link_to staff_staff_index_path do
+                %i.material-icons accessibility
+                Staff
           %li{ class: (controller_name == "dashboard") ? "active" : ""}
             =link_to staff_dashboard_path do
               %i.material-icons done
@@ -45,10 +46,10 @@
                       = link_to staff_announcements_path do
                         %i.material-icons warning
                         Announcements
-          %li{ class: (controller_name == "transactions") ? "active" : ""}
-            =link_to staff_transactions_path do
-              %i.material-icons credit_card
-              Payments
+            %li{ class: (controller_name == "transactions") ? "active" : ""}
+              =link_to staff_transactions_path do
+                %i.material-icons credit_card
+                Payments
 
 - if @account.present?
   .layout-row.centered

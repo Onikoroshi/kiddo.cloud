@@ -5,6 +5,7 @@ class StaffPolicy < ApplicationPolicy
     user.super_admin?
   end
 
+  alias_method :index?, :super_manage?
   alias_method :destroy?, :super_manage?
 
   def manage?
@@ -15,7 +16,6 @@ class StaffPolicy < ApplicationPolicy
     user.director? && (staff.user.blank? || staff.user.roles.blank? || staff.user.roles.map(&:name).include?("staff"))
   end
 
-  alias_method :index?, :manage?
   alias_method :new?, :manage?
   alias_method :create?, :manage?
   alias_method :edit?, :manage?

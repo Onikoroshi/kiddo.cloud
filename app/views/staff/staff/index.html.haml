@@ -21,6 +21,8 @@
         %th.admin-title Time Entries
       %th.admin-title Date Created
       %th.admin-title Actions
+      - if policy(Staff).super_manage?
+        %th PIN
 
     %tbody
       - @staff.each do |s|
@@ -43,6 +45,8 @@
               = link_to "Edit", edit_staff_staff_path(s), class: "btn btn-xs"
             - else
               .btn.btn-xs{style: "opacity: 0.0;"} Placeholder
+          - if policy(Staff).super_manage?
+            %td= s.pin_number
 
 .text-center
   = paginate @staff
