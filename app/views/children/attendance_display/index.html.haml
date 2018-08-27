@@ -7,7 +7,7 @@
 
   #location-switcher.text-center
     = form_tag children_attendance_display_index_path, method: :get do
-      = select_tag "child-location-switcher", options_from_collection_for_select(@center.locations, 'id', 'name', @location.try(:id)), { class: "location-switcher" }
+      = select_tag "child-location-switcher", options_from_collection_for_select(Location.all, 'id', 'name', @location.try(:id)), { class: "location-switcher" }
 
   #time-entry-message
 
