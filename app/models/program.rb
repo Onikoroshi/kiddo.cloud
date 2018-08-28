@@ -34,6 +34,10 @@ class Program < ApplicationRecord
   scope :for_fall, -> { where(program_type: ProgramType[:fall].to_s) }
   scope :for_summer, -> { where(program_type: ProgramType[:summer].to_s) }
 
+  def available_locations
+    Location.where(id: program_locations.available.pluck(:location_id))
+  end
+
   def plan_types
     plans.map{|plan| plan.plan_type}.uniq{|plan| plan.to_s}
   end

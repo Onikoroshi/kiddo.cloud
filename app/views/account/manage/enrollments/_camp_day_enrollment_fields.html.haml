@@ -17,7 +17,7 @@
     .col-sm-6
       .field
         = f.label :location, "at"
-        = f.select :location_id, options_from_collection_for_select(@program.locations, 'id', 'name', f.object.location_id)
+        = f.select :location_id, options_from_collection_for_select(@program.available_locations, 'id', 'name', f.object.location_id)
         %br
         = link_to_remove_association "Remove Drop In Day", f
   %hr

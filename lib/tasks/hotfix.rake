@@ -1,4 +1,30 @@
 namespace :hotfix do
+  task :disable_locations => :environment do
+    names = [
+      "Birch Lane Elementary",
+      "César Chávez Elementary",
+      "Patwin Elementary",
+      "Pioneer Elementary",
+      "Willett Elementary"
+    ]
+
+    locations = Location.where(name: names)
+    program = Program.for_fall.first
+
+    program_locations = ProgramLocation.where(program_id: program.id, location_id: locations.pluck(:id))
+
+    program_locations.each do |prloc|
+      ap "#{prloc.program.name} #{prloc.location.name} #{prloc.available}"
+    end
+
+    program_locations.update_all(available: false)
+
+    program_locations.each do |prloc|
+      prloc.reload
+      ap "#{prloc.program.name} #{prloc.location.name} #{prloc.available}"
+    end
+  end
+
   task :add_all_day_plans => :environment do
     seeder = MaintenanceTools::ProductionSeeder.new.seed_all_day_plans
   end
