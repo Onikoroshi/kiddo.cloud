@@ -42,7 +42,7 @@
           %td= s.created_at.stamp("11/05/2017")
           %td
             - if policy(s).manage?
-              = link_to "Edit", edit_staff_staff_path(s), class: "btn btn-xs"
+              = link_to "Edit", edit_staff_staff_path(s, allowed: "any"), class: "btn btn-xs"
             - else
               .btn.btn-xs{style: "opacity: 0.0;"} Placeholder
           - if policy(Staff).super_manage?
