@@ -2,10 +2,9 @@
   %ul.nav.nav-pills.nav-pills-rose
     %li{ class: ((controller_name == "dashboards" && action_name == "show") || controller_name == "children")  ? "active" : "" }
       = link_to "Overview", account_dashboard_path(@account)
-    %li{ class: (controller_name == "enrollments" && action_name == "new" && (@plan_type.to_s.blank? || @plan_type.to_s == "weekly")) ? "active" : "" }
-      = link_to "Add Summer Camp Weeks", new_account_dashboard_enrollment_path(@account, plan_type: "weekly", program_id: Program.where("programs.name ILIKE ?", "%Summer%").first.id)
+    %li{ class: (controller_name == "enrollments" && action_name == "new" && (@plan_type.to_s.blank? || @plan_type.to_s == "full_day_contract")) ? "active" : "" }
+      = link_to "Participate in Pioneer All Day Care", new_account_dashboard_enrollment_path(@account, plan_type: "full_day_contract", program_id: Program.where(program_type: "fall").first.id)
     %li{ class: (controller_name == "enrollments" && action_name == "new" && (@plan_type.to_s.blank? || @plan_type.to_s == "drop_in")) ? "active" : "" }
-      = link_to "Add Summer Camp Drop-In Days", new_account_dashboard_enrollment_path(@account, plan_type: "drop_in", program_id: Program.where("programs.name ILIKE ?", "%Summer%").first.id)
     %li{ class: (controller_name == "enrollments" && action_name == "edit")  ? "active" : "" }
       = link_to "Reduce Attendance", edit_account_dashboard_enrollments_path(@account)
     %li{ class: (controller_name == "credit_cards") ? "active" : "" }
