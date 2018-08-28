@@ -54,6 +54,16 @@ class PlanType::SiblingClub < PlanType
   end
 end
 
+class PlanType::FullDayContract < PlanType
+  def text
+    "Pioneer All Day Care"
+  end
+
+  def recurring?
+    true
+  end
+end
+
 class PlanType::Weekly < PlanType
 end
 

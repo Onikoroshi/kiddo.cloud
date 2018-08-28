@@ -1,7 +1,7 @@
 class Program < ApplicationRecord
   include ClassyEnum::ActiveRecord
   belongs_to :center
-  has_many :plans
+  has_many :plans, dependent: :destroy
   has_many :enrollments, through: :plans
   has_many :children, through: :enrollments
   has_many :transactions, through: :enrollments

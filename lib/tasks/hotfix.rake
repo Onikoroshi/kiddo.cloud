@@ -1,4 +1,8 @@
 namespace :hotfix do
+  task :add_all_day_plans => :environment do
+    seeder = MaintenanceTools::ProductionSeeder.new.seed_all_day_plans
+  end
+
   task :fix_enrollment_days => :environment do
     index = 1
     total = Enrollment.by_plan_type("sibling_club").count

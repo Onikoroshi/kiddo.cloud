@@ -21,7 +21,6 @@ module ChildEnrollment
     end
 
     def calculate_enrollments_costs
-      ap params
       if params["enrollments"].present?
         enrollments.one_time.inject(Money.new(0)) do |sum, enrollment|
           altered_cost = find_altered_amount(params["enrollments"][enrollment.id.to_s])
