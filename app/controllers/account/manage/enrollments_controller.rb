@@ -30,11 +30,28 @@ class Account::Manage::EnrollmentsController < ApplicationController
     @account.attributes = unapplied_change_params
 
     # now apply the ones we just chose
-    @account.attributes = enrollment_params
+    chosen_params = enrollment_params
+    ap "chosen:"
+    ap chosen_params
+    @account.attributes = chosen_params
     if @account.valid?
       unless overlapping_enrollments?
+        @account.children.each do |child|
+          ap "looking at child #{child.id}"
+          # do NOT add any scopes to this. It will lose the attributes assigned above
+          child.enrollments.each do |enrollment|
+            next unless enrollment.alive?
+
+            if enrollment._destroy
+              ap "destroying unpaid #{enrollment.id}"
+              enrollment.destroy
+            end
+          end
+        end
+
         @account.save
-        redirect_to @account.signup_complete? ? (@account.enrollments.unpaid.any? ? new_account_dashboard_payment_path(@account) : account_dashboard_path(@account)) : account_step_path(@account, :summary), notice: "enrollment successful!"
+        path = @account.signup_complete? ? (@account.enrollments.unpaid.any? ? new_account_dashboard_payment_path(@account) : account_dashboard_path(@account)) : (@account.enrollments.any? ? account_step_path(@account, :summary) : account_step_path(@account, :plan))
+        redirect_to path, notice: @account.enrollments.any? ? "enrollment successful!" : "no enrollment chosen"
       else
         build_missing_enrollments
         render "new"
@@ -178,10 +195,20 @@ class Account::Manage::EnrollmentsController < ApplicationController
     sanitized_params = params
 
     if sanitized_params["account"]["children_attributes"].present?
+      ap "children attributes present"
       sanitized_params["account"]["children_attributes"].each do |child_key, enrollment_attrs|
         if enrollment_attrs.present? && enrollment_attrs["enrollments_attributes"].present?
+          ap "enrollment attributes present"
           enrollment_attrs["enrollments_attributes"].each do |enrollment_key, values|
+            ap "enrollment key: #{enrollment_key}"
+            ap "values:"
+            ap values.permit!
             if sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] == "1"
+              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] = "true"
+            end
+
+            if sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["plan_id"].blank?
+              ap "plan id blank"
               sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] = "true"
             end
 

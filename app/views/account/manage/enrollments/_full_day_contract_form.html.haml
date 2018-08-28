@@ -1,0 +1,44 @@
+= form_for(@account, url: account_dashboard_enrollments_path, method: defined?(target_method) ? target_method : "POST") do |f|
+  = hidden_field_tag :plan_type, @plan_type.to_s
+
+  %h5.text-center Payments will be automatically charged to your card once a month. To make this process as smooth and convenient as possible, we can offset that date by a certain amount. Please choose your ideal offset below.
+
+  .text-center= f.select :payment_offset, options_from_collection_for_select(PaymentOffsetPresenter.build(@program.earliest_payment_offset, @program.latest_payment_offset), 'to_i', 'to_s', f.object.payment_offset.to_i)
+
+  %br
+
+  = render "application/form_errors", object: @account
+
+  = f.fields_for :children do |children_fields|
+    .plan-box
+      .row
+        .col-sm-12
+          .dropin-name{style: "padding-left: 20px;"}
+            = children_fields.object.full_name
+
+      .row
+        = children_fields.fields_for :enrollments do |enrollment_fields|
+          - if enrollment_fields.object.alive? && enrollment_fields.object.program == @program && enrollment_fields.object.plan_type.to_s == @plan_type.to_s && (defined?(target_method) || enrollment_fields.object.unpaid?)
+            = enrollment_fields.hidden_field :plan_id, value: enrollment_fields.object.plan_id
+            = enrollment_fields.hidden_field :child_id, value: enrollment_fields.object.child_id
+
+            = enrollment_fields.hidden_field :starts_at, value: [(enrollment_fields.object.starts_at || @program.starts_at).to_date, (enrollment_fields.object.created_at || Time.zone.today).to_date].max
+            = enrollment_fields.hidden_field :ends_at, value: enrollment_fields.object.ends_at || @program.ends_at
+
+            = enrollment_fields.hidden_field :monday, value: true
+            = enrollment_fields.hidden_field :tuesday, value: true
+            = enrollment_fields.hidden_field :wednesday, value: true
+            = enrollment_fields.hidden_field :thursday, value: true
+            = enrollment_fields.hidden_field :friday, value: true
+
+            = enrollment_fields.hidden_field :location_id, value: Location.find_by(name: "Pioneer Elementary").id
+
+            .col-sm-9
+              = enrollment_fields.select :plan_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None"
+
+            .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px;"}
+              At Pioneer Elementary
+            .cleaner
+
+  = link_to "Cancel", @account.signup_complete? ? (defined?(target_method) ? edit_account_dashboard_enrollments_path(@account) : new_account_dashboard_enrollment_path(@account)) : account_step_path(@account, :plan), class: "btn"
+  = f.submit "Submit", class: "btn btn-info pull-right"
