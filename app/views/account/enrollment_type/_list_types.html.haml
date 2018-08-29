@@ -3,9 +3,9 @@
     %h3.text-center
       How will your children be attending #{program.name}?
 
-  .col-md-8.col-md-offset-2.col-xs-10.col-xs-offset-1
+  .col-xs-12
     #attendance-selection-chooser
       - type_width = (12 / program.plan_types.count).to_i
       - program.plan_types.each do |plan_type|
         .text-center{class: "col-xs-#{type_width}"}
-          = link_to plan_type.text, plan_selection_path(plan_type, @account, program, defined?(target_action) ? target_action : "new"), class: "btn btn-lg btn-block btn-info"
+          = link_to plan_type.text, plan_selection_path(plan_type, @account, program, defined?(target_action) ? target_action : "new"), class: "btn btn-lg btn-block btn-info btn-fat"
