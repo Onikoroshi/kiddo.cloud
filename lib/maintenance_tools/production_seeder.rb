@@ -96,21 +96,6 @@ class MaintenanceTools::ProductionSeeder
     Plan.where(program: program_fall, display_name: "Sibling Club", days_per_week: -1, price: 40.00, plan_type: "sibling_club", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: true).first_or_create!
     Plan.where(program: program_fall, display_name: "(M, T, TH, F)", days_per_week: 1, price: 30.00, plan_type: "drop_in", monday: true, tuesday: true, wednesday: false, thursday: true, friday: true, saturday: false, sunday: false, deduce: true).first_or_create!
     Plan.where(program: program_fall, display_name: "(Wednesday)", days_per_week: 1, price: 35.00, plan_type: "drop_in", monday: false, tuesday: false, wednesday: true, thursday: false, friday: false, saturday: false, sunday: false, deduce: true).first_or_create!
-
-    seed_all_day_plans
-  end
-
-  def seed_all_day_plans
-    if program_fall.blank?
-      program_fall = Program.find_by(program_type: "fall")
-    end
-
-    Plan.where(program: program_fall, display_name: "7:30 am - 8:15 am", days_per_week: 5, price: 79.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
-    Plan.where(program: program_fall, display_name: "11:50 am - 3:15 pm", days_per_week: 5, price: 280.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
-    Plan.where(program: program_fall, display_name: "3:10 pm - 6:10 pm", days_per_week: 5, price: 290.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
-    Plan.where(program: program_fall, display_name: "7:30 am - 11:50 am", days_per_week: 5, price: 360.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
-    Plan.where(program: program_fall, display_name: "11:50 am - 6:00 pm", days_per_week: 5, price: 540.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
-    Plan.where(program: program_fall, display_name: "7:30 am - 11:50 am & 3:10 pm - 6:10 pm", days_per_week: 5, price: 600.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
   end
 
   def seed_roles
