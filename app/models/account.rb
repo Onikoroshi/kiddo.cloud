@@ -35,9 +35,66 @@ class Account < ApplicationRecord
 
   def self.to_csv
     CSV.generate do |csv|
-      csv << ["Primary Parent", "Email", "Phone", "Children", "Location(s)"]
+      csv << [
+        "Child Last Name",
+        "Child First Name",
+        "Birthdate",
+        "Primary Parent",
+        "Email",
+        "Phone",
+        "Secondary Contact",
+        "Phone",
+        "Emergency Contact",
+        "Phone",
+        "Medical",
+        "Phone",
+        "Dental",
+        "Phone",
+        "Insurance",
+        "Policy Number",
+        "Notes",
+      ]
       self.all.each do |account|
-        csv << [account.primary_parent.full_name, account.user.email, account.primary_parent.phone, account.children.map(&:full_name).to_sentence, account.active_locations.map(&:name).to_sentence]
+        primary_parent = account.primary_parent
+        secondary_parent = account.secondary_parent
+        emergency_contact = account.emergency_contacts.first
+
+        account_info = primary_parent.present? ? [primary_parent.full_name] : [""]
+
+        account_info << account.user.email
+
+        account_info << (primary_parent.present? ? primary_parent.phone : "")
+
+        account_info += secondary_parent.present? ? [secondary_parent.full_name, secondary_parent.phone] : ["", ""]
+
+        account_info += emergency_contact.present? ? [emergency_contact.full_name, emergency_contact.phone] : ["", ""]
+
+        account_info += [
+          account.family_physician,
+          account.physician_phone,
+          account.family_dentist,
+          account.dentist_phone,
+          account.insurance_company,
+          account.insurance_policy_number,
+        ]
+
+        account.children.each do |child|
+          child_info = [child.last_name, child.first_name, child.birthdate.stamp("5/13/2011")]
+          child_info += account_info
+
+          if child.care_items.active.any?
+            notes = child.care_items.active.map{|item| "#{item.name}: #{item.explanation}"}.join("\n")
+            unless child.additional_info.blank?
+              notes += "\n#{child.additional_info}"
+            end
+
+            child_info << notes
+          else
+            child_info << ""
+          end
+
+          csv << child_info
+        end
       end
     end
   end
