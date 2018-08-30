@@ -5,6 +5,7 @@ class Staff::LocationsController < ApplicationController
   before_action :build_single, only: [:new, :create]
   before_action :find_single, only: [:show, :edit, :update, :destroy]
   before_action :authorize_single, except: :index
+  before_action :build_variables, only: [:show, :edit]
 
   def index
     set_collection
@@ -16,6 +17,7 @@ class Staff::LocationsController < ApplicationController
 
   def create
     if @location.save
+      update_availables
       redirect_to staff_locations_path, notice: "Location successfully created."
     else
       render "new"
@@ -27,6 +29,7 @@ class Staff::LocationsController < ApplicationController
 
   def update
     if @location.update_attributes(permitted_params)
+      update_availables
       redirect_to staff_locations_path, notice: "Location successfully updated."
     else
       render "edit"
@@ -43,6 +46,12 @@ class Staff::LocationsController < ApplicationController
   end
 
   private
+
+  def update_availables
+    @location.program_locations.each do |prog_loc|
+      prog_loc.update_attribute(:available, params["availables"].present? && params["availables"][prog_loc.program_id.to_s].present? && arams["availables"][prog_loc.program_id.to_s] == "true")
+    end
+  end
 
   def authorize_multiple
     authorize Location
@@ -62,6 +71,10 @@ class Staff::LocationsController < ApplicationController
 
   def find_single
     @location = Location.find(params[:id])
+  end
+
+  def build_variables
+    @programs = Program.all.reorder("name ASC")
   end
 
   def permitted_params

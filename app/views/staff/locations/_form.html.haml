@@ -9,9 +9,21 @@
       %br
       .form-group.label-floating
         = f.label :programs, "Programs", class: "control-label"
-        = f.collection_check_boxes :program_ids, Program.all, :id, :name, class: "form-control" do |cb|
-          = "#{cb.check_box} #{cb.text}"
-          %br
+        %table
+          %thead
+            %th Program
+            %th Available
+          %tbody
+            %tr
+              %td
+                = f.collection_check_boxes :program_ids, @programs, :id, :name, class: "form-control" do |cb|
+                  = "#{cb.check_box} #{cb.text}"
+                  %br
+              %td
+                - @programs.each do |program|
+                  - prog_loc = f.object.program_locations.find_by(program_id: program.id)
+                  = check_box_tag "availables[#{program.id}]", true, prog_loc.present? ? prog_loc.available : false
+                  %br
 
       = link_to "Cancel", staff_locations_path, class: "btn"
       = f.submit class: "btn btn-info pull-right"
