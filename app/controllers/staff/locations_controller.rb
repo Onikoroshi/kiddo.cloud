@@ -49,7 +49,7 @@ class Staff::LocationsController < ApplicationController
 
   def update_availables
     @location.program_locations.each do |prog_loc|
-      prog_loc.update_attribute(:available, params["availables"].present? && params["availables"][prog_loc.program_id.to_s].present? && arams["availables"][prog_loc.program_id.to_s] == "true")
+      prog_loc.update_attribute(:available, params["availables"].present? && params["availables"][prog_loc.program_id.to_s].present? && params["availables"][prog_loc.program_id.to_s] == "true")
     end
   end
 
