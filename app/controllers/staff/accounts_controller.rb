@@ -24,13 +24,20 @@ class Staff::AccountsController < ApplicationController
 
   def set_collection
     @locations = current_user.manageable_locations
+    @programs = @locations.programs
+
+    @program = Program.find_by(id: params[:program_id]) || @center.current_program
+    @program = @programs.first unless @programs.include?(@program)
+
+    @locations = Location.where(id: (@locations.pluck(:id) & @program.locations.pluck(:id)))
+
     @location_id = params[:location_id]
-    target_location = Location.find_by(id: @location_id)
-    target_location = @locations.first if !current_user.super_admin? && !@locations.include?(target_location)
+    @location = Location.find_by(id: @location_id)
+    @location = @locations.first if !current_user.super_admin? && !@locations.include?(@location)
 
     @show_unregistered = params["show_unregistered"].present?
 
-    @accounts = Account.includes(:parents).where(center: @center).by_location(target_location)
+    @accounts = Account.includes(:parents).where(center: @center).by_program(@program).by_location(@location)
     @accounts = @show_unregistered ? @accounts.where.not(signup_complete: true) : @accounts.where(signup_complete: true)
     @accounts = @accounts.distinct
   end

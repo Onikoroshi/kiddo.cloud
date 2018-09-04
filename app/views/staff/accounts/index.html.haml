@@ -4,13 +4,21 @@
 .row
   .text-center
     = form_tag staff_accounts_path, method: :get do
-      %h5 Location
-      %span{style: "padding-right: 20px;"}
-        = check_box_tag "show_unregistered", "1", @show_unregistered
-        = label_tag "show_unregistered", "Show Only Unregistered"
-      %span{style: "padding-right: 20px;"}
-        = select_tag "location_id", options_from_collection_for_select(@locations, "id", "name", @location_id), include_blank: current_user.super_admin? ? "All Locations" : false
-      = submit_tag "Submit"
+      .row
+        .col-xs-4.text-center
+          %h5 Program
+          = select_tag "program_id", options_from_collection_for_select(@programs, "id", "name", @program.id)
+
+        .col-xs-4.text-center
+          %h5 Location
+          = select_tag "location_id", options_from_collection_for_select(@locations, "id", "name", @location_id), include_blank: current_user.super_admin? ? "All Locations" : false
+        .col-xs-4.text-center
+          %br
+          = check_box_tag "show_unregistered", "1", @show_unregistered
+          = label_tag "show_unregistered", "Show Only Unregistered"
+
+          .text-center{ style: "padding-bottom: 40px;" }
+            = submit_tag "Submit"
 
   .pull-right{style: "padding-right: 40px;"}
     = link_to "Export to CSV", export_to_csv_staff_accounts_path(location_id: @location_id, format: "csv"), class: "btn btn-primary btn-sm"
