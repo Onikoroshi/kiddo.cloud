@@ -150,16 +150,16 @@
           %h5= program.name
 
           - @account.children.each do |child|
-            %strong= child.full_name
-            - enrollments = child.enrollments.alive.by_program(program)
-            - if enrollments.any?
-              %table
-                - enrollments.each do |enrollment|
-                  %tr.merge-top
-                    %td= enrollment.to_short
-                  - enrollment.payment_plan_hash.each do |month_name, data|
-                    %tr.merge-top.short
-                      %td.right-just{style: "color: #{data["overdue"] == true ? 'red' : 'inherit'}"}= data["message"]
-            %hr
+            .row.account-row
+              %strong{style: "padding-left: 10px;"}= child.full_name
+              - enrollments = child.enrollments.alive.by_program(program)
+              - if enrollments.any?
+                %table
+                  - enrollments.each do |enrollment|
+                    %tr.merge-top
+                      %td= enrollment.to_short
+                    - enrollment.payment_plan_hash.each do |month_name, data|
+                      %tr.merge-top.short
+                        %td.right-just{style: "color: #{data["overdue"] == true ? 'red' : 'inherit'}"}= data["message"]
 
   .cleaner
