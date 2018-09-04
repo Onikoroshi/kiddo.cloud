@@ -45,10 +45,12 @@ class TimeEntry < ApplicationRecord
   end
 
   def self.ratio_report_hash
+    hash = {}
+
+    return hash unless self.any?
+
     first_time = self.order(:time).first.time.beginning_of_hour
     last_time = self.order(:time).last.time.beginning_of_hour + 1.hour
-
-    hash = {}
 
     (first_time.to_i .. last_time.to_i).step(15.minutes).to_a.each do |time|
       hash[Time.zone.at(time).stamp("3:00 PM")] = {
