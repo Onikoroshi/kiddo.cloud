@@ -30,8 +30,8 @@ class Account < ApplicationRecord
 
   after_save :update_enrollment_payment_dates
 
-  scope :by_program, ->(given_program) { given_program.present? ? joins(enrollments: :program).where("programs.id = ?", given_program.id).distinct : all }
-  scope :by_location, ->(given_location) { given_location.present? ? joins(:enrollments).where("enrollments.location_id = ?", given_location.id).distinct : all }
+  scope :by_program, ->(given_program) { given_program.present? ? joins(enrollments: :program).where("enrollments.dead IS FALSE AND programs.id = ?", given_program.id).distinct : all }
+  scope :by_location, ->(given_location) { given_location.present? ? joins(:enrollments).where("enrollments.dead IS FALSE AND enrollments.location_id = ?", given_location.id).distinct : all }
 
   def self.to_csv
     CSV.generate do |csv|
