@@ -34,7 +34,7 @@
             = enrollment_fields.hidden_field :location_id, value: Location.find_by(name: "Pioneer Elementary").id
 
             .col-sm-9
-              = enrollment_fields.select :plan_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None"
+              = enrollment_fields.select :plan_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None", selected: enrollment_fields.object.persisted? ? enrollment_fields.object.plan_id : nil
 
             .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px;"}
               At Pioneer Elementary

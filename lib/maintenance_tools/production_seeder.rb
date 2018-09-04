@@ -1,7 +1,7 @@
 class MaintenanceTools::ProductionSeeder
 
   attr_reader :center
-  attr_reader :program_summer, :program_fall
+  attr_reader :program_summer, :program_fall, :program_tkk
 
   def initialize
     @center = Center.where(name: "Davis Kids Klub", subdomain: "daviskidsklub").first_or_create!
@@ -38,6 +38,7 @@ class MaintenanceTools::ProductionSeeder
   def seed_programs
     seed_summer_program
     seed_fall_program
+    seed_tkk_program
   end
 
   def seed_summer_program
@@ -72,9 +73,26 @@ class MaintenanceTools::ProductionSeeder
     ).first_or_create!
   end
 
+  def seed_tkk_program
+    @program_tkk = Program.where(
+      center: center,
+      name: "TKK",
+      starts_at: Chronic.parse("8/20/2018"),
+      ends_at: Chronic.parse("6/20/2019"),
+      registration_opens: Chronic.parse("5/10/2018"),
+      registration_closes: Chronic.parse("6/2/2019"),
+      registration_fee: 50.0,
+      change_fee: 49.0,
+      earliest_payment_offset: -15,
+      latest_payment_offset: 14,
+      program_type: "fall"
+    ).first_or_create!
+  end
+
   def seed_program_plans
     seed_summer_program_plans
     seed_fall_program_plans
+    seed_tkk_program_plans
   end
 
   def seed_summer_program_plans
@@ -96,6 +114,15 @@ class MaintenanceTools::ProductionSeeder
     Plan.where(program: program_fall, display_name: "Sibling Club", days_per_week: -1, price: 40.00, plan_type: "sibling_club", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: true).first_or_create!
     Plan.where(program: program_fall, display_name: "(M, T, TH, F)", days_per_week: 1, price: 30.00, plan_type: "drop_in", monday: true, tuesday: true, wednesday: false, thursday: true, friday: true, saturday: false, sunday: false, deduce: true).first_or_create!
     Plan.where(program: program_fall, display_name: "(Wednesday)", days_per_week: 1, price: 35.00, plan_type: "drop_in", monday: false, tuesday: false, wednesday: true, thursday: false, friday: false, saturday: false, sunday: false, deduce: true).first_or_create!
+  end
+
+  def seed_tkk_program_plans
+    Plan.where(program: program_tkk, display_name: "7:30 am - 8:15 am", days_per_week: 5, price: 79.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
+    Plan.where(program: program_tkk, display_name: "11:50 am - 3:15 pm", days_per_week: 5, price: 280.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
+    Plan.where(program: program_tkk, display_name: "3:10 pm - 6:10 pm", days_per_week: 5, price: 290.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
+    Plan.where(program: program_tkk, display_name: "7:30 am - 11:50 am", days_per_week: 5, price: 360.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
+    Plan.where(program: program_tkk, display_name: "11:50 am - 6:00 pm", days_per_week: 5, price: 540.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
+    Plan.where(program: program_tkk, display_name: "7:30 am - 11:50 am & 3:10 pm - 6:10 pm", days_per_week: 5, price: 600.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
   end
 
   def seed_roles
