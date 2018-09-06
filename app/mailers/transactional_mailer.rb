@@ -60,6 +60,6 @@ class TransactionalMailer < ApplicationMailer
     @transaction = transaction
     @account = transaction.account
 
-    mail(to: ["daviskidsklub@aol.com", "dkk.vsantos@aol.com", "aryn@daviskidsklub.com"], subject: "DKK Enrollment Change Report")
+    mail(to: ["daviskidsklub@aol.com", "dkk.vsantos@aol.com", "aryn.yancher@gmail.com"], subject: "DKK Enrollment Change Report")
   end
 end
