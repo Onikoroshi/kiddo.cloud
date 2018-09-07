@@ -71,8 +71,8 @@ class Child < ApplicationRecord
     enrollments.alive.where(plan: program.plans).present?
   end
 
-  def scheduled_for_today?(program)
-    enrollments.alive.where(plan: program.plans).select { |e| e.enrolled_today? }.any?
+  def scheduled_for_today?
+    enrollments.alive.active.paid.select { |e| e.enrolled_today? }.any?
   end
 
   def last_time_entry
