@@ -9,6 +9,8 @@ class ApplicationController < ActionController::Base
   before_action :set_center
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  before_action :ensure_parent_info
+
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def set_center
@@ -104,6 +106,34 @@ class ApplicationController < ActionController::Base
       end
     else
       get_layout
+    end
+  end
+
+  def ensure_parent_info
+    return if current_user.blank? || !current_user.parent?
+
+    allowed_paths = [
+      root_path,
+      new_user_session_path,
+      destroy_user_session_path,
+      new_user_registration_path,
+      new_user_password_path,
+      user_password_path,
+      edit_user_password_path,
+      account_step_path(current_user.account, :parents),
+      edit_account_dashboard_parents_path(current_user.account),
+      account_dashboard_parents_path(current_user.account)
+    ]
+    return if allowed_paths.include?(request.path)
+
+    account_form = AccountForm.new(center: @center, account: current_user.account, current_user: current_user)
+    return if account_form.valid?
+
+    flash[:error] = "Please complete your information first."
+    if current_user.account.signup_complete?
+      redirect_to edit_account_dashboard_parents_path(current_user.account) and return
+    else
+      redirect_to account_step_path(current_user.account, :parents) and return
     end
   end
 end
