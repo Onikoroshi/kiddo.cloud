@@ -20,5 +20,5 @@
         = f.label :record_type, "Action", class: "control-label", style: "padding-bottom: 20px;"
         = f.select :record_type, TimeEntryType.select_options, class: "form-control"
 
-      = link_to "Cancel", staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id), class: "btn"
+      = link_to "Cancel", session[:target_path], class: "btn"
       = f.submit class: "btn btn-info pull-right"

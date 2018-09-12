@@ -22,6 +22,14 @@ class TimeEntry < ApplicationRecord
       .where("time >= ? and time <= ?", start_time, end_time)
   end
 
+  def self.staffs
+    Staff.where(id: self.for_staff.pluck(:time_recordable_id).uniq).distinct
+  end
+
+  def self.children
+    Child.where(id: self.for_children.pluck(:time_recordable_id).uniq).distinct
+  end
+
   def self.count_checked_in_at(datetime)
     hash = {}
     self.all.each do |entry|
@@ -32,13 +40,10 @@ class TimeEntry < ApplicationRecord
 
     checked_in_count = 0
     hash.each do |key, entries|
-      entries_before = entries.select{|e| e.time <= datetime}
-      entries_after = entries.select{|e| e.time > datetime}
-
+      entries_before = entries.select{|e| e.time.in_time_zone <= datetime}
       last_before = entries_before.sort{|a, b| a.time <=> b.time}.last
-      first_after = entries_after.sort{|a, b| a.time <=> b.time}.first
 
-      checked_in_count += 1 if last_before.present? && last_before.checked_in? && (first_after.blank? || first_after.checked_out?)
+      checked_in_count += 1 if last_before.present? && last_before.checked_in?
     end
 
     checked_in_count

@@ -27,22 +27,30 @@ class Staff::TimeEntriesController < ApplicationController
   end
 
   def new
+    session[:target_path] = params[:back_path].present? ? params[:back_path] : staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id)
   end
 
   def create
     if @time_entry.save
-      redirect_to staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id), notice: "Time Entry successfully created."
+      target_path = session[:target_path].present? ? session[:target_path] : staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id)
+      session.delete(:target_path)
+
+      redirect_to target_path, notice: "Time Entry successfully created."
     else
       render "new"
     end
   end
 
   def edit
+    session[:target_path] = params[:back_path].present? ? params[:back_path] : staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id)
   end
 
   def update
     if @time_entry.update_attributes(permitted_params)
-      redirect_to staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id), notice: "Time Entry successfully updated."
+      target_path = session[:target_path].present? ? session[:target_path] : staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id)
+      session.delete(:target_path)
+
+      redirect_to target_path, notice: "Time Entry successfully updated."
     else
       render "edit"
     end
@@ -50,7 +58,10 @@ class Staff::TimeEntriesController < ApplicationController
 
   def destroy
     @time_entry.destroy
-    redirect_to staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id), notice: "Time Entry completely removed."
+
+    target_path = params[:back_path].present? ? params[:back_path] : staff_time_entries_path(recordable_type: @recordable_type, recordable_id: @recordable.id)
+
+    redirect_to target_path, notice: "Time Entry completely removed."
   end
 
   private
