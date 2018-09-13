@@ -22,12 +22,43 @@ class TimeEntry < ApplicationRecord
       .where("time >= ? and time <= ?", start_time, end_time)
   end
 
+  scope :all_in_range, -> (start, stop) { where("time >= ? and time <= ?", start.to_date.beginning_of_day, stop.to_date.end_of_day) }
+
   def self.staffs
     Staff.where(id: self.for_staff.pluck(:time_recordable_id).uniq).distinct
   end
 
   def self.children
     Child.where(id: self.for_children.pluck(:time_recordable_id).uniq).distinct
+  end
+
+  def self.count_hours
+    total_hours = 0.0
+
+    last_clock_in = nil
+    last_clock_out = nil
+    self.reorder("time ASC").each do |entry|
+      if entry.checked_in?
+        if last_clock_out.present? && last_clock_in.present?
+          chunk = last_clock_out.time - last_clock_in.time
+          total_hours += chunk
+
+          last_clock_in = entry
+        end
+
+        last_clock_in ||= entry
+        last_clock_out = nil
+      else
+        last_clock_out = entry
+      end
+    end
+
+    if last_clock_out.present? && last_clock_in.present?
+      chunk = last_clock_out.time - last_clock_in.time
+      total_hours += chunk
+    end
+
+    total_hours
   end
 
   def self.count_checked_in_at(datetime)

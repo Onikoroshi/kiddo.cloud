@@ -1,6 +1,25 @@
 %h3.text-center
   Time Entries for #{(@recordable_type == "Child") ? link_to(@recordable.full_name, staff_account_path(@recordable.account)) : @recordable.full_name}
 
+= form_tag staff_time_entries_path, method: :get do
+  = hidden_field_tag :recordable_type, @recordable_type
+  = hidden_field_tag :recordable_id, @recordable.id
+
+  .row
+    .col-xs-6.text-center
+      %h5 Start Date
+      = text_field_tag :starts_at, @starts_at, class: "flatpickr-date"
+
+    .col-xs-6.text-center
+      %h5 End Date
+      = text_field_tag :stops_at, @stops_at, class: "flatpickr-date"
+
+  .row
+    .col-xs-6.text-center
+      = submit_tag "Submit"
+    .col-xs-6.text-center
+      = "Total Hours: #{Time.at(@time_entries.count_hours).utc.strftime("%H hours %M minutes")}"
+
 .row
   .col-xs-6.text-right
     - if policy(TimeEntry).manage?
