@@ -32,7 +32,16 @@ class TimeEntry < ApplicationRecord
     Child.where(id: self.for_children.pluck(:time_recordable_id).uniq).distinct
   end
 
-  def self.count_hours
+  def self.display_hours
+    total = self.count_seconds # total seconds
+
+    hours = (total / 3600).to_i
+    minutes = ((total / 60) % 60).to_i
+
+    "#{hours} hours, #{minutes} minutes"
+  end
+
+  def self.count_seconds
     total_hours = 0.0
 
     last_clock_in = nil
