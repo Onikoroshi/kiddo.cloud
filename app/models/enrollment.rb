@@ -22,7 +22,7 @@ class Enrollment < ApplicationRecord
   scope :alive, -> { where.not(dead: true) }
   scope :dead, -> { where(dead: true) }
 
-  scope :by_program, ->(program) { program.present? ? joins(:program).where("programs.id = ?", program.id) : none }
+  scope :by_program, ->(program) { program.present? ? joins(:program).where("programs.id = ?", program.id) : all }
   scope :by_plan_type, ->(plan_type) { joins(:plan).where("plans.plan_type = ?", plan_type.to_s) }
   scope :by_program_and_plan_type, ->(program, plan_type) { joins(:program).where("plans.plan_type = ? AND programs.id = ?", plan_type.to_s, program.id) }
   scope :by_program_and_location, ->(program, location) { (program.present? && location.present?) ? joins(:program).joins(:location).where("programs.id = ? AND locations.id = ?", program.id, location.id) : none }
@@ -40,6 +40,16 @@ class Enrollment < ApplicationRecord
   scope :one_time, -> { joins(:plan).where(plans: {plan_type: PlanType.one_time.map(&:to_s)}).distinct }
 
   scope :due_by_today, -> { where("enrollments.next_payment_date <= ?", Time.zone.today) }
+
+  def self.by_program_on_date(program, date)
+    if program.present?
+      return self.none if program.holidays.pluck(:holidate).include?(date)
+
+      self.by_program(program).for_date(date)
+    else
+      self.for_date(date)
+    end
+  end
 
   def self.total_amount_due_today
     self.all.inject(Money.new(0)){ |sum, enrollment| sum + Money.new(enrollment.amount_due_today) }
@@ -406,9 +416,19 @@ class Enrollment < ApplicationRecord
     end
   end
 
+  def alerts_enabled?
+    program_location = program.program_locations.find_by(location_id: location.id)
+    program_location.present? && program_location.enable_alerts?
+  end
+
   def enrolled_today?
-    today = Time.zone.now.wday
-    send(DAY_DICTIONARY[today])
+    target_date = Time.zone.today
+
+    return false if target_date < program.starts_at || target_date > program.ends_at
+    return false if program.holidays.pluck(:holidate).include?(target_date)
+
+    day_num = target_date.wday
+    send(DAY_DICTIONARY[day_num])
   end
 
   private

@@ -62,4 +62,13 @@ class TransactionalMailer < ApplicationMailer
 
     mail(to: ["daviskidsklub@aol.com", "dkk.vsantos@aol.com", "aryn.yancher@gmail.com"], subject: "DKK Enrollment Change Report")
   end
+
+  def late_notifications_report(children_notified = [])
+    ap "blank? #{children_notified.blank?}"
+    return if children_notified.blank?
+
+    @children_notified = children_notified
+
+    mail(to: ["daviskidsklub@aol.com", "dkk.vsantos@aol.com", "aryn.yancher@gmail.com"], subject: "Tardy Notifications Report")
+  end
 end

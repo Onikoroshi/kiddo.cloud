@@ -5,13 +5,13 @@ class TimeAssistant
   end
 
   def time_to_check_lower_grades?
-    return false if Time.now.on_weekend?
+    return false if Time.zone.now.on_weekend?
     Time.zone.now >= low_grade_check_time &&
       Time.zone.now <= low_grade_check_time + 10.minutes
   end
 
   def time_to_check_higher_grades?
-    return false if Time.now.on_weekend?
+    return false if Time.zone.now.on_weekend?
     Time.zone.now >= high_grade_check_time &&
       Time.zone.now <= high_grade_check_time + 10.minutes
   end

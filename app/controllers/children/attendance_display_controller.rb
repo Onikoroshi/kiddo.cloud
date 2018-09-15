@@ -12,5 +12,4 @@ class Children::AttendanceDisplayController < ApplicationController
 
     @enrollments = @location.enrollments.alive.paid.for_date(Time.zone.today)
   end
-
 end

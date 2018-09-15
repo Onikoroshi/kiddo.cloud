@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180828215547) do
+ActiveRecord::Schema.define(version: 20180915024205) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -234,6 +234,14 @@ ActiveRecord::Schema.define(version: 20180828215547) do
     t.index ["plan_id"], name: "index_enrollments_on_plan_id"
   end
 
+  create_table "holidays", force: :cascade do |t|
+    t.bigint "program_id"
+    t.date "holidate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["program_id"], name: "index_holidays_on_program_id"
+  end
+
   create_table "late_checkin_notifications", force: :cascade do |t|
     t.bigint "account_id"
     t.bigint "child_id"
@@ -312,6 +320,7 @@ ActiveRecord::Schema.define(version: 20180828215547) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "available", default: true
+    t.boolean "enable_alerts", default: false
     t.index ["location_id"], name: "index_program_locations_on_location_id"
     t.index ["program_id"], name: "index_program_locations_on_program_id"
   end
@@ -479,6 +488,7 @@ ActiveRecord::Schema.define(version: 20180828215547) do
   add_foreign_key "enrollments", "children"
   add_foreign_key "enrollments", "locations"
   add_foreign_key "enrollments", "plans"
+  add_foreign_key "holidays", "programs"
   add_foreign_key "plans", "programs"
   add_foreign_key "programs", "centers"
   add_foreign_key "subscriptions", "accounts"
