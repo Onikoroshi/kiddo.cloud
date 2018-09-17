@@ -52,6 +52,16 @@
 
       %br
 
+      %h4 Holidays
+
+      = f.fields_for :holidays do |holiday_fields|
+        = render "holiday_fields", f: holiday_fields
+
+      .links
+        .pull-right= link_to_add_association 'Add Holiday', f, :holidays, {style: "padding-right: 20px;"}
+
+      %br
+
       .form-group.label-floating
         = f.label :locations, "Locations", class: "control-label", style: "padding-bottom: 20px;"
         = f.collection_check_boxes :location_ids, Location.all, :id, :name, class: "form-control" do |cb|

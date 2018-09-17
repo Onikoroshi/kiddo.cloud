@@ -1,0 +1,9 @@
+.nested-fields
+  = f.hidden_field :program_id, value: @program.id
+
+  .form-group.label-floating
+    = f.label :holidate, "Date", class: "control-label"
+    = f.text_field :holidate, class: "form-control flatpickr-date"
+
+  .form-group.label-floating
+    = link_to_remove_association "Remove Holiday", f

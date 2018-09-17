@@ -72,6 +72,6 @@ class Staff::ProgramsController < ApplicationController
   end
 
   def permitted_params
-    @permitted_params ||= params[:program].present? ? params.require(:program).permit(:center_id, :program_type, :name, :starts_at, :ends_at, :registration_opens, :registration_closes, :registration_fee, :change_fee, :earliest_payment_offset, :latest_payment_offset, location_ids: [], plan_ids: []) : {}
+    @permitted_params ||= params[:program].present? ? params.require(:program).permit(:center_id, :program_type, :name, :starts_at, :ends_at, :registration_opens, :registration_closes, :registration_fee, :change_fee, :earliest_payment_offset, :latest_payment_offset, location_ids: [], plan_ids: [], holidays_attributes: [:id, :program_id, :holidate, :_destroy]) : {}
   end
 end

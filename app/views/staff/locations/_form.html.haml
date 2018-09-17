@@ -13,6 +13,7 @@
           %thead
             %th Program
             %th Available
+            %th Enable Tardy Alerts
           %tbody
             %tr
               %td
@@ -23,6 +24,11 @@
                 - @programs.each do |program|
                   - prog_loc = f.object.program_locations.find_by(program_id: program.id)
                   = check_box_tag "availables[#{program.id}]", true, prog_loc.present? ? prog_loc.available : false
+                  %br
+              %td
+                - @programs.each do |program|
+                  - prog_loc = f.object.program_locations.find_by(program_id: program.id)
+                  = check_box_tag "enable_alerts[#{program.id}]", true, prog_loc.present? ? prog_loc.enable_alerts : false
                   %br
 
       = link_to "Cancel", staff_locations_path, class: "btn"

@@ -1,0 +1,15 @@
+%p The following children didn't check in and were sent a tary notification
+
+%table
+  %thead
+    %th Child Name
+    %th Parent Name
+    %th Parent Email
+    %th Child Time Entries
+  %tbody
+    - @children_notified.each do |child|
+      %tr
+        %td= child.full_name
+        %td= child.account.primary_parent.full_name
+        %td= child.account.user.email
+        %td= link_to "Entries", staff_time_entries_url(recordable_type: "Child", recordable_id: child.id)

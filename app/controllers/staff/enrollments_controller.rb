@@ -68,9 +68,8 @@ class Staff::EnrollmentsController < ApplicationController
     @enrollments_date = @program.starts_at if @enrollments_date < @program.starts_at || @enrollments_date > @program.ends_at
 
     @enrollments = Enrollment.alive.paid
-      .by_program(@program)
+      .by_program_on_date(@program, @enrollments_date)
       .by_location(@location)
-      .for_date(@enrollments_date)
       .order(created_at: :desc)
       .page(params[:page])
       .per(50)

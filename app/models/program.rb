@@ -6,10 +6,13 @@ class Program < ApplicationRecord
   has_many :children, through: :enrollments
   has_many :transactions, through: :enrollments
   has_many :drop_ins
-  has_many :announcements
+  has_many :announcements, dependent: :destroy
+  has_many :holidays, dependent: :destroy
 
   has_many :program_locations, dependent: :destroy
   has_many :locations, through: :program_locations
+
+  accepts_nested_attributes_for :holidays, allow_destroy: true
 
   money_column :registration_fee
   money_column :change_fee
