@@ -20,13 +20,13 @@ class LateCheckinProcessor
     children_notified = []
     sent_notifications = false
     children.find_each do |c|
-      enrollments = enrollments.alive.active.paid.select { |e| e.enrolled_today? && e.alerts_enabled? }
-      if c.enrollments.any?
+      enrollments = c.enrollments.alive.active.paid.select { |e| e.enrolled_today? && e.alerts_enabled? }
+      if enrollments.any?
         if c.time_entries.all_in_range(Time.zone.today.beginning_of_day, Time.zone.today.end_of_day).none?
           if c.late_checkin_notifications.sent_today.none?
             children_notified << c
 
-            TransactionalMailer.late_checkin_alert(c.account).deliver_now
+            TransactionalMailer.late_checkin_alert(c.account, c).deliver_now
             c.late_checkin_notifications.create(
               account: c.account,
               sent_at: Time.zone.now,
@@ -38,8 +38,8 @@ class LateCheckinProcessor
       end
     end
 
-    TransactionalMailer.late_notification_report(children_notified) if children_notified.any?
-    
+    TransactionalMailer.late_notifications_report(children_notified).deliver_now if children_notified.any?
+
     sent_notifications
   end
 end

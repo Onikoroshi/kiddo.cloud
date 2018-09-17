@@ -36,8 +36,9 @@ class TransactionalMailer < ApplicationMailer
     mail(to: @account.primary_email, subject: "#{account.center_name} waivers and agreements")
   end
 
-  def late_checkin_alert(account)
+  def late_checkin_alert(account, child)
     @account = account
+    @child = child
     mail(to: @account.primary_email, subject: "Alert about your child")
   end
 
@@ -69,6 +70,6 @@ class TransactionalMailer < ApplicationMailer
 
     @children_notified = children_notified
 
-    mail(to: ["daviskidsklub@aol.com", "dkk.vsantos@aol.com", "aryn.yancher@gmail.com"], subject: "Tardy Notifications Report")
+    mail(to: ["petertcormack@gmail.com", "daviskidsklub@aol.com", "dkk.vsantos@aol.com", "aryn.yancher@gmail.com"], subject: "Tardy Notifications Report")
   end
 end
