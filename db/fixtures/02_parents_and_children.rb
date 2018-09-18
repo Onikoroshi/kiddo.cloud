@@ -15,6 +15,7 @@ User.parent_users.find_each do |parent_user|
     p.primary = true
     p.first_name = "Parent"
     p.last_name = parent_user.last_name
+    p.phone = Forgery('address').phone
   end
   parent = Parent.last
 

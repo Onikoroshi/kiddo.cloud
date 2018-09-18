@@ -1,6 +1,7 @@
 class Enrollment < ApplicationRecord
   belongs_to :location
   belongs_to :child
+  has_one :account, through: :child
   belongs_to :plan
   has_one :program, through: :plan
 
@@ -102,27 +103,71 @@ class Enrollment < ApplicationRecord
   def self.to_csv
     CSV.generate do |csv|
       csv << [
-        "Child Name",
-        "Child Birthdate",
+        "Child Last Name",
+        "Child First Name",
+        "Birthdate",
+        "Plan",
+        "Day(s)",
+        "Location",
         "Primary Parent",
         "Email",
         "Phone",
-        "Plan",
-        "Day(s)",
-        "Location"
+        "Secondary Contact",
+        "Phone",
+        "Emergency Contact",
+        "Phone",
+        "Medical",
+        "Phone",
+        "Dental",
+        "Phone",
+        "Insurance",
+        "Policy Number",
+        "Notes",
       ]
 
       self.all.each do |enrollment|
-        csv << [
-          enrollment.child.full_name,
-          enrollment.child.birthdate.stamp("2018-03-04"),
-          enrollment.child.account.primary_parent.full_name,
-          enrollment.child.account.user.email,
-          enrollment.child.account.primary_parent.phone,
-          enrollment.type_display,
-          enrollment.service_dates,
-          enrollment.location.name
+        account = enrollment.account
+        primary_parent = account.primary_parent
+        secondary_parent = account.secondary_parent
+        emergency_contact = account.emergency_contacts.first
+
+        account_info = primary_parent.present? ? [primary_parent.full_name] : [""]
+
+        account_info << account.user.email
+
+        account_info << (primary_parent.present? ? primary_parent.phone : "")
+
+        account_info += secondary_parent.present? ? [secondary_parent.full_name, secondary_parent.phone] : ["", ""]
+
+        account_info += emergency_contact.present? ? [emergency_contact.full_name, emergency_contact.phone] : ["", ""]
+
+        account_info += [
+          account.family_physician,
+          account.physician_phone,
+          account.family_dentist,
+          account.dentist_phone,
+          account.insurance_company,
+          account.insurance_policy_number,
         ]
+
+        child = enrollment.child
+
+        child_info = [child.last_name, child.first_name, child.birthdate.stamp("5/13/2011"), enrollment.type_display, enrollment.service_dates, enrollment.location.name]
+
+        child_info += account_info
+
+        if child.care_items.active.any?
+          notes = child.care_items.active.map{|item| "#{item.name}: #{item.explanation}"}.join("\n")
+          unless child.additional_info.blank?
+            notes += "\n#{child.additional_info}"
+          end
+
+          child_info << notes
+        else
+          child_info << ""
+        end
+
+        csv << child_info
       end
     end
   end
