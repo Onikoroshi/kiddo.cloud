@@ -11,7 +11,7 @@ class Staff::StaffController < ApplicationController
     @staff = Staff
              .all
              .includes(:user)
-             .order(created_at: :desc)
+             .order("users.first_name ASC")
              .page(params[:page])
              .per(50)
   end
