@@ -34,6 +34,7 @@ class Account < ApplicationRecord
   scope :by_location, ->(given_location) { given_location.present? ? joins(:enrollments).where("enrollments.dead IS FALSE AND enrollments.location_id = ?", given_location.id).distinct : all }
 
   def self.to_csv
+    ap "generating csv for #{self.count} accounts"
     CSV.generate do |csv|
       csv << [
         "Child Last Name",
@@ -54,7 +55,12 @@ class Account < ApplicationRecord
         "Policy Number",
         "Notes",
       ]
+
+      total_accounts = 0
+      total_children = 0
+
       self.all.each do |account|
+        total_accounts += 1
         primary_parent = account.primary_parent
         secondary_parent = account.secondary_parent
         emergency_contact = account.emergency_contacts.first
@@ -79,6 +85,7 @@ class Account < ApplicationRecord
         ]
 
         account.children.each do |child|
+          total_children += 1
           child_info = [child.last_name, child.first_name, child.birthdate.stamp("5/13/2011")]
           child_info += account_info
 
@@ -96,6 +103,9 @@ class Account < ApplicationRecord
           csv << child_info
         end
       end
+
+      ap "added a total of #{total_accounts} accounts"
+      ap "added a total of #{total_children} children"
     end
   end
 
