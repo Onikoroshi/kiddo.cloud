@@ -23,7 +23,7 @@
             = submit_tag "Submit"
 
   .pull-right{style: "padding-right: 40px;"}
-    = link_to "Export to CSV", export_to_csv_staff_accounts_path(location_id: @location_id, format: "csv"), class: "btn btn-primary btn-sm"
+    = link_to "Export to CSV", export_to_csv_staff_accounts_path(program_id: @program_id, location_id: @location_id, format: "csv"), class: "btn btn-primary btn-sm"
 
   .pull-right{style: "padding-right: 40px;"}
     = mail_to "daviskidsklub@aol.com", "Email these parents", bcc: @accounts.map{|a| a.user.email}.join(", "), target: "_blank", class: "btn btn-primary btn-sm"
