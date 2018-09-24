@@ -41,7 +41,7 @@ class Staff::AccountsController < ApplicationController
       @program_id = params[:program_id]
       ap "initial program id: #{@program_id}"
       @program = Program.find_by(id: @program_id)
-      ap "initial program: #{@program.prsent? ? @program.id : "none"}"
+      ap "initial program: #{@program.present? ? @program.id : "none"}"
       ap "current user super_admin? #{current_user.super_admin?}"
       ap "programs include current? #{@programs.include?(@program)}"
       @program = @programs.first if !current_user.super_admin? && !@programs.include?(@program)
@@ -72,7 +72,7 @@ class Staff::AccountsController < ApplicationController
     end
 
     @accounts = @accounts.distinct
-    ap "distinct accounts: #{@accounts.distinct}"
+    ap "distinct accounts: #{@accounts.count}"
     @accounts
   end
 end
