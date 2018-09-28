@@ -149,15 +149,14 @@ module ChildEnrollment
 
     def children_by_program(program)
       children_ids = enrollments.by_program(program).pluck(:child_id)
-      children_ids += independent_enrollment_changes.joins(:enrollment).pluck("enrollments.child_id")
+      children_ids += independent_enrollment_changes.joins(enrollment: :program).where("programs.id = ?", program.id).pluck("enrollments.child_id")
       children_ids = children_ids.uniq
 
       Child.where(id: children_ids)
     end
 
     def independent_enrollment_changes
-      considered_enrollment_ids = enrollments.pluck(:id)
-      @independent_enrollment_changes ||= enrollment_changes.where.not(enrollment_id: considered_enrollment_ids)
+      @independent_enrollment_changes ||= enrollment_changes.where.not(enrollment_id: enrollments.pluck(:id))
     end
 
     def enrollments_by_program_and_child(program, child)

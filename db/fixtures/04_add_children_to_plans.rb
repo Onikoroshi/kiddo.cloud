@@ -1,4 +1,4 @@
-# Just for development, make sure both programs are in session
+# Just for development, make sure all programs are in session
 Program.find_each do |program|
   program.update_attribute(:starts_at, Time.zone.today - 1.month)
 end
@@ -8,10 +8,12 @@ sans_wednesday = [:monday, :tuesday, :thursday, :friday]
 
 Child.find_each do |child|
   (1..3).to_a.sample.times do
-    chosen_plan = Plan.all.sample
+    available_plans = Program.open_for_registration.map{|program| program.plans}.flatten.uniq
+    chosen_plan = available_plans.sample
     while chosen_plan.plan_type.contract? && child.plans.by_plan_type("contract").any?
-      chosen_plan = Plan.all.sample
+      chosen_plan = available_plans.sample
     end
+    ap "chosen type: #{chosen_plan.plan_type}"
     program = chosen_plan.program
 
     starts_at = nil
@@ -37,7 +39,7 @@ Child.find_each do |child|
       target = (program.starts_at..program.ends_at).to_a.sample
       starts_at = target
       ends_at = target
-    elsif chosen_plan.plan_type.contract?
+    else
       starts_at = program.starts_at
       ends_at = program.ends_at
     end
@@ -70,11 +72,15 @@ Child.find_each do |child|
           when 5
             e.friday = true
           end
-        elsif chosen_plan.plan_type.contract?
-          ap "contract plan: #{chosen_plan.full_display_name}"
-          num_days = chosen_plan.days_per_week
+        else
+          num_days = chosen_plan.days_per_week.to_i
           allowed_days = chosen_plan.allowed_days
-          chosen_days = allowed_days.sample(num_days.to_i)
+
+          if num_days < 0
+            num_days = rand(allowed_days.count) + 1
+          end
+
+          chosen_days = allowed_days.sample(num_days)
           chosen_days.each do |day_name|
             e.send("#{day_name}=".to_sym, true)
           end

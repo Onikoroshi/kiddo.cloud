@@ -226,7 +226,7 @@ class Enrollment < ApplicationRecord
             info[month_name]["overdue"] = true
           end
 
-          info[month_name]["message"] = "#{plan.price_for_date(target_date)}#{" was" if target_payment_past} Due #{target_payment_today ? "Today" : "on #{target_payment_date.stamp("Aug. 1st, 2019")}"} for the month of #{month_name}"
+          info[month_name]["message"] = "#{cost_for_date(target_date)}#{" was" if target_payment_past} Due #{target_payment_today ? "Today" : "on #{target_payment_date.stamp("Aug. 1st, 2019")}"} for the month of #{month_name}"
         end
 
         target_date = target_date.end_of_month + 1.day
@@ -237,7 +237,7 @@ class Enrollment < ApplicationRecord
       if self.paid?
         info["One Time"]["message"] = "Paid #{last_paid_amount} on #{created_at.to_date.stamp("Aug. 1st, 2019")}"
       else
-        info["One Time"]["message"] = "#{plan.price_for_date(target_date)} Due Today"
+        info["One Time"]["message"] = "#{cost_for_date(target_date)} Due Today"
         info["One Time"]["overdue"] = true
       end
     end
@@ -297,9 +297,30 @@ class Enrollment < ApplicationRecord
     return start_date, stop_date
   end
 
+  def cost_for_date(target_date)
+    month_price = plan.price_for_date(target_date)
+
+    # this plan type allows people to choose the days they'll attend, as well as the plan they want
+    # so, find the percentage of the days they chose into the total allowed days, and alter the price accordingly
+    if plan.plan_type.full_day_contract?
+      days_attending = enrolled_days.count
+      possible_days = plan.days_per_week
+
+      if possible_days < 0
+        possible_days = plan.allowed_days.count
+      end
+
+      percentage = days_attending.to_f / possible_days.to_f
+
+      month_price = month_price * percentage
+    end
+
+    month_price
+  end
+
   def amount_due_today
     unless plan_type.recurring?
-      return paid? ? Money.new(0) : plan.price_for_date(next_target_date)
+      return paid? ? Money.new(0) : cost_for_date(next_target_date)
     end
 
     result = Money.new(0)
@@ -309,7 +330,7 @@ class Enrollment < ApplicationRecord
     target_date = next_target_date
     payment_date = next_payment_date
     while target_date <= program.ends_at && payment_date <= Time.zone.today
-      result += plan.price_for_date(target_date)
+      result += cost_for_date(target_date)
       target_date = target_date.end_of_month + 1.day
       payment_date = target_date + child.account.payment_offset.days
     end
@@ -345,7 +366,7 @@ class Enrollment < ApplicationRecord
 
       while target_date <= program.ends_at && payment_date <= Time.zone.today
         stop_date = target_date.end_of_month
-        created_transaction = EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: plan.price_for_date(target_date), target_date: target_date, description_data: {"description" => self.to_short, "start_date" => target_date, "stop_date" => stop_date})
+        created_transaction = EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: cost_for_date(target_date), target_date: target_date, description_data: {"description" => self.to_short, "start_date" => target_date, "stop_date" => stop_date})
         target_date = stop_date + 1.day
         payment_date = target_date + child.account.payment_offset.days
       end

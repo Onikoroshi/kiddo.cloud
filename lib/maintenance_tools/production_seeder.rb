@@ -117,12 +117,12 @@ class MaintenanceTools::ProductionSeeder
   end
 
   def seed_tkk_program_plans
-    Plan.where(program: program_tkk, display_name: "7:30 am - 8:15 am", days_per_week: 5, price: 79.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
-    Plan.where(program: program_tkk, display_name: "11:50 am - 3:15 pm", days_per_week: 5, price: 280.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
-    Plan.where(program: program_tkk, display_name: "3:10 pm - 6:10 pm", days_per_week: 5, price: 290.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
-    Plan.where(program: program_tkk, display_name: "7:30 am - 11:50 am", days_per_week: 5, price: 360.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
-    Plan.where(program: program_tkk, display_name: "11:50 am - 6:00 pm", days_per_week: 5, price: 540.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
-    Plan.where(program: program_tkk, display_name: "7:30 am - 11:50 am & 3:10 pm - 6:10 pm", days_per_week: 5, price: 600.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
+    Plan.where(program: program_tkk, display_name: "7:30 am - 8:15 am", days_per_week: -1, price: 79.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
+    Plan.where(program: program_tkk, display_name: "11:50 am - 3:15 pm", days_per_week: -1, price: 280.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
+    Plan.where(program: program_tkk, display_name: "3:10 pm - 6:10 pm", days_per_week: -1, price: 290.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
+    Plan.where(program: program_tkk, display_name: "7:30 am - 11:50 am", days_per_week: -1, price: 360.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
+    Plan.where(program: program_tkk, display_name: "11:50 am - 6:00 pm", days_per_week: -1, price: 540.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
+    Plan.where(program: program_tkk, display_name: "7:30 am - 11:50 am & 3:10 pm - 6:10 pm", days_per_week: -1, price: 600.00, plan_type: "full_day_contract", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false, deduce: false).first_or_create!
   end
 
   def seed_roles
@@ -171,6 +171,7 @@ class MaintenanceTools::ProductionSeeder
   def seed_locations
     seed_fall_locations
     seed_summer_locations
+    seed_tkk_locations
   end
 
   def seed_fall_locations
@@ -187,6 +188,14 @@ class MaintenanceTools::ProductionSeeder
     summer_names.each do |name|
       location = Location.where(name: name, center: center).first_or_create!
       ProgramLocation.where(program: program_summer, location: location).first_or_create!
+    end
+  end
+
+  def seed_tkk_locations
+    summer_names = ["Pioneer Elementary"]
+    summer_names.each do |name|
+      location = Location.where(name: name, center: center).first_or_create!
+      ProgramLocation.where(program: program_tkk, location: location).first_or_create!
     end
   end
 
