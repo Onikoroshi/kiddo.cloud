@@ -40,7 +40,7 @@
       - @accounts.each do |a|
         %tr
           %td= link_to a.primary_parent.full_name, staff_account_path(a) if a.primary_parent.present?
-          %td= a.user.email if a.user.present?
+          %td= link_to a.user.email, staff_account_path(a) if a.user.present?
           %td= a.children.map(&:active_enrollment_blurbs).flatten.join("<br>").html_safe
           %td= a.created_at.stamp("2017/11/21 12:56:27pm")
 
