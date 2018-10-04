@@ -187,7 +187,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
         end
       end
 
-      child.enrollments.build(program: @program, plan: Plan.by_plan_type(@plan_type).first) unless found
+      child.enrollments.build(program: @program, plan: @program.plans.by_plan_type(@plan_type).first) unless found
     end
   end
 
