@@ -7,8 +7,8 @@ class PlanType < ClassyEnum::Base
     PlanType.select{|pt| pt.one_time?}
   end
 
-  def find_available_days
-    plans = Plan.where(plan_type: self.to_s)
+  def find_available_days(program = nil)
+    plans = (program.present? ? program.plans : Plan).where(plan_type: self.to_s)
 
     days = {
       monday: false,

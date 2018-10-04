@@ -25,7 +25,7 @@
             = enrollment_fields.hidden_field :ends_at, value: enrollment_fields.object.ends_at || @program.ends_at
 
             .col-xs-6
-              - @plan_type.find_available_days.each do |day_name, value|
+              - @plan_type.find_available_days(@program).each do |day_name, value|
                 - if value
                   .checkbox
                     %label
