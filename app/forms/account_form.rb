@@ -19,6 +19,7 @@ class AccountForm
     :parent_guardian_locality,
     :parent_guardian_region,
     :parent_guardian_postal_code,
+    :parent_guardian_email,
 
     :emergency_contact_first_name,
     :emergency_contact_last_name,
@@ -90,6 +91,7 @@ class AccountForm
     parent_guardian.update_attributes(
       first_name: parent_guardian_first_name,
       last_name: parent_guardian_last_name,
+      email: parent_guardian_email,
       phone: parent_guardian_phone,
       primary: false
     )
@@ -131,6 +133,7 @@ class AccountForm
     {
       parent_guardian_first_name: parent_guardian.first_name,
       parent_guardian_last_name: parent_guardian.last_name,
+      parent_guardian_email: parent_guardian.email,
       parent_guardian_phone: parent_guardian.phone,
       parent_guardian_street: parent_guardian.address.street,
       parent_guardian_extended: parent_guardian.address.extended,

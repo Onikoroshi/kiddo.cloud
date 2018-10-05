@@ -39,6 +39,11 @@
               = @account.secondary_parent.full_name
           .row.account-row
             .col-xs-4.account-label
+              Email:
+            .col-xs-8.account-name
+              = @account.secondary_parent.email
+          .row.account-row
+            .col-xs-4.account-label
               Phone:
             .col-xs-8.account-name
               = @account.secondary_parent.phone

@@ -113,6 +113,10 @@ class Account < ApplicationRecord
     user.email
   end
 
+  def all_emails
+    ([primary_email] + parents.map{|p| p.email}).reject(&:blank?).uniq
+  end
+
   def record_step(step)
     update_attributes(last_registration_step_completed: step)
   end
