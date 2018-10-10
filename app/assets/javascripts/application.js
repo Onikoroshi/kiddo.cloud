@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery-tablesorter
+//= require clipboard
 //= require turbolinks
 //= require bootstrap
 //= require material.min
@@ -27,3 +28,10 @@
 //= require cocoon
 //= require drop_ins
 //= require_tree .
+
+$(document).ready(function(){
+
+  var clipboard = new Clipboard('.clipboard-btn');
+  console.log(clipboard);
+
+});
