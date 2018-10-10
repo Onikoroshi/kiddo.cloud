@@ -26,7 +26,7 @@
     = link_to "Export to CSV", export_to_csv_staff_accounts_path(program_id: @program_id, location_id: @location_id, format: "csv"), class: "btn btn-primary btn-sm"
 
   .pull-right{style: "padding-right: 40px;"}
-    = mail_to "daviskidsklub@aol.com", "Email these parents", bcc: @all_accounts.map{|a| a.user.email}.join(", "), target: "_blank", class: "btn btn-primary btn-sm"
+    = mail_to "daviskidsklub@aol.com", "Email these parents", bcc: @all_accounts.map{|a| a.all_emails}.flatten.uniq.join(", "), target: "_blank", class: "btn btn-primary btn-sm"
 
 - if @accounts.any?
   %table{class: "tablesorter {sortlist: [[3,1]]}"}
