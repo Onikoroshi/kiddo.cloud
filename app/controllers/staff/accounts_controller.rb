@@ -7,6 +7,7 @@ class Staff::AccountsController < ApplicationController
   def index
     authorize Account
 
+    @all_accounts = @accounts
     @accounts = @accounts.page(params[:page]).per(50)
   end
 
