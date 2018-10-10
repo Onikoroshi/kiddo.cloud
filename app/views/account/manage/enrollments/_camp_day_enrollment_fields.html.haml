@@ -1,11 +1,9 @@
 .nested-fields
-  = f.hidden_field :plan_id, value: @program.plans.by_plan_type(@plan_type).first.id
-
   .row
     .col-sm-6
       .field
         = f.label :starts_at, "Date"
-        = f.select :starts_at, TargetDay.by_program_and_plan_type(@program, @plan_type).select_options, {include_blank: "Choose a Date"}, {class: "drop_in-date-select"}
+        = f.select :starts_at, TargetDay.by_program_and_plan_type(@program, @plan_type).select_options.uniq, {include_blank: "Choose a Date"}, {class: "drop_in-date-select"}
         = f.hidden_field :ends_at, value: f.object.ends_at, class: "drop_in-ends"
 
         = f.hidden_field :monday, value: false, class: "drop_in-days drop_in-1"
@@ -16,6 +14,13 @@
 
     .col-sm-6
       .field
+        - if @program.plans.by_plan_type(@plan_type).choosable.any?
+          = f.label :plan_id, "for the"
+          = f.select :plan_id, @program.plans.by_plan_type(@plan_type).choosable.select_options
+          %br
+          %br
+        - else
+          = f.hidden_field :plan_id, value: f.object.plan_id || @program.plans.by_plan_type(@plan_type).first.id
         = f.label :location, "at"
         = f.select :location_id, options_from_collection_for_select(@program.available_locations, 'id', 'name', f.object.location_id)
         %br
