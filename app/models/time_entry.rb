@@ -48,9 +48,8 @@ class TimeEntry < ApplicationRecord
     self.reorder("time ASC").each do |entry|
       if entry.checked_in?
         if last_clock_out.present? && last_clock_in.present?
-          chunk = last_clock_out.time - last_clock_in.time
+          chunk = last_clock_out.time.beginning_of_minute - last_clock_in.time.beginning_of_minute
           chunk = chunk.to_f / 60.0
-          chunk = chunk.round
           total_hours += chunk
 
           last_clock_in = entry
@@ -64,9 +63,8 @@ class TimeEntry < ApplicationRecord
     end
 
     if last_clock_out.present? && last_clock_in.present?
-      chunk = last_clock_out.time - last_clock_in.time
+      chunk = last_clock_out.time.beginning_of_minute - last_clock_in.time.beginning_of_minute
       chunk = chunk.to_f / 60.0
-      chunk = chunk.round
       total_hours += chunk
     end
 
