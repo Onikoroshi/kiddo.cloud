@@ -51,7 +51,8 @@ class TimeEntry < ApplicationRecord
       if entry.checked_in?
         if last_clock_out.present? && last_clock_in.present?
           chunk = last_clock_out.time - last_clock_in.time
-          chunk = (chunk.to_i / 60).to_i
+          chunk = chunk.to_f / 60.0
+          ap "chunk float: #{chunk}"
           total_hours += chunk
 
           last_clock_in = entry
@@ -66,7 +67,8 @@ class TimeEntry < ApplicationRecord
 
     if last_clock_out.present? && last_clock_in.present?
       chunk = last_clock_out.time - last_clock_in.time
-      chunk = (chunk.to_i / 60).to_i
+      chunk = chunk.to_f / 60.0
+      ap "chunk float: #{chunk}"
       total_hours += chunk
     end
 
