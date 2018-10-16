@@ -36,7 +36,7 @@ class TimeEntry < ApplicationRecord
     total = self.count_seconds # total seconds
     minutes = (total / 60).to_i
 
-    hours = (minutes / 60).to_f
+    hours = (minutes.to_f / 60.0).to_f
 
     "#{'%.2f' % hours} hours"
   end
