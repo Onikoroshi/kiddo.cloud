@@ -34,9 +34,14 @@ class TimeEntry < ApplicationRecord
 
   def self.display_hours
     total = self.count_seconds # total seconds
-    minutes = (total / 60).to_i
+    ap "total seconds: #{total}"
+    minutes = (total / 60)
+    ap "minutes float: #{minutes}"
+    minutes = minutes.to_i
+    ap "minutes int: #{minutes}"
 
     hours = (minutes.to_f / 60.0).to_f
+    ap "hours float: #{hours}"
 
     "#{'%.2f' % hours} hours"
   end
