@@ -34,10 +34,8 @@ class TimeEntry < ApplicationRecord
 
   def self.display_hours
     total = self.count_minutes # total seconds
-    ap "minutes int: #{total}"
 
     hours = (total.to_f / 60.0).to_f
-    ap "hours float: #{hours}"
 
     "#{'%.2f' % hours} hours"
   end
@@ -53,7 +51,6 @@ class TimeEntry < ApplicationRecord
           chunk = last_clock_out.time - last_clock_in.time
           chunk = chunk.to_f / 60.0
           chunk = chunk.round
-          ap "chunk float: #{chunk}"
           total_hours += chunk
 
           last_clock_in = entry
@@ -70,7 +67,6 @@ class TimeEntry < ApplicationRecord
       chunk = last_clock_out.time - last_clock_in.time
       chunk = chunk.to_f / 60.0
       chunk = chunk.round
-      ap "chunk float: #{chunk}"
       total_hours += chunk
     end
 
