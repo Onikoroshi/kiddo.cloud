@@ -33,20 +33,16 @@ class TimeEntry < ApplicationRecord
   end
 
   def self.display_hours
-    total = self.count_seconds # total seconds
-    ap "total seconds: #{total}"
-    minutes = (total / 60)
-    ap "minutes float: #{minutes}"
-    minutes = minutes.to_i
-    ap "minutes int: #{minutes}"
+    total = self.count_minutes # total seconds
+    ap "minutes int: #{total}"
 
-    hours = (minutes.to_f / 60.0).to_f
+    hours = (total.to_f / 60.0).to_f
     ap "hours float: #{hours}"
 
     "#{'%.2f' % hours} hours"
   end
 
-  def self.count_seconds
+  def self.count_minutes
     total_hours = 0.0
 
     last_clock_in = nil
@@ -55,6 +51,7 @@ class TimeEntry < ApplicationRecord
       if entry.checked_in?
         if last_clock_out.present? && last_clock_in.present?
           chunk = last_clock_out.time - last_clock_in.time
+          chunk = (chunk / 60).to_i
           total_hours += chunk
 
           last_clock_in = entry
@@ -69,6 +66,7 @@ class TimeEntry < ApplicationRecord
 
     if last_clock_out.present? && last_clock_in.present?
       chunk = last_clock_out.time - last_clock_in.time
+      chunk = (chunk / 60).to_i
       total_hours += chunk
     end
 
