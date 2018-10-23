@@ -95,7 +95,7 @@ class Plan < ApplicationRecord
 
   def lock_enrolled_plans
     if (self.program_id_changed? && self.program_id_was.present?) || (self.plan_type_changed? && self.plan_type.present?)
-      if enrollments.any? || transactions.any?
+      if enrollments.alive.any? || transactions.any?
         errors.add(:base, "Children are already enrolled in this plan. Cannot change Program or Plan Type.")
       end
     end

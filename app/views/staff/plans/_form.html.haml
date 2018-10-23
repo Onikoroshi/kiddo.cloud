@@ -86,7 +86,7 @@
 
       %h4 Children Already Enrolled:
       %ul
-        - @plan.enrollments.find_each do |enrollment|
+        - @plan.enrollments.alive.find_each do |enrollment|
           %li= link_to enrollment.child.full_name, staff_account_path(enrollment.child.account)
 
       = link_to "Cancel", staff_plans_path(program_id: params[:program_id]), class: "btn"
