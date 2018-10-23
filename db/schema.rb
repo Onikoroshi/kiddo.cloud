@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181005181351) do
+ActiveRecord::Schema.define(version: 20181023172219) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -340,6 +340,7 @@ ActiveRecord::Schema.define(version: 20181005181351) do
     t.integer "earliest_payment_offset", default: -15
     t.integer "latest_payment_offset", default: 15
     t.string "program_type"
+    t.integer "priority"
     t.index ["center_id"], name: "index_programs_on_center_id"
   end
 

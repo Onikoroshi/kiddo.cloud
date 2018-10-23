@@ -1,7 +1,7 @@
-- @center.programs.open_for_registration.each do |program|
+- @center.programs.open_for_registration.order_by_priority.each do |program|
   .col-xs-12
     %h3.text-center
-      How will your children be attending #{program.name}?
+      = program.name
 
   .col-xs-12
     #attendance-selection-chooser

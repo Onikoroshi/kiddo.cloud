@@ -30,6 +30,8 @@ class Program < ApplicationRecord
 
   after_save :sync_enrollments
 
+  scope :order_by_priority, -> { order("priority ASC") }
+
   scope :open_for_registration, -> { where("registration_opens <= ? AND registration_closes >= ?", Time.zone.today, Time.zone.today) }
   scope :in_session, -> { where("starts_at <= ? AND ends_at >= ?", Time.zone.today, Time.zone.today) }
   scope :active, -> { where("ends_at >= ?", Time.zone.today) }
