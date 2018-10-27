@@ -163,6 +163,9 @@
                   - enrollments.each do |enrollment|
                     %tr.merge-top
                       %td= enrollment.to_short
+                    - if enrollment.plan_type.recurring? && policy(enrollment).edit?
+                      %tr.merge-top.short
+                        %td.pull-right= link_to "Customize Cost", edit_staff_enrollment_path(enrollment)
                     - enrollment.payment_plan_hash.each do |month_name, data|
                       %tr.merge-top.short
                         %td.right-just{style: "color: #{data["overdue"] == true ? 'red' : 'inherit'}"}= data["message"]

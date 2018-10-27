@@ -1,0 +1,14 @@
+.row
+  .col-md-6.col-sm-8.col-md-offset-3.col-sm-offset-2
+    = form_for([:staff, @enrollment]) do |f|
+      = render "application/form_errors", object: @enrollment
+
+      .form-group.label-floating
+        = f.label :custom_price, "Custom Monthly Cost", class: "control-label"
+        = f.text_field :custom_price, class: "form-control"
+      %br
+
+      %p NOTE: This will replace the monthly charge for any unpaid months (whether in the past or the future). It *is* still affected by discounts, but it is *not* affected by the percentage system for dynamic plans (like those for the TKK program).
+
+      = link_to "Cancel", staff_account_path(@enrollment.account), class: "btn"
+      = f.submit class: "btn btn-info pull-right"

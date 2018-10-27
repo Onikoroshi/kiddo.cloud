@@ -98,7 +98,7 @@ Rails.application.routes.draw do
     resource :dashboard, only: :show, controller: 'dashboard'
     resources :staff
     resources :transactions, only: [:index, :show]
-    resources :enrollments, only: :index do
+    resources :enrollments, only: [:index, :edit, :update] do
       collection do
         get :export_to_csv
         patch :set_change_fee_requirement

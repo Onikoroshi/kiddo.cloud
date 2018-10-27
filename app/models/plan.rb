@@ -32,11 +32,11 @@ class Plan < ApplicationRecord
   end
 
   def price_for_date(given_date)
-    net_price = self.price
+    self.price - discounts_for_date(given_date)
+  end
 
-    net_price -= discounts.by_month(given_date).inject(Money.new(0)){ |sum, discount| sum + discount.amount }
-
-    net_price
+  def discounts_for_date(given_date)
+    discounts.by_month(given_date).inject(Money.new(0)){ |sum, discount| sum + discount.amount }
   end
 
   def display_days_per_week

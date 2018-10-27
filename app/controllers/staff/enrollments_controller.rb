@@ -2,6 +2,7 @@ class Staff::EnrollmentsController < ApplicationController
   layout "dkk_staff_dashboard"
   before_action :guard_center!
   before_action :find_enrollments, only: [:index, :export_to_csv]
+  before_action :find_enrollment, only: [:edit, :update]
 
   def index
   end
@@ -11,6 +12,17 @@ class Staff::EnrollmentsController < ApplicationController
   end
 
   def show
+  end
+
+  def edit
+  end
+
+  def update
+    if @enrollment.update_attributes(permitted_params)
+      redirect_to staff_account_path(@enrollment.account), notice: "Enrollment successfully updated"
+    else
+      render "edit"
+    end
   end
 
   def set_change_refund_requirement
@@ -73,5 +85,14 @@ class Staff::EnrollmentsController < ApplicationController
       .order(created_at: :desc)
       .page(params[:page])
       .per(50)
+  end
+
+  def find_enrollment
+    @enrollment = Enrollment.find(params[:id])
+    authorize @enrollment
+  end
+
+  def permitted_params
+    @permitted_params ||= params[:enrollment].present? ? params.require(:enrollment).permit(:custom_price) : {}
   end
 end

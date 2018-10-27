@@ -298,21 +298,27 @@ class Enrollment < ApplicationRecord
   end
 
   def cost_for_date(target_date)
-    month_price = plan.price_for_date(target_date)
+    month_price = custom_price
 
-    # this plan type allows people to choose the days they'll attend, as well as the plan they want
-    # so, find the percentage of the days they chose into the total allowed days, and alter the price accordingly
-    if plan.plan_type.full_day_contract?
-      days_attending = enrolled_days.count
-      possible_days = plan.days_per_week
+    if month_price.present?
+      month_price -= plan.discounts_for_date(target_date)
+    else
+      month_price = plan.price_for_date(target_date)
 
-      if possible_days < 0
-        possible_days = plan.allowed_days.count
+      # this plan type allows people to choose the days they'll attend, as well as the plan they want
+      # so, find the percentage of the days they chose into the total allowed days, and alter the price accordingly
+      if plan.plan_type.full_day_contract?
+        days_attending = enrolled_days.count
+        possible_days = plan.days_per_week
+
+        if possible_days < 0
+          possible_days = plan.allowed_days.count
+        end
+
+        percentage = days_attending.to_f / possible_days.to_f
+
+        month_price = month_price * percentage
       end
-
-      percentage = days_attending.to_f / possible_days.to_f
-
-      month_price = month_price * percentage
     end
 
     month_price
