@@ -3,7 +3,12 @@
     .col-sm-6
       .field
         = f.label :starts_at, "Date"
-        = f.select :starts_at, TargetDay.by_program_and_plan_type(@program, @plan_type).select_options.uniq, {include_blank: "Choose a Date"}, {class: "drop_in-date-select"}
+        - target_days = TargetDay.by_program_and_plan_type(@program, @plan_type)
+        - if f.object.starts_at.blank? || target_days.pluck(:target_date).include?(f.object.starts_at)
+          = f.select :starts_at, target_days.select_options.uniq, {selected: (f.object.starts_at || Time.zone.today).stamp("2018/03/08"), include_blank: "Choose a Date"}, {class: "drop_in-date-select"}
+        - else
+          %div{style: "padding-left: 10px; padding-right: 0px;"}= f.object.starts_at.stamp("Tuesday, January 8th, 2018")
+          = f.hidden_field :starts_at, value: f.object.starts_at, class: "drop_in-date-select"
         = f.hidden_field :ends_at, value: f.object.ends_at, class: "drop_in-ends"
 
         = f.hidden_field :monday, value: false, class: "drop_in-days drop_in-1"
