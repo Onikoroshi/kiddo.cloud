@@ -7,7 +7,15 @@
 
       .form-group.label-floating
         = f.label :program_id, "Program", class: "control-label"
-        = f.select :program_id, options_from_collection_for_select(Program.all, 'id', 'name', f.object.program_id || params[:program_id]), class: "form-control"
+        = f.select :program_id, options_from_collection_for_select(Program.all, 'id', 'name', f.object.program_id || params[:program_id]), include_blank: "Any Program", class: "form-control"
+
+      .form-group.label-floating
+        = f.label :location_id, "Location", class: "control-label"
+        = f.select :location_id, options_from_collection_for_select(Location.all, 'id', 'name', f.object.location_id || params[:location_id]), include_blank: "Any Location", class: "form-control"
+
+      .form-group.label-floating
+        = f.label :plan_type, "Plan Type", class: "control-label"
+        = f.select :plan_type, options_from_collection_for_select(PlanType.all, 'to_s', 'text', f.object.plan_type || params[:plan_type]), include_blank: "Any Plan Type", class: "form-control"
 
       .form-group.label-floating
         = f.label :message, "Message", class: "control-label"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181026225511) do
+ActiveRecord::Schema.define(version: 20181031033101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,9 @@ ActiveRecord::Schema.define(version: 20181026225511) do
     t.text "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "location_id"
+    t.string "plan_type"
+    t.index ["location_id"], name: "index_announcements_on_location_id"
     t.index ["program_id"], name: "index_announcements_on_program_id"
   end
 
@@ -476,6 +479,7 @@ ActiveRecord::Schema.define(version: 20181026225511) do
   add_foreign_key "accounts", "centers"
   add_foreign_key "accounts", "programs"
   add_foreign_key "accounts", "users"
+  add_foreign_key "announcements", "locations"
   add_foreign_key "announcements", "programs"
   add_foreign_key "attendance_selections", "children"
   add_foreign_key "care_items", "children"

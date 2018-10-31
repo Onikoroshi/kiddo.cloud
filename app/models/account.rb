@@ -191,15 +191,17 @@ class Account < ApplicationRecord
   end
 
   def announcements
-    enrolled_programs = enrollments.alive.active.programs
+    enrollments_to_consider = enrollments.alive.active
 
     hash = {}
 
-    enrolled_programs.each do |program|
-      program.announcements.find_each do |announcement|
-        hash[program.name] = [] if hash[program.name].nil?
-        hash[program.name] << announcement.message
-      end
+    announcements = Announcement.all.select do |a|
+      enrollments_to_consider.by_program(a.program).by_location(a.location).by_plan_type(a.plan_type.to_s).any?
+    end
+
+    announcements.each do |announcement|
+      hash[announcement.title] = [] if hash[announcement.title].nil?
+      hash[announcement.title] << announcement.message
     end
 
     hash

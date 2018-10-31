@@ -68,6 +68,6 @@ class Staff::AnnouncementsController < ApplicationController
   end
 
   def permitted_params
-    @permitted_params ||= params[:announcement].present? ? params.require(:announcement).permit(:program_id, :message) : {}
+    @permitted_params ||= params[:announcement].present? ? params.require(:announcement).permit(:program_id, :location_id, :plan_type, :message) : {}
   end
 end

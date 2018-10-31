@@ -24,7 +24,7 @@ class Enrollment < ApplicationRecord
   scope :dead, -> { where(dead: true) }
 
   scope :by_program, ->(program) { program.present? ? joins(:program).where("programs.id = ?", program.id) : all }
-  scope :by_plan_type, ->(plan_type) { joins(:plan).where("plans.plan_type = ?", plan_type.to_s) }
+  scope :by_plan_type, ->(plan_type) { plan_type.present? ? joins(:plan).where("plans.plan_type = ?", plan_type.to_s) : all }
   scope :by_program_and_plan_type, ->(program, plan_type) { joins(:program).where("plans.plan_type = ? AND programs.id = ?", plan_type.to_s, program.id) }
   scope :by_program_and_location, ->(program, location) { (program.present? && location.present?) ? joins(:program).joins(:location).where("programs.id = ? AND locations.id = ?", program.id, location.id) : none }
   scope :by_child, ->(child) { child.present? ? where(child_id: child.id) : none }
@@ -63,6 +63,16 @@ class Enrollment < ApplicationRecord
   # get a unique list of programs associated with a set of enrollments
   def self.programs
     Program.where(id: self.joins(:program).pluck("programs.id").uniq)
+  end
+
+  # get a unique list of locations associated with a set of enrollments
+  def self.locations
+    Location.where(id: self.joins(:location).pluck("locations.id").uniq)
+  end
+
+  # get a unique list of programs associated with a set of enrollments
+  def self.plan_types
+    self.joins(:plan).pluck("plans.plan_type").uniq
   end
 
   def self.active_blurbs(child)

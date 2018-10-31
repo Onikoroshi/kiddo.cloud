@@ -10,6 +10,8 @@
     %thead
       %th
       %th Program
+      %th Location
+      %th Plan Type
       %th Message
       %th
 
@@ -19,7 +21,9 @@
           %td
             = link_to staff_announcement_path(announcement), method: :delete, :data => { :confirm => 'Are you sure?' } do
               %i.material-icons delete_forever
-          %td= announcement.program.name
+          %td= announcement.program.present? ? announcement.program.name : "Any Program"
+          %td= announcement.location.present? ? announcement.location.name : "Any Location"
+          %td= announcement.plan_type.present? ? announcement.plan_type.text : "Any Plan Type"
           %td= announcement.message
           %td
             = link_to edit_staff_announcement_path(announcement) do
