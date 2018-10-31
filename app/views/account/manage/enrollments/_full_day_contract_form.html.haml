@@ -24,7 +24,7 @@
             = enrollment_fields.hidden_field :starts_at, value: [(enrollment_fields.object.starts_at || @program.starts_at).to_date, (enrollment_fields.object.created_at || Time.zone.today).to_date].max
             = enrollment_fields.hidden_field :ends_at, value: enrollment_fields.object.ends_at || @program.ends_at
 
-            .col-xs-6
+            .col-xs-7
               - @plan_type.find_available_days(@program).each do |day_name, value|
                 - if value
                   .checkbox
@@ -37,9 +37,15 @@
             .col-xs-3
               = enrollment_fields.select :plan_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None", selected: enrollment_fields.object.persisted? ? enrollment_fields.object.plan_id : nil
 
-            .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px;"}
+            .col-xs-2{style: "padding-left: 0px !important; padding-top: 7px;"}
               = enrollment_fields.hidden_field :location_id, value: Location.find_by(name: "Pioneer Elementary").id
               At Pioneer Elementary
+
+            .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px;"}
+              .col-xs-3{style: "padding-left: 0px !important"}
+                = f.label :starts_at, "Starting On"
+              .col-xs-9{style: "padding-left: 0px !important"}
+                = enrollment_fields.text_field :starts_at, value: [(enrollment_fields.object.starts_at || @program.starts_at).to_date, (enrollment_fields.object.created_at || Time.zone.today).to_date].max, class: "drop_in-date-select flatpickr-date"
             .cleaner
 
   = link_to "Cancel", @account.signup_complete? ? (defined?(target_method) ? edit_account_dashboard_enrollments_path(@account) : new_account_dashboard_enrollment_path(@account)) : account_step_path(@account, :plan), class: "btn"

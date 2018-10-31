@@ -248,7 +248,7 @@ class Enrollment < ApplicationRecord
   def set_next_target_and_payment_date(given_enrollment_transaction = nil)
     if plan_type.recurring?
       # update starts_at to make sure
-      self.starts_at = [(self.starts_at || @program.starts_at).to_date, (created_at || Time.zone.today).to_date].max
+      self.starts_at ||= [@program.starts_at.to_date, (created_at || Time.zone.today).to_date].max
       self.ends_at ||= @program.ends_at
       stop_date = nil
 
@@ -319,9 +319,25 @@ class Enrollment < ApplicationRecord
 
         month_price = month_price * percentage
       end
+
+      # recurring plans can start or end in the middle of a month, so we need to prorate the amount based on that
+      if plan.plan_type.recurring?
+        # can't just naively use the first date of the month, but don't want to loop through all, so detect first date they're actually enrolled for
+        first_enrolled_date = (target_date.beginning_of_month..target_date.end_of_month).to_a.detect{|d| enrolled_on_date?(d)}
+        if target_date > first_enrolled_date
+          total_days = (target_date.beginning_of_month..target_date.end_of_month).to_a.select{|d| enrolled_on_date?(d)}
+
+          start_date = target_date
+          stop_date = [self.ends_at, target_date.end_of_month].min
+          used_days = total_days.select{|d| d >= start_date && d <= stop_date}
+
+          percentage_used = used_days.count.to_f / total_days.count.to_f
+          month_price = month_price * percentage_used
+        end
+      end
     end
 
-    month_price
+    month_price.to_money
   end
 
   def amount_due_today
@@ -493,14 +509,16 @@ class Enrollment < ApplicationRecord
     program_location.present? && program_location.enable_alerts?
   end
 
-  def enrolled_today?
-    target_date = Time.zone.today
-
+  def enrolled_on_date?(target_date)
     return false if target_date < program.starts_at || target_date > program.ends_at
     return false if program.holidays.pluck(:holidate).include?(target_date)
 
     day_num = target_date.wday
     send(DAY_DICTIONARY[day_num])
+  end
+
+  def enrolled_today?
+    enrolled_on_date?(Time.zone.today)
   end
 
   private
@@ -537,9 +555,11 @@ class Enrollment < ApplicationRecord
   end
 
   def validate_dates
-    if plan_type.present? && plan_type.drop_in?
+    if plan_type.present? && plan_type.one_time?
       ends_at = starts_at
       errors.add(:base, "#{child.first_name} cannot attend on #{starts_at.stamp("Mar. 3rd, 2018")} as we are closed for Independance Day") if starts_at.month == 7 && starts_at.day == 4
+
+      errors.add(:base, "#{child.first_name} cannot attend on #{starts_at.stamp("Mar. 3rd, 2018")} as we are on holiday!") if program.holidays.pluck(:holidate).include?(starts_at)
     end
 
     if program.present?
