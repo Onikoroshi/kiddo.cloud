@@ -11,5 +11,10 @@ class Children::AttendanceDisplayController < ApplicationController
     end
 
     @enrollments = @location.enrollments.alive.paid.for_date(Time.zone.today)
+    @programs = @enrollments.programs
+
+    @program = Program.find_by(id: params[:program_id])
+
+    @enrollments = @enrollments.by_program_on_date(@program, Time.zone.today) if @program.present?
   end
 end
