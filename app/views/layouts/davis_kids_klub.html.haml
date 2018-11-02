@@ -39,4 +39,6 @@
       .section.section-basic
         .container
           = render "application/flash_messages"
+          - if @account.present?
+            = render "common/account_announcements", account: @account
           = yield

@@ -196,7 +196,11 @@ class Account < ApplicationRecord
     hash = {}
 
     announcements = Announcement.all.select do |a|
-      enrollments_to_consider.by_program(a.program).by_location(a.location).by_plan_type(a.plan_type.to_s).any?
+      if enrollments_to_consider.any?
+        enrollments_to_consider.by_program(a.program).by_location(a.location).by_plan_type(a.plan_type.to_s).any?
+      else
+        a.program.blank? && a.location.blank? && a.plan_type.blank?
+      end
     end
 
     announcements.each do |announcement|

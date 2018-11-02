@@ -27,7 +27,6 @@
 
         = render "layouts/account_nav"
 
-
     .page-header.header-filter.clear-filter
 
     .main.main-raised
@@ -37,5 +36,7 @@
             = render "application/flash_messages"
           .row
             = render "staff/dashboard/dashboard_header"
+          - if @account.present?
+            = render "common/account_announcements", account: @account
 
           = yield
