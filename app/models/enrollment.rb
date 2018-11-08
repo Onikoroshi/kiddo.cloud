@@ -413,7 +413,7 @@ class Enrollment < ApplicationRecord
   end
 
   def transaction_covers_date(given_date)
-    enrollment_transactions.paid.where("description_data->'start_date' <= ? AND description_data->'stop_date' >= ?", given_date, given_date).reverse_chronological.first
+    enrollment_transactions.paid.where("description_data->'start_date' <= ? AND description_data->'stop_date' >= ?", given_date, given_date).chronological.first
   end
 
   def last_transaction
