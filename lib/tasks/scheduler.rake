@@ -2,7 +2,7 @@ namespace :scheduler do
   desc "Called by the Heroku scheduler add-on. Finds everyone who owes a recurring payment and attempts to make a charge in Stripe, sending an email and marking them as unpaid if that fails"
   task process_recurring_payments: :environment do
     messages = []
-    
+
     begin
       due_enrollments = Enrollment.alive.active.recurring.due_by_today.includes(child: :account).references(:accounts)
       enroll_hash = due_enrollments.to_a.group_by{|e| e.child.account.id}
@@ -29,30 +29,25 @@ namespace :scheduler do
         total = enrollments.inject(Money.new(0)){ |sum, enrollment| sum + Money.new(enrollment.amount_due_today) }
 
         success = false
-        if total <= Money.new(0)
-          messages << "enrollments #{enrollments.map(&:id).join(" ")} have $0 due."
-          enrollments.each do |enrollment|
-            enrollment.set_next_target_and_payment_date!
-          end
-
-          # don't send an email if they didn't actually owe anything
-          next
-        elsif account.gateway_customer_id.present?
+        if account.gateway_customer_id.present? || total > Money.new(0)
           messages << "total of #{total} due"
 
           stripe_customer = StripeCustomerService.new(account).find_customer
-          if stripe_customer.present?
+          if stripe_customer.present? || total > Money.new(0)
             begin
-              charge = Stripe::Charge.create(
-                :amount => (total * 100).to_i,
-                :currency => "usd",
-                :customer => stripe_customer.id,
-              )
+              charge = nil
+              if stripe_customer.present?
+                charge = Stripe::Charge.create(
+                  :amount => (total * 100).to_i,
+                  :currency => "usd",
+                  :customer => stripe_customer.id,
+                )
+              end
 
               transaction = Transaction.create!(
                 account: account,
                 transaction_type: TransactionType[:recurring],
-                gateway_id: charge.id,
+                gateway_id: charge.present? ? charge.id : "",
                 amount: total,
                 paid: true,
                 itemizations: Hash.new
