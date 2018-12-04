@@ -27,42 +27,44 @@ namespace :scheduler do
         end
 
         total = enrollments.inject(Money.new(0)){ |sum, enrollment| sum + Money.new(enrollment.amount_due_today) }
+        messages << "total of #{total} due"
 
         success = false
-        if account.gateway_customer_id.present? || total > Money.new(0)
-          messages << "total of #{total} due"
 
-          stripe_customer = StripeCustomerService.new(account).find_customer
-          if stripe_customer.present? || total > Money.new(0)
-            begin
-              charge = nil
-              if stripe_customer.present?
-                charge = Stripe::Charge.create(
-                  :amount => (total * 100).to_i,
-                  :currency => "usd",
-                  :customer => stripe_customer.id,
-                )
-              end
+        begin
+          charge = nil
 
-              transaction = Transaction.create!(
-                account: account,
-                transaction_type: TransactionType[:recurring],
-                gateway_id: charge.present? ? charge.id : "",
-                amount: total,
-                paid: true,
-                itemizations: Hash.new
+          if total != Money.new(0) # could be either positive or negative
+            stripe_customer = StripeCustomerService.new(account).find_customer
+            if stripe_customer.present?
+              charge = Stripe::Charge.create(
+                :amount => (total * 100).to_i,
+                :currency => "usd",
+                :customer => stripe_customer.id,
               )
-
-              enrollments.each do |enrollment|
-                enrollment.craft_enrollment_transactions(transaction)
-              end
-
-              success = true
-            rescue => e
-              messages << e.message
-              messages << e.backtrace
+            else
+              # just in case the call above doesn't throw an exception
+              raise "Could not find Stripe Customer for id #{account.gateway_customer_id}"
             end
           end
+
+          transaction = Transaction.create!(
+            account: account,
+            transaction_type: TransactionType[:recurring],
+            gateway_id: charge.present? ? charge.id : "",
+            amount: total,
+            paid: true,
+            itemizations: Hash.new
+          )
+
+          enrollments.each do |enrollment|
+            enrollment.craft_enrollment_transactions(transaction)
+          end
+
+          success = true
+        rescue => e
+          messages << e.message
+          messages << e.backtrace
         end
 
         if success
