@@ -264,7 +264,7 @@ class Enrollment < ApplicationRecord
 
       latest_enrollment_transaction = given_enrollment_transaction || enrollment_transactions.paid.by_target_date.last
 
-      stop_date = latest_enrollment_transaction.description_data["stop_date"] if latest_enrollment_transaction.present? && latest_enrollment_transaction.amount > 0
+      stop_date = latest_enrollment_transaction.description_data["stop_date"] if latest_enrollment_transaction.present? && !latest_enrollment_transaction.placeholder?
 
       if stop_date.present?
         target_date = stop_date.to_date.end_of_month + 1.day # move forward a month
@@ -277,6 +277,8 @@ class Enrollment < ApplicationRecord
 
       if next_payment_date <= Time.zone.today
         self.paid = false
+      elsif next_payment_date > Time.zone.today
+        self.paid = true
       end
     else
       self.next_target_date ||= (created_at || Time.zone.today).to_date
@@ -392,7 +394,7 @@ class Enrollment < ApplicationRecord
       created_transaction = nil
 
       # create a blank transaction - that runs from today to the day before the enrollment starts (at which point another transaction should be created for that first payment) - for other changes to refer back to
-      if payment_date > Time.zone.today && enrollment_transactions.placeholders.blank?
+      if self.starts_at > Time.zone.today
         created_transaction = EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: Money.new(0), target_date: Time.zone.today, description_data: {"description" => self.to_short, "start_date" => Time.zone.today, "stop_date" => self.starts_at - 1.day})
       end
 

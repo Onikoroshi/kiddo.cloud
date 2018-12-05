@@ -10,10 +10,19 @@ class EnrollmentTransaction < ApplicationRecord
   scope :paid, -> { joins(:my_transaction).where("transactions.paid IS TRUE") }
 
   # used to populate receipts where people signed up before the first payment date
-  scope :placeholders, -> { where("amount <= ?", 0) }
+  scope :placeholders, -> { joins(:enrollment).where("DATE(enrollment_transactions.description_data -> 'stop_date') <= enrollments.starts_at") }
 
   def placeholder?
-    amount <= 0
+    if description_data["stop_date"].present? && enrollment.present? && enrollment.starts_at.present?
+      begin
+        target_stop = description_data["stop_date"].to_date
+        return target_stop < enrollment.starts_at
+      rescue => e
+        return false
+      end
+    else
+      return false
+    end
   end
 
   def description
