@@ -37,7 +37,7 @@ class Staff::AccountsController < ApplicationController
       @location = nil
 
       target = "%#{params[:search].to_s.downcase.gsub(" ", "")}%"
-      @accounts = Account.where("accounts.search_field ILIKE ?", target)
+      @accounts = Account.includes(:parents).where("accounts.search_field ILIKE ?", target)
     else
       ap "search blank"
       @program_id = params[:program_id]
