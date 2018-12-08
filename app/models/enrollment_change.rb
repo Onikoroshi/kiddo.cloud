@@ -179,8 +179,8 @@ class EnrollmentChange < ApplicationRecord
   private
 
   def update_amount
-    return unless changed?
-    return if amount_changed?
+    return unless saved_changes?
+    return if saved_change_to_amount?
     return unless pending?
 
     if requires_refund?

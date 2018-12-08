@@ -310,6 +310,7 @@ class Enrollment < ApplicationRecord
   end
 
   def cost_for_date(target_date)
+    ap "trying to find cost for date for #{child.full_name} in program #{program.name} on target date #{target_date}"
     month_price = custom_price
 
     if month_price.present?
@@ -334,22 +335,20 @@ class Enrollment < ApplicationRecord
 
       # recurring plans can start or end in the middle of a month, so we need to prorate the amount based on that
       if plan.plan_type.recurring?
-        # can't just naively use the first date of the month, but don't want to loop through all, so detect first date they're actually enrolled for
-        first_enrolled_date = (target_date.beginning_of_month..target_date.end_of_month).to_a.detect{|d| enrolled_on_date?(d)}
-        if target_date > first_enrolled_date
-          total_days = (target_date.beginning_of_month..target_date.end_of_month).to_a.select{|d| enrolled_on_date?(d)}
+        total_days = (target_date.beginning_of_month..target_date.end_of_month).to_a.select{|d| available_on_date?(d)}
 
-          start_date = target_date
-          stop_date = [self.ends_at, target_date.end_of_month].min
-          used_days = total_days.select{|d| d >= start_date && d <= stop_date}
+        start_date = [self.starts_at, target_date.beginning_of_month].max
+        stop_date = [self.ends_at, target_date.end_of_month].min
+        used_days = total_days.select{|d| d >= start_date && d <= stop_date}
 
-          percentage_used = used_days.count.to_f / total_days.count.to_f
-          month_price = month_price * percentage_used
-        end
+        percentage_used = used_days.count.to_f / total_days.count.to_f
+        month_price = month_price * percentage_used
       end
     end
 
     month_price.to_money
+    month_price = Money.new(0) if month_price < Money.new(0)
+    month_price
   end
 
   def amount_due_today
@@ -521,12 +520,16 @@ class Enrollment < ApplicationRecord
     program_location.present? && program_location.enable_alerts?
   end
 
-  def enrolled_on_date?(target_date)
-    return false if target_date < program.starts_at || target_date > program.ends_at
+  def available_on_date?(target_date)
     return false if program.holidays.pluck(:holidate).include?(target_date)
 
     day_num = target_date.wday
     send(DAY_DICTIONARY[day_num])
+  end
+
+  def enrolled_on_date?(target_date)
+    return false if target_date < program.starts_at || target_date > program.ends_at
+    available_on_date?(target_date)
   end
 
   def enrolled_today?
@@ -568,15 +571,20 @@ class Enrollment < ApplicationRecord
 
   def validate_dates
     if plan_type.present? && plan_type.one_time?
-      ends_at = starts_at
+      self.ends_at = self.starts_at
       errors.add(:base, "#{child.first_name} cannot attend on #{starts_at.stamp("Mar. 3rd, 2018")} as we are closed for Independance Day") if starts_at.month == 7 && starts_at.day == 4
 
       errors.add(:base, "#{child.first_name} cannot attend on #{starts_at.stamp("Mar. 3rd, 2018")} as we are on holiday!") if program.holidays.pluck(:holidate).include?(starts_at)
     end
 
     if program.present?
-      if (starts_at.present? && starts_at < program.starts_at) || (ends_at.present? && ends_at > program.ends_at)
-        errors.add(:base, "#{child.first_name} cannot attend on #{starts_at.stamp("Mar. 3rd, 2018")} as #{program.name} only runs from #{program.starts_at} to #{program.ends_at}")
+      starts_at.present?
+      if self.starts_at.present? && self.starts_at < program.starts_at
+        errors.add(:base, "#{child.first_name} cannot attend on #{self.starts_at.stamp("Mar. 3rd, 2018")} as #{program.name} only runs from #{program.starts_at} to #{program.ends_at}")
+      end
+
+      if self.ends_at.present? && self.ends_at > program.ends_at
+        errors.add(:base, "#{child.first_name} cannot attend on #{self.ends_at.stamp("Mar. 3rd, 2018")} as #{program.name} only runs from #{program.starts_at} to #{program.ends_at}")
       end
     end
 
