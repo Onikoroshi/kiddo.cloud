@@ -36,7 +36,8 @@ class Staff::AccountsController < ApplicationController
       @location_id = ""
       @location = nil
 
-      @accounts = Account.includes(:parents).joins(:user).where("lower(users.email) ILIKE ?", "%#{params[:search].to_s.downcase}%")
+      target = "%#{params[:search].to_s.downcase.gsub(" ", "")}%"
+      @accounts = Account.where("accounts.search_field ILIKE ?", target)
     else
       ap "search blank"
       @program_id = params[:program_id]

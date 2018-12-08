@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181031033101) do
+ActiveRecord::Schema.define(version: 20181208043638) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 20181031033101) do
     t.integer "location_id"
     t.bigint "program_id"
     t.integer "payment_offset", default: 0
+    t.text "search_field", default: ""
     t.index ["center_id"], name: "index_accounts_on_center_id"
     t.index ["program_id"], name: "index_accounts_on_program_id"
     t.index ["user_id"], name: "index_accounts_on_user_id"

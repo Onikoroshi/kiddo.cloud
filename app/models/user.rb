@@ -18,6 +18,8 @@ class User < ApplicationRecord
 
   has_many :time_disputes
 
+  after_commit :update_account_search_field
+
   scope :by_role, ->(role_name) { joins(:roles).where("roles.name = ?", role_name) }
   scope :staff, -> { joins(:staff) }
   scope :parent_users, -> { by_role("parent") }
@@ -90,6 +92,16 @@ class User < ApplicationRecord
       false
     else
       super
+    end
+  end
+
+  private
+
+  def update_account_search_field
+    return unless account.present?
+
+    if saved_change_to_email? || saved_change_to_first_name? || saved_change_to_last_name?
+      account.update_search_field
     end
   end
 end

@@ -20,6 +20,8 @@ class Child < ApplicationRecord
 
   after_initialize :build_default_care_items
 
+  after_commit :update_account_search_field
+
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :gender, presence: true
@@ -111,5 +113,15 @@ class Child < ApplicationRecord
     end
 
     failed_messages
+  end
+
+  private
+
+  def update_account_search_field
+    return unless account.present?
+
+    if saved_change_to_first_name? || saved_change_to_last_name?
+      account.update_search_field
+    end
   end
 end

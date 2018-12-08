@@ -30,6 +30,8 @@ class Account < ApplicationRecord
 
   after_save :update_enrollment_payment_dates
 
+  after_commit :update_search_field
+
   scope :by_program, ->(given_program) { given_program.present? ? joins(enrollments: :program).where("enrollments.dead IS FALSE AND programs.id = ?", given_program.id).distinct : all }
   scope :by_location, ->(given_location) { given_location.present? ? joins(:enrollments).where("enrollments.dead IS FALSE AND enrollments.location_id = ?", given_location.id).distinct : all }
 
@@ -211,6 +213,25 @@ class Account < ApplicationRecord
     hash
   end
 
+  def update_search_field
+    return if saved_change_to_search_field?
+
+    field = ""
+
+    field << user.email.to_s + user.first_name.to_s + user.last_name.to_s + user.first_name.to_s if user.present?
+
+    parents.find_each do |parent|
+      field << parent.email.to_s + parent.first_name.to_s + parent.last_name.to_s + parent.first_name.to_s
+    end
+
+    children.find_each do |child|
+      field << child.first_name.to_s + child.last_name.to_s + child.first_name.to_s
+    end
+
+    field = field.downcase.gsub(" ", "")
+    update_attribute(:search_field, field)
+  end
+
   private
 
   def force_send_agreements
@@ -218,7 +239,7 @@ class Account < ApplicationRecord
   end
 
   def update_enrollment_payment_dates
-    if payment_offset_changed?
+    if saved_change_to_payment_offset?
       consider_enrollments = enrollments.alive.active.recurring
       consider_enrollments.map{|e| e.set_next_target_and_payment_date!}
     end
