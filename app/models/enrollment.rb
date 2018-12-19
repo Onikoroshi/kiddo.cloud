@@ -528,7 +528,7 @@ class Enrollment < ApplicationRecord
   end
 
   def enrolled_on_date?(target_date)
-    return false if target_date < program.starts_at || target_date > program.ends_at
+    return false if target_date < self.starts_at || target_date > self.ends_at
     available_on_date?(target_date)
   end
 
