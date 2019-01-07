@@ -288,7 +288,7 @@ class Enrollment < ApplicationRecord
 
   def set_next_target_and_payment_date!(given_enrollment_transaction = nil)
     set_next_target_and_payment_date(given_enrollment_transaction)
-    save
+    save(validate: false) # don't worry about validations at this stage
   end
 
   def deduce_current_service_dates
