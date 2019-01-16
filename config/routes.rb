@@ -42,7 +42,11 @@ Rails.application.routes.draw do
       get :my_dropins, to: "account/manage/drop_ins#index"
       resource :credit_card, controller: "account/manage/credit_cards", only: [:show, :new, :create, :destroy]
       resource :drop_ins, controller: 'account/manage/drop_ins'
-      resources :payments, controller: "account/manage/payments"
+      resources :payments, controller: "account/manage/payments" do
+        collection do
+          get :summary
+        end
+      end
       resources :children, controller: 'account/manage/children'
       resources :enrollments, controller: "account/manage/enrollments", except: [:edit, :update] do
         collection do

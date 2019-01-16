@@ -1,0 +1,41 @@
+.hide-print
+  .row
+    .pull-right
+      = link_to "Back to Payments", account_dashboard_payments_path(@account), class: "btn btn-secondary"
+
+  = form_tag summary_account_dashboard_payments_path, method: :get do
+    .row{style: "padding-bottom: 40px;"}
+      .col-xs-2.text-center
+        %a.btn.btn-primary.btn-lg{style: "margin-top: 40px;", onClick: "window.print();"} Print
+
+      .col-xs-4.text-center
+        %h5 Start Date
+        = text_field_tag :start_date, @start_date, class: "flatpickr-date"
+
+      .col-xs-4.text-center
+        %h5 End Date
+        = text_field_tag :stop_date, @stop_date, class: "flatpickr-date"
+
+      .col-xs-2.text-center
+        %div{style: "margin-top: 40px;"}= submit_tag "Change Dates"
+
+- if @transactions.any?
+  %h4.text-center Receipts for Davis Kids Klub
+  %h4.text-center EIN: 03-0451515
+  %h4.text-center{style: "padding-bottom: 40px;"} 417 Mace Blvd Ste J PMB 174, Davis CA 95618
+
+  - @transactions.each do |transaction|
+    .col-xs-12
+      .account-box
+        .row{style: "width: 100%"}
+          %h4{style: "padding-left: 20px;"} #{transaction.refund? ? "Refund" : "Payment"} on #{transaction.created_at.stamp("Monday, Aug. 20th, 2018 ")}
+
+          %div{style: "padding-left: 5%;"}= render "payment_info", transaction: transaction
+
+  .col-xs-12
+    .account-box
+      .row{style: "width: 100%"}
+        %h3.pull-right Total: #{@transactions.total_amount}
+
+- else
+  %h1 No Transactions in this time period

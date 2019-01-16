@@ -22,6 +22,11 @@ class Transaction < ApplicationRecord
   scope :unpaid, -> { where.not(paid: true) }
   scope :paid_signup_fee_for_program, ->(program) { program.present? ? paid.where("itemizations->'signup_fee_#{program.id}' IS NOT NULL") : none }
   scope :recurring, -> { where(transaction_type: TransactionType::Recurring.new.to_s) }
+  scope :in_date_range, ->(start_date, stop_date) { where("transactions.created_at >= ? AND transactions.created_at <= ?", start_date.beginning_of_day, stop_date.end_of_day) }
+
+  def self.total_amount
+    self.all.inject(Money.new(0)){|sum, t| sum + t.net_total}
+  end
 
   def has_changes?
     enrollment_change_transactions.any? || enrollments.joins(:enrollment_changes).any?

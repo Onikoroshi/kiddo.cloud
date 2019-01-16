@@ -7,6 +7,20 @@ class Account::Manage::PaymentsController < ApplicationController
     @transactions = @account.transactions.reverse_chronological
   end
 
+  def summary
+    @start_date = params[:start_date] || (Time.zone.today - 1.year).beginning_of_year
+    @stop_date = params[:stop_date] || (Time.zone.today - 1.year).end_of_year
+
+    # just make sure we're in order
+    a = @start_date.to_date
+    b = @stop_date.to_date
+
+    @start_date = [a, b].min
+    @stop_date = [a, b].max
+
+    @transactions = @account.transactions.in_date_range(@start_date, @stop_date).chronological
+  end
+
   def show
     @transaction = Transaction.find(params[:id])
   end

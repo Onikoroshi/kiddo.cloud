@@ -1,5 +1,8 @@
+.pull-right
+  = link_to "Receipts Summary", summary_account_dashboard_payments_path(@account), class: "btn btn-primary"
+
 - if @transactions.any?
-  .col-xs-12
+  .col-xs-12{style: "padding-top: 40px;"}
     .account-box
       %table{style: "width: 100%;"}
         %thead

@@ -10,7 +10,7 @@
     = tag :meta, name: "stripe-public-key", content: Rails.application.secrets.stripe_public_key
 
   %body.index-page
-    %nav#sectionsNav.navbar.navbar-default.navbar-transparent.navbar-fixed-top.navbar-color-on-scroll{"color-on-scroll" => " "}
+    %nav#sectionsNav.hide-print.navbar.navbar-default.navbar-transparent.navbar-fixed-top.navbar-color-on-scroll{"color-on-scroll" => " "}
       .container
         / Brand and toggle get grouped for better mobile display
         .navbar-header
@@ -28,19 +28,20 @@
         = render "layouts/account_nav"
 
 
-    .page-header.header-filter.clear-filter
+    .page-header.header-filter.clear-filter.hide-print
 
     .main.main-raised
       .section.section-basic
         .container
-          = render "application/flash_messages"
-          = render "account/dashboards/change_batch_alert"
-          - if @account.present?
-            = render "common/account_announcements", account: @account
-          -# .row
-            /= render "account/dashboards/dashboard_header"
+          .hide-print
+            = render "application/flash_messages"
+            = render "account/dashboards/change_batch_alert"
+            - if @account.present?
+              = render "common/account_announcements", account: @account
+            -# .row
+              /= render "account/dashboards/dashboard_header"
           .row
-            .col-xs-12
+            .col-xs-12.hide-print
               = render "account/dashboards/side_menu"
             .col-xs-12
               = yield
