@@ -54,7 +54,8 @@ class FinanceItemPresenter
     if @is_transaction
       @finance_item.created_at.to_date.stamp("04/02/2019")
     else
-      @finance_item.enrollments.alive.minimum(:created_at).to_date.stamp("04/02/2019")
+      item_date = @finance_item.enrollments.alive.minimum(:created_at)
+      item_date.present? ? item_date.to_date.stamp("04/02/2019") : ""
     end
   end
 
