@@ -2,7 +2,6 @@ class Discount < ApplicationRecord
   belongs_to :plan
 
   money_column :amount
-  classy_enum_attr :month, enum: "DiscountMonth"
 
   validates :plan, :amount, :starts_on, :stops_on, presence: true
   validate :validate_start_stop_order
