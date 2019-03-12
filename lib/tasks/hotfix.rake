@@ -1,4 +1,30 @@
 namespace :hotfix do
+  task :update_generalized_discounts => :environment do
+    total = Discount.count
+    index = 1
+    Discount.find_each do |discount|
+      ap "#{discount.month.present? ? "processing" : "skipping"} discount #{index} of #{total} (#{discount.id}) for plan #{discount.plan.full_display_name} in program #{discount.plan.program.name}"
+
+      year = discount.plan.program.name.gsub("School Year ", "").to_i
+
+      if discount.month == "august" # this august
+        discount.update_attribute(:starts_on, Time.zone.parse("#{year}-08-02").to_date.beginning_of_month)
+        discount.update_attribute(:stops_on, Time.zone.parse("#{year}-08-02").to_date.end_of_month)
+        ap "  changed #{discount.month} to #{discount.starts_on}-#{discount.stops_on}"
+        discount.update_attribute(:month, nil)
+      elsif discount.month == "june" # next june
+        year += 1
+        discount.update_attribute(:starts_on, Time.zone.parse("#{year}-06-02").to_date.beginning_of_month)
+        discount.update_attribute(:stops_on, Time.zone.parse("#{year}-06-02").to_date.end_of_month)
+        ap "  changed #{discount.month} to #{discount.starts_on}-#{discount.stops_on}"
+        discount.update_attribute(:month, nil)
+      else
+        ap "  month #{discount.month} not one of them!"
+      end
+      index += 1
+    end
+  end
+
   task :disable_locations => :environment do
     names = [
       "Birch Lane Elementary",

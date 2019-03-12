@@ -36,7 +36,7 @@ class Plan < ApplicationRecord
   end
 
   def discounts_for_date(given_date)
-    discounts.by_month(given_date).inject(Money.new(0)){ |sum, discount| sum + discount.amount }
+    discounts.cover_date(given_date).inject(Money.new(0)){ |sum, discount| sum + discount.amount }
   end
 
   def display_days_per_week
