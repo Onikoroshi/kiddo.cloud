@@ -66,10 +66,18 @@ class Staff::AccountsController < ApplicationController
       ap "final location id: #{@location_id}"
 
       @show_unregistered = params["show_unregistered"].present?
+      @only_active = params["only_active"].present?
 
       @accounts = Account.includes(:parents).where(center: @center).by_program(@program).by_location(@location)
       ap "initial accounts: #{@accounts.count}"
       @accounts = @show_unregistered ? @accounts.where.not(signup_complete: true) : @accounts.where(signup_complete: true)
+      ap "after show unregistered: #{@accounts.count}"
+
+      if @only_active
+        enrollments_to_consider = Enrollment.alive.active
+        account_ids = enrollments_to_consider.joins(:account).pluck("accounts.id").uniq
+        @accounts = @accounts.where(id: account_ids)
+      end
       ap "final accounts: #{@accounts.count}"
     end
 

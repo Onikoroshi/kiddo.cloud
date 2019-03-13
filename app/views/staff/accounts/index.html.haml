@@ -16,6 +16,9 @@
           = text_field_tag "search", params[:search], {style: "width: 100%;"}
         .col-xs-2.text-center
           %br
+          = check_box_tag "only_active", "1", @only_active
+          = label_tag "only_active", "Show Only with Active Enrollments"
+          %br
           = check_box_tag "show_unregistered", "1", @show_unregistered
           = label_tag "show_unregistered", "Show Only Unregistered"
 
