@@ -7,6 +7,7 @@ class TransactionalMailer < ApplicationMailer
   end
 
   def welcome_summer_customer(account)
+    return # temporarily disable summer camp emails
     @account = account
 
     file_path = "app/assets/images/Summer Camp daily schedule.docx"
