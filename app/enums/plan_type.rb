@@ -7,6 +7,10 @@ class PlanType < ClassyEnum::Base
     PlanType.select{|pt| pt.one_time?}
   end
 
+  def self.single_day
+    PlanType.select{|pt| pt.single_day?}
+  end
+
   def find_available_days(program = nil)
     plans = (program.present? ? program.plans : Plan).where(plan_type: self.to_s)
 
@@ -35,6 +39,10 @@ class PlanType < ClassyEnum::Base
 
   def one_time?
     !recurring?
+  end
+
+  def single_day?
+    false
   end
 end
 
@@ -68,7 +76,13 @@ class PlanType::Weekly < PlanType
 end
 
 class PlanType::DropIn < PlanType
+  def single_day?
+    true
+  end
 end
 
 class PlanType::CampDay < PlanType
+  def single_day?
+    true
+  end
 end

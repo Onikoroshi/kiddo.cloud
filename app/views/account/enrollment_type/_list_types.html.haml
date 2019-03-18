@@ -1,4 +1,5 @@
 - @center.programs.open_for_registration.order_by_priority.each do |program|
+  - next if program.plan_types.empty?
   .col-xs-12
     %h3.text-center
       = program.name

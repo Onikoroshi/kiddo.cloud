@@ -194,6 +194,10 @@ class Enrollment < ApplicationRecord
     !recurring?
   end
 
+  def single_day?
+    plan_type.present? && plan_type.single_day?
+  end
+
   def alive?
     !dead?
   end
@@ -243,6 +247,7 @@ class Enrollment < ApplicationRecord
         month_name = target_date.stamp("February, 2019")
       end
     else
+      target_date = self.starts_at
       info["One Time"] = {}
       if self.paid?
         info["One Time"]["message"] = "Paid #{last_paid_amount} on #{created_at.to_date.stamp("Aug. 1st, 2019")}"
@@ -281,7 +286,7 @@ class Enrollment < ApplicationRecord
         self.paid = true
       end
     else
-      self.next_target_date ||= (created_at || Time.zone.today).to_date
+      self.next_target_date = self.starts_at.to_date
       self.next_payment_date ||= (created_at || Time.zone.today).to_date
     end
   end
@@ -570,7 +575,7 @@ class Enrollment < ApplicationRecord
   end
 
   def validate_dates
-    if plan_type.present? && plan_type.one_time?
+    if single_day?
       self.ends_at = self.starts_at
       errors.add(:base, "#{child.first_name} cannot attend on #{starts_at.stamp("Mar. 3rd, 2018")} as we are closed for Independance Day") if starts_at.month == 7 && starts_at.day == 4
 
