@@ -1,27 +1,59 @@
-# README
+# Readme
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+#### Extra Start-Up Commands:
+`rake jobs:work`
 
-Things you may want to cover:
+#### Beta URL:
+https://kiddocloud-staging.herokuapp.com
 
-* Ruby version
+#### New Live Site:
+manage.daviskidsklub.com
+https://kiddocloud.herokuapp.com/
+https://daviskidsklub.com/wp-admin/
 
-* System dependencies
+#### Wordpress Admin
+https://iank.us/dkk/
+https://iank.us/dkk/wp-login.php
 
-* Configuration
+#### Deploy to Production:
+```
+git push production master
+heroku run rake db:migrate -a kiddocloud
+```
 
-* Database creation
+#### Deploy to Beta:
+```
+git push beta master
+heroku run rake db:migrate -a kiddocloud-staging
+```
 
-* Database initialization
+#### Deploy to Beta with non-master branch:
+```
+git push beta branch_name:master
+heroku run rake db:migrate -a kiddocloud-staging
+```
+**WARNING: When done, use `git push -f beta master:master` to reset when back to master.**
 
-* How to run the test suite
+#### See Heroku Logs
+`heroku logs -t -a kiddocloud`
+`heroku logs -t -a kiddocloud-staging`
 
-* Services (job queues, cache servers, search engines, etc.)
+#### Get to Heroku Rails Console:
+`heroku run console -a kiddocloud`
+`heroku run console -a kiddocloud-staging`
 
-* Deployment instructions
+#### Run Rake Task on Heroku
+`heroku run rake task:name -a kiddocloud`
+`heroku run rake task:name -a kiddocloud-staging`
 
-* Rails secrets
-  * Set env variable in production `RAILS_MASTER_KEY` to value in `config/secrets.yml.key`
-  * `config/secrets.yml.enc` can be safely commited to repo, contains encrypted values contained in secrets file
-  * `EDITOR=vim bin/rails secrets:edit` to edit the secrets file.
+#### Reload Beta Database
+```
+heroku pg:reset DATABASE -a kiddocloud-staging --confirm kiddocloud-staging
+heroku run rake db:reload -a kiddocloud-staging
+```
+
+**if it hangs, seed manually:**
+`heroku run rake db:seed -a kiddocloud-staging`
+
+#### Change Wordpress banner about closed sites:
+`https://daviskidsklub.com/wp-admin/theme-editor.php?file=header.php&theme=bridge line 929`
