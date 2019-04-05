@@ -1,0 +1,14 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %link{:href => "https://fonts.googleapis.com/css?family=Open+Sans", :rel => "stylesheet"}/
+    = stylesheet_link_tag    'application-dkk', media: 'all', 'data-turbolinks-track': 'reload'
+  %body{style: "background-color: white;"}
+    .container-fluid.container-dkk
+      .logo-dkk
+        = link_to root_url do
+          = image_tag ("logo.png")
+      .cleaner
+
+      = yield

@@ -7,20 +7,22 @@ class TransactionalMailer < ApplicationMailer
   end
 
   def welcome_summer_customer(account)
-    return # temporarily disable summer camp emails
     @account = account
 
-    file_path = "app/assets/images/Summer Camp daily schedule.docx"
-    attachments["daily_schedule.docx"] = File.read(file_path)
+    file_path = "app/assets/images/Walking Policy.pdf"
+    attachments["walking_policy.pdf"] = File.read(file_path)
 
     file_path = "app/assets/images/DKK Chromebook policy.pdf"
     attachments["chromebook_policy.docx"] = File.read(file_path)
 
-    file_path = "app/assets/images/Class Visit Letter -Davis-1.docx"
-    attachments["class_visit_letter.docx"] = File.read(file_path)
+    file_path = "app/assets/images/Spanish Application 2018-09.pdf"
+    attachments["spanish_application.pdf"] = File.read(file_path)
 
-    file_path = "app/assets/images/English & Spanish Application 07-2017-1.pdf"
-    attachments["english_spanish_application.pdf"] = File.read(file_path)
+    file_path = "app/assets/images/English Application 2018-09.pdf"
+    attachments["english_application.pdf"] = File.read(file_path)
+
+    file_path = "app/assets/images/Behavior Agreement.pdf"
+    attachments["behavior_agreement.pdf"] = File.read(file_path)
 
     mail(to: @account.all_emails, subject: "Welcome to #{account.center_name}!")
   end

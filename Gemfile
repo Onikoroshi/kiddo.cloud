@@ -78,11 +78,6 @@ group :development do
   gem 'listen', '~> 3.0.5'
   # Automatic Ruby code style checking tool
   gem "rubocop", "~> 0.49.1"
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
-  # Generates an `rspec` binstub for using spring
-  gem "spring-commands-rspec"
-  gem 'spring-watcher-listen', '~> 2.0.0'
   gem "letter_opener"
 end
 
