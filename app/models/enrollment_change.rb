@@ -162,31 +162,31 @@ class EnrollmentChange < ApplicationRecord
     return Money.new(0) unless data.is_a?(Hash)
 
     if enrollment.plan_type.recurring?
-      # if data["ends_at"].present? && data["ends_at"].to_date < enrollment.ends_at
-      #   target_stop = data["ends_at"].to_date
-      #   refund_amount = Money.new(0)
-      #   enrollment.enrollment_transactions.each do |et|
-      #     ap "et start #{et.start_date}"
-      #     ap "et stop #{et.stop_date}"
-      #     ap "target stop #{target_stop}"
-      #     ap "enrollment stop #{enrollment.ends_at}"
-      #     if et.stop_date > target_stop && et.start_date <= enrollment.ends_at
-      #       ap "et stop #{et.stop_date} greater than target #{target_stop}"
-      #       if et.start_date >= target_stop
-      #         ap "et start #{et.start_date} greater than target #{target_stop}"
-      #         refund_amount -= et.amount
-      #       else
-      #         ap "et start #{et.start_date} less than target #{target_stop}"
-      #         actual_cost = enrollment.cost_for_date(target_stop, target_start: et.start_date, target_stop: target_stop)
-      #         refund_amount -= (et.amount - actual_cost)
-      #       end
-      #     end
-      #   end
-      #   refund_amount
-      # else
-      #   Money.new(0)
-      # end
-      Money.new(0)
+      if data["ends_at"].present? && data["ends_at"].to_date < enrollment.ends_at
+        target_stop = data["ends_at"].to_date
+        refund_amount = Money.new(0)
+        enrollment.enrollment_transactions.each do |et|
+          ap "et start #{et.start_date}"
+          ap "et stop #{et.stop_date}"
+          ap "target stop #{target_stop}"
+          ap "enrollment stop #{enrollment.ends_at}"
+          if et.stop_date > target_stop && et.start_date <= enrollment.ends_at
+            ap "et stop #{et.stop_date} greater than target #{target_stop}"
+            if et.start_date >= target_stop
+              ap "et start #{et.start_date} greater than target #{target_stop}"
+              refund_amount -= et.amount
+            else
+              ap "et start #{et.start_date} less than target #{target_stop}"
+              actual_cost = enrollment.cost_for_date(target_stop, target_start: et.start_date, target_stop: target_stop)
+              refund_amount -= (et.amount - actual_cost)
+            end
+          end
+        end
+        refund_amount
+      else
+        Money.new(0)
+      end
+      # Money.new(0)
     else
       if data["_destroy"].present?
         enrollment.last_paid_amount * -1 # this will be the refund amount
