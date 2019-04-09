@@ -111,8 +111,9 @@ class Program < ApplicationRecord
           enrollment.update_attribute(:starts_at, [self.starts_at, enrollment.created_at.to_date].max)
         end
 
-        if ends_at_changed?
-          enrollment.update_attribute(:ends_at, [self.ends_at, Time.zone.today].max)
+        # only change the enrollment stop date if they were in for the full duration (end at the same date as the program) *or* the program is now ending earlier than the enrollment would have
+        if ends_at_changed? && ((enrollment.ends_at == ends_at_was) || (self.ends_at < enrollment.ends_at))
+          enrollment.update_attribute(:ends_at, self.ends_at)
         end
 
         if starts_at_changed? || ends_at_changed?
