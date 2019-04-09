@@ -30,7 +30,7 @@
         .row{style: "width: 100%"}
           %h4{style: "padding-left: 20px;"} #{transaction.refund? ? "Refund" : "Payment"} on #{transaction.created_at.stamp("Monday, Aug. 20th, 2018 ")}
 
-          %div{style: "padding-left: 5%;"}= render "payment_info", transaction: transaction
+          %div{style: "padding-left: 5%;"}= render "payment_info", transactions: [transaction]
 
   .col-xs-12
     .account-box

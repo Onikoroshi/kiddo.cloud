@@ -29,6 +29,14 @@ class EnrollmentTransaction < ApplicationRecord
     description_data.present? && description_data["description"].present? ? description_data["description"] : enrollment.to_short
   end
 
+  def start_date
+    description_data["start_date"].present? ? description_data["start_date"].to_date : nil
+  end
+
+  def stop_date
+    description_data["stop_date"].present? ? description_data["stop_date"].to_date : nil
+  end
+
   def service_dates
     if description_data.present? && description_data["start_date"].present? && description_data["stop_date"].present?
       start_date = description_data["start_date"].to_date

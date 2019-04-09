@@ -60,9 +60,9 @@ class TransactionalMailer < ApplicationMailer
     mail(to: "petertcormack@gmail.com", subject: "DKK Recurring Payment Report")
   end
 
-  def enrollment_change_report(transaction)
-    @transaction = transaction
-    @account = transaction.account
+  def enrollment_change_report(transactions)
+    @transactions = transactions
+    @account = transactions.first.account
 
     mail(to: ["daviskidsklub@aol.com", "dkk.vsantos@aol.com", "aryn.yancher@gmail.com"], subject: "DKK Enrollment Change Report")
   end

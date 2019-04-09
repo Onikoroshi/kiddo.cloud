@@ -314,7 +314,7 @@ class Enrollment < ApplicationRecord
     return start_date, stop_date
   end
 
-  def cost_for_date(target_date)
+  def cost_for_date(target_date, target_start: starts_at, target_stop: ends_at)
     ap "trying to find cost for date for #{child.full_name} in program #{program.name} on target date #{target_date}"
     month_price = custom_price
 
@@ -342,8 +342,8 @@ class Enrollment < ApplicationRecord
       if plan.plan_type.recurring?
         total_days = (target_date.beginning_of_month..target_date.end_of_month).to_a.select{|d| available_on_date?(d)}
 
-        start_date = [self.starts_at, target_date.beginning_of_month].max
-        stop_date = [self.ends_at, target_date.end_of_month].min
+        start_date = [target_start, target_date.beginning_of_month].max
+        stop_date = [target_stop, target_date.end_of_month].min
         used_days = total_days.select{|d| d >= start_date && d <= stop_date}
 
         percentage_used = used_days.count.to_f / total_days.count.to_f
@@ -353,6 +353,7 @@ class Enrollment < ApplicationRecord
 
     month_price.to_money
     month_price = Money.new(0) if month_price < Money.new(0)
+    ap "final month price: #{month_price}"
     month_price
   end
 
@@ -402,7 +403,7 @@ class Enrollment < ApplicationRecord
         created_transaction = EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: Money.new(0), target_date: Time.zone.today, description_data: {"description" => self.to_short, "start_date" => Time.zone.today, "stop_date" => self.starts_at - 1.day})
       end
 
-      while target_date <= program.ends_at && payment_date <= Time.zone.today
+      while target_date <= self.ends_at && payment_date <= Time.zone.today
         stop_date = target_date.end_of_month
         created_transaction = EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: cost_for_date(target_date), target_date: target_date, description_data: {"description" => self.to_short, "start_date" => target_date, "stop_date" => stop_date})
         target_date = stop_date + 1.day

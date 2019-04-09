@@ -45,7 +45,7 @@ class Account::Manage::PaymentsController < ApplicationController
 
     begin
       charge_transaction = handle_charges(calculator, customer)
-      handle_refunds(calculator, customer, charge_transaction)
+      refund_transactions = handle_refunds(calculator, customer, charge_transaction)
       send_emails(charge_transaction)
     rescue Stripe::CardError => e
       puts e.message
@@ -68,7 +68,7 @@ class Account::Manage::PaymentsController < ApplicationController
       @account.record_step(:payment)
     end
 
-    TransactionalMailer.enrollment_change_report(charge_transaction).deliver_now
+    TransactionalMailer.enrollment_change_report(refund_transactions + [charge_transaction]).deliver_now
 
     redirect_to account_dashboard_payments_path(@account), notice: "Thank you, your payment is complete. You will receive a receipt for payment sent to your registered email address. If you don't receive it, please call our office (1-530-220-4731)"
   end
@@ -118,10 +118,11 @@ class Account::Manage::PaymentsController < ApplicationController
       enrollment_change.apply_to_enrollment!
     end
 
-    transaction
+    transaction.reload
   end
 
   def handle_refunds(calculator, customer, charge_transaction)
+    refund_transactions = []
     target_transactions = calculator.enrollment_changes.transactions
     target_transactions.each do |original_transaction|
       trans_changes = original_transaction.pending_enrollment_changes
@@ -152,8 +153,11 @@ class Account::Manage::PaymentsController < ApplicationController
           EnrollmentChangeTransaction.create!(enrollment_change_id: enrollment_change.id, my_transaction_id: target_transaction.id, amount: enrollment_change.refund_amount)
         end
 
+        refund_transactions << refund_transaction if refund_transaction.present?
         enrollment_change.apply_to_enrollment!
       end
     end
+
+    refund_transactions
   end
 end

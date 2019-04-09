@@ -116,7 +116,13 @@ class EnrollmentChange < ApplicationRecord
         messages << "Change#{"d" if past} week from #{enrollment.service_dates} to #{DateTool.display_week(data["starts_at"].to_date, data["ends_at"].to_date)}"
       elsif enrollment.plan_type.drop_in?
         messages << "Change#{"d" if past} date from #{enrollment.service_dates} to #{data["starts_at"].to_date.stamp("Monday, Feb. 3rd, 2018")}"
+      else
+        messages << "Change#{"d" if past} start date from #{enrollment.starts_at.stamp("Monday, Feb. 3rd, 2018")} to #{data["starts_at"].to_date.stamp("Monday, Feb. 3rd, 2018")} and end date from #{enrollment.ends_at.stamp("Monday, Feb. 3rd, 2018")} to #{data["ends_at"].to_date.stamp("Monday, Feb. 3rd, 2018")}"
       end
+    elsif data["starts_at"].present?
+      messages << "Change#{"d" if past} start date from #{enrollment.starts_at.stamp("Monday, Feb. 3rd, 2018")} to #{data["starts_at"].to_date.stamp("Monday, Feb. 3rd, 2018")}"
+    elsif data["ends_at"].present?
+      messages << "Change#{"d" if past} end date from #{enrollment.ends_at.stamp("Monday, Feb. 3rd, 2018")} to #{data["ends_at"].to_date.stamp("Monday, Feb. 3rd, 2018")}"
     end
 
     if enrollment.plan.choosable? && data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
@@ -153,18 +159,45 @@ class EnrollmentChange < ApplicationRecord
   end
 
   def calculated_amount
-    return Money.new(0) if enrollment.plan_type.recurring? # don't refund recurring plans
     return Money.new(0) unless data.is_a?(Hash)
 
-    if data["_destroy"].present?
-      enrollment.last_paid_amount * -1 # this will be the refund amount
-    elsif data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
-      old_plan = enrollment.plan
-      new_plan = Plan.find_by(id: data["plan_id"])
-
-      new_plan.price - old_plan.price
-    else
+    if enrollment.plan_type.recurring?
+      # if data["ends_at"].present? && data["ends_at"].to_date < enrollment.ends_at
+      #   target_stop = data["ends_at"].to_date
+      #   refund_amount = Money.new(0)
+      #   enrollment.enrollment_transactions.each do |et|
+      #     ap "et start #{et.start_date}"
+      #     ap "et stop #{et.stop_date}"
+      #     ap "target stop #{target_stop}"
+      #     ap "enrollment stop #{enrollment.ends_at}"
+      #     if et.stop_date > target_stop && et.start_date <= enrollment.ends_at
+      #       ap "et stop #{et.stop_date} greater than target #{target_stop}"
+      #       if et.start_date >= target_stop
+      #         ap "et start #{et.start_date} greater than target #{target_stop}"
+      #         refund_amount -= et.amount
+      #       else
+      #         ap "et start #{et.start_date} less than target #{target_stop}"
+      #         actual_cost = enrollment.cost_for_date(target_stop, target_start: et.start_date, target_stop: target_stop)
+      #         refund_amount -= (et.amount - actual_cost)
+      #       end
+      #     end
+      #   end
+      #   refund_amount
+      # else
+      #   Money.new(0)
+      # end
       Money.new(0)
+    else
+      if data["_destroy"].present?
+        enrollment.last_paid_amount * -1 # this will be the refund amount
+      elsif data["plan_id"].present? && Plan.find_by(id: data["plan_id"]).present?
+        old_plan = enrollment.plan
+        new_plan = Plan.find_by(id: data["plan_id"])
+
+        new_plan.price - old_plan.price
+      else
+        Money.new(0)
+      end
     end
   end
 
