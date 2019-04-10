@@ -40,7 +40,9 @@ class Enrollment < ApplicationRecord
   scope :recurring, -> { joins(:plan).where(plans: {plan_type: PlanType.recurring.map(&:to_s)}).distinct }
   scope :one_time, -> { joins(:plan).where(plans: {plan_type: PlanType.one_time.map(&:to_s)}).distinct }
 
-  scope :due_by_today, -> { where("enrollments.next_payment_date <= ?", Time.zone.today) }
+  def self.due_by_today
+    self.where("enrollments.next_payment_date <= ?", Time.zone.today).to_a.select{|e| e.transaction_covers_date(e.next_target_date).blank?}
+  end
 
   def self.by_program_on_date(program, date)
     if program.present?
