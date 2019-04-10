@@ -40,9 +40,7 @@ class Enrollment < ApplicationRecord
   scope :recurring, -> { joins(:plan).where(plans: {plan_type: PlanType.recurring.map(&:to_s)}).distinct }
   scope :one_time, -> { joins(:plan).where(plans: {plan_type: PlanType.one_time.map(&:to_s)}).distinct }
 
-  def self.due_by_today
-    self.where("enrollments.next_payment_date <= ?", Time.zone.today).to_a.select{|e| e.transaction_covers_date(e.next_target_date).blank?}
-  end
+  scope :due_by_today, -> { where("enrollments.next_payment_date IS NOT NULL AND enrollments.next_payment_date <= ?", Time.zone.today) }
 
   def self.by_program_on_date(program, date)
     if program.present?
@@ -59,7 +57,7 @@ class Enrollment < ApplicationRecord
   end
 
   def self.next_payment_date
-    self.reorder("next_payment_date ASC").first.next_payment_date
+    self.where("next_payment_date IS NOT NULL").reorder("next_payment_date ASC").first.next_payment_date
   end
 
   # get a unique list of programs associated with a set of enrollments
@@ -282,16 +280,29 @@ class Enrollment < ApplicationRecord
       end
 
       self.next_target_date = target_date
-      self.next_payment_date = target_date.beginning_of_month + child.account.payment_offset.days
+      if transaction_covers_date(target_date).present?
+        self.next_payment_date = nil # indicate we're all paid off
+      else
+        self.next_payment_date = target_date.beginning_of_month + child.account.payment_offset.days
+      end
 
-      if next_payment_date <= Time.zone.today
+      if next_payment_date.nil?
+        self.paid = true
+      elsif next_payment_date <= Time.zone.today
         self.paid = (self.ends_at < Time.zone.today)
       elsif next_payment_date > Time.zone.today
         self.paid = true
       end
     else
       self.next_target_date = self.starts_at.to_date
-      self.next_payment_date ||= (created_at || Time.zone.today).to_date
+
+      if transaction_covers_date(target_date).present?
+        self.next_payment_date = nil # indicate we're paid
+      else
+        self.next_payment_date ||= (created_at || Time.zone.today).to_date
+      end
+
+      self.paid = true if self.next_payment_date.nil?
     end
   end
 
@@ -305,10 +316,13 @@ class Enrollment < ApplicationRecord
       return starts_at, ends_at
     end
 
+    return [ends_at, Time.zone.today].min, ends_at if next_payment_date.nil? # all paid off
+
     start_date = next_target_date
     stop_date = start_date
     target_date = stop_date
     payment_date = next_payment_date
+
     while target_date <= self.ends_at && payment_date <= Time.zone.today
       stop_date = target_date
       target_date = target_date.end_of_month + 1.day
@@ -370,8 +384,11 @@ class Enrollment < ApplicationRecord
 
     set_next_target_and_payment_date if next_target_date.blank? || next_payment_date.blank? # don't save it since they're not ready
 
+    return Money.new(0) if next_payment_date.nil? # they're all paid off
+
     target_date = next_target_date
     payment_date = next_payment_date
+
     while target_date <= self.ends_at && payment_date <= Time.zone.today
       result += cost_for_date(target_date) unless transaction_covers_date(target_date).present?
       target_date = target_date.end_of_month + 1.day
@@ -384,9 +401,8 @@ class Enrollment < ApplicationRecord
   def display_amount_due_today
     set_next_target_and_payment_date if next_target_date.blank? # don't save it since they're not ready
 
-    target_date = next_payment_date
-    if target_date > Time.zone.today
-      "#{Time.zone.today > self.starts_at ? "Next" : "First"} Payment on #{target_date.stamp("March 3rd, 2019")}"
+    if next_payment_date.present? && next_payment_date > Time.zone.today
+      "#{Time.zone.today > self.starts_at ? "Next" : "First"} Payment on #{next_payment_date.stamp("March 3rd, 2019")}"
     else
       amount_due_today.to_s
     end
@@ -407,10 +423,15 @@ class Enrollment < ApplicationRecord
         created_transaction = EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: Money.new(0), target_date: Time.zone.today, description_data: {"description" => self.to_short, "start_date" => Time.zone.today, "stop_date" => self.starts_at - 1.day})
       end
 
+      if payment_date.nil? # this means that they've paid off everything already
+        self.update_attribute(:paid, true)
+        return
+      end
+
       while target_date <= self.ends_at && payment_date <= Time.zone.today
-        stop_date = target_date.end_of_month
+        stop_date = [target_date.end_of_month, self.ends_at].min
         created_transaction = EnrollmentTransaction.create(enrollment_id: self.id, my_transaction_id: parent_transaction.id, amount: cost_for_date(target_date), target_date: target_date, description_data: {"description" => self.to_short, "start_date" => target_date, "stop_date" => stop_date})
-        target_date = stop_date + 1.day
+        target_date = stop_date + 1.day # either the first day of the next month, or the day after the enrollment ends (which will cause the loop to break)
         payment_date = target_date + child.account.payment_offset.days
       end
     end

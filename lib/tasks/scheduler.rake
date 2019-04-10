@@ -4,7 +4,7 @@ namespace :scheduler do
     messages = []
 
     begin
-      due_enrollments = Enrollment.alive.active.recurring.includes(child: :account).references(:accounts).due_by_today
+      due_enrollments = Enrollment.alive.active.recurring.due_by_today.includes(child: :account).references(:accounts)
       enroll_hash = due_enrollments.to_a.group_by{|e| e.child.account.id}
       messages << enroll_hash
 
