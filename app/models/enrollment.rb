@@ -371,7 +371,7 @@ class Enrollment < ApplicationRecord
     target_date = next_target_date
     payment_date = next_payment_date
     while target_date <= self.ends_at && payment_date <= Time.zone.today
-      result += cost_for_date(target_date)
+      result += cost_for_date(target_date) unless transaction_covers_date(target_date).present?
       target_date = target_date.end_of_month + 1.day
       payment_date = target_date + child.account.payment_offset.days
     end
