@@ -272,8 +272,10 @@ class Enrollment < ApplicationRecord
       stop_date = latest_enrollment_transaction.description_data["stop_date"] if latest_enrollment_transaction.present? && !latest_enrollment_transaction.placeholder?
 
       if stop_date.present?
-        target_date = stop_date.to_date.end_of_month + 1.day # move forward a month
-      else # unless we don't have any yet - then do the first one
+        stop_date = stop_date.to_date
+
+        target_date = [(stop_date.end_of_month + 1.day), self.ends_at].min # move forward a month, or to the end of the enrollment
+      else # we don't have any yet, so do the first one
         target_date = self.starts_at # figured that out above
       end
 
@@ -281,7 +283,7 @@ class Enrollment < ApplicationRecord
       self.next_payment_date = target_date.beginning_of_month + child.account.payment_offset.days
 
       if next_payment_date <= Time.zone.today
-        self.paid = false
+        self.paid = (self.ends_at < Time.zone.today)
       elsif next_payment_date > Time.zone.today
         self.paid = true
       end
@@ -305,7 +307,7 @@ class Enrollment < ApplicationRecord
     stop_date = start_date
     target_date = stop_date
     payment_date = next_payment_date
-    while target_date <= program.ends_at && payment_date <= Time.zone.today
+    while target_date <= self.ends_at && payment_date <= Time.zone.today
       stop_date = target_date
       target_date = target_date.end_of_month + 1.day
       payment_date = target_date + child.account.payment_offset.days
@@ -368,7 +370,7 @@ class Enrollment < ApplicationRecord
 
     target_date = next_target_date
     payment_date = next_payment_date
-    while target_date <= program.ends_at && payment_date <= Time.zone.today
+    while target_date <= self.ends_at && payment_date <= Time.zone.today
       result += cost_for_date(target_date)
       target_date = target_date.end_of_month + 1.day
       payment_date = target_date + child.account.payment_offset.days
