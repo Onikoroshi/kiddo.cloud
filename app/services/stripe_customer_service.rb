@@ -17,6 +17,6 @@ class StripeCustomerService
   end
 
   def find_customer
-    Stripe::Customer.retrieve(account.gateway_customer_id)
+    account.gateway_customer_id.present? ? Stripe::Customer.retrieve(account.gateway_customer_id) : nil
   end
 end

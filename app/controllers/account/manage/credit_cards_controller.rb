@@ -38,6 +38,9 @@ class Account::Manage::CreditCardsController < ApplicationController
 
   def show
     customer = StripeCustomerService.new(@account).find_customer
+
+    redirect_to new_account_dashboard_credit_card_path(@account) and return unless customer.present?
+
     card = customer.sources.first
     @card_info = {
       brand: card.brand,
