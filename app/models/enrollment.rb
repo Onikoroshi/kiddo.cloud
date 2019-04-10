@@ -296,7 +296,7 @@ class Enrollment < ApplicationRecord
     else
       self.next_target_date = self.starts_at.to_date
 
-      if transaction_covers_date(target_date).present?
+      if transaction_covers_date(self.next_target_date).present?
         self.next_payment_date = nil # indicate we're paid
       else
         self.next_payment_date ||= (created_at || Time.zone.today).to_date
