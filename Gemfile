@@ -79,6 +79,7 @@ group :development do
   # Automatic Ruby code style checking tool
   gem "rubocop", "~> 0.49.1"
   gem "letter_opener"
+  gem 'rails_db', '2.0.4'
 end
 
 group :test do
