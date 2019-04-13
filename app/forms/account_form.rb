@@ -25,7 +25,14 @@ class AccountForm
     :emergency_contact_last_name,
     :emergency_contact_phone,
 
-    :waiver_agreement,
+    :mission_statement,
+    :program_description,
+    :staffing_and_training,
+    :holiday_calendar,
+    :financial_waiver,
+    :behavior_agreement,
+    :program_details,
+    :liability_waiver,
     :step
   )
 
@@ -41,7 +48,14 @@ class AccountForm
   validates :emergency_contact_last_name,  presence: true
   validates :emergency_contact_phone,      presence: true
 
-  validates :waiver_agreement, acceptance: true
+  validates :mission_statement, acceptance: true
+  validates :program_description, acceptance: true
+  validates :staffing_and_training, acceptance: true
+  validates :holiday_calendar, acceptance: true
+  validates :financial_waiver, acceptance: true
+  validates :behavior_agreement, acceptance: true
+  validates :program_details, acceptance: true
+  validates :liability_waiver, acceptance: true
 
   attr_reader :center, :account, :current_user
   def initialize(center:, account:, current_user:)
@@ -66,7 +80,14 @@ class AccountForm
   private
 
   def sign_waivers
-    account.waiver_agreement = waiver_agreement.present? && waiver_agreement == "1"
+    account.mission_statement = mission_statement.present? && mission_statement == "1"
+    account.program_description = program_description.present? && program_description == "1"
+    account.staffing_and_training = staffing_and_training.present? && staffing_and_training == "1"
+    account.holiday_calendar = holiday_calendar.present? && holiday_calendar == "1"
+    account.financial_waiver = financial_waiver.present? && financial_waiver == "1"
+    account.behavior_agreement = behavior_agreement.present? && behavior_agreement == "1"
+    account.program_details = program_details.present? && program_details == "1"
+    account.liability_waiver = liability_waiver.present? && liability_waiver == "1"
   end
 
   def save_parent
