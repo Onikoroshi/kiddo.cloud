@@ -27,28 +27,24 @@
             .col-xs-7
               - @plan_type.find_available_days(@program).each do |day_name, value|
                 
-                %br
-                %br
-                - if value                                  
-                  .checkbox
-                    %label
-                      = enrollment_fields.check_box day_name, checked: enrollment_fields.object.send(day_name)                      
-                      = enrollment_fields.label day_name 
+                .col-xs-12
+                  - if value                                  
+                    .checkbox
+                      %label
+                        = enrollment_fields.check_box day_name, checked: enrollment_fields.object.send(day_name)                      
+                        = enrollment_fields.label day_name 
+                    %br
+                    %br
                     
-                  %br
-                  %br
-                  
-                  %div
-                    - @program.plans.each do |plan, value|                    
-                      .checkbox
-                        %label{style: "color: blue; font-size: 12px;"}
-                          %input{:name => plan.display_name, :value => day_name, :type => "checkbox"}/
-                          = plan.display_name
+                    %div
+                      - @program.plans.each do |plan, value|                    
+                        .checkbox
+                          %label{style: "color: blue; font-size: 10px;"}
+                            %input{:value => plan.display_name, :name => day_name, :type => "checkbox"}/
+                            = plan.display_name
 
-                - else
-                  = enrollment_fields.hidden_field day_name, value: false                
-                %br
-                %br
+                  - else
+                    = enrollment_fields.hidden_field day_name, value: false                
 
             .col-xs-3
               = enrollment_fields.select :plan_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None", selected: enrollment_fields.object.persisted? ? enrollment_fields.object.plan_id : nil
