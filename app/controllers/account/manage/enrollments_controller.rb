@@ -21,7 +21,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
   def create
     # apply any enrollment-independent changes
     @account.update_attributes(account_params)
-
+    
     # assign attributes without saving to the database.
     # don't apply any extra scopes to associations, or these changes will be lost
 
@@ -34,6 +34,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
     ap "chosen:"
     ap chosen_params
     @account.attributes = chosen_params
+    
     if @account.valid?
       unless overlapping_enrollments?
         @account.children.each do |child|
@@ -225,6 +226,8 @@ class Account::Manage::EnrollmentsController < ApplicationController
         end
       end
     end
+
+    byebug
 
     sanitized_params.require(:account).permit(children_attributes: [:id, enrollments_attributes: [:id, :plan_id, :child_id, :location_id, :starts_at, :ends_at, :monday, :tuesday, :wednesday, :thursday, :friday, :_destroy, :dead]])
   end
