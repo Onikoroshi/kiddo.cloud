@@ -289,10 +289,12 @@ class Enrollment < ApplicationRecord
 
       if next_payment_date.nil?
         self.paid = true
+      elsif next_payment_date > Time.zone.today && latest_enrollment_transaction.present?
+        self.paid = true
       elsif next_payment_date <= Time.zone.today
         self.paid = (self.ends_at < Time.zone.today)
-      elsif next_payment_date > Time.zone.today
-        self.paid = true
+      else
+        self.paid = false
       end
     else
       self.next_target_date = self.starts_at.to_date
