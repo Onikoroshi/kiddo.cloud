@@ -11,6 +11,7 @@
       %th
       %th Name
       %th Priority
+      %th Program Group
       %th Start Date
       %th End Date
       %th Registration Opens
@@ -32,6 +33,7 @@
             %br
             = new_user_registration_url(program_id: program.id)
           %td= program.priority
+          %td= program.program_group_name
           %td= program.starts_at.stamp("March 4th, 2018")
           %td= program.ends_at.stamp("March 4th, 2018")
           %td= program.registration_opens.stamp("March 4th, 2018")

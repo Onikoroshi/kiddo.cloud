@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190312023615) do
+ActiveRecord::Schema.define(version: 20190430183352) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -322,6 +322,12 @@ ActiveRecord::Schema.define(version: 20190312023615) do
     t.index ["program_id"], name: "index_plans_on_program_id"
   end
 
+  create_table "program_groups", force: :cascade do |t|
+    t.string "title"
+    t.bigint "center_id"
+    t.index ["center_id"], name: "index_program_groups_on_center_id"
+  end
+
   create_table "program_locations", force: :cascade do |t|
     t.bigint "program_id"
     t.bigint "location_id"
@@ -348,7 +354,9 @@ ActiveRecord::Schema.define(version: 20190312023615) do
     t.integer "latest_payment_offset", default: 15
     t.string "program_type"
     t.integer "priority"
+    t.bigint "program_group_id"
     t.index ["center_id"], name: "index_programs_on_center_id"
+    t.index ["program_group_id"], name: "index_programs_on_program_group_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -500,6 +508,7 @@ ActiveRecord::Schema.define(version: 20190312023615) do
   add_foreign_key "enrollments", "plans"
   add_foreign_key "holidays", "programs"
   add_foreign_key "plans", "programs"
+  add_foreign_key "program_groups", "centers"
   add_foreign_key "programs", "centers"
   add_foreign_key "subscriptions", "accounts"
   add_foreign_key "target_days", "plans"
