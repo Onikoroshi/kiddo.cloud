@@ -145,15 +145,48 @@
                     = f.text_field :emergency_contact_phone, class: "form-control"
 
                 .col-sm-12
-                  .form-group.label-floating
-                    = f.check_box :waiver_agreement, checked: @account.waiver_agreement, class: "pull-left checkbox-padding"
-                    = f.label :waiver_agreement do
-                      I have read and agree with #{link_to "all waivers and agreements", "/Davis-Kids-Klub_Waivers-Agreements.pdf", target: "_blank"}
-                .col-sm-12
-                  .form-group.label-floating
-                    = f.label :mail_agreements do
-                      All waivers and agreements will automatically be emailed to you.
+                  %h3 #{link_to "Waivers and agreements", "/Davis-Kids-Klub_Waivers-Agreements.pdf", target: "_blank"}
 
+                  .form-group.label-floating
+                    = f.check_box :mission_statement, checked: @account.mission_statement, class: "pull-left checkbox-padding"
+                    = f.label :mission_statement do
+                      I have read and agree with the Mission Statement
+
+                  .form-group.label-floating
+                    = f.check_box :program_description, checked: @account.program_description, class: "pull-left checkbox-padding"
+                    = f.label :program_description do
+                      I have read and agree with the Program Description
+
+                  .form-group.label-floating
+                    = f.check_box :staffing_and_training, checked: @account.staffing_and_training, class: "pull-left checkbox-padding"
+                    = f.label :staffing_and_training do
+                      I have read and agree with the Staffing and Training
+
+                  .form-group.label-floating
+                    = f.check_box :holiday_calendar, checked: @account.holiday_calendar, class: "pull-left checkbox-padding"
+                    = f.label :holiday_calendar do
+                      I have read and agree with the DKK Holiday Calendar
+
+                  .form-group.label-floating
+                    = f.check_box :financial_waiver, checked: @account.financial_waiver, class: "pull-left checkbox-padding"
+                    = f.label :financial_waiver do
+                      I have read and agree with the Financial Waiver
+
+                  .form-group.label-floating
+                    = f.check_box :behavior_agreement, checked: @account.behavior_agreement, class: "pull-left checkbox-padding"
+                    = f.label :behavior_agreement do
+                      I have read and agree with the Behavior Agreement
+
+                  .form-group.label-floating
+                    = f.check_box :program_details, checked: @account.program_details, class: "pull-left checkbox-padding"
+                    = f.label :program_details do
+                      I have read and agree with the Program Details
+
+                  .form-group.label-floating
+                    = f.check_box :liability_waiver, checked: @account.liability_waiver, class: "pull-left checkbox-padding"
+                    = f.label :liability_waiver do
+                      I have read and agree with the Liability/Medical Waiver                      
+                    
       .col-sm-12
         = f.submit 'Next Step', class: "btn btn-block btn-info"
 

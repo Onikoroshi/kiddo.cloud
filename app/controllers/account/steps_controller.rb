@@ -154,7 +154,14 @@ class Account::StepsController < ApplicationController
      :emergency_contact_first_name,
      :emergency_contact_last_name,
      :emergency_contact_phone,
-     :waiver_agreement
+     :mission_statement,
+     :program_description,
+     :staffing_and_training,
+     :holiday_calendar,
+     :financial_waiver,
+     :behavior_agreement,
+     :program_details,
+     :liability_waiver
     ]
     params.require(:account_form).permit(permitted_attributes).merge(step: step)
   end
