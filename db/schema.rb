@@ -32,7 +32,6 @@ ActiveRecord::Schema.define(version: 20190430183352) do
     t.string "card_exp_month"
     t.string "card_exp_year"
     t.string "card_last4"
-    t.boolean "waiver_agreement", default: false
     t.boolean "mail_agreements", default: true
     t.boolean "medical_waiver_agreement", default: false
     t.boolean "signup_complete", default: false
@@ -42,6 +41,14 @@ ActiveRecord::Schema.define(version: 20190430183352) do
     t.bigint "program_id"
     t.integer "payment_offset", default: 0
     t.text "search_field", default: ""
+    t.boolean "mission_statement"
+    t.boolean "program_description"
+    t.boolean "staffing_and_training"
+    t.boolean "holiday_calendar"
+    t.boolean "financial_waiver"
+    t.boolean "behavior_agreement"
+    t.boolean "program_details"
+    t.boolean "liability_waiver"
     t.index ["center_id"], name: "index_accounts_on_center_id"
     t.index ["program_id"], name: "index_accounts_on_program_id"
     t.index ["user_id"], name: "index_accounts_on_user_id"
