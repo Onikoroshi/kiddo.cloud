@@ -65,7 +65,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
     @account.attributes = unapplied_change_params
 
     # now apply the ones we just chose
-    chosen_params = enrollment_params
+    chosen_params = enrollment_params["0"].except(:monday_id, :tuesday_id, :wednesday_id, :thursday_id, :friday_id, :starts_at, :ends_at, :id, :location_id)
     ap "chosen:"
     ap chosen_params
     @account.attributes = chosen_params
@@ -271,7 +271,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
                 if j == second_total
                   break
                 end  
-                new_plan_id = target
+                new_plan_id = target.to_i
                 delete_index = indicies[j]
                 day_hash[delete_index] = ""
 
@@ -303,8 +303,8 @@ class Account::Manage::EnrollmentsController < ApplicationController
               end
             end    
             i += 1
-          end
-
+          end          
+          
           enrollment_attrs["enrollments_attributes"].each do |enrollment_key, values|
             
             ap "enrollment key: #{enrollment_key}"
@@ -332,10 +332,9 @@ class Account::Manage::EnrollmentsController < ApplicationController
         end
       end
     end
-
   end
 
   def account_params
-    params.require(:account).permit(:payment_offset)    
+    params.require(:account).permit(:payment_offset)
   end
 end

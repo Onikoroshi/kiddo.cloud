@@ -544,16 +544,6 @@ class Enrollment < ApplicationRecord
     }
   end
 
-  def plan_hash
-    {
-      monday: monday_id,
-      tuesday: tuesday_id,
-      wednesday: wednesday_id,
-      thursday: thursday_id,
-      friday: friday_id
-    }
-  end
-
   def enrolled_days(humanize = false)
     selected = Array.new
     day_hash.each do |k,v|
