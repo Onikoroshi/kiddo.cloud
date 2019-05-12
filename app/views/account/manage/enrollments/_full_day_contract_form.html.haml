@@ -16,56 +16,56 @@
           .dropin-name{style: "padding-left: 20px;"}
             = children_fields.object.full_name
 
-      = children_fields.fields_for :enrollments do |enrollment_fields|
-        - if enrollment_fields.object.alive? && enrollment_fields.object.program == @program && enrollment_fields.object.plan_type.to_s == @plan_type.to_s && (defined?(target_method) || enrollment_fields.object.unpaid?)
-          = enrollment_fields.hidden_field :child_id, value: enrollment_fields.object.child_id
+      .row
+        .col-xs-7
+          - @plan_type.find_available_days(@program).each do |day_name, value|
+            
+            .col-xs-12
+              - if value                                  
+                .checkbox
+                  %label
+                    = day_name                    
+                  
+                - if day_name == :monday
+                  .col-xs-3 
+                  = children_fields.select :monday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None", 
+                  selected: @monday_id
 
-          = enrollment_fields.hidden_field :starts_at, value: [(enrollment_fields.object.starts_at || @program.starts_at).to_date, (enrollment_fields.object.created_at || Time.zone.today).to_date].max
-          = enrollment_fields.hidden_field :ends_at, value: enrollment_fields.object.ends_at || @program.ends_at
+                - if day_name == :tuesday
+                  .col-xs-3 
+                  = children_fields.select :tuesday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None", 
+                  selected: @tuesday_id
 
-          .row
-            .col-xs-7
-              - @plan_type.find_available_days(@program).each do |day_name, value|
-                
-                .col-xs-12
-                  - if value                                  
-                    .checkbox
-                      %label
-                        = enrollment_fields.check_box day_name, checked: enrollment_fields.object.send(day_name)                      
-                        = enrollment_fields.label day_name 
-                    %br
-                    %br
-                    
-                    %div
-                      - @program.plans.each do |plan, value|                    
-                        .checkbox
-                          %label{style: "color: blue; font-size: 10px;"}
-                            %input{:value => plan.display_name, :name => day_name, :type => "checkbox"}/
-                            = plan.display_name
+                - if day_name == :wednesday
+                  .col-xs-3 
+                  = children_fields.select :wednesday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None", 
+                  selected: @wednesday_id
 
-                  - else
-                    = enrollment_fields.hidden_field day_name, value: false                
+                - if day_name == :thursday
+                  .col-xs-3 
+                  = children_fields.select :thursday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None", 
+                  selected: @thursday_id
 
-            .col-xs-3
-              = enrollment_fields.select :plan_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None", selected: enrollment_fields.object.persisted? ? enrollment_fields.object.plan_id : nil
+                - if day_name == :friday
+                  .col-xs-3 
+                  = children_fields.select :friday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None", 
+                  selected: @friday_id
 
-            .h3{style: "padding-left: 0px !important; padding-top: 7px;"}
-              = enrollment_fields.hidden_field :location_id, value: Location.find_by(name: "Pioneer Elementary").id
-              At Pioneer Elementary
-          
-            %br
-            .col-xs-3{style: "padding-left: 0px !important; padding-top: 20px; margin-left: 20px;"}
-              .col-xs-3{style: "padding-left: 0px !important"}
-                = f.label :starts_at, "Starting On"
-              .col-xs-9{style: "padding-left: 0px !important"}
-                = enrollment_fields.text_field :starts_at, value: [(enrollment_fields.object.starts_at || @program.starts_at).to_date, (enrollment_fields.object.created_at || Time.zone.today).to_date].max, class: "drop_in-date-select flatpickr-date"
+        .h3{style: "padding-left: 0px !important; padding-top: 7px;"}
+          = children_fields.hidden_field :location_id, value: Location.find_by(name: "Pioneer Elementary").id
+          At Pioneer Elementary                  
 
-            .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px; margin-left: 20px;"}
-              .col-xs-3{style: "padding-left: 0px !important"}
-                = f.label :ends_at, "Stopping On"
-              .col-xs-9{style: "padding-left: 0px !important"}
-                = enrollment_fields.text_field :ends_at, value: (enrollment_fields.object.ends_at || @program.ends_at).to_date, class: "drop_in-date-select flatpickr-date"
-          .cleaner
+        .col-xs-3{style: "padding-left: 0px !important; padding-top: 20px; margin-left: 20px;"}
+          .col-xs-3{style: "padding-left: 0px !important"}
+            = f.label :starts_at, "Starting On"
+          .col-xs-9{style: "padding-left: 0px !important"}
+            = children_fields.text_field :starts_at, value: [(@program.starts_at).to_date, (Time.zone.today).to_date].max, class: "drop_in-date-select flatpickr-date"
+
+        .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px; margin-left: 20px;"}
+          .col-xs-3{style: "padding-left: 0px !important"}
+            = f.label :ends_at, "Stopping On"
+          .col-xs-9{style: "padding-left: 0px !important"}
+            = children_fields.text_field :ends_at, value: (@program.ends_at).to_date, class: "drop_in-date-select flatpickr-date"
 
   = link_to "Cancel", @account.signup_complete? ? (defined?(target_method) ? edit_account_dashboard_enrollments_path(@account) : new_account_dashboard_enrollment_path(@account)) : account_step_path(@account, :plan), class: "btn"
   = f.submit "Submit", class: "btn btn-info pull-right"

@@ -220,46 +220,95 @@ class Enrollment < ApplicationRecord
   end
 
   def payment_plan_hash
-    info = {}
+    payment_hash = {}
 
     if plan_type.recurring?
       target_date = self.starts_at
       month_name = target_date.stamp("February, 2019")
 
       while target_date < self.ends_at
-        info[month_name] = {} # let us pass on more complex information
+        payment_hash[month_name] = {} # let us pass on more complex information
 
         enrollment_transaction = transaction_covers_date(target_date)
         if enrollment_transaction.present?
-          info[month_name]["message"] = "Paid #{enrollment_transaction.amount} on #{enrollment_transaction.created_at.to_date.stamp("Aug. 1st, 2019")} for the month of #{month_name}"
+          payment_hash[month_name]["message"] = "Paid #{enrollment_transaction.amount} on #{enrollment_transaction.created_at.to_date.stamp("Aug. 1st, 2019")} for the month of #{month_name}"
         else
           target_payment_date = target_date.beginning_of_month + child.account.payment_offset.days
           target_payment_past = target_payment_date < Time.zone.today
           target_payment_today = target_payment_date == Time.zone.today
 
           if target_payment_past || target_payment_today
-            info[month_name]["overdue"] = true
+            payment_hash[month_name]["overdue"] = true
           end
-
-          info[month_name]["message"] = "#{cost_for_date(target_date)}#{" was" if target_payment_past} Due #{target_payment_today ? "Today" : "on #{target_payment_date.stamp("Aug. 1st, 2019")}"} for the month of #{month_name}"
+          
+          payment_hash[month_name]["message"] = "#{cost_for_date(target_date)}#{" was" if target_payment_past} Due #{target_payment_today ? "Today" : "on #{target_payment_date.stamp("Aug. 1st, 2019")}"} for the month of #{month_name}"
         end
 
         target_date = target_date.end_of_month + 1.day
+
+        
         month_name = target_date.stamp("February, 2019")
+
       end
     else
       target_date = self.starts_at
-      info["One Time"] = {}
+      payment_hash["One Time"] = {}
       if self.paid?
-        info["One Time"]["message"] = "Paid #{last_paid_amount} on #{created_at.to_date.stamp("Aug. 1st, 2019")}"
-      else
-        info["One Time"]["message"] = "#{cost_for_date(target_date)} Due Today"
-        info["One Time"]["overdue"] = true
+        payment_hash["One Time"]["message"] = "Paid #{last_paid_amount} on #{created_at.to_date.stamp("Aug. 1st, 2019")}"
+      else        
+        payment_hash["One Time"]["message"] = "#{cost_for_date(target_date)} Due Today"
+        payment_hash["One Time"]["overdue"] = true
       end
     end
 
-    info
+    payment_hash
   end
+
+  def cost_for_date(target_date, target_start: starts_at, target_stop: ends_at)
+    ap "trying to find cost for date for #{child.full_name} in program #{program.name} on target date #{target_date}"
+    month_price = custom_price
+
+    if month_price.present?
+      month_price -= plan.discounts_for_date(target_date)
+    else
+      month_price = plan.price_for_date(target_date)
+      # this plan type allows people to choose the days they'll attend, as well as the plan they want 
+      # so, find the percentage of the days they chose into the total allowed days, and alter the price accordingly
+      if plan.plan_type.full_day_contract?
+        days_attending = enrolled_days.count
+        possible_days = plan.days_per_week
+        
+        ap "full day contract"
+
+        if possible_days < 0
+          possible_days = plan.allowed_days.count
+        end        
+
+        percentage = days_attending.to_f / possible_days.to_f
+
+        month_price = month_price * percentage
+      end
+
+      # recurring plans can start or end in the middle of a month, so we need to prorate the amount based on that
+      if plan.plan_type.recurring?
+        total_days = (target_date.beginning_of_month..target_date.end_of_month).to_a.select{|d| available_on_date?(d)}
+
+        ap "recurring"
+
+        start_date = [target_start, target_date.beginning_of_month].max
+        stop_date = [target_stop, target_date.end_of_month].min
+        used_days = total_days.select{|d| d >= start_date && d <= stop_date}
+
+        percentage_used = used_days.count.to_f / total_days.count.to_f
+        month_price = month_price * percentage_used
+      end
+    end
+
+    month_price.to_money
+    month_price = Money.new(0) if month_price < Money.new(0)
+    ap "final month price: #{month_price}"
+    month_price
+  end  
 
   def set_next_target_and_payment_date(given_enrollment_transaction = nil)
     if plan_type.recurring?
@@ -331,49 +380,6 @@ class Enrollment < ApplicationRecord
     end
 
     return start_date, stop_date
-  end
-
-  def cost_for_date(target_date, target_start: starts_at, target_stop: ends_at)
-    ap "trying to find cost for date for #{child.full_name} in program #{program.name} on target date #{target_date}"
-    month_price = custom_price
-
-    if month_price.present?
-      month_price -= plan.discounts_for_date(target_date)
-    else
-      month_price = plan.price_for_date(target_date)
-
-      # this plan type allows people to choose the days they'll attend, as well as the plan they want
-      # so, find the percentage of the days they chose into the total allowed days, and alter the price accordingly
-      if plan.plan_type.full_day_contract?
-        days_attending = enrolled_days.count
-        possible_days = plan.days_per_week
-
-        if possible_days < 0
-          possible_days = plan.allowed_days.count
-        end
-
-        percentage = days_attending.to_f / possible_days.to_f
-
-        month_price = month_price * percentage
-      end
-
-      # recurring plans can start or end in the middle of a month, so we need to prorate the amount based on that
-      if plan.plan_type.recurring?
-        total_days = (target_date.beginning_of_month..target_date.end_of_month).to_a.select{|d| available_on_date?(d)}
-
-        start_date = [target_start, target_date.beginning_of_month].max
-        stop_date = [target_stop, target_date.end_of_month].min
-        used_days = total_days.select{|d| d >= start_date && d <= stop_date}
-
-        percentage_used = used_days.count.to_f / total_days.count.to_f
-        month_price = month_price * percentage_used
-      end
-    end
-
-    month_price.to_money
-    month_price = Money.new(0) if month_price < Money.new(0)
-    ap "final month price: #{month_price}"
-    month_price
   end
 
   def amount_due_today
@@ -527,6 +533,16 @@ class Enrollment < ApplicationRecord
       friday: friday,
       saturday: saturday,
       sunday: sunday
+    }
+  end
+
+  def plan_hash
+    {
+      monday: monday_id,
+      tuesday: tuesday_id,
+      wednesday: wednesday_id,
+      thursday: thursday_id,
+      friday: friday_id
     }
   end
 
