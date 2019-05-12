@@ -246,18 +246,22 @@ class Account::Manage::EnrollmentsController < ApplicationController
           day_hash.push(enrollment_attrs['thursday_id'])
           day_hash.push(enrollment_attrs['friday_id'])          
           total = day_hash.count
-          enrollment_attrs["enrollments_attributes"] = {}
+          enrollment_attrs["children_attributes"] = {}
+
+          enrollment_attrs["children_attributes"][child_key] = {:id => enrollment_attrs['id']}
+          enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"] = {}
 
           i = 0
           loop do 
             if i == total
               break
             end
-            target = day_hash[i]            
+            target = day_hash[i]                   
+            
            
             if target != ""
               indicies = day_hash.select_indice{|x| x == target}
-              enrollment_attrs["enrollments_attributes"][i.to_s] = {
+              enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s] = {
                 :monday => "0",
                 :tuesday => "0",
                 :wednesday => "0",
@@ -271,31 +275,31 @@ class Account::Manage::EnrollmentsController < ApplicationController
                 if j == second_total
                   break
                 end  
-                new_plan_id = target.to_i
+                new_plan_id = target
                 delete_index = indicies[j]
                 day_hash[delete_index] = ""
 
                 #create the plan
                 if delete_index == 0
-                  enrollment_attrs["enrollments_attributes"][i.to_s]['monday'] = "1"                  
+                  enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['monday'] = "1"                  
                 end
                 if delete_index == 1
-                  enrollment_attrs["enrollments_attributes"][i.to_s]['tuesday'] = "1"                  
+                  enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['tuesday'] = "1"                  
                 end
                 if delete_index == 2
-                  enrollment_attrs["enrollments_attributes"][i.to_s]['wednesday'] = "1"                  
+                  enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['wednesday'] = "1"                  
                 end
                 if delete_index == 3
-                  enrollment_attrs["enrollments_attributes"][i.to_s]['thursday'] = "1"                  
+                  enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['thursday'] = "1"                  
                 end
                 if delete_index == 4
-                  enrollment_attrs["enrollments_attributes"][i.to_s]['friday'] = "1"                  
+                  enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['friday'] = "1"                  
                 end
-                enrollment_attrs["enrollments_attributes"][i.to_s]['child_id'] = enrollment_attrs['id']
-                enrollment_attrs["enrollments_attributes"][i.to_s]['plan_id'] = new_plan_id
-                enrollment_attrs["enrollments_attributes"][i.to_s]['starts_at'] = enrollment_attrs['starts_at']
-                enrollment_attrs["enrollments_attributes"][i.to_s]['ends_at'] = enrollment_attrs['ends_at']
-                enrollment_attrs["enrollments_attributes"][i.to_s]['location_id'] = Location.find_by(name: "Pioneer Elementary").id
+                enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['child_id'] = enrollment_attrs['id']
+                enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['plan_id'] = new_plan_id
+                enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['starts_at'] = enrollment_attrs['starts_at']
+                enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['ends_at'] = enrollment_attrs['ends_at']
+                enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['location_id'] = Location.find_by(name: "Pioneer Elementary").id.to_s
 
                 Enrollment.where(:child_id => enrollment_attrs['id'], :paid => false).destroy_all
 
@@ -305,27 +309,27 @@ class Account::Manage::EnrollmentsController < ApplicationController
             i += 1
           end          
           
-          enrollment_attrs["enrollments_attributes"].each do |enrollment_key, values|
+          enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"].each do |enrollment_key, values|
             
             ap "enrollment key: #{enrollment_key}"
             ap "values:"
             ap values.permit!
-            if sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] == "1"
-              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] = "true"
+            if enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] == "1"
+              enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] = "true"
             end
             
-            if sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["plan_id"].blank?
+            if enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["plan_id"].blank?
               ap "plan id blank"
-              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] = "true"
+              enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] = "true"
             end
 
             any_days = values.select{|key, value| ["monday", "tuesday", "wednesday", "thursday", "friday"].include?(key.to_s)}.values.reject{|v| ["0", "false"].include?v}.any?
 
             unless any_days
               if values["id"].present?
-                sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] = "true"
+                enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] = "true"
               else
-                sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"].delete(enrollment_key)
+                enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"].delete(enrollment_key)
               end
             end
           end
