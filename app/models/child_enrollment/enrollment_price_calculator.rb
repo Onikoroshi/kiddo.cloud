@@ -62,14 +62,24 @@ module ChildEnrollment
       if @first_time_user_fee.blank?
         total_fee = Money.new(0)
 
-        account.enrollments.alive.programs.find_each do |program|
-          next if account.transactions.paid_signup_fee_for_program(program).any?
+        target_programs = account.enrollments.alive.programs
 
-          fee = Money.new(program.registration_fee)
+        target_programs.program_groups.find_each do |program_group|
+          next if account.paid_signup_fee_for_program_group?(program_group)
 
-          altered_fee = find_altered_itemization_fee("signup_fee_#{program.id}")
+          program = target_programs.by_program_group(program_group).first
+          fee = calculate_signup_fee_for_program(program)
 
-          fee = altered_fee if altered_fee.present? && altered_fee != fee
+          if fee > 0
+            itemizations["signup_fee_#{program.id}".to_sym] = fee
+            total_fee += fee
+          end
+        end
+
+        target_programs.without_program_group.find_each do |program|
+          next if account.paid_signup_fee_for_program?(program)
+
+          fee = calculate_signup_fee_for_program(program)
 
           if fee > 0
             itemizations["signup_fee_#{program.id}".to_sym] = fee
@@ -83,11 +93,7 @@ module ChildEnrollment
           Program.open_for_registration.for_summer.each do |program|
             next if account.transactions.paid_signup_fee_for_program(program).any?
 
-            fee = Money.new(program.registration_fee)
-
-            altered_fee = find_altered_itemization_fee("signup_fee_#{program.id}")
-
-            fee = altered_fee if altered_fee.present? && altered_fee != fee
+            fee = calculate_signup_fee_for_program(program)
 
             if fee > 0
               itemizations["signup_fee_#{program.id}".to_sym] = fee
@@ -100,6 +106,16 @@ module ChildEnrollment
       end
 
       @first_time_user_fee
+    end
+
+    def calculate_signup_fee_for_program(program)
+      fee = Money.new(program.registration_fee)
+
+      altered_fee = find_altered_itemization_fee("signup_fee_#{program.id}")
+
+      fee = altered_fee if altered_fee.present? && altered_fee != fee
+
+      fee
     end
 
     def change_fee

@@ -43,6 +43,8 @@ class Enrollment < ApplicationRecord
 
   scope :due_by_today, -> { where("enrollments.next_payment_date IS NOT NULL AND enrollments.next_payment_date <= ?", Time.zone.today) }
 
+  scope :past, -> { where("enrollments.ends_at < ?", Time.zone.today) }
+
   def self.by_program_on_date(program, date)
     if program.present?
       return self.none if program.holidays.pluck(:holidate).include?(date)
@@ -181,6 +183,10 @@ class Enrollment < ApplicationRecord
         csv << child_info
       end
     end
+  end
+
+  def past?
+    ends_at < Time.zone.today
   end
 
   def plan_type
@@ -338,10 +344,12 @@ class Enrollment < ApplicationRecord
 
       if next_payment_date.nil?
         self.paid = true
+      elsif next_payment_date > Time.zone.today && latest_enrollment_transaction.present?
+        self.paid = true
       elsif next_payment_date <= Time.zone.today
         self.paid = (self.ends_at < Time.zone.today)
-      elsif next_payment_date > Time.zone.today
-        self.paid = true
+      else
+        self.paid = false
       end
     else
       self.next_target_date = self.starts_at.to_date

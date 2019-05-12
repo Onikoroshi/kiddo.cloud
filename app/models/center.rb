@@ -1,9 +1,10 @@
 class Center < ApplicationRecord
   has_many :accounts, dependent: :destroy
-  has_many :users
+  has_many :users, dependent: :destroy
   has_many :locations, dependent: :destroy
 
-  has_many :programs
+  has_many :program_groups, dependent: :destroy
+  has_many :programs, dependent: :destroy
 
   accepts_nested_attributes_for :locations
 

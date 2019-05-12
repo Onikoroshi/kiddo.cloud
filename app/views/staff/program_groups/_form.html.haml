@@ -1,0 +1,19 @@
+.row
+  .col-md-6.col-sm-8.col-md-offset-3.col-sm-offset-2
+    = form_for([:staff, @program_group]) do |f|
+      = render "application/form_errors", object: @program_group
+
+      = f.hidden_field :center_id, value: @center.id
+
+      .form-group.label-floating
+        = f.label :title, "Program Group Name", class: "control-label"
+        = f.text_field :title, class: "form-control"
+
+      .form-group.label-floating
+        = f.label :plans, "Programs - Click the link to edit the program or remove it from this program_group", class: "control-label", style: "padding-bottom: 20px;"
+        %ul
+          - @program_group.programs.each do |program|
+            %li= link_to program.to_s, edit_staff_program_path(program)
+
+      = link_to "Cancel", staff_program_groups_path, class: "btn"
+      = f.submit class: "btn btn-info pull-right"

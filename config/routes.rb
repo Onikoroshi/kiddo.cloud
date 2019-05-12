@@ -79,6 +79,7 @@ Rails.application.routes.draw do
   end
 
   namespace :staff do
+    resources :program_groups, except: :show
     resources :programs, except: :show
     resources :plans, except: :show
     resources :locations, except: :show

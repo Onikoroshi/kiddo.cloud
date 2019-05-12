@@ -87,7 +87,7 @@ class Account::CheckoutsController < ApplicationController
         flash[:error] = "All of your enrollments have been finalized. Your card will not be charged again#{" until #{next_due_enrollment.next_payment_date.stamp("Jul. 28th, 2018")}" if next_due_enrollment.present?}. No further action is necessary on your part."
       end
 
-      TransactionalMailer.enrollment_change_report(transaction).deliver_now
+      TransactionalMailer.enrollment_change_report([transaction]).deliver_now
 
       redirect_to account_dashboard_path(@account), notice: "Thank you, your payment is complete. You will receive a receipt for payment and welcome email to your registered email address. If you don't receive these, please call our office (1-530-220-4731)"
     else

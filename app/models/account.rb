@@ -180,6 +180,27 @@ class Account < ApplicationRecord
     children.includes(:enrollments).map { |c| c.enrolled?(program) }.all?
   end
 
+  def paid_signup_fee_for_program_group?(program_group)
+    return false unless program_group.is_a?(ProgramGroup)
+
+    program_ids = program_group.programs.pluck(:id).uniq
+
+    query_chunks = program_ids.map{|p_id| "(itemizations->'signup_fee_#{p_id}' IS NOT NULL)"}
+    query = query_chunks.join(" OR ")
+
+    self.transactions.paid.where(query).any?
+  end
+
+  def paid_signup_fee_for_program?(program)
+    return false unless program.is_a?(Program)
+
+    if program.program_group.blank?
+      self.transactions.paid.where("itemizations->'signup_fee_#{program.id}' IS NOT NULL").any?
+    else
+      paid_signup_fee_for_program_group?(program.program_group)
+    end
+  end
+
   def mark_paid!
     children.each do |c|
       c.enrollments.alive.each do |enrollment|

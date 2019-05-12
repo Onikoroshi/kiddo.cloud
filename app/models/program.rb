@@ -1,6 +1,9 @@
 class Program < ApplicationRecord
   include ClassyEnum::ActiveRecord
+
   belongs_to :center
+  belongs_to :program_group
+
   has_many :plans, dependent: :destroy
   has_many :enrollments, through: :plans
   has_many :children, through: :enrollments
@@ -39,6 +42,15 @@ class Program < ApplicationRecord
   scope :for_fall, -> { where(program_type: ProgramType[:fall].to_s) }
   scope :for_summer, -> { where(program_type: ProgramType[:summer].to_s) }
 
+  scope :with_program_group, -> { includes(:program_group).references(:program_groups).where("program_groups.id IS NOT NULL") }
+  scope :without_program_group, -> { includes(:program_group).references(:program_groups).where("program_groups.id IS NULL") }
+  scope :by_program_group, ->(program_group) { program_group.present? ? where(program_group: program_group) : none }
+
+  # get a unique list of program groups associated with a set of enrollments
+  def self.program_groups
+    ProgramGroup.where(id: self.pluck("program_group_id").reject(&:blank?).uniq)
+  end
+
   def available_locations
     Location.where(id: program_locations.available.pluck(:location_id))
   end
@@ -53,6 +65,10 @@ class Program < ApplicationRecord
 
   def to_s
     short_name
+  end
+
+  def program_group_name
+    program_group.present? ? program_group.title : ""
   end
 
   def can_destroy?

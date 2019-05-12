@@ -1,0 +1,31 @@
+%h3.text-center
+  Program Groups
+
+.text-center
+  = link_to "+ Add Program Group", new_staff_program_group_path, class: "btn btn-primary btn-sm"
+%br
+
+- if @program_groups.any?
+  %table.admin-table
+    %thead
+      %th
+      %th Name
+      %th Programs
+      %th
+
+    %tbody
+      - @program_groups.each do |program_group|
+        %tr
+          %td
+            = link_to staff_program_group_path(program_group), method: :delete, :data => { :confirm => 'Are you sure?' } do
+              %i.material-icons delete_forever
+          %td= program_group.title
+          %td= program_group.programs.map(&:to_s).join("<br>").html_safe
+          %td
+            = link_to edit_staff_program_group_path(program_group) do
+              %i.material-icons edit
+
+  %hr
+
+  .text-center
+    = paginate @program_groups
