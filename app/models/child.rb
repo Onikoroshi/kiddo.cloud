@@ -58,10 +58,17 @@ class Child < ApplicationRecord
 
   def build_default_care_items
     if care_items.empty?
-      care_items.build(name: "Allergies (Insects/Food)")
+      care_items.build(name: "Person completing this form & your relationship to student?")
+      care_items.build(name: "Student Interests?")
+      care_items.build(name: "Academic Strengths?")
+      care_items.build(name: "Academic Struggles/Concerns?")
+      care_items.build(name: "Do you want DKK to assist your student with homework?")
+      care_items.build(name: "Does your student require special support at school in the form of an IEP or 504 plan? If so, can you please share more about your child's special needs so we can do our best to accommodate him/her?")      
+      care_items.build(name: "Does your child have a health or physical concerns we should be aware of?")
+      care_items.build(name: "List any allergies or routine medications ")
       care_items.build(name: "Dietary Needs")
       care_items.build(name: "Special Health or Emotional Needs")
-      care_items.build(name: "Current Medications")
+      care_items.build(name: "Current Medications")      
     end
   end
 
