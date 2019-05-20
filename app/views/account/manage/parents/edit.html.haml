@@ -143,6 +143,23 @@
                     = f.check_box :mail_agreements, checked: @account.last_registration_step_completed == "parents" ? @account.mail_agreements : true, class: "pull-left checkbox-padding"
                     = f.label :mail_agreements do
                       Have all waivers and agreements mailed to me
+          .cleaner
+
+          .panel.panel-default
+            #headingThree.panel-heading{:role => "tab"}
+              %a.collapsed{"aria-controls" => "collapseFour", "aria-expanded" => "false", "data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseFour", :role => "button"}
+                .col-xs-12
+                  %h3.parent-title
+                    Allow Pick Up People
+                    %i.material-icons keyboard_arrow_down
+            #collapseFour.panel-collapse.collapse{"aria-labelledby" => "headingTwo", :role => "tabpanel"}
+              .panel-body
+
+                .col-sm-6
+                  .form-group.label-floating
+                    = f.label :emergency_contact_first_name, "First Name", class: "control-label"
+                    = f.text_field :emergency_contact_first_name, class: "form-control"
+
 
       .col-sm-12
         = f.submit 'Update Info', class: "btn btn-block btn-info"
