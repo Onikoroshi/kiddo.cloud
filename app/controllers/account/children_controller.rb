@@ -14,6 +14,7 @@ class Account::ChildrenController < ApplicationController
   # GET /account/children/new
   def new
     @account_child = Child.new
+    @account_child.build_default_care_items
   end
 
   # GET /account/children/1/edit

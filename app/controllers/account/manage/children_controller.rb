@@ -60,6 +60,7 @@ class Account::Manage::ChildrenController < ApplicationController
 
   def set_account_child
     @account_child = Child.find(params[:id])
+    @account_child.build_default_care_items
   end
 
   def set_account
