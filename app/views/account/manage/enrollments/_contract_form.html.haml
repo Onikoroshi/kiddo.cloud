@@ -10,48 +10,49 @@
   = render "application/form_errors", object: @account
 
   = f.fields_for :children do |children_fields|
-    .plan-box
-      .row
-        .col-sm-12
-          .dropin-name{style: "padding-left: 20px;"}
-            = children_fields.object.full_name
+    - if children_fields.object.grade_entering != "TK" && children_fields.object.grade_entering != "K"
+      .plan-box
+        .row
+          .col-sm-12
+            .dropin-name{style: "padding-left: 20px;"}
+              = children_fields.object.full_name
 
-      = children_fields.fields_for :enrollments do |enrollment_fields|
-        - if enrollment_fields.object.alive? && enrollment_fields.object.program == @program && enrollment_fields.object.plan_type.to_s == @plan_type.to_s && (defined?(target_method) || enrollment_fields.object.unpaid?)
-          = enrollment_fields.hidden_field :plan_id, value: enrollment_fields.object.plan_id
-          = enrollment_fields.hidden_field :child_id, value: enrollment_fields.object.child_id
+        = children_fields.fields_for :enrollments do |enrollment_fields|
+          - if enrollment_fields.object.alive? && enrollment_fields.object.program == @program && enrollment_fields.object.plan_type.to_s == @plan_type.to_s && (defined?(target_method) || enrollment_fields.object.unpaid?)
+            = enrollment_fields.hidden_field :plan_id, value: enrollment_fields.object.plan_id
+            = enrollment_fields.hidden_field :child_id, value: enrollment_fields.object.child_id
 
-          .row
-            .col-sm-7
-              - @plan_type.find_available_days.each do |day_name, value|
-                - if value
-                  .checkbox
-                    %label
-                      = enrollment_fields.check_box day_name, checked: enrollment_fields.object.send(day_name)
-                      = enrollment_fields.label day_name
-                - else
-                  = enrollment_fields.hidden_field day_name, value: false
+            .row
+              .col-sm-7
+                - @plan_type.find_available_days.each do |day_name, value|
+                  - if value
+                    .checkbox
+                      %label
+                        = enrollment_fields.check_box day_name, checked: enrollment_fields.object.send(day_name)
+                        = enrollment_fields.label day_name
+                  - else
+                    = enrollment_fields.hidden_field day_name, value: false
 
-            .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px;"}
-              .col-xs-3{style: "padding-left: 0px !important"}
-                = f.label :location_id, "At"
-              .col-xs-9{style: "padding-left: 0px !important"}
-                = enrollment_fields.select :location_id, options_from_collection_for_select(@program.available_locations, 'id', 'name', enrollment_fields.object.location_id)
-          .row
-            .col-xs-7
-            .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px;"}
-              .col-xs-3{style: "padding-left: 0px !important"}
-                = f.label :starts_at, "Starting On"
-              .col-xs-9{style: "padding-left: 0px !important"}
-                = enrollment_fields.text_field :starts_at, value: [(enrollment_fields.object.starts_at || @program.starts_at).to_date, (enrollment_fields.object.created_at || Time.zone.today).to_date].max, class: "drop_in-date-select flatpickr-date"
-          .row
-            .col-xs-7
-            .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px;"}
-              .col-xs-3{style: "padding-left: 0px !important"}
-                = f.label :ends_at, "Stopping On"
-              .col-xs-9{style: "padding-left: 0px !important"}
-                = enrollment_fields.text_field :ends_at, value: (enrollment_fields.object.ends_at || @program.ends_at).to_date, class: "drop_in-date-select flatpickr-date"
-          .cleaner
+              .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px;"}
+                .col-xs-3{style: "padding-left: 0px !important"}
+                  = f.label :location_id, "At"
+                .col-xs-9{style: "padding-left: 0px !important"}
+                  = enrollment_fields.select :location_id, options_from_collection_for_select(@program.available_locations, 'id', 'name', enrollment_fields.object.location_id)
+            .row
+              .col-xs-7
+              .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px;"}
+                .col-xs-3{style: "padding-left: 0px !important"}
+                  = f.label :starts_at, "Starting On"
+                .col-xs-9{style: "padding-left: 0px !important"}
+                  = enrollment_fields.text_field :starts_at, value: [(enrollment_fields.object.starts_at || @program.starts_at).to_date, (enrollment_fields.object.created_at || Time.zone.today).to_date].max, class: "drop_in-date-select flatpickr-date"
+            .row
+              .col-xs-7
+              .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px;"}
+                .col-xs-3{style: "padding-left: 0px !important"}
+                  = f.label :ends_at, "Stopping On"
+                .col-xs-9{style: "padding-left: 0px !important"}
+                  = enrollment_fields.text_field :ends_at, value: (enrollment_fields.object.ends_at || @program.ends_at).to_date, class: "drop_in-date-select flatpickr-date"
+            .cleaner
 
   = link_to "Cancel", @account.signup_complete? ? (defined?(target_method) ? edit_account_dashboard_enrollments_path(@account) : new_account_dashboard_enrollment_path(@account)) : account_step_path(@account, :plan), class: "btn"
   = f.submit "Submit", class: "btn btn-info pull-right"
