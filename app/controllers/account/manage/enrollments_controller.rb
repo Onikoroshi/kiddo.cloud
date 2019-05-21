@@ -63,7 +63,6 @@ class Account::Manage::EnrollmentsController < ApplicationController
 
     # now apply the ones we just chose
     chosen_params = enrollment_params
-    # ["0"].except(:monday_id, :tuesday_id, :wednesday_id, :thursday_id, :friday_id, :starts_at, :ends_at, :id, :location_id)
     ap "chosen:"
     ap chosen_params
     @account.attributes = chosen_params

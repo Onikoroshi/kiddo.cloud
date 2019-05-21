@@ -19,41 +19,41 @@
       .row
         .col-xs-7
           - @plan_type.find_available_days(@program).each do |day_name, value|
-            
+
             .col-xs-12
-              - if value                                  
+              - if value
                 .checkbox
                   %label
-                    = day_name                    
-                  
+                    = day_name
+
                 - if day_name == :monday
-                  .col-xs-3 
-                  = children_fields.select :monday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None", 
+                  .col-xs-3
+                  = children_fields.select :monday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
                   selected: @monday_id
 
                 - if day_name == :tuesday
-                  .col-xs-3 
-                  = children_fields.select :tuesday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None", 
+                  .col-xs-3
+                  = children_fields.select :tuesday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
                   selected: @tuesday_id
 
                 - if day_name == :wednesday
-                  .col-xs-3 
-                  = children_fields.select :wednesday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None", 
+                  .col-xs-3
+                  = children_fields.select :wednesday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
                   selected: @wednesday_id
 
                 - if day_name == :thursday
-                  .col-xs-3 
-                  = children_fields.select :thursday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None", 
+                  .col-xs-3
+                  = children_fields.select :thursday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
                   selected: @thursday_id
 
                 - if day_name == :friday
-                  .col-xs-3 
-                  = children_fields.select :friday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None", 
+                  .col-xs-3
+                  = children_fields.select :friday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
                   selected: @friday_id
 
         .h3{style: "padding-left: 0px !important; padding-top: 7px;"}
-          = children_fields.hidden_field :location_id, value: Location.find_by(name: "Pioneer Elementary").id
-          At Pioneer Elementary                  
+          = children_fields.hidden_field :location_id, value: @program.locations.first.id
+          At #{@program.locations.first.name}
 
         .col-xs-3{style: "padding-left: 0px !important; padding-top: 20px; margin-left: 20px;"}
           .col-xs-3{style: "padding-left: 0px !important"}
