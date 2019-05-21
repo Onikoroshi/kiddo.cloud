@@ -6,7 +6,7 @@
     .row
       .col-md-12
         %h3.text-center Add a Child
-      .col-md-6
+      .col-md-12
         .form-group.label-floating
           = form.label :first_name, "First Name", class: "control-label"
           = form.text_field :first_name, class: "form-control"
@@ -31,8 +31,9 @@
           = form.label :birthdate, "Birth Date", class: "control-label"
           = form.text_field :birthdate, class: "form-control flatpickr-date"
           Remember to click on the day to set the birthdate
+        
+        %h5 In an effort to connect with your child, to meet his/her needs, and to help him/her be socially, academically and behaviorally successful in our after school program, please complete this form as accurately and honestly as possible. Note:  This information is kept confidential by DKK staff.      
 
-      .col-md-6
         = form.fields_for :care_items, @account_child.care_items do |c|
           .form-group.label-floating
             .row

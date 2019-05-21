@@ -1,0 +1,2 @@
+      invoke  active_record
+      create    db/migrate/20190520201548_add_two_part_to_care_items.rb
