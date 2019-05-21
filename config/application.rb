@@ -19,8 +19,6 @@ module Kidsclub
     config.eager_load_paths << "#{Rails.root}/lib"
     config.assets.paths << "#{Rails.root}/app/assets"
 
-    config.action_controller.permit_all_parameters = true
-
     config.time_zone = "Pacific Time (US & Canada)"
   end
 end

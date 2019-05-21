@@ -1,6 +1,3 @@
-class Array
-  def select_indice &p; map.with_index{|x, i| i if p.call(x)}.compact end
-end
 class Account::Manage::EnrollmentsController < ApplicationController
   layout :set_layout_by_role
   before_action :guard_center!
@@ -17,12 +14,12 @@ class Account::Manage::EnrollmentsController < ApplicationController
   def new
     if @plan_type.present?
       changed_params = @account.enrollment_changes.pending.build_params
-      @account.attributes = changed_params      
+      @account.attributes = changed_params
     end
 
     @account.children.each do |child|
       child.enrollments.each do |enrollment|
-        if enrollment.monday          
+        if enrollment.monday
           @monday_id = enrollment.plan_id
         end
 
@@ -49,14 +46,14 @@ class Account::Manage::EnrollmentsController < ApplicationController
         if enrollment.sunday
           @sunday_id = enrollment.plan_id
         end
-      end      
-    end    
+      end
+    end
   end
 
   def create
     # apply any enrollment-independent changes
     @account.update_attributes(account_params)
-    
+
     # assign attributes without saving to the database.
     # don't apply any extra scopes to associations, or these changes will be lost
 
@@ -65,11 +62,12 @@ class Account::Manage::EnrollmentsController < ApplicationController
     @account.attributes = unapplied_change_params
 
     # now apply the ones we just chose
-    chosen_params = enrollment_params["0"].except(:monday_id, :tuesday_id, :wednesday_id, :thursday_id, :friday_id, :starts_at, :ends_at, :id, :location_id)
+    chosen_params = enrollment_params
+    # ["0"].except(:monday_id, :tuesday_id, :wednesday_id, :thursday_id, :friday_id, :starts_at, :ends_at, :id, :location_id)
     ap "chosen:"
     ap chosen_params
     @account.attributes = chosen_params
-    
+
     if @account.valid?
       unless overlapping_enrollments?
         @account.children.each do |child|
@@ -140,7 +138,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
                 enrollment.save
               else
                 ap "unpaid #{enrollment.id} didn't change"
-              end              
+              end
 
               EnrollmentChange.where(account: @account, enrollment: enrollment, applied: false).destroy_all
             elsif enrollment._destroy || enrollment.changed?
@@ -218,21 +216,17 @@ class Account::Manage::EnrollmentsController < ApplicationController
       # step through without scopes, in case we have unapplied changes waiting
       child.enrollments.each do |enrollment|
         if enrollment.alive? && enrollment.program == @program && enrollment.plan_type == @plan_type
-          found = true          
+          found = true
           break;
-        end        
+        end
       end
 
-      child.enrollments.build(program: @program, plan: @program.plans.by_plan_type(@plan_type).first) unless found      
+      child.enrollments.build(program: @program, plan: @program.plans.by_plan_type(@plan_type).first) unless found
     end
   end
 
   def enrollment_params
     sanitized_params = params
-    ap "params:"
-    ap params.permit!
-
-    
 
     if sanitized_params["account"]["children_attributes"].present?
       ap "children attributes present"
@@ -269,35 +263,39 @@ class Account::Manage::EnrollmentsController < ApplicationController
         if enrollment_attrs.present? && enrollment_attrs['monday_id'].present?
           ap "enrollment attributes for custom full day program"
 
-          day_hash = Array[]
-          day_hash.push(enrollment_attrs['monday_id'])        
-          day_hash.push(enrollment_attrs['tuesday_id'])          
-          day_hash.push(enrollment_attrs['wednesday_id'])         
-          day_hash.push(enrollment_attrs['thursday_id'])
-          day_hash.push(enrollment_attrs['friday_id'])
-          total = day_hash.count
-          # Create the object for the specific child and set the id 
-          enrollment_attrs["children_attributes"] = {}
-          enrollment_attrs["children_attributes"][child_key] = {:id => enrollment_attrs['id']}
-          enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"] = {}
+          # Create the object for the specific child and set the id
+          sanitized_params["account"] = {}
+          sanitized_params["account"]["children_attributes"] = {}
+          sanitized_params["account"]["children_attributes"][child_key] = {}
+          sanitized_params["account"]["children_attributes"][child_key][:id] = enrollment_attrs['id']
+          sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"] = {}
 
-          i = 0
-          # loop through the day_hash one by 1
-          loop do 
-            if i == total
-              break
-            end
-            # target == plan_id 
-            target = day_hash[i]
+          day_ids = [
+            enrollment_attrs['monday_id'],
+            enrollment_attrs['tuesday_id'],
+            enrollment_attrs['wednesday_id'],
+            enrollment_attrs['thursday_id'],
+            enrollment_attrs['friday_id']
+          ]
 
-            # skip empty/already found days
-            if target != ""
+          day_hash = {}
+          day_ids.reject(&:blank?).each_with_index do |day_id, i|
+            day_hash[day_id] = [] if day_hash[day_id].nil?
+            day_hash[day_id] << i
+          end
 
-              # find all matching plan_id's from the day_hash and output to array
-              indicies = day_hash.select_indice{|x| x == target}
+          day_hash.each do |plan_id, days|
+            days.each do |day_index|
+              day_dictionary = [
+                "monday",
+                "tuesday",
+                "wednesday",
+                "thursday",
+                "friday"
+              ]
 
               # set all days to 0 because multi-day enrollments will be added here
-              enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s] = {
+              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s] = {
                 :monday => "0",
                 :tuesday => "0",
                 :wednesday => "0",
@@ -305,55 +303,23 @@ class Account::Manage::EnrollmentsController < ApplicationController
                 :friday => "0",
               }
 
-              # how many days for the same enrollment?
-              second_total = indicies.count
-              j = 0
+              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s][day_dictionary[day_index]] = "1"
 
-              # loop through each day matching this plan_id
-              loop do                 
-                if j == second_total
-                  break
-                end  
+              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['child_id']  = enrollment_attrs['id']
+              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['plan_id']   = plan_id
+              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['starts_at'] = enrollment_attrs['starts_at']
+              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['ends_at']   = enrollment_attrs['ends_at']
+              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['location_id'] = enrollment_attrs["location_id"]
 
-                # set the plan_id to the above target
-                new_plan_id = target
-
-                # find the index and then set it to null so we don't count twice
-                delete_index = indicies[j]
-                day_hash[delete_index] = ""
-
-                #create the plan
-                if delete_index == 0
-                  enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['monday'] = "1"                  
-                end
-                if delete_index == 1
-                  enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['tuesday'] = "1"                  
-                end
-                if delete_index == 2
-                  enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['wednesday'] = "1"                  
-                end
-                if delete_index == 3
-                  enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['thursday'] = "1"                  
-                end
-                if delete_index == 4
-                  enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['friday'] = "1"                  
-                end
-                enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['child_id']  = enrollment_attrs['id']
-                enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['plan_id']   = new_plan_id
-                enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['starts_at'] = enrollment_attrs['starts_at']
-                enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['ends_at']   = enrollment_attrs['ends_at']
-                enrollment_attrs["children_attributes"][child_key]["enrollments_attributes"][i.to_s]['location_id'] = Location.find_by(name: "Pioneer Elementary").id.to_s
-
-                # delete plan if already created 
-                Enrollment.where(:child_id => enrollment_attrs['id'], :paid => false).destroy_all
-                j += 1
-              end
-            end    
-            i += 1
-          end          
+              # delete plan if already created
+              Enrollment.where(:child_id => enrollment_attrs['id'], :paid => false).destroy_all
+            end
+          end
         end
       end
     end
+
+    sanitized_params.require(:account).permit(children_attributes: [:id, enrollments_attributes: [:id, :plan_id, :child_id, :location_id, :starts_at, :ends_at, :monday, :tuesday, :wednesday, :thursday, :friday, :_destroy, :dead]])
   end
 
   def account_params
