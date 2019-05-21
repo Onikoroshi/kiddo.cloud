@@ -34,7 +34,7 @@
           = form.text_field :birthdate, class: "form-control flatpickr-date"
           Remember to click on the day to set the birthdate
 
-        %h5 I1n an effort to connect with your child, to meet his/her needs, and to help him/her be socially, academically and behaviorally successful in our after school program, please complete this form as accurately and honestly as possible. Note:  This information is kept confidential by DKK staff.
+        %h5 In an effort to connect with your child, to meet his/her needs, and to help him/her be socially, academically and behaviorally successful in our after school program, please complete this form as accurately and honestly as possible. Note:  This information is kept confidential by DKK staff.
       
         = form.fields_for :care_items, @account_child.care_items do |c|
           .form-group.label-floating
@@ -46,7 +46,7 @@
                 - if c.object.required == true
                   %label{ style: 'color: red;' } *
 
-              - if c.object.two_part == true
+              - if c.object.three_part == true
                 .col-xs-3.text-center
                   .radio
                     %label
