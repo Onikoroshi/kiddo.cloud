@@ -79,6 +79,14 @@
       %br
 
       .form-group.label-floating
+        = f.label :allowed_grades, "Allowed Grades", class: "control-label", style: "padding-bottom: 20px;"
+        = f.collection_check_boxes :allowed_grades, Grades.new.collection, :to_s, :to_s, class: "form-control" do |cb|
+          = "#{cb.check_box} #{cb.text}"
+          %br
+
+      %br
+
+      .form-group.label-floating
         = f.label :plans, "Plans - Click the link to edit the plan or remove it from this program", class: "control-label", style: "padding-bottom: 20px;"
         %ul
           - @program.plans.each do |plan|

@@ -12,22 +12,25 @@
         .dropin-name
           = children_fields.object.full_name
 
-        .row{style: "padding-left: 20px;"}
-          - unless defined?(target_method)
-            - children_fields.object.enrollments.alive.by_program_and_plan_type(@program, @plan_type).paid.each do |enrollment|
-              .row{style: "padding-left: 40px; padding-bottom: 20px; padding-right: 20px;"}
-                %span= enrollment.to_short
-          - else
-            - children_fields.object.enrollments.alive.by_program_and_plan_type(@program, @plan_type).paid.past.each do |enrollment|
-              .row{style: "padding-left: 40px; padding-bottom: 20px; padding-right: 20px;"}
-                %span= enrollment.to_short
+        - unless @program.grade_allowed?(children_fields.object.grade_entering)
+          .row{style: "padding-left: 20px;"}
+            - unless defined?(target_method)
+              - children_fields.object.enrollments.alive.by_program_and_plan_type(@program, @plan_type).paid.each do |enrollment|
+                .row{style: "padding-left: 40px; padding-bottom: 20px; padding-right: 20px;"}
+                  %span= enrollment.to_short
+            - else
+              - children_fields.object.enrollments.alive.by_program_and_plan_type(@program, @plan_type).paid.past.each do |enrollment|
+                .row{style: "padding-left: 40px; padding-bottom: 20px; padding-right: 20px;"}
+                  %span= enrollment.to_short
 
-          = children_fields.fields_for :enrollments do |enrollment_fields|
-            - if enrollment_fields.object.alive? && enrollment_fields.object.program == @program && enrollment_fields.object.plan_type.to_s == @plan_type.to_s && (policy(enrollment_fields.object).manage? || enrollment_fields.object.unpaid? || (defined?(target_method) && !enrollment_fields.object.past?))
-              = render "enrollment_fields", f: enrollment_fields
+            = children_fields.fields_for :enrollments do |enrollment_fields|
+              - if enrollment_fields.object.alive? && enrollment_fields.object.program == @program && enrollment_fields.object.plan_type.to_s == @plan_type.to_s && (policy(enrollment_fields.object).manage? || enrollment_fields.object.unpaid? || (defined?(target_method) && !enrollment_fields.object.past?))
+                = render "enrollment_fields", f: enrollment_fields
 
-          .links
-            .pull-left= link_to_add_association 'Add Day', children_fields, :enrollments, {class: "btn btn-info"}
+            .links
+              .pull-left= link_to_add_association 'Add Day', children_fields, :enrollments, {class: "btn btn-info"}
+        - else
+          = display_disallowed_grade_message
 
     = link_to "Cancel", @account.signup_complete? ? (defined?(target_method) ? edit_account_dashboard_enrollments_path(@account) : new_account_dashboard_enrollment_path(@account)) : account_step_path(@account, :plan), class: "btn"
     = f.submit "Submit", class: "btn btn-info pull-right"

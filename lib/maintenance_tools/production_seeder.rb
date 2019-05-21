@@ -53,7 +53,8 @@ class MaintenanceTools::ProductionSeeder
       change_fee: 49.0,
       earliest_payment_offset: -15,
       latest_payment_offset: 14,
-      program_type: "summer"
+      program_type: "summer",
+      allowed_grades: Grades.new.collection
     ).first_or_create!
   end
 
@@ -69,7 +70,8 @@ class MaintenanceTools::ProductionSeeder
       change_fee: 49.0,
       earliest_payment_offset: -15,
       latest_payment_offset: 14,
-      program_type: "fall"
+      program_type: "fall",
+      allowed_grades: Grades.new.other_grades
     ).first_or_create!
   end
 
@@ -85,7 +87,8 @@ class MaintenanceTools::ProductionSeeder
       change_fee: 49.0,
       earliest_payment_offset: -15,
       latest_payment_offset: 14,
-      program_type: "fall"
+      program_type: "fall",
+      allowed_grades: Grades.new.tkk_grades
     ).first_or_create!
   end
 

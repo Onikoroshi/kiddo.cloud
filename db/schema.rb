@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190430183352) do
+ActiveRecord::Schema.define(version: 20190521201945) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -362,6 +362,7 @@ ActiveRecord::Schema.define(version: 20190430183352) do
     t.string "program_type"
     t.integer "priority"
     t.bigint "program_group_id"
+    t.jsonb "allowed_grades", default: []
     t.index ["center_id"], name: "index_programs_on_center_id"
     t.index ["program_group_id"], name: "index_programs_on_program_group_id"
   end

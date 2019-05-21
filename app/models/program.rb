@@ -84,6 +84,10 @@ class Program < ApplicationRecord
     @location_changes[:removed].present? or @location_changes[:added].present?
   end
 
+  def grade_allowed?(given_grade)
+    allowed_grades.reject(&:blank?).map(&:to_s).include?(given_grade.to_s)
+  end
+
   private
 
   def on_add_location(location)
