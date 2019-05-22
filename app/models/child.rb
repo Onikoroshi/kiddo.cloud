@@ -65,7 +65,7 @@ class Child < ApplicationRecord
     care_items.find_or_initialize_by(name: "Does your child take any routine or seasonal medications? If so, please list the medications, reason for taking the medication and possible side effects.")
     care_items.find_or_initialize_by(name: "Do you have any concerns about your child’s behavior, social skill development, and/or ability to control his/her emotions?  If so, please explain/describe what strategies best support and calm your child.")
 
-    item = care_items.find_or_initialize_by(name: "Does your child have any allergies?", two_part: true)
+    item = care_items.find_or_initialize_by(name: "Does your child have any allergies?")
     item.two_part = true
     item.required = false
     item = care_items.find_or_initialize_by(name: "Dietary Needs")
