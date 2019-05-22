@@ -21,6 +21,8 @@ class AccountForm
     :parent_guardian_postal_code,
     :parent_guardian_email,
 
+    :guardians,
+
     :emergency_contact_first_name,
     :emergency_contact_last_name,
     :emergency_contact_phone,

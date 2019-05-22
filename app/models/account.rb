@@ -17,6 +17,7 @@ class Account < ApplicationRecord
   has_many :enrollments, through: :children
   has_many :enrollment_changes, through: :enrollments
   has_many :emergency_contacts, dependent: :destroy
+  has_many :guardians, dependent: :destroy
 
   has_many :drop_ins
 

@@ -155,10 +155,21 @@
             #collapseFour.panel-collapse.collapse{"aria-labelledby" => "headingTwo", :role => "tabpanel"}
               .panel-body
 
-                .col-sm-6
-                  .form-group.label-floating
-                    = f.label :emergency_contact_first_name, "First Name", class: "control-label"
-                    = f.text_field :emergency_contact_first_name, class: "form-control"
+                = f.fields_for :guardians, @account.guardians do |g|
+                  .col-sm-12
+                    .form-group.label-floating
+                      = f.label :emergency_contact_first_name, "First Name", class: "control-label"
+                      = f.text_field :emergency_contact_first_name, class: "form-control"
+
+                    .form-group.label-floating
+                      = f.label :emergency_contact_first_name, "Last Name", class: "control-label"
+                      = f.text_field :emergency_contact_first_name, class: "form-control"
+
+                    .form-group.label-floating
+                      = f.label :emergency_contact_first_name, "Phone #", class: "control-label"
+                      = f.text_field :emergency_contact_first_name, class: "form-control"                    
+                    .links
+                      .pull-left= link_to_add_association 'Add Guardian', g, :guardians, {class: "btn btn-info"}             
 
 
       .col-sm-12
