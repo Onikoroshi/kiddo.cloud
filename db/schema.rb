@@ -105,6 +105,8 @@ ActiveRecord::Schema.define(version: 20190521201945) do
     t.text "explanation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "two_part", default: false
+    t.boolean "required", default: true
     t.index ["child_id"], name: "index_care_items_on_child_id"
   end
 
