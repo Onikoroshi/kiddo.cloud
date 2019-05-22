@@ -71,7 +71,7 @@ class Account::ChildrenController < ApplicationController
        :grade_entering,
        :birthdate,
        :additional_info,
-       care_items_attributes: [:id, :name, :active, :explanation],
+       care_items_attributes: [:id, :name, :active, :explanation, :required, :two_part],
        attendance_selections_attributes: []
       ]
       params.require(:child).permit(permitted_attributes)

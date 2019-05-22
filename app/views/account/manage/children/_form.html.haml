@@ -41,6 +41,8 @@
                 .col-xs-6
                   = c.object.name
                   = c.hidden_field :name, value: c.object.name
+                  = c.hidden_field :required, value: c.object.required
+                  = c.hidden_field :two_part, value: c.object.two_part
                   - if c.object.required?
                     %label{ style: "color: red;" } *
                 .col-xs-3.text-center
@@ -62,6 +64,8 @@
                   = c.object.name
                   = c.hidden_field :name, value: c.object.name
                   = c.hidden_field :active, value: true
+                  = c.hidden_field :required, value: c.object.required
+                  = c.hidden_field :two_part, value: c.object.two_part
                   - if c.object.required?
                     %label{ style: "color: red;" } *
                 .col-xs-12
