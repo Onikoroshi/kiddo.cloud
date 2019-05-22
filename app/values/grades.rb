@@ -7,7 +7,7 @@ class Grades
     GRADES
   end
 
-  def tkk
+  def tkk_grades
     TKK_GRADES
   end
 

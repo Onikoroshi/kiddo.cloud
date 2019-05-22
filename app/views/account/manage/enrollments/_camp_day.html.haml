@@ -12,7 +12,7 @@
         .dropin-name
           = children_fields.object.full_name
 
-        - unless @program.grade_allowed?(children_fields.object.grade_entering)
+        - if @program.grade_allowed?(children_fields.object.grade_entering)
           .row{style: "padding-left: 20px;"}
             - unless defined?(target_method)
               - children_fields.object.enrollments.alive.by_program_and_plan_type(@program, @plan_type).paid.each do |enrollment|

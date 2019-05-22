@@ -10,13 +10,14 @@
   = render "application/form_errors", object: @account
 
   = f.fields_for :children do |children_fields|
-    - if children_fields.object.grade_entering == "TK" || children_fields.object.grade_entering == "K"
-      .plan-box
-        .row
-          .col-sm-12
-            .dropin-name{style: "padding-left: 20px;"}
-              = children_fields.object.full_name
+    
+    .plan-box
+      .row
+        .col-sm-12
+          .dropin-name{style: "padding-left: 20px;"}
+            = children_fields.object.full_name
 
+      - if @program.grade_allowed?(children_fields.object.grade_entering)
         = children_fields.fields_for :enrollments do |enrollment_fields|
           - if enrollment_fields.object.alive? && enrollment_fields.object.program == @program && enrollment_fields.object.plan_type.to_s == @plan_type.to_s && (defined?(target_method) || enrollment_fields.object.unpaid?)
             = enrollment_fields.hidden_field :child_id, value: enrollment_fields.object.child_id
@@ -56,6 +57,8 @@
                 .col-xs-9{style: "padding-left: 0px !important"}
                   = enrollment_fields.text_field :ends_at, value: (enrollment_fields.object.ends_at || @program.ends_at).to_date, class: "drop_in-date-select flatpickr-date"
             .cleaner
+      - else
+        = display_disallowed_grade_message
 
   = link_to "Cancel", @account.signup_complete? ? (defined?(target_method) ? edit_account_dashboard_enrollments_path(@account) : new_account_dashboard_enrollment_path(@account)) : account_step_path(@account, :plan), class: "btn"
   = f.submit "Submit", class: "btn btn-info pull-right"
