@@ -18,8 +18,6 @@ class Child < ApplicationRecord
 
   has_many :late_checkin_notifications, dependent: :destroy
 
-  after_initialize :build_default_care_items
-
   after_commit :update_account_search_field
 
   validates :first_name, presence: true
@@ -57,12 +55,28 @@ class Child < ApplicationRecord
   end
 
   def build_default_care_items
-    if care_items.empty?
-      care_items.build(name: "Allergies (Insects/Food)")
-      care_items.build(name: "Dietary Needs")
-      care_items.build(name: "Special Health or Emotional Needs")
-      care_items.build(name: "Current Medications")
-    end
+    care_items.find_or_initialize_by(name: "Person completing this form & your relationship to student?")
+    care_items.find_or_initialize_by(name: "Student Interests/Academic Strengths?")
+    care_items.find_or_initialize_by(name: "Academic Struggles/Concerns?")
+    care_items.find_or_initialize_by(name: "Do you want DKK to assist your student with homework?")
+    care_items.find_or_initialize_by(name: "Does your student require special support at school in the form of an IEP or 504 plan? If so, can you please share more about your child's special needs so we can do our best to accommodate him/her?")
+    care_items.find_or_initialize_by(name: "Does your child receive support from a paraeducator during the school day (a one-on-one or one-on-two support person that assists your child in class and/or on the playground)?")
+    care_items.find_or_initialize_by(name: "Does your child have a health or physical concerns we should be aware of?")
+    care_items.find_or_initialize_by(name: "Does your child take any routine or seasonal medications? If so, please list the medications, reason for taking the medication and possible side effects.")
+    care_items.find_or_initialize_by(name: "Do you have any concerns about your child’s behavior, social skill development, and/or ability to control his/her emotions?  If so, please explain/describe what strategies best support and calm your child.")
+
+    item = care_items.find_or_initialize_by(name: "Does your child have any allergies?")
+    item.two_part = true
+    item.required = false
+    item = care_items.find_or_initialize_by(name: "Dietary Needs")
+    item.two_part = true
+    item.required = false
+    item = care_items.find_or_initialize_by(name: "Special Health or Emotional Needs")
+    item.two_part = true
+    item.required = false
+    item = care_items.find_or_initialize_by(name: "Current Medications")
+    item.two_part = true
+    item.required = false
   end
 
   def siblings?

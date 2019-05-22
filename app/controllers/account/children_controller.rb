@@ -14,6 +14,7 @@ class Account::ChildrenController < ApplicationController
   # GET /account/children/new
   def new
     @account_child = Child.new
+    @account_child.build_default_care_items
   end
 
   # GET /account/children/1/edit
@@ -70,7 +71,7 @@ class Account::ChildrenController < ApplicationController
        :grade_entering,
        :birthdate,
        :additional_info,
-       care_items_attributes: [:id, :name, :active, :explanation],
+       care_items_attributes: [:id, :name, :active, :explanation, :required, :two_part],
        attendance_selections_attributes: []
       ]
       params.require(:child).permit(permitted_attributes)

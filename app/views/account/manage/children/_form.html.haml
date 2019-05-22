@@ -6,7 +6,7 @@
     .row
       .col-md-12
         %h3.text-center Add a Child
-      .col-md-6
+      .col-md-12
         .form-group.label-floating
           = form.label :first_name, "First Name", class: "control-label"
           = form.text_field :first_name, class: "form-control"
@@ -32,25 +32,44 @@
           = form.text_field :birthdate, class: "form-control flatpickr-date"
           Remember to click on the day to set the birthdate
 
-      .col-md-6
+        %h5 In an effort to connect with your child, to meet his/her needs, and to help him/her be socially, academically and behaviorally successful in our after school program, please complete this form as accurately and honestly as possible. Note:  This information is kept confidential by DKK staff.
+
         = form.fields_for :care_items, @account_child.care_items do |c|
-          .form-group.label-floating
-            .row
-              .col-xs-6
-                = c.object.name
-                = c.hidden_field :name, value: c.object.name
-              .col-xs-3.text-center
-                .radio
-                  %label
-                    No
-                    = c.radio_button :active, false, checked: !c.object.active
-              .col-xs-3.text-center
-                .radio
-                  %label
-                    Yes
-                    = c.radio_button :active, true
-              .col-xs-12
-                = c.text_field :explanation, placeholder: "Please explain", class: "form-control"
+          - if c.object.two_part?
+            .form-group.label-floating
+              .row
+                .col-xs-6
+                  = c.object.name
+                  = c.hidden_field :name, value: c.object.name
+                  = c.hidden_field :required, value: c.object.required
+                  = c.hidden_field :two_part, value: c.object.two_part
+                  - if c.object.required?
+                    %label{ style: "color: red;" } *
+                .col-xs-3.text-center
+                  .radio
+                    %label
+                      No
+                      = c.radio_button :active, false, checked: !c.object.active
+                .col-xs-3.text-center
+                  .radio
+                    %label
+                      Yes
+                      = c.radio_button :active, true
+                .col-xs-12
+                  = c.text_field :explanation, placeholder: "Please explain", class: "form-control", required: c.object.required?
+          - else
+            .form-group.label-floating
+              .row
+                .col-xs-12
+                  = c.object.name
+                  = c.hidden_field :name, value: c.object.name
+                  = c.hidden_field :active, value: true
+                  = c.hidden_field :required, value: c.object.required
+                  = c.hidden_field :two_part, value: c.object.two_part
+                  - if c.object.required?
+                    %label{ style: "color: red;" } *
+                .col-xs-12
+                  = c.text_field :explanation, class: "form-control", required: c.object.required?
 
 
       .col-xs-12
