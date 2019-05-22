@@ -10,63 +10,68 @@
   = render "application/form_errors", object: @account
 
   = f.fields_for :children do |children_fields|
+    
     .plan-box
       .row
         .col-sm-12
           .dropin-name{style: "padding-left: 20px;"}
             = children_fields.object.full_name
 
-      .row
-        .col-xs-7
-          - @plan_type.find_available_days(@program).each do |day_name, value|
+      - if @program.grade_allowed?(children_fields.object.grade_entering)
+        .row
+          .col-xs-7
+            - @plan_type.find_available_days(@program).each do |day_name, value|
 
-            .col-xs-12
-              - if value
-                .col-xs-6
-                  .checkbox
-                    %label
-                      = day_name
-
-                - if day_name == :monday
+              .col-xs-12
+                - if value
                   .col-xs-6
-                  = children_fields.select :monday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
-                  selected: @monday_id
+                    .checkbox
+                      %label
+                        = day_name
 
-                - if day_name == :tuesday
-                  .col-xs-6
-                  = children_fields.select :tuesday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
-                  selected: @tuesday_id
+                  - if day_name == :monday
+                    .col-xs-6
+                    = children_fields.select :monday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
+                    selected: @monday_id
 
-                - if day_name == :wednesday
-                  .col-xs-6
-                  = children_fields.select :wednesday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
-                  selected: @wednesday_id
+                  - if day_name == :tuesday
+                    .col-xs-6
+                    = children_fields.select :tuesday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
+                    selected: @tuesday_id
 
-                - if day_name == :thursday
-                  .col-xs-6
-                  = children_fields.select :thursday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
-                  selected: @thursday_id
+                  - if day_name == :wednesday
+                    .col-xs-6
+                    = children_fields.select :wednesday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
+                    selected: @wednesday_id
 
-                - if day_name == :friday
-                  .col-xs-6
-                  = children_fields.select :friday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
-                  selected: @friday_id
+                  - if day_name == :thursday
+                    .col-xs-6
+                    = children_fields.select :thursday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
+                    selected: @thursday_id
 
-        .h3{style: "padding-left: 0px !important; padding-top: 7px;"}
-          = children_fields.hidden_field :location_id, value: @program.locations.first.id
-          At #{@program.locations.first.name}
+                  - if day_name == :friday
+                    .col-xs-6
+                    = children_fields.select :friday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
+                    selected: @friday_id
 
-        .col-xs-3{style: "padding-left: 0px !important; padding-top: 20px; margin-left: 20px;"}
-          .col-xs-3{style: "padding-left: 0px !important"}
-            = f.label :starts_at, "Starting On"
-          .col-xs-9{style: "padding-left: 0px !important"}
-            = children_fields.text_field :starts_at, value: [(@program.starts_at).to_date, (Time.zone.today).to_date].max, class: "drop_in-date-select flatpickr-date"
+          .h3{style: "padding-left: 0px !important; padding-top: 7px;"}
+            = children_fields.hidden_field :location_id, value: @program.locations.first.id
+            At #{@program.locations.first.name}
 
-        .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px; margin-left: 20px;"}
-          .col-xs-3{style: "padding-left: 0px !important"}
-            = f.label :ends_at, "Stopping On"
-          .col-xs-9{style: "padding-left: 0px !important"}
-            = children_fields.text_field :ends_at, value: (@program.ends_at).to_date, class: "drop_in-date-select flatpickr-date"
+          .col-xs-3{style: "padding-left: 0px !important; padding-top: 20px; margin-left: 20px;"}
+            .col-xs-3{style: "padding-left: 0px !important"}
+              = f.label :starts_at, "Starting On"
+            .col-xs-9{style: "padding-left: 0px !important"}
+              = children_fields.text_field :starts_at, value: [(@program.starts_at).to_date, (Time.zone.today).to_date].max, class: "drop_in-date-select flatpickr-date"
+
+          .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px; margin-left: 20px;"}
+            .col-xs-3{style: "padding-left: 0px !important"}
+              = f.label :ends_at, "Stopping On"
+            .col-xs-9{style: "padding-left: 0px !important"}
+              = children_fields.text_field :ends_at, value: (@program.ends_at).to_date, class: "drop_in-date-select flatpickr-date"
+      - else
+        = display_disallowed_grade_message
+
 
   = link_to "Cancel", @account.signup_complete? ? (defined?(target_method) ? edit_account_dashboard_enrollments_path(@account) : new_account_dashboard_enrollment_path(@account)) : account_step_path(@account, :plan), class: "btn"
   = f.submit "Submit", class: "btn btn-info pull-right"
