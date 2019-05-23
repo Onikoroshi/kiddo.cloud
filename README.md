@@ -59,15 +59,17 @@ heroku run rake db:reload -a kiddocloud-staging
 `https://daviskidsklub.com/wp-admin/theme-editor.php?file=header.php&theme=bridge line 929`
 
 ### Set Up Heroku environments on local machine
-For beta:
+#### For beta:
 `heroku git:remote -a kiddocloud-staging`
+
 `git remote rename heroku beta`
 
-For production:
+#### For production:
 `heroku git:remote -a kiddocloud`
+
 `git remote rename heroku production`
 
-Your list should look like this at the end:
+#### Your list should look like this at the end:
 `git remote -v`
 ```
 beta    https://git.heroku.com/kiddocloud-staging.git (fetch)
