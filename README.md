@@ -57,3 +57,23 @@ heroku run rake db:reload -a kiddocloud-staging
 
 #### Change Wordpress banner about closed sites:
 `https://daviskidsklub.com/wp-admin/theme-editor.php?file=header.php&theme=bridge line 929`
+
+### Set Up Heroku environments on local machine
+For beta:
+`heroku git:remote -a kiddocloud-staging`
+`git remote rename heroku beta`
+
+For production:
+`heroku git:remote -a kiddocloud`
+`git remote rename heroku production`
+
+Your list should look like this at the end:
+`git remote -v`
+```
+beta    https://git.heroku.com/kiddocloud-staging.git (fetch)
+beta    https://git.heroku.com/kiddocloud-staging.git (push)
+origin    git@github.com:eastwoj/kiddo.cloud.git (fetch)
+origin    git@github.com:eastwoj/kiddo.cloud.git (push)
+production    https://git.heroku.com/kiddocloud.git (fetch)
+production    https://git.heroku.com/kiddocloud.git (push)
+```
