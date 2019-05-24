@@ -24,35 +24,37 @@
 
               .col-xs-12
                 - if value
-                  .col-xs-6
+                  .col-xs-12
                     .checkbox
                       %label
                         = day_name
 
                   - if day_name == :monday
-                    .col-xs-6
+                    .col-xs-1
                     = children_fields.select :monday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
-                    selected: @monday_id
+                    selected: @monday_id                    
 
                   - if day_name == :tuesday
-                    .col-xs-6
+                    .col-xs-1
                     = children_fields.select :tuesday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
                     selected: @tuesday_id
 
                   - if day_name == :wednesday
-                    .col-xs-6
+                    .col-xs-1
                     = children_fields.select :wednesday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
                     selected: @wednesday_id
 
                   - if day_name == :thursday
-                    .col-xs-6
+                    .col-xs-1
                     = children_fields.select :thursday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
                     selected: @thursday_id
 
                   - if day_name == :friday
-                    .col-xs-6
+                    .col-xs-1
                     = children_fields.select :friday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
-                    selected: @friday_id
+                    selected: @friday_id     
+                  %br
+                  %br             
 
           .h3{style: "padding-left: 0px !important; padding-top: 7px;"}
             = children_fields.hidden_field :location_id, value: @program.locations.first.id
