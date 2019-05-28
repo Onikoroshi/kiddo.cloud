@@ -145,7 +145,7 @@
                     = f.text_field :emergency_contact_phone, class: "form-control"
 
                 .col-sm-12
-                  %h3 #{link_to "Waivers and agreements", "/Davis-Kids-Klub_Waivers-Agreements.pdf", target: "_blank"}
+                  %h3 #{link_to "Waivers and agreements (click to read)", "/Davis-Kids-Klub_Waivers-Agreements.pdf", target: "_blank"}
 
                   .form-group.label-floating
                     = f.check_box :mission_statement, checked: @account.mission_statement, class: "pull-left checkbox-padding"
