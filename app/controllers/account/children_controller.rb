@@ -19,6 +19,7 @@ class Account::ChildrenController < ApplicationController
 
   # GET /account/children/1/edit
   def edit
+    @account_child.build_default_care_items
   end
 
   # POST /account/children
