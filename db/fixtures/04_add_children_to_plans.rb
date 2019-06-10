@@ -1,6 +1,9 @@
 # Just for development, make sure all programs are in session
 Program.find_each do |program|
   program.update_attribute(:starts_at, Time.zone.today - 1.month)
+  program.update_attribute(:ends_at, Time.zone.today + 3.months)
+  program.update_attribute(:registration_opens, Time.zone.today - 2.months)
+  program.update_attribute(:registration_closes, Time.zone.today + 2.months)
 end
 
 days = [:monday, :tuesday, :wednesday, :thursday, :friday]
