@@ -13,16 +13,28 @@ namespace :hotfix do
     ap "#{child_ids.count} children"
     ap "#{account_ids. count} accounts"
 
-    disparate_transactions = enrollment_transactions.to_a.select{|et| et.amount.to_f != et.enrollment.cost_for_date(target_date).to_f}
+    paid_less = []
+    paid_more = []
+    paid_equal = []
 
-    enrollment_ids = disparate_transactions.map{|et| et.enrollment.id}.uniq
-    child_ids = disparate_transactions.map{|et| et.enrollment.child.id}.uniq
-    account_ids = disparate_transactions.map{|et| et.enrollment.child.account.id}.uniq
+    enrollment_transactions.find_each do |et|
+      correct_cost = et.enrollment.cost_for_date(target_date).to_f
+      if et.amount.to_f < correct_cost
+        paid_less << et
+      elsif et.amount.to_f == correct_cost
+        paid_equal << et
+      elsif et.amount.to_f > correct_cost
+        paid_more << et
+      end
+    end
 
-    ap "people who have paid differently for June:"
-    ap "#{enrollment_ids.count} separate enrollments"
-    ap "#{child_ids.count} children"
-    ap "#{account_ids. count} accounts"
+    ap "#{paid_less.count} transactions that paid less"
+    ap "#{paid_more.count} transactions that paid more"
+    ap "#{paid_equal.count} transactions that were correct"
+
+    paid_equal.each do |et|
+      ap "child #{et.enrollment.child.full_name} for account #{et.enrollment.child.account.id} paid #{et.amount} which is correct: #{et.enrollment.cost_for_date(target_date)}"
+    end
   end
 
   task :update_generalized_discounts => :environment do
