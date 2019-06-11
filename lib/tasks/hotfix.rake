@@ -4,7 +4,7 @@ namespace :hotfix do
 
     enrollment_ids = enrollment_transactions.pluck("enrollments.id").uniq
     child_ids = enrollment_transactions.pluck("children.id").uniq
-    acount_ids = enrollment_transactions.pluck("accounts.id").uniq
+    account_ids = enrollment_transactions.pluck("accounts.id").uniq
 
     ap "#{enrollment_ids.count} separate enrollments"
     ap "#{child_ids.count} children"
