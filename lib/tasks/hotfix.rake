@@ -1,11 +1,25 @@
 namespace :hotfix do
   task :fix_prorating => :environment do
-    enrollment_transactions = EnrollmentTransaction.joins(enrollment: {plan: :program, child: :account}).where(plans: {plan_type: PlanType.recurring.map(&:to_s)}).where("enrollment_transactions.amount > ? AND enrollment_transactions.target_date = ?", 0, Time.zone.today.beginning_of_month).distinct
+    target_date = Time.zone.today.beginning_of_month
+
+    enrollment_transactions = EnrollmentTransaction.joins(enrollment: {plan: :program, child: :account}).where(plans: {plan_type: PlanType.recurring.map(&:to_s)}).where("enrollment_transactions.amount > ? AND enrollment_transactions.target_date = ?", 0, target_date).distinct
 
     enrollment_ids = enrollment_transactions.pluck("enrollments.id").uniq
     child_ids = enrollment_transactions.pluck("children.id").uniq
     account_ids = enrollment_transactions.pluck("accounts.id").uniq
 
+    ap "people who have paid something for June:"
+    ap "#{enrollment_ids.count} separate enrollments"
+    ap "#{child_ids.count} children"
+    ap "#{account_ids. count} accounts"
+
+    disparate_transactions = enrollment_transactions.to_a.select{|et| et.amount.to_f != et.enrollment.cost_for_date(target_date).to_f}
+
+    enrollment_ids = disparate_transactions.map{|et| et.enrollment.id}.uniq
+    child_ids = disparate_transactions.map{|et| et.enrollment.child.id}.uniq
+    account_ids = disparate_transactions.map{|et| et.enrollment.child.account.id}.uniq
+
+    ap "people who have paid differently for June:"
     ap "#{enrollment_ids.count} separate enrollments"
     ap "#{child_ids.count} children"
     ap "#{account_ids. count} accounts"
