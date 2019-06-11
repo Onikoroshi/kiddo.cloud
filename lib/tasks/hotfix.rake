@@ -2,7 +2,7 @@ namespace :hotfix do
   task :fix_prorating => :environment do
     target_date = Time.zone.today.beginning_of_month
 
-    enrollment_transactions = EnrollmentTransaction.joins(enrollment: {plan: :program, child: :account}).where(plans: {plan_type: PlanType.recurring.map(&:to_s)}).where("enrollment_transactions.amount > ? AND enrollment_transactions.target_date = ?", 0, target_date).distinct
+    enrollment_transactions = EnrollmentTransaction.joins(enrollment: {plan: :program}).joins(enrollment: {child: :account}).where(plans: {plan_type: PlanType.recurring.map(&:to_s)}).where("enrollment_transactions.amount > ? AND enrollment_transactions.target_date = ?", 0, target_date).distinct
 
     enrollment_ids = enrollment_transactions.pluck("enrollments.id").uniq
     child_ids = enrollment_transactions.pluck("children.id").uniq
@@ -40,7 +40,7 @@ namespace :hotfix do
 
     ap "-----------------"
 
-    paid_equal.each do |et|
+    paid_equal.each do |arr|
       et = arr[0]
       correct_cost = arr[1]
       ap "child #{et.enrollment.child.full_name} for account #{et.enrollment.child.account.id} paid #{et.amount} which is correct: #{correct_cost}"
