@@ -297,8 +297,6 @@ class Enrollment < ApplicationRecord
       if plan.plan_type.recurring?
         total_days = (target_date.beginning_of_month..target_date.end_of_month).to_a.select{|d| available_on_date?(d)}
 
-        ap "recurring"
-
         start_date = [target_start, target_date.beginning_of_month].max
         stop_date = [target_stop, target_date.end_of_month].min
         used_days = total_days.select{|d| d >= start_date && d <= stop_date}

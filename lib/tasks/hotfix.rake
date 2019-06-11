@@ -20,11 +20,11 @@ namespace :hotfix do
     enrollment_transactions.find_each do |et|
       correct_cost = et.enrollment.cost_for_date(target_date).to_f
       if et.amount.to_f < correct_cost
-        paid_less << et
+        paid_less << [et, correct_cost]
       elsif et.amount.to_f == correct_cost
-        paid_equal << et
+        paid_equal << [et, correct_cost]
       elsif et.amount.to_f > correct_cost
-        paid_more << et
+        paid_more << [et, correct_cost]
       end
     end
 
@@ -32,8 +32,18 @@ namespace :hotfix do
     ap "#{paid_more.count} transactions that paid more"
     ap "#{paid_equal.count} transactions that were correct"
 
+    paid_more.each do |arr|
+      et = arr[0]
+      correct_cost = arr[1]
+      ap "child #{et.enrollment.child.full_name} for account #{et.enrollment.child.account.id} paid #{et.amount} which is more than: #{correct_cost}"
+    end
+
+    ap "-----------------"
+
     paid_equal.each do |et|
-      ap "child #{et.enrollment.child.full_name} for account #{et.enrollment.child.account.id} paid #{et.amount} which is correct: #{et.enrollment.cost_for_date(target_date)}"
+      et = arr[0]
+      correct_cost = arr[1]
+      ap "child #{et.enrollment.child.full_name} for account #{et.enrollment.child.account.id} paid #{et.amount} which is correct: #{correct_cost}"
     end
   end
 
