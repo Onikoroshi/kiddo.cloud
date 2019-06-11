@@ -24,6 +24,9 @@ class TransactionalMailer < ApplicationMailer
     file_path = "app/assets/images/Behavior Agreement.pdf"
     attachments["behavior_agreement.pdf"] = File.read(file_path)
 
+    file_path = "app/assets/images/Welcome Summer Camp 2019.pdf"
+    attachments["welcome_packet.pdf"] = File.read(file_path)
+
     mail(to: @account.all_emails, subject: "Welcome to #{account.center_name}!")
   end
 
@@ -64,7 +67,7 @@ class TransactionalMailer < ApplicationMailer
     @transactions = transactions
     @account = transactions.first.account
 
-    mail(to: ["daviskidsklub@aol.com", "dkk.vsantos@aol.com", "jyang54@mail.csuchico.edu"], subject: "DKK Enrollment Change Report")
+    mail(to: ["daviskidsklub@aol.com", "jyang54@mail.csuchico.edu"], subject: "DKK Enrollment Change Report")
   end
 
   def late_notifications_report(children_notified = [])
@@ -73,6 +76,6 @@ class TransactionalMailer < ApplicationMailer
 
     @children_notified = children_notified
 
-    mail(to: ["petertcormack@gmail.com", "daviskidsklub@aol.com", "dkk.vsantos@aol.com", "jyang54@mail.csuchico.edu"], subject: "Tardy Notifications Report")
+    mail(to: ["petertcormack@gmail.com", "daviskidsklub@aol.com", "jyang54@mail.csuchico.edu"], subject: "Tardy Notifications Report")
   end
 end

@@ -246,13 +246,13 @@ class Enrollment < ApplicationRecord
           if target_payment_past || target_payment_today
             payment_hash[month_name]["overdue"] = true
           end
-          
+
           payment_hash[month_name]["message"] = "#{cost_for_date(target_date)}#{" was" if target_payment_past} Due #{target_payment_today ? "Today" : "on #{target_payment_date.stamp("Aug. 1st, 2019")}"} for the month of #{month_name}"
         end
 
         target_date = target_date.end_of_month + 1.day
 
-        
+
         month_name = target_date.stamp("February, 2019")
 
       end
@@ -261,7 +261,7 @@ class Enrollment < ApplicationRecord
       payment_hash["One Time"] = {}
       if self.paid?
         payment_hash["One Time"]["message"] = "Paid #{last_paid_amount} on #{created_at.to_date.stamp("Aug. 1st, 2019")}"
-      else        
+      else
         payment_hash["One Time"]["message"] = "#{cost_for_date(target_date)} Due Today"
         payment_hash["One Time"]["overdue"] = true
       end
@@ -278,17 +278,15 @@ class Enrollment < ApplicationRecord
       month_price -= plan.discounts_for_date(target_date)
     else
       month_price = plan.price_for_date(target_date)
-      # this plan type allows people to choose the days they'll attend, as well as the plan they want 
+      # this plan type allows people to choose the days they'll attend, as well as the plan they want
       # so, find the percentage of the days they chose into the total allowed days, and alter the price accordingly
       if plan.plan_type.full_day_contract?
         days_attending = enrolled_days.count
         possible_days = plan.days_per_week
-        
-        ap "full day contract"
 
         if possible_days < 0
           possible_days = plan.allowed_days.count
-        end        
+        end
 
         percentage = days_attending.to_f / possible_days.to_f
 
@@ -310,11 +308,11 @@ class Enrollment < ApplicationRecord
       end
     end
 
-    month_price.to_money
+    month_price = month_price.to_money
     month_price = Money.new(0) if month_price < Money.new(0)
     ap "final month price: #{month_price}"
     month_price
-  end  
+  end
 
   def set_next_target_and_payment_date(given_enrollment_transaction = nil)
     if plan_type.recurring?
