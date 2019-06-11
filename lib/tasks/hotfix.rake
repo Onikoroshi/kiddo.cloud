@@ -1,4 +1,16 @@
 namespace :hotfix do
+  task :fix_prorating => :environment do
+    enrollment_transactions = EnrollmentTransaction.joins(enrollment: {plan: :program, child: :account}).where(plans: {plan_type: PlanType.recurring.map(&:to_s)}).where("enrollment_transactions.amount > ? AND enrollment_transactions.target_date = ?", 0, Time.zone.today.beginning_of_month).distinct
+
+    enrollment_ids = enrollment_transactions.pluck("enrollments.id").uniq
+    child_ids = enrollment_transactions.pluck("children.id").uniq
+    acount_ids = enrollment_transactions.pluck("accounts.id").uniq
+
+    ap "#{enrollment_ids.count} separate enrollments"
+    ap "#{child_ids.count} children"
+    ap "#{account_ids. count} accounts"
+  end
+
   task :update_generalized_discounts => :environment do
     total = Discount.count
     index = 1
