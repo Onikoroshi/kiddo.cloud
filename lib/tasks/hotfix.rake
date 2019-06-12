@@ -59,7 +59,7 @@ namespace :hotfix do
       account_data.each do |child_name, child_data|
         child_data.each do |program_name, program_data|
           program_data.each do |enrollment_description, enrollment_data|
-            et = enrollment_data["et"].to_money
+            et = enrollment_data["et"]
             correct_cost = enrollment_data["correct_cost"].to_money
             difference = correct_cost - et.amount
             ap "#{account_email} - #{child_name} paid #{et.amount} instead of #{correct_cost}; should be #{difference <= 0 ? "refunded" : "charged"} #{difference} for #{enrollment_description} in program #{program_name}"
@@ -74,7 +74,7 @@ namespace :hotfix do
       account_data.each do |child_name, child_data|
         child_data.each do |program_name, program_data|
           program_data.each do |enrollment_description, enrollment_data|
-            et = enrollment_data["et"].to_money
+            et = enrollment_data["et"]
             correct_cost = enrollment_data["correct_cost"].to_money
             difference = correct_cost - et.amount
             ap "#{account_email} - #{child_name} paid #{et.amount} instead of #{correct_cost}; should be #{difference <= 0 ? "refunded" : "charged"} #{difference} for #{enrollment_description} in program #{program_name}"
