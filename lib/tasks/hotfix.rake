@@ -13,37 +13,70 @@ namespace :hotfix do
     ap "#{child_ids.count} children"
     ap "#{account_ids. count} accounts"
 
-    paid_less = []
-    paid_more = []
-    paid_equal = []
+    paid_less = {}
+    paid_more = {}
+    paid_equal = {}
 
     enrollment_transactions.find_each do |et|
+      account_email = et.enrollment.child.account.primary_email.to_s
+      child_name = et.enrollment.child.full_name
+      enrollment_description = et.enrollment.to_short
+      program_name = et.enrollment.plan.program.name
       correct_cost = et.enrollment.cost_for_date(target_date).to_f
+
       if et.amount.to_f < correct_cost
-        paid_less << [et, correct_cost]
+        paid_less[account_email] = {} if paid_less[account_email].nil?
+        paid_less[account_email][child_name] = {} if paid_less[account_email][child_name].nil?
+        paid_less[account_email][child_name][program_name] = {} if paid_less[account_email][child_name][program_name].nil?
+        paid_less[account_email][child_name][program_name][enrollment_description] = {
+          "correct_cost" => correct_cost,
+          "et" => et
+        }
       elsif et.amount.to_f == correct_cost
-        paid_equal << [et, correct_cost]
+        paid_equal[account_email] = {} if paid_equal[account_email].nil?
+        paid_equal[account_email][child_name] = {} if paid_equal[account_email][child_name].nil?
+        paid_equal[account_email][child_name][program_name] = {} if paid_equal[account_email][child_name][program_name].nil?
+        paid_equal[account_email][child_name][program_name][enrollment_description] = {
+          "correct_cost" => correct_cost,
+          "et" => et
+        }
       elsif et.amount.to_f > correct_cost
-        paid_more << [et, correct_cost]
+        paid_more[account_email] = {} if paid_more[account_email].nil?
+        paid_more[account_email][child_name] = {} if paid_more[account_email][child_name].nil?
+        paid_more[account_email][child_name][program_name] = {} if paid_more[account_email][child_name][program_name].nil?
+        paid_more[account_email][child_name][program_name][enrollment_description] = {
+          "correct_cost" => correct_cost,
+          "et" => et
+        }
       end
     end
 
-    ap "#{paid_less.count} transactions that paid less"
-    ap "#{paid_more.count} transactions that paid more"
-    ap "#{paid_equal.count} transactions that were correct"
+    ap "#{paid_less.count} accounts that paid less"
+    ap "#{paid_more.count} accounts that paid more"
+    ap "#{paid_equal.count} accounts that were correct"
 
-    paid_more.each do |arr|
-      et = arr[0]
-      correct_cost = arr[1]
-      ap "child #{et.enrollment.child.full_name} for account #{et.enrollment.child.account.id} paid #{et.amount} which is more than: #{correct_cost}"
+    paid_more.each do |account_email, account_data|
+      account_data.each do |child_name, child_data|
+        child_data.each do |program_name, program_data|
+          program_data.each do |enrollment_description, enrollment_data|
+            difference = correct_cost - et.amount
+            ap "#{account_email} - #{child_name} paid #{et.amount} instead of #{correct_cost}; should be #{difference <= 0 ? "refunded" : "charged"} #{difference} for #{enrollment_description} in program #{program_name}"
+          end
+        end
+      end
     end
 
     ap "-----------------"
 
-    paid_equal.each do |arr|
-      et = arr[0]
-      correct_cost = arr[1]
-      ap "child #{et.enrollment.child.full_name} for account #{et.enrollment.child.account.id} paid #{et.amount} which is correct: #{correct_cost}"
+    paid_more.each do |account_email, account_data|
+      account_data.each do |child_name, child_data|
+        child_data.each do |program_name, program_data|
+          program_data.each do |enrollment_description, enrollment_data|
+            difference = correct_cost - et.amount
+            ap "#{account_email} - #{child_name} paid #{et.amount} instead of #{correct_cost}; should be #{difference <= 0 ? "refunded" : "charged"} #{difference} for #{enrollment_description} in program #{program_name}"
+          end
+        end
+      end
     end
   end
 
