@@ -70,14 +70,14 @@ namespace :hotfix do
 
     ap "-----------------"
 
-    paid_more.each do |account_email, account_data|
+    paid_equal.each do |account_email, account_data|
       account_data.each do |child_name, child_data|
         child_data.each do |program_name, program_data|
           program_data.each do |enrollment_description, enrollment_data|
             et = enrollment_data["et"]
             correct_cost = enrollment_data["correct_cost"].to_money
             difference = correct_cost - et.amount
-            ap "#{account_email} - #{child_name} paid #{et.amount} instead of #{correct_cost}; should be #{difference <= 0 ? "refunded" : "charged"} #{difference} for #{enrollment_description} in program #{program_name}"
+            ap "#{account_email} - #{child_name} paid #{et.amount} which is the correct cost (#{correct_cost}) for #{enrollment_description} in program #{program_name}"
           end
         end
       end
