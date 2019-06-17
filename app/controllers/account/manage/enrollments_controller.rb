@@ -259,7 +259,12 @@ class Account::Manage::EnrollmentsController < ApplicationController
         end
 
         # If monday_id is present then we have a multi-day plan (TKK)
-        if enrollment_attrs.present? && enrollment_attrs['monday_id'].present?
+        if enrollment_attrs.present? && (
+          enrollment_attrs['monday_id'].present? || 
+          enrollment_attrs['tuesday_id'].present? || 
+          enrollment_attrs['wednesday_id'].present? || 
+          enrollment_attrs['thursday_id'].present? ||
+        enrollment_attrs['friday_id'].present? )
           ap "enrollment attributes for custom full day program"
 
           # Create the object for the specific child and set the id
@@ -278,10 +283,11 @@ class Account::Manage::EnrollmentsController < ApplicationController
           ]
 
           day_hash = {}
-          day_ids.reject(&:blank?).each_with_index do |day_id, i|
+          day_ids.each_with_index do |day_id, i|
             day_hash[day_id] = [] if day_hash[day_id].nil?
             day_hash[day_id] << i
           end
+          day_hash.delete_if { |key, value| key.blank?}
 
           day_hash.each do |plan_id, days|
             days.each do |day_index|
@@ -317,7 +323,6 @@ class Account::Manage::EnrollmentsController < ApplicationController
         end
       end
     end
-
     sanitized_params.require(:account).permit(children_attributes: [:id, enrollments_attributes: [:id, :plan_id, :child_id, :location_id, :starts_at, :ends_at, :monday, :tuesday, :wednesday, :thursday, :friday, :_destroy, :dead]])
   end
 
