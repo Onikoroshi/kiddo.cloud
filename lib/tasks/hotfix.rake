@@ -18,7 +18,7 @@ namespace :hotfix do
       # child_name = et.enrollment.child.full_name
       # enrollment_description = et.enrollment.to_short
       # program_name = et.enrollment.plan.program.name
-      # correct_cost = et.enrollment.cost_for_date(target_date).to_f
+      correct_cost = et.enrollment.cost_for_date(target_date).to_f
 
       if et.amount.to_f < correct_cost
         emails += account_emails
