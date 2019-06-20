@@ -136,7 +136,7 @@ class Account < ApplicationRecord
     legacy_user.update_attributes(completed_signed_up: true) if legacy_user.present?
 
     mark_signup_complete!
-    enrolled_programs = enrollments.alive.active.programs
+    enrolled_programs = enrollments.alive.paid.programs
     TransactionalMailer.welcome_summer_customer(self).deliver_now if enrolled_programs.for_summer.any?
     TransactionalMailer.welcome_fall_customer(self).deliver_now if enrolled_programs.for_fall.any?
     TransactionalMailer.waivers_and_agreements(self).deliver_now # if mail_agreements # send them automatically
