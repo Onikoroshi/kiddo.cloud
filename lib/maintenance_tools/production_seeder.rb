@@ -138,7 +138,7 @@ class MaintenanceTools::ProductionSeeder
   def seed_users
     center = Center.find_by(subdomain: "daviskidsklub")
     u = User.create!(
-      email: "daviskidsklub@aol.com",
+      email: "office@daviskidsklub.com",
       first_name: "Lynda",
       last_name: "Yancher",
       center: center,
