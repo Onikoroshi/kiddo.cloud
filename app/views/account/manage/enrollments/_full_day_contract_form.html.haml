@@ -10,12 +10,15 @@
   = render "application/form_errors", object: @account
 
   = f.fields_for :children do |children_fields|
-    
+    - existing_enrollment = @account.enrollments.by_program(@program).by_plan_type(@plan_type).first
+    - existing_enrollment_start = existing_enrollment.present? ? existing_enrollment.starts_at : nil
+    - existing_enrollment_end = existing_enrollment.present? ? existing_enrollment.ends_at : nil
     .plan-box
       .row
         .col-sm-12
           .dropin-name{style: "padding-left: 20px;"}
             = children_fields.object.full_name
+            = children_fields.object.id
 
       - if @program.grade_allowed?(children_fields.object.grade_entering)
         .row
@@ -32,29 +35,29 @@
                   - if day_name == :monday
                     .col-xs-1
                     = children_fields.select :monday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
-                    selected: @monday_id                    
+                    selected: @children_day_ids[children_fields.object.id][:monday_id]
 
                   - if day_name == :tuesday
                     .col-xs-1
                     = children_fields.select :tuesday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
-                    selected: @tuesday_id
+                    selected: @children_day_ids[children_fields.object.id][:tuesday_id]
 
                   - if day_name == :wednesday
                     .col-xs-1
                     = children_fields.select :wednesday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
-                    selected: @wednesday_id
+                    selected: @children_day_ids[children_fields.object.id][:wednesday_id]
 
                   - if day_name == :thursday
                     .col-xs-1
                     = children_fields.select :thursday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
-                    selected: @thursday_id
+                    selected: @children_day_ids[children_fields.object.id][:thursday_id]
 
                   - if day_name == :friday
                     .col-xs-1
                     = children_fields.select :friday_id, @program.plans.by_plan_type(@plan_type).select_options, include_blank: "None",
-                    selected: @friday_id     
+                    selected: @children_day_ids[children_fields.object.id][:friday_id]
                   %br
-                  %br             
+                  %br
 
           .h3{style: "padding-left: 0px !important; padding-top: 7px;"}
             = children_fields.hidden_field :location_id, value: @program.locations.first.id
@@ -64,13 +67,13 @@
             .col-xs-3{style: "padding-left: 0px !important"}
               = f.label :starts_at, "Starting On"
             .col-xs-9{style: "padding-left: 0px !important"}
-              = children_fields.text_field :starts_at, value: [(@program.starts_at).to_date, (Time.zone.today).to_date].max, class: "drop_in-date-select flatpickr-date"
+              = children_fields.text_field :starts_at, value: (existing_enrollment_start || [(@program.starts_at).to_date, (Time.zone.today).to_date].max), class: "drop_in-date-select flatpickr-date"
 
           .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px; margin-left: 20px;"}
             .col-xs-3{style: "padding-left: 0px !important"}
               = f.label :ends_at, "Stopping On"
             .col-xs-9{style: "padding-left: 0px !important"}
-              = children_fields.text_field :ends_at, value: (@program.ends_at).to_date, class: "drop_in-date-select flatpickr-date"
+              = children_fields.text_field :ends_at, value: (existing_enrollment_end || (@program.ends_at).to_date), class: "drop_in-date-select flatpickr-date"
       - else
         = display_disallowed_grade_message
 

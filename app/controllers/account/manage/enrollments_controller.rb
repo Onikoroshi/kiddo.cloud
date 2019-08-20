@@ -17,37 +17,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
       @account.attributes = changed_params
     end
 
-    @account.children.each do |child|
-      child.enrollments.each do |enrollment|
-        if enrollment.monday
-          @monday_id = enrollment.plan_id
-        end
-
-        if enrollment.tuesday
-          @tuesday_id = enrollment.plan_id
-        end
-
-        if enrollment.wednesday
-          @wednesday_id = enrollment.plan_id
-        end
-
-        if enrollment.thursday
-          @thursday_id = enrollment.plan_id
-        end
-
-        if enrollment.friday
-          @friday_id = enrollment.plan_id
-        end
-
-        if enrollment.saturday
-          @saturday_id = enrollment.plan_id
-        end
-
-        if enrollment.sunday
-          @sunday_id = enrollment.plan_id
-        end
-      end
-    end
+    build_day_ids
   end
 
   def create
@@ -62,10 +32,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
     @account.attributes = unapplied_change_params
 
     # now apply the ones we just chose
-    chosen_params = enrollment_params
-    ap "chosen:"
-    ap chosen_params
-    @account.attributes = chosen_params
+    @account.attributes = enrollment_params
 
     if @account.valid?
       unless overlapping_enrollments?
@@ -87,10 +54,12 @@ class Account::Manage::EnrollmentsController < ApplicationController
         redirect_to path, notice: @account.enrollments.any? ? "enrollment successful!" : "no enrollment chosen"
       else
         build_missing_enrollments
+        build_day_ids
         render "new"
       end
     else
       build_missing_enrollments
+      build_day_ids
       render "new"
     end
   end
@@ -100,6 +69,8 @@ class Account::Manage::EnrollmentsController < ApplicationController
       changed_params = @account.enrollment_changes.pending.build_params
       @account.attributes = changed_params
     end
+
+    build_day_ids
   end
 
   def update
@@ -167,10 +138,12 @@ class Account::Manage::EnrollmentsController < ApplicationController
         redirect_to edit_account_dashboard_enrollments_path(@account), notice: "Change has been initialized. Don't forget to finalize it!"
       else
         build_missing_enrollments
+        build_day_ids
         render "edit"
       end
     else
       build_missing_enrollments
+      build_day_ids
       render "edit"
     end
   end
@@ -224,19 +197,52 @@ class Account::Manage::EnrollmentsController < ApplicationController
     end
   end
 
+  def build_day_ids
+    @children_day_ids = {}
+    return if @plan_type.blank? || !@plan_type.full_day_contract?
+
+    @account.children.each_with_index do |child, index|
+      @children_day_ids[child.id] = {}
+      child.enrollments.alive.by_program_and_plan_type(@program, @plan_type).each_with_index do |enrollment, index|
+        if enrollment.monday
+          @children_day_ids[child.id][:monday_id] = enrollment.plan_id
+        end
+
+        if enrollment.tuesday
+          @children_day_ids[child.id][:tuesday_id] = enrollment.plan_id
+        end
+
+        if enrollment.wednesday
+          @children_day_ids[child.id][:wednesday_id] = enrollment.plan_id
+        end
+
+        if enrollment.thursday
+          @children_day_ids[child.id][:thursday_id] = enrollment.plan_id
+        end
+
+        if enrollment.friday
+          @children_day_ids[child.id][:friday_id] = enrollment.plan_id
+        end
+
+        if enrollment.saturday
+          @children_day_ids[child.id][:saturday_id] = enrollment.plan_id
+        end
+
+        if enrollment.sunday
+          @children_day_ids[child.id][:sunday_id] = enrollment.plan_id
+        end
+      end
+    end
+  end
+
   def enrollment_params
     sanitized_params = params
 
     if sanitized_params["account"]["children_attributes"].present?
-      ap "children attributes present"
       sanitized_params["account"]["children_attributes"].each do |child_key, enrollment_attrs|
 
         if enrollment_attrs.present? && enrollment_attrs["enrollments_attributes"].present?
-          ap "enrollment attributes present"
           enrollment_attrs["enrollments_attributes"].each do |enrollment_key, values|
-            ap "enrollment key: #{enrollment_key}"
-            ap "values:"
-            ap values.permit!
             if sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] == "1"
               sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] = "true"
             end
@@ -246,7 +252,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
               sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][enrollment_key]["_destroy"] = "true"
             end
 
-            any_days = values.select{|key, value| ["monday", "tuesday", "wednesday", "thursday", "friday"].include?(key.to_s)}.values.reject{|v| ["0", "false"].include?v}.any?
+            any_days = values.select{|key, value| ["monday", "tuesday", "wednesday", "thursday", "friday"].include?(key.to_s)}.values.reject{|v| ["0", "false"].include?(v)}.any?
 
             unless any_days
               if values["id"].present?
@@ -258,14 +264,10 @@ class Account::Manage::EnrollmentsController < ApplicationController
           end
         end
 
-        # If monday_id is present then we have a multi-day plan (TKK)
-        if enrollment_attrs.present? && (
-          enrollment_attrs['monday_id'].present? || 
-          enrollment_attrs['tuesday_id'].present? || 
-          enrollment_attrs['wednesday_id'].present? || 
-          enrollment_attrs['thursday_id'].present? ||
-        enrollment_attrs['friday_id'].present? )
-          ap "enrollment attributes for custom full day program"
+        # We have a multi-day plan (TKK)
+        if @plan_type.present? && @plan_type.full_day_contract?
+          child = Child.find_by(id: enrollment_attrs['id'])
+          next unless child.present?
 
           # Create the object for the specific child and set the id
           sanitized_params["account"] = {}
@@ -274,55 +276,51 @@ class Account::Manage::EnrollmentsController < ApplicationController
           sanitized_params["account"]["children_attributes"][child_key][:id] = enrollment_attrs['id']
           sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"] = {}
 
-          day_ids = [
-            enrollment_attrs['monday_id'],
-            enrollment_attrs['tuesday_id'],
-            enrollment_attrs['wednesday_id'],
-            enrollment_attrs['thursday_id'],
-            enrollment_attrs['friday_id']
+          day_dictionary = [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday"
           ]
 
-          day_hash = {}
-          day_ids.each_with_index do |day_id, i|
-            day_hash[day_id] = [] if day_hash[day_id].nil?
-            day_hash[day_id] << i
-          end
-          day_hash.delete_if { |key, value| key.blank?}
+          day_dictionary.each_with_index do |day_str, day_index|
+            selected_plan_id = enrollment_attrs["#{day_str}_id"]
+            existing_enrollment = child.enrollments.alive.by_program_and_plan_type(@program, @plan_type).where("enrollments.#{day_str} IS TRUE").first
 
-          day_hash.each do |plan_id, days|
-            days.each do |day_index|
-              day_dictionary = [
-                "monday",
-                "tuesday",
-                "wednesday",
-                "thursday",
-                "friday"
-              ]
-
-              # set all days to 0 because multi-day enrollments will be added here
-              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s] = {
-                :monday => "0",
-                :tuesday => "0",
-                :wednesday => "0",
-                :thursday => "0",
-                :friday => "0",
-              }
-
-              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s][day_dictionary[day_index]] = "1"
-
-              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['child_id']  = enrollment_attrs['id']
-              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['plan_id']   = plan_id
-              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['starts_at'] = enrollment_attrs['starts_at']
-              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['ends_at']   = enrollment_attrs['ends_at']
-              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['location_id'] = enrollment_attrs["location_id"]
-
-              # delete plan if already created
-              Enrollment.where(:child_id => enrollment_attrs['id'], :paid => false).destroy_all
+            if selected_plan_id.blank? && existing_enrollment.blank?
+              next
             end
+
+            # set all days to 0 because multi-day enrollments will be added here
+            sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s] = {
+              :monday => "0",
+              :tuesday => "0",
+              :wednesday => "0",
+              :thursday => "0",
+              :friday => "0",
+            }
+
+            if selected_plan_id.present?
+              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s][day_dictionary[day_index]] = "1"
+            else
+              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]["_destroy"] = "true"
+            end
+
+            if existing_enrollment.present?
+              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['id']  = existing_enrollment.id.to_s
+            end
+
+            sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['child_id']  = enrollment_attrs['id']
+            sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['plan_id']   = selected_plan_id
+            sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['starts_at'] = enrollment_attrs['starts_at']
+            sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['ends_at']   = enrollment_attrs['ends_at']
+            sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]['location_id'] = enrollment_attrs["location_id"]
           end
         end
       end
     end
+
     sanitized_params.require(:account).permit(children_attributes: [:id, enrollments_attributes: [:id, :plan_id, :child_id, :location_id, :starts_at, :ends_at, :monday, :tuesday, :wednesday, :thursday, :friday, :_destroy, :dead]])
   end
 
