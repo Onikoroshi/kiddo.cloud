@@ -151,7 +151,7 @@
       #plan
         %h3 Plan Information #{link_to "Edit", edit_account_dashboard_enrollments_path(@account), class: "btn btn-xs btn-round"} #{link_to "Finalize Changes", new_account_dashboard_payment_path(@account), class: "btn btn-xs btn-round" if @account.pending_enrollment_changes?}
 
-        - @account.enrollments.alive.programs.each do |program|
+        - @account.enrollments.alive.programs.descending_by_start_date.each do |program|
           %h5= program.name
 
           - @account.children.each do |child|
