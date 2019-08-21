@@ -86,8 +86,11 @@ class Account::Manage::EnrollmentsController < ApplicationController
     unapplied_change_params = @account.enrollment_changes.pending.build_params
     @account.attributes = unapplied_change_params
 
+    final_params = enrollment_params
+    ap "final params:"
+    ap final_params.permit!
     # now apply the ones we just chose
-    @account.attributes = enrollment_params
+    @account.attributes = final_params
     if @account.valid?
       unless overlapping_enrollments?
         @account.children.each do |child|
@@ -285,12 +288,25 @@ class Account::Manage::EnrollmentsController < ApplicationController
           ]
 
           day_dictionary.each_with_index do |day_str, day_index|
+            ap "checking #{day_str}"
             selected_plan_id = enrollment_attrs["#{day_str}_id"]
+            ap "selected plan id: #{selected_plan_id}"
             existing_enrollment = child.enrollments.alive.by_program_and_plan_type(@program, @plan_type).where("enrollments.#{day_str} IS TRUE").first
+            if existing_enrollment.present?
+              ap "existing enrollment: #{existing_enrollment.present? ? existing_enrollment.id : "none"}"
+            else
+              ap "no perfect match"
+              ap child.enrollments.pluck(:id)
+              ap child.enrollments.alive.pluck(:id)
+              ap child.enrollments.alive.by_program_and_plan_type(@program, @plan_type).pluck(:id)
+              ap child.enrollments.alive.by_program_and_plan_type(@program, @plan_type).where("enrollments.#{day_str} IS TRUE").pluck(:id)
+            end
 
             if selected_plan_id.blank? && existing_enrollment.blank?
+              ap "skipping"
               next
             end
+            ap "didn't skip"
 
             # set all days to 0 because multi-day enrollments will be added here
             sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s] = {
