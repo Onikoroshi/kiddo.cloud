@@ -273,8 +273,8 @@ class Account::Manage::EnrollmentsController < ApplicationController
           next unless child.present?
 
           # Create the object for the specific child and set the id
-          sanitized_params["account"] = {}
-          sanitized_params["account"]["children_attributes"] = {}
+          sanitized_params["account"] = {} if sanitized_params["account"].blank?
+          sanitized_params["account"]["children_attributes"] = {} if sanitized_params["account"]["children_attributes"].blank?
           sanitized_params["account"]["children_attributes"][child_key] = {}
           sanitized_params["account"]["children_attributes"][child_key][:id] = enrollment_attrs['id']
           sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"] = {}
