@@ -18,7 +18,6 @@
         .col-sm-12
           .dropin-name{style: "padding-left: 20px;"}
             = children_fields.object.full_name
-            = children_fields.object.id
 
       - if @program.grade_allowed?(children_fields.object.grade_entering)
         .row
