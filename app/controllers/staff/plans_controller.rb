@@ -38,7 +38,7 @@ class Staff::PlansController < ApplicationController
       @plan.destroy
       redirect_to staff_plans_path(program_id: params[:program_id]), notice: "Plan completely removed."
     else
-      redirect_to staff_plans_path(program_id: params[:program_id]), notice: "Only Plans with no enrollments or transactions can be removed."
+      redirect_to staff_plans_path(program_id: params[:program_id]), notice: "Only Plans with no enrollments can be removed."
     end
   end
 
