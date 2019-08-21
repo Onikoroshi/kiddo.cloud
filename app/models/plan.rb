@@ -77,7 +77,7 @@ class Plan < ApplicationRecord
   end
 
   def can_destroy?
-    return false if enrollments.any?
+    return false if enrollments.alive.any?
 
     true
   end
