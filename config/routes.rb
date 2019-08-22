@@ -81,7 +81,11 @@ Rails.application.routes.draw do
   namespace :staff do
     resources :program_groups, except: :show
     resources :programs, except: :show
-    resources :plans, except: :show
+    resources :plans, except: :show do
+      member do
+        patch :reenable
+      end
+    end
     resources :locations, except: :show
     resources :announcements, except: :show
     resources :time_entries, except: :show do

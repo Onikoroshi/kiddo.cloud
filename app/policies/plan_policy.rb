@@ -11,4 +11,5 @@ class PlanPolicy < ApplicationPolicy
   alias_method :edit?, :manage?
   alias_method :update?, :manage?
   alias_method :destroy?, :manage?
+  alias_method :reenable?, :manage?
 end

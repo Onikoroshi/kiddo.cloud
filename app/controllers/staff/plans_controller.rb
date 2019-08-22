@@ -3,12 +3,13 @@ class Staff::PlansController < ApplicationController
   before_action :guard_center!
   before_action :authorize_multiple, only: :index
   before_action :build_single, only: [:new, :create]
-  before_action :find_single, only: [:show, :edit, :update, :destroy]
+  before_action :find_single, only: [:show, :edit, :update, :destroy, :reenable]
   before_action :authorize_single, except: :index
 
   def index
     set_collection
     @plans = @plans.page(params[:page]).per(50)
+    @disabled_plans = @disabled_plans.page(params[:page]).per(50)
   end
 
   def new
@@ -34,12 +35,21 @@ class Staff::PlansController < ApplicationController
   end
 
   def destroy
+    notice = "Only Plans with no enrollments can be removed."
     if @plan.can_destroy?
       @plan.destroy
-      redirect_to staff_plans_path(program_id: params[:program_id]), notice: "Plan completely removed."
-    else
-      redirect_to staff_plans_path(program_id: params[:program_id]), notice: "Only Plans with no enrollments can be removed."
+      notice = "Plan completely removed."
+    elsif @plan.can_disable?
+      @plan.disable!
+      notice = "Plan could not be removed, but has been disabled so parents can no longer choose it as an option."
     end
+
+    redirect_to staff_plans_path(program_id: params[:program_id]), notice: notice
+  end
+
+  def reenable
+    @plan.enable!
+    redirect_to staff_plans_path(program_id: params[:program_id]), notice: "Plan has been successfully Re Enabled"
   end
 
   private
@@ -57,6 +67,7 @@ class Staff::PlansController < ApplicationController
     @program_id = @program.present? ? @program.id : ""
 
     @plans = Plan.by_program(@program)
+    @disabled_plans = Plan.unscoped.by_program(@program).disabled
   end
 
   def build_single
@@ -64,7 +75,7 @@ class Staff::PlansController < ApplicationController
   end
 
   def find_single
-    @plan = Plan.find(params[:id])
+    @plan = Plan.unscoped.find(params[:id])
   end
 
   def permitted_params

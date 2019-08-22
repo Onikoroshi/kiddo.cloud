@@ -18,6 +18,11 @@ class Plan < ApplicationRecord
   accepts_nested_attributes_for :discounts, allow_destroy: true
   accepts_nested_attributes_for :target_days, allow_destroy: true
 
+  default_scope { enabled }
+
+  scope :enabled, -> { where(enabled: true) }
+  scope :disabled, -> { where.not(enabled: true) }
+
   scope :by_plan_type, ->(plan_type) { where(plan_type: plan_type.to_s) }
   scope :by_program, ->(program) { program.present? ? where(program: program) : all }
   scope :deduceable, -> { where(deduce: true) }
@@ -77,9 +82,24 @@ class Plan < ApplicationRecord
   end
 
   def can_destroy?
+    return false if enrollments.any?
+    return false if transactions.any?
+
+    true
+  end
+
+  def can_disable?
     return false if enrollments.alive.any?
 
     true
+  end
+
+  def disable!
+    update_attribute(:enabled, false)
+  end
+
+  def enable!
+    update_attribute(:enabled, true)
   end
 
   def deduceable?

@@ -1,0 +1,38 @@
+- if plans.any?
+  %table.admin-table
+    %thead
+      %th
+      %th Type
+      %th Name
+      %th Price
+      %th Discounts
+      %th Days
+      %th Allowed Days
+      %th Program
+      %th
+
+    %tbody
+      - plans.each do |plan|
+        %tr
+          %td
+            - if defined?(disable_action) && disable_action == "enable"
+              = link_to "Re Enable", reenable_staff_plan_path(plan, program_id: @program_id), method: :patch, :date => { :confirm => 'Are you sure?' }
+            - else
+              = link_to staff_plan_path(plan, program_id: @program_id), method: :delete, :data => { :confirm => 'Are you sure?' } do
+                %i.material-icons delete_forever
+          %td= plan.plan_type.text
+          %td= plan.display_name
+          %td= plan.price
+          %td= plan.discounts.map{|d| d.to_s}.join("<br>").html_safe
+          %td= plan.display_days_per_week
+          %td= plan.allowed_days(true)
+          %td= plan.program.name
+          %td
+            - unless defined?(disable_action) && disable_action == "enable"
+              = link_to edit_staff_plan_path(plan, program_id: @program_id) do
+                %i.material-icons edit
+
+  %hr
+
+  .text-center
+    = paginate plans
