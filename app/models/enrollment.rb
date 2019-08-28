@@ -496,7 +496,7 @@ class Enrollment < ApplicationRecord
     when PlanType[:drop_in].to_s
       "Drop-In on #{starts_at.stamp("Monday, Feb. 3rd, 2018")} at #{location.name}"
     else
-      "#{"#{plan.display_name} " unless plan.deduceable?}#{plan.plan_type.text} plan on #{enrolled_days(humanize: true)} from #{service_dates} at #{location.name}."
+      "#{"#{plan.display_name} " unless plan.deduceable?}#{plan.plan_type.text} plan on #{enrolled_days(humanize: true)} from #{service_dates} at #{location.present? ? location.name : "an unknown location"}."
     end
   end
 
