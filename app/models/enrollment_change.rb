@@ -152,7 +152,7 @@ class EnrollmentChange < ApplicationRecord
     end
 
     if data["location_id"].present? && Location.find_by(id: data["location_id"]).present?
-      messages << "Move#{"d" if past} from #{enrollment.location.name} to #{Location.find_by(id: data["location_id"]).name}"
+      messages << "Move#{"d" if past} from #{enrollment.location.present? ? enrollment.location.name : "unknown location"} to #{Location.find_by(id: data["location_id"]).name}"
     end
 
     messages.to_sentence
