@@ -98,13 +98,13 @@ class Enrollment < ApplicationRecord
 
           case plan_type.to_s
           when PlanType[:weekly].to_s
-            blurbs << "#{child.first_name} is attending  #{num_enrolls} #{"Week".pluralize(num_enrolls)} at #{location.name} during #{program.short_name}"
+            blurbs << "#{child.first_name} is attending  #{num_enrolls} #{"Week".pluralize(num_enrolls)} at #{location_name} during #{program.short_name}"
           when PlanType[:drop_in].to_s
-            blurbs << "#{child.first_name} has #{num_enrolls} #{"Drop-In".pluralize(num_enrolls)} at #{location.name} during #{program.short_name}"
+            blurbs << "#{child.first_name} has #{num_enrolls} #{"Drop-In".pluralize(num_enrolls)} at #{location_name} during #{program.short_name}"
           else
             type_obj = PlanType[plan_type]
             type_text = type_obj.present? ? type_obj.text : plan_type.humanize
-            blurbs << "#{child.first_name} is enrolled in  #{num_enrolls} #{type_text.pluralize(num_enrolls)} at #{location.name} during #{program.name}"
+            blurbs << "#{child.first_name} is enrolled in  #{num_enrolls} #{type_text.pluralize(num_enrolls)} at #{location_name} during #{program.name}"
           end
         end
       end
@@ -165,7 +165,7 @@ class Enrollment < ApplicationRecord
 
         child = enrollment.child
 
-        child_info = [child.last_name, child.first_name, child.birthdate.stamp("5/13/2011"), enrollment.type_display, enrollment.service_dates, enrollment.location.name]
+        child_info = [child.last_name, child.first_name, child.birthdate.stamp("5/13/2011"), enrollment.type_display, enrollment.service_dates, enrollment.location_name]
 
         child_info += account_info
 
@@ -187,6 +187,10 @@ class Enrollment < ApplicationRecord
 
   def past?
     ends_at < Time.zone.today
+  end
+
+  def location_name
+    @location_name ||= location.present? ? location.name : "Unknown Location"
   end
 
   def plan_type
@@ -492,11 +496,11 @@ class Enrollment < ApplicationRecord
   def to_short
     case plan.plan_type.to_s
     when PlanType[:weekly].to_s
-      "Weekly #{plan.display_name} plan #{display_dates} at #{location.name}"
+      "Weekly #{plan.display_name} plan #{display_dates} at #{location_name}"
     when PlanType[:drop_in].to_s
-      "Drop-In on #{starts_at.stamp("Monday, Feb. 3rd, 2018")} at #{location.name}"
+      "Drop-In on #{starts_at.stamp("Monday, Feb. 3rd, 2018")} at #{location_name}"
     else
-      "#{"#{plan.display_name} " unless plan.deduceable?}#{plan.plan_type.text} plan on #{enrolled_days(humanize: true)} from #{service_dates} at #{location.present? ? location.name : "an unknown location"}."
+      "#{"#{plan.display_name} " unless plan.deduceable?}#{plan.plan_type.text} plan on #{enrolled_days(humanize: true)} from #{service_dates} at #{location_name}."
     end
   end
 
