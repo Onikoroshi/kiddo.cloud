@@ -30,10 +30,13 @@
               - if enrollment_fields.object.alive? && enrollment_fields.object.program == @program && enrollment_fields.object.plan_type.to_s == @plan_type.to_s && (policy(enrollment_fields.object).manage? || enrollment_fields.object.unpaid? || (defined?(target_method) && !enrollment_fields.object.past?))
                 = render "enrollment_fields", f: enrollment_fields
 
-            .links
-              .pull-left= link_to_add_association 'Add Week', children_fields, :enrollments, {style: "margin-left: 20px;", class: "btn btn-info"}
+            - if @program.available_locations.any?
+              .links
+                .pull-left= link_to_add_association 'Add Week', children_fields, :enrollments, {style: "margin-left: 20px;", class: "btn btn-info"}
+            - else
+              %h4{style: "padding-left: 35px;"}= display_unavailable_locations_message
         - else
-          = display_disallowed_grade_message
+          %h4{style: "padding-left: 35px;"}= display_disallowed_grade_message
 
     = link_to "Cancel", @account.signup_complete? ? (defined?(target_method) ? edit_account_dashboard_enrollments_path(@account) : new_account_dashboard_enrollment_path(@account)) : account_step_path(@account, :plan), class: "btn"
     = f.submit "Submit", class: "btn btn-info pull-right"

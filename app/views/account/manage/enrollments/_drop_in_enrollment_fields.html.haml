@@ -24,7 +24,7 @@
         - else
           = f.hidden_field :plan_id, value: f.object.plan_id || @program.plans.by_plan_type(@plan_type).first.id
         = f.label :location, "at"
-        = f.select :location_id, options_from_collection_for_select(@program.available_locations, 'id', 'name', f.object.location_id)
+        = render "dynamic_location_select", f: f
         %br
         = link_to_remove_association "Remove Drop In Day", f
   %hr

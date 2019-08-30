@@ -1,0 +1,12 @@
+- if @program.available_locations.count == 1
+  = f.object.location.present? ? f.object.location.name : @program.available_locations.first.name
+  = f.hidden_field :location_id, value: f.object.location_id || @program.available_locations.first.id
+- elsif @program.available_locations.any?
+  = f.select :location_id, options_from_collection_for_select(@program.available_locations, 'id', 'name', f.object.location_id)
+- else
+  - if f.object.location.present?
+    = f.object.location.name
+  - else
+    Unknown Location. Please remove this enrollment
+
+  = f.hidden_field :location_id, value: f.object.location_id

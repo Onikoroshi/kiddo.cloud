@@ -1,5 +1,5 @@
 .nested-fields
-  .row{style: "padding-bottom: 20px;"}
+  .row{style: "padding-bottom: 20px; padding-left: 10px;"}
     = f.hidden_field :child_id, value: f.object.child_id
     = f.hidden_field :monday, value: true
     = f.hidden_field :tuesday, value: true
@@ -17,6 +17,6 @@
     %span{style: "padding-left: 10px;"}
       At
     %span{style: "padding-left: 10px;"}
-      = f.select :location_id, options_from_collection_for_select(@program.available_locations, 'id', 'name', f.object.location)
+      = render "dynamic_location_select", f: f
     %span{style: "padding-left: 10px;"}
       = link_to_remove_association "Remove Week", f
