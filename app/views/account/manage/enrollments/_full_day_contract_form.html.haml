@@ -59,8 +59,8 @@
                   %br
 
           .h3{style: "padding-left: 0px !important; padding-top: 7px;"}
-            = children_fields.hidden_field :location_id, value: @program.available_locations.first.id
-            At #{@program.available_locations.first.name}
+            = children_fields.hidden_field :location_id, value: @program.locations.first.id
+            At #{@program.locations.first.name}
 
           .col-xs-3{style: "padding-left: 0px !important; padding-top: 20px; margin-left: 20px;"}
             .col-xs-3{style: "padding-left: 0px !important"}

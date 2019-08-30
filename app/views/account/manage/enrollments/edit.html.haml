@@ -2,9 +2,6 @@
   = render partial: "account/steps/step_navigation"
 
 - if @plan_type.present?
-  - if @program.available_locations.any?
-    = render "#{@plan_type.to_s}", target_method: "PATCH"
-  - else
-    %h1 Unfortunately, there are no locations currently available. Please contact the office to be put on the waitlist.
+  = render "#{@plan_type.to_s}", target_method: "PATCH"
 - else
   = render "account/enrollment_type/list_types", target_action: "edit"
