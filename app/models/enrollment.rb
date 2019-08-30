@@ -98,13 +98,13 @@ class Enrollment < ApplicationRecord
 
           case plan_type.to_s
           when PlanType[:weekly].to_s
-            blurbs << "#{child.first_name} is attending  #{num_enrolls} #{"Week".pluralize(num_enrolls)} at #{location_name} during #{program.short_name}"
+            blurbs << "#{child.first_name} is attending  #{num_enrolls} #{"Week".pluralize(num_enrolls)} at #{location.name} during #{program.short_name}"
           when PlanType[:drop_in].to_s
-            blurbs << "#{child.first_name} has #{num_enrolls} #{"Drop-In".pluralize(num_enrolls)} at #{location_name} during #{program.short_name}"
+            blurbs << "#{child.first_name} has #{num_enrolls} #{"Drop-In".pluralize(num_enrolls)} at #{location.name} during #{program.short_name}"
           else
             type_obj = PlanType[plan_type]
             type_text = type_obj.present? ? type_obj.text : plan_type.humanize
-            blurbs << "#{child.first_name} is enrolled in  #{num_enrolls} #{type_text.pluralize(num_enrolls)} at #{location_name} during #{program.name}"
+            blurbs << "#{child.first_name} is enrolled in  #{num_enrolls} #{type_text.pluralize(num_enrolls)} at #{location.name} during #{program.name}"
           end
         end
       end
