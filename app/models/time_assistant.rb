@@ -33,11 +33,11 @@ class TimeAssistant
   end
 
   def low_grade_check_time
-    low_grade_start_time + 11.minutes
+    low_grade_start_time + 16.minutes
   end
 
   def high_grade_check_time
-    high_grade_start_time + 11.minutes
+    high_grade_start_time + 16.minutes
   end
 
   def low_grade_swipe_window
