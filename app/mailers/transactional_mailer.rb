@@ -78,4 +78,11 @@ class TransactionalMailer < ApplicationMailer
 
     mail(to: ["petertcormack@gmail.com", "office@daviskidsklub.com", "jyang54@mail.csuchico.edu"], subject: "Tardy Notifications Report")
   end
+
+  def notify_of_exception(except_message, except_backtrace)
+    @exception_message = except_message
+    @exception_backtrace = except_backtrace
+
+    mail(to: "petertcormack@gmail.com", subject: "Exception Notification")
+  end
 end
