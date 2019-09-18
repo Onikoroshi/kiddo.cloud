@@ -72,7 +72,7 @@ class TransactionalMailer < ApplicationMailer
 
   def late_notifications_report(children_notified = [])
     ap "blank? #{children_notified.blank?}"
-    return if children_notified.blank?
+    # return if children_notified.blank?
 
     @children_notified = children_notified
 
