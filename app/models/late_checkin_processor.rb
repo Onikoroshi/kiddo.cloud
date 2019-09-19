@@ -21,6 +21,7 @@ class LateCheckinProcessor
 
     begin
       children_notified = []
+
       children.find_each do |c|
         enrollments = c.enrollments.alive.active.paid.select { |e| e.enrolled_today? && e.alerts_enabled? }
         if enrollments.any?
@@ -40,7 +41,7 @@ class LateCheckinProcessor
         end
       end
 
-      TransactionalMailer.late_notifications_report(children_notified).deliver_now if children_notified.any?
+      TransactionalMailer.late_notifications_report(children_notified).deliver_now
     rescue => e
       TransactionalMailer.notify_of_exception(e.message, e.backtrace).deliver_now
       ap e.message
