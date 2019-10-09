@@ -75,7 +75,11 @@ Rails.application.routes.draw do
   end
 
   namespace :children do
-    resources :attendance_display, only: :index
+    resources :attendance_display, only: :index do
+      member do
+        get :send_tardy_notification
+      end
+    end
   end
 
   namespace :staff do

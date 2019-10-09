@@ -17,4 +17,27 @@ class Children::AttendanceDisplayController < ApplicationController
 
     @enrollments = @enrollments.by_program_on_date(@program, Time.zone.today) if @program.present?
   end
+
+  def send_tardy_notification
+    @child = Child.find(params[:id])
+
+    error_message = ""
+    notice_message = ""
+
+    error_message = @child.tardy_notification_blocker
+
+    if error_message.present?
+      flash[:error] = error_message
+    else
+      TransactionalMailer.late_checkin_alert(@child.account, @child).deliver_now
+      @child.late_checkin_notifications.create(
+        account: @child.account,
+        sent_at: Time.zone.now,
+        sent_to_email: @child.account.all_emails.join(", "),
+      )
+      flash[:notice] = "Tardy notification email sent to #{@child.account.all_emails.to_sentence} for #{@child.full_name}"
+    end
+
+    redirect_to children_attendance_display_index_path
+  end
 end
