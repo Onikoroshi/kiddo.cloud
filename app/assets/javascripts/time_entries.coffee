@@ -25,16 +25,20 @@ document.addEventListener 'turbolinks:load', ->
         Accept: "text/javascript, */*; q=0.01"
       success: (data) ->
         console.log("success!")
+
         pin_number_elem.val("")
+        elem.prop('checked', data["clocked_in"])
       error: (xhr, status, error) ->
         console.log(xhr)
         console.log(status)
         console.log(error)
+
+        elem.prop('checked', !on_clock)
+
         if xhr.responseText == "PIN Number Incorrect"
           console.log("xhr response #{xhr.responseText} correct")
+
           error_div = $("#pin_error_#{time_recordable_id}")
-          console.log(error_div)
           error_div.show()
-          elem.prop('checked', !on_clock)
         else
           console.log("xhr response #{xhr.responseText} incorrect")

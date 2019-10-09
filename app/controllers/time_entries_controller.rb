@@ -16,7 +16,7 @@ class TimeEntriesController < ApplicationController
       end
 
       if @time_entry.present? && @time_entry.save!
-        format.js { render json: Hash.new }
+        format.js { render json: { clocked_in: @time_entry.time_recordable.on_clock? } }
       else
         format.json { render json: @time_entry.present? ? @time_entry.errors : "PIN Number Incorrect", status: :unprocessable_entity }
       end
