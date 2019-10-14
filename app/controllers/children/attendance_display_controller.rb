@@ -35,6 +35,7 @@ class Children::AttendanceDisplayController < ApplicationController
         sent_at: Time.zone.now,
         sent_to_email: @child.account.all_emails.join(", "),
       )
+      TransactionalMailer.late_notifications_report([@child]).deliver_now
       flash[:notice] = "Tardy notification email sent to #{@child.account.all_emails.to_sentence} for #{@child.full_name}"
     end
 

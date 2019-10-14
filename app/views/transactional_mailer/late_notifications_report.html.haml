@@ -4,12 +4,12 @@
   %thead
     %th Child Name
     %th Parent Name
-    %th Parent Email
+    %th Parent Email(s)
     %th Child Time Entries
   %tbody
     - @children_notified.each do |child|
       %tr
         %td= child.full_name
         %td= child.account.primary_parent.full_name
-        %td= child.account.user.email
+        %td= child.account.all_emails.to_sentence
         %td= link_to "Entries", staff_time_entries_url(recordable_type: "Child", recordable_id: child.id)
