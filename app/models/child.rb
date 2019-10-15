@@ -115,24 +115,22 @@ class Child < ApplicationRecord
   def tardy_notification_blocker
     error_message = ""
 
-    # there are too many exceptions (children who attend at different times during the day, for instance),
-    # so open this up entirely for now.
-    # enrollments = self.enrollments.alive.active.paid.select { |e| e.enrolled_today? }
-    # if enrollments.any?
-    #   existing_time_entries = self.time_entries.entering.all_in_range(Time.zone.today.beginning_of_day, Time.zone.today.end_of_day)
-    #   if existing_time_entries.none?
-    #     existing_notifications = self.late_checkin_notifications.sent_today
-    #     if existing_notifications.none?
-    #       # no blockers
-    #     else
-    #       error_message = "#{self.full_name} has already had a tardy notification email sent to #{self.account.all_emails.to_sentence}"
-    #     end
-    #   else
-    #     error_message = "#{self.full_name} has already been checked in today."
-    #   end
-    # else
-    #   error_message = "#{self.full_name} is not enrolled in anything today."
-    # end
+    enrollments = self.enrollments.alive.active.paid.select { |e| e.enrolled_today? }
+    if enrollments.any?
+      existing_time_entries = self.time_entries.entering.all_in_range(Time.zone.today.beginning_of_day, Time.zone.today.end_of_day)
+      if existing_time_entries.none?
+        existing_notifications = self.late_checkin_notifications.sent_today
+        if existing_notifications.none?
+          # no blockers
+        else
+          error_message = "#{self.full_name} has already had a tardy notification email sent to #{self.account.all_emails.to_sentence}"
+        end
+      else
+        error_message = "#{self.full_name} has already been checked in today."
+      end
+    else
+      error_message = "#{self.full_name} is not enrolled in anything today."
+    end
 
     error_message
   end
