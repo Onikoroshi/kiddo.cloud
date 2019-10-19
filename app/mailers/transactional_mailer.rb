@@ -60,14 +60,14 @@ class TransactionalMailer < ApplicationMailer
 
   def recurring_payment_report(messages)
     @messages = messages
-    mail(to: ["petertcormack@gmail.com", "office@daviskidsklub.com"], subject: "DKK Recurring Payment Report")
+    mail(to: ["petertcormack@gmail.com", "office@daviskidsklub.com", "jenifer@daviskidsklub.com"], subject: "DKK Recurring Payment Report")
   end
 
   def enrollment_change_report(transactions)
     @transactions = transactions
     @account = transactions.first.account
 
-    mail(to: ["office@daviskidsklub.com", "jyang54@mail.csuchico.edu"], subject: "DKK Enrollment Change Report")
+    mail(to: ["office@daviskidsklub.com", "jenifer@daviskidsklub.com"], subject: "DKK Enrollment Change Report")
   end
 
   def late_notifications_report(children_notified = [])
@@ -76,7 +76,7 @@ class TransactionalMailer < ApplicationMailer
 
     @children_notified = children_notified
 
-    mail(to: ["petertcormack@gmail.com", "office@daviskidsklub.com", "jyang54@mail.csuchico.edu"], subject: "Tardy Notifications Report")
+    mail(to: ["petertcormack@gmail.com", "office@daviskidsklub.com", "jenifer@daviskidsklub.com"], subject: "Tardy Notifications Report")
   end
 
   def exception_notification(except_message, except_backtrace)
