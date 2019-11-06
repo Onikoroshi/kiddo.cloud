@@ -1,3 +1,15 @@
 %p Dear #{@account.primary_parent.full_name},
 
-%p Unfortunately, there was an issue with your payment information, and your account could not be charged for your recurring payment plan. Please #{link_to "log in", root_url(@account)} and make a payment as soon as possible, as your child will be unable to attend the Davis Kids Klub until the balance has been paid. Please change your payment information #{link_to "here", account_dashboard_credit_card_url(@account)} (don't forget to log in first) if it is incorrect. Please contact the DKK Office for any questions, comments, or concerns at office@daviskidsklub.com .
+%p You are receiving this email because we have noticed an issue with your payment information. There are a few reasons why this payment issue may have occurred:
+
+%ol
+  %li
+    The credit card number we have on file for your account may be incorrect, has expired, or has been cancelled or closed and is no longer valid. If this is the case, please #{link_to "log in", root_url(@account)} and provide valid credit card information #{link_to "here", account_dashboard_credit_card_url(@account)} (don't forget to log in first) to submit payment as soon as possible. Unfortunately, your child will be unable to attend Davis Kids Klub until the balance has been paid.
+
+  %li
+    You started the registration process to enroll your child in one of our programs, but did not finalize your payment. If you intended to enroll your child in one of our open programs and have not submitted your credit card information or finalized payment yet, please #{link_to "log in", root_url(@account)} and complete the registration process.
+
+  %li
+    You were interested in our programming, added a plan (or plans) to your account, and then decided not to enroll your child/ren and proceed to payment. If this is the case, please #{link_to "log in", root_url(@account)}, navigate back to the #{link_to '"Plan" step', account_enrollment_type_url(@account)}, and remove any plan(s) chosen.
+
+%p If you are still unclear about how to resolve the issue with your account, or you have any other questions, comments, or concerns, please contact the DKK Office at #{link_to "office@daviskidsklub.com", "mailto:office@daviskidsklub.com"}.

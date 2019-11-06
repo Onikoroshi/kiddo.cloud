@@ -55,7 +55,7 @@ class TransactionalMailer < ApplicationMailer
 
   def failed_recurring_payment(account)
     @account = account
-    mail(to: @account.all_emails, subject: "Recurring Payment Failed")
+    mail(to: @account.all_emails, subject: "Your DKK Payment Information is incomplete or out-of-date")
   end
 
   def recurring_payment_report(messages)
