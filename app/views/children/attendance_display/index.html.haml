@@ -1,4 +1,4 @@
-.col-md-6.col-sm-8.col-md-offset-3.col-sm-offset-2
+.col-xs-12
   %h3.text-center
     Children Check-in / out
 
@@ -16,11 +16,14 @@
   #time-entries.staff-time-entries
     - @enrollments.includes(:child).reorder("children.first_name ASC").each do |enrollment|
       .checkin-name
-        .col-xs-4= link_to enrollment.child.full_name, staff_time_entries_path(recordable_type: "Child", recordable_id: enrollment.child.id)
-        .col-xs-4.text-center
+        .col-xs-3
+          = link_to enrollment.child.full_name, staff_time_entries_path(recordable_type: "Child", recordable_id: enrollment.child.id)
+        .col-xs-3
+          = enrollment.plan_type.text
+        .col-xs-3.text-center
           - if enrollment.child.eligible_for_tardy_notification?
             = link_to "Send Tardy Notification", send_tardy_notification_children_attendance_display_path(enrollment.child)
-        .col-xs-4.text-right
+        .col-xs-3.text-right
           .togglebutton
             %label
               = check_box_tag :on_clock, true, enrollment.child.on_clock?, :data => { "location_id" => @location.id, "time_recordable_id" => enrollment.child.id, "time_recordable_type" => "Child"}, :class => 'input-large clock-toggle'
