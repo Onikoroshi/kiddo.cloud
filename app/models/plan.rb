@@ -25,6 +25,7 @@ class Plan < ApplicationRecord
 
   scope :by_plan_type, ->(plan_type) { where(plan_type: plan_type.to_s) }
   scope :by_program, ->(program) { program.present? ? where(program: program) : all }
+  scope :for_day, ->(day_sym) { where("#{day_sym} = ?", true) }
   scope :deduceable, -> { where(deduce: true) }
   scope :choosable, -> { where(deduce: false) }
 
