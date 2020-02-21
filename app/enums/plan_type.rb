@@ -64,7 +64,7 @@ end
 
 class PlanType::FullDayContract < PlanType
   def text
-    "Pioneer Day Options"
+    "TK/K Day Options"
   end
 
   def recurring?
