@@ -11,7 +11,7 @@ class Children::AttendanceDisplayController < ApplicationController
     end
 
     @enrollments = @location.enrollments.alive.paid.for_date(Time.zone.today)
-    @programs = @enrollments.programs
+    @programs = @enrollments.programs.descending_by_updated
 
     @program = Program.find_by(id: params[:program_id])
 

@@ -76,7 +76,7 @@ class Staff::LocationsController < ApplicationController
   end
 
   def build_variables
-    @programs = Program.all.reorder("name ASC")
+    @programs = Program.descending_by_updated
   end
 
   def permitted_params

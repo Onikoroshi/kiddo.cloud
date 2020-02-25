@@ -56,7 +56,7 @@ class Staff::ProgramsController < ApplicationController
   end
 
   def set_collection
-    @programs = @center.programs.order_by_priority
+    @programs = @center.programs.descending_by_updated
   end
 
   def build_single

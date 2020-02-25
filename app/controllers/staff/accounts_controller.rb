@@ -26,7 +26,7 @@ class Staff::AccountsController < ApplicationController
   def set_collection
     @locations = current_user.manageable_locations
     ap "locations: #{@locations.pluck(:id)}"
-    @programs = @locations.programs
+    @programs = @locations.programs.descending_by_updated
     ap "programs: #{@programs.pluck(:id)}"
 
     unless params[:search].blank?

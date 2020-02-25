@@ -4,7 +4,7 @@ class Staff::TransactionsController < ApplicationController
 
   def index
     @locations = current_user.manageable_locations
-    @programs = @locations.programs
+    @programs = @locations.programs.descending_by_updated
 
     @program = Program.find_by(id: params[:program_id]) || @center.current_program
     @program = @programs.first unless @programs.include?(@program)
