@@ -94,10 +94,11 @@ class Staff::EnrollmentsController < ApplicationController
       @enrollments = @enrollments.by_program_on_date(@program, @enrollments_date)
     end
 
-    @enrollments = @enrollments.by_location(@location)
-      .order(created_at: :desc)
-      .page(params[:page])
-      .per(50)
+    @enrollments = @enrollments.by_location(@location).joins(:child).references(:children).reorder("enrollments.id DESC")
+
+    @total_count = @enrollments.pluck("children.id").uniq.count
+
+    @enrollments = @enrollments.page(params[:page]).per(50)
   end
 
   def find_enrollment
