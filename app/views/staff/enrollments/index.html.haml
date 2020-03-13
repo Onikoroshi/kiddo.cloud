@@ -16,6 +16,10 @@
       = text_field_tag :enrollments_date, @enrollments_date, class: "flatpickr-date"
 
   .row
+    .text-center
+      = check_box_tag "all_week", "1", @all_week
+      = label_tag "all_week", "Show whole week"
+      %br
     .text-center{ style: "padding-bottom: 40px;" }
       = submit_tag "Submit"
 
@@ -23,7 +27,7 @@
       %h5 Total of #{@enrollments.count} children attending
 
     .pull-right{style: "padding-right: 40px;"}
-      = link_to "Export to CSV", export_to_csv_staff_enrollments_path(program_id: @program.id, location_id: @location_id, enrollments_date: @enrollments_date, format: "csv"), class: "btn btn-primary btn-sm"
+      = link_to "Export to CSV", export_to_csv_staff_enrollments_path(program_id: @program.id, location_id: @location_id, enrollments_date: @enrollments_date, all_week: @all_week, format: "csv"), class: "btn btn-primary btn-sm"
 
   %br
   %br
@@ -42,7 +46,7 @@
         %tr
           %td= link_to e.child.full_name, staff_account_path(e.child.account)
           %td= e.type_display
-          %td= e.service_dates
+          %td= e.service_dates_with_days
           %td= e.location_name
           %td= e.created_at.stamp("11/05/2017")
 

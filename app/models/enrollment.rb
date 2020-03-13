@@ -55,6 +55,21 @@ class Enrollment < ApplicationRecord
     end
   end
 
+  def self.by_program_within_date_range(program, target_start, target_stop)
+    results = self
+    results = results.by_program(program) if program.present?
+
+    all_dates = (target_start..target_stop).to_a
+    if program.present?
+      all_dates = all_dates.reject{|d| program.holidays.pluck(:holidate).include?(d)}
+    end
+
+    day_queries = all_dates.map(&:wday).uniq.map{|num| "(enrollments.#{DAY_DICTIONARY[num]} IS TRUE)"}.join(" OR ")
+
+    scope :for_date_range, ->(target_start, target_stop) { where("enrollments.starts_at <= ? OR enrollments.ends_at >= ? AND enrollments.#{DAY_DICTIONARY[date.wday]} IS TRUE", target_start, target_stop) }
+    results.where("enrollments.starts_at <= ? OR enrollments.ends_at >= ? AND (#{day_queries})", target_start, target_stop)
+  end
+
   def self.total_amount_due_today
     self.all.inject(Money.new(0)){ |sum, enrollment| sum + Money.new(enrollment.amount_due_today) }
   end
@@ -165,7 +180,7 @@ class Enrollment < ApplicationRecord
 
         child = enrollment.child
 
-        child_info = [child.last_name, child.first_name, child.birthdate.stamp("5/13/2011"), enrollment.type_display, enrollment.service_dates, enrollment.location_name]
+        child_info = [child.last_name, child.first_name, child.birthdate.stamp("5/13/2011"), enrollment.type_display, enrollment.service_dates_with_days, enrollment.location_name]
 
         child_info += account_info
 
@@ -512,6 +527,10 @@ class Enrollment < ApplicationRecord
     "#{plan_type.text}#{" #{plan.display_name}" unless plan.deduceable?}"
   end
 
+  def service_dates_with_days
+    "#{enrolled_days_summary} - #{service_dates}"
+  end
+
   def service_dates
     if plan_type.drop_in?
       starts_at.stamp("Monday, Feb. 3rd, 2018")
@@ -559,6 +578,15 @@ class Enrollment < ApplicationRecord
     else
       selected
     end
+  end
+
+  def enrolled_days_summary
+    selected = Array.new
+    day_hash.each do |k,v|
+      selected << k if v
+    end
+
+    selected.map{|d| d.to_s.starts_with?("t") ? d.to_s[0..1].capitalize : d.to_s.first.upcase}.join(", ")
   end
 
   def alerts_enabled?

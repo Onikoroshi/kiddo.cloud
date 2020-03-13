@@ -74,14 +74,27 @@ class Staff::EnrollmentsController < ApplicationController
     @location = @locations.first if !current_user.super_admin? && !@locations.include?(@location)
     @location_id = @location.present? ? @location.id : ""
 
+    @all_week = params["all_week"].present?
+
     @enrollments_date = Time.zone.parse(params[:enrollments_date].to_s)
     @enrollments_date = @enrollments_date.to_date if @enrollments_date.present?
     @enrollments_date = Time.zone.today if @enrollments_date.blank?
     @enrollments_date = @program.starts_at if @enrollments_date < @program.starts_at || @enrollments_date > @program.ends_at
 
+    if @all_week
+      @target_start = @enrollments_date.beginning_of_week
+      @target_stop = @enrollments_date.end_of_week
+    end
+
     @enrollments = Enrollment.alive.paid
-      .by_program_on_date(@program, @enrollments_date)
-      .by_location(@location)
+
+    if @all_week
+      @enrollments = @enrollments.by_program_within_date_range(@program, @target_start, @target_stop)
+    else
+      @enrollments = @enrollments.by_program_on_date(@program, @enrollments_date)
+    end
+
+    @enrollments = @enrollments.by_location(@location)
       .order(created_at: :desc)
       .page(params[:page])
       .per(50)
