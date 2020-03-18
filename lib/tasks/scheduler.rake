@@ -1,6 +1,8 @@
 namespace :scheduler do
   desc "Called by the Heroku scheduler add-on. Finds everyone who owes a recurring payment and attempts to make a charge in Stripe, sending an email and marking them as unpaid if that fails"
   task process_recurring_payments: :environment do
+    return true # disable automatic payments for now
+
     messages = []
 
     begin
