@@ -67,7 +67,7 @@ class Enrollment < ApplicationRecord
     day_queries = all_dates.map(&:wday).uniq.map{|num| "(enrollments.#{DAY_DICTIONARY[num]} IS TRUE)"}.join(" OR ")
 
     scope :for_date_range, ->(target_start, target_stop) { where("enrollments.starts_at <= ? OR enrollments.ends_at >= ? AND enrollments.#{DAY_DICTIONARY[date.wday]} IS TRUE", target_start, target_stop) }
-    results.where("enrollments.starts_at <= ? OR enrollments.ends_at >= ? AND (#{day_queries})", target_start, target_stop)
+    results.where("(enrollments.starts_at <= ? AND enrollments.ends_at >= ?) AND (#{day_queries})", target_stop, target_start)
   end
 
   def self.total_amount_due_today
