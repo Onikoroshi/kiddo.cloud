@@ -320,7 +320,7 @@ class Enrollment < ApplicationRecord
         stop_date = [target_stop, target_date.end_of_month].min
         used_days = total_days.select{|d| d >= start_date && d <= stop_date}
 
-        percentage_used = used_days.count.to_f / total_days.count.to_f
+        percentage_used = total_days.count.to_f > 0.0 ? (used_days.count.to_f / total_days.count.to_f) : 0.0
         month_price = month_price * percentage_used
       end
     end
