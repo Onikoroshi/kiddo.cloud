@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   include Pundit
 
   before_action :logout_not_signed_in
+  before_action :lock_out_non_super_admins
 
   before_action :set_raven_context
   before_action :set_center
@@ -68,6 +69,18 @@ class ApplicationController < ActionController::Base
       edit_user_password_path
     ]
     redirect_to root_path and return if current_user.blank? && !allowed_paths.include?(request.path)
+  end
+
+  def lock_out_non_super_admins
+    if current_user.present?
+      unless current_user.super_admin?
+        sign_out(current_user)
+        flash.discard(:notice)
+        flash[:error] = "Sign in unsuccessful."
+        new_user_session_url
+        redirect_to new_user_session_url and return
+      end
+    end
   end
 
   def user_exists_without_roles?
