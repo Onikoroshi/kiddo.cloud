@@ -524,7 +524,7 @@ class Enrollment < ApplicationRecord
   end
 
   def type_display
-    "#{plan_type.try(:text) || plan_type.to_s}#{" #{plan.display_name}" unless plan.respond_to?(:deduceable?) && plan.deduceable?}"
+    "#{plan_type.try(:text) || plan_type.to_s}#{" #{plan.display_name}" if (plan.respond_to?(:deduceable?) && !plan.deduceable?)}"
   end
 
   def service_dates_with_days
