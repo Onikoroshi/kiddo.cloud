@@ -39,7 +39,7 @@
         %tr
           %td= enrollment_change_transaction.enrollment_change.enrollment.child.full_name
           %td= enrollment_change_transaction.enrollment_change.enrollment.type_display
-          %td= enrollment_change_transaction.enrollment_change.enrollment.program.name
+          %td= enrollment_change_transaction.enrollment_change.enrollment.program.try(:name)
           %td= enrollment_change_transaction.enrollment_change.enrollment.service_dates
           %td= enrollment_change_transaction.enrollment_change.description
           %td
