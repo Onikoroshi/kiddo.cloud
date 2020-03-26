@@ -16,7 +16,7 @@
         %tr
           %td= enrollment_transaction.enrollment.child.full_name
           %td= enrollment_transaction.description
-          %td= enrollment_transaction.enrollment.program.name
+          %td= enrollment_transaction.enrollment.program.try(:name)
           %td= enrollment_transaction.service_dates
           - if has_changes
             %td
