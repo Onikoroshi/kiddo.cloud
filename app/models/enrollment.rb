@@ -532,6 +532,10 @@ class Enrollment < ApplicationRecord
   end
 
   def service_dates
+    if plan_type.blank?
+      return DateTool.display_range(starts_at, ends_at)
+    end
+
     if plan_type.drop_in?
       starts_at.stamp("Monday, Feb. 3rd, 2018")
     elsif plan_type.weekly?
