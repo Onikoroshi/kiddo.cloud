@@ -1,4 +1,3 @@
 #flash-messages{style: "padding-bottom: 20px;"}
-  = content_tag :div, raw("Due to the nature of the current situation, this area of the website is not available. Please contact the office directly at office@daviskidsklub.com for assistance."), :id => "flash_closed_message", class: "danger"
   - flash.each do |name, msg|
     = content_tag :div, raw(msg), :id => "flash_#{name}", class: "#{flash_class(name)}"

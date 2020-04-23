@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   include Pundit
 
   before_action :logout_not_signed_in
-  before_action :lock_out_non_super_admins
+  # before_action :lock_out_non_super_admins # keep just in case needed in the future
 
   before_action :set_raven_context
   before_action :set_center
