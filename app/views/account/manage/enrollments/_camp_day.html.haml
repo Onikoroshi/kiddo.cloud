@@ -29,7 +29,7 @@
 
             - if @program.available_locations.any?
               .links
-                .pull-left= link_to_add_association 'Add Day', children_fields, :enrollments, {class: "btn btn-info"}
+                .pull-left= link_to_add_association 'Add Day', children_fields, :enrollments, {class: "btn btn-info add-day-button"}
             - else
               %h4= display_unavailable_locations_message
         - else

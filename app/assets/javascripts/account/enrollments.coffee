@@ -32,6 +32,13 @@ document.addEventListener 'turbolinks:load', ->
   $(".account-box").on "change", ".drop_in-date-select", (d) ->
     updateDropIn($(this))
 
+  $(".account-box").on "click", ".add-day-button", (e) ->
+    # for some reason, adding the new elements doesn't happen *immediately* so attempting to find them was failing. Waiting a very short time resolved this.
+    setTimeout (->
+      $(".account-box").find(".drop_in-date-select").each ->
+        updateDropIn($(this))
+    ), 10
+
   $(".enrollment-pricing-table").on "keyup", ".addable-amount", (event) ->
     elem = $(event.currentTarget)
 
