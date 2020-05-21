@@ -91,7 +91,7 @@ module ChildEnrollment
         # allow them to register for summer without choosing any enrollments
         if @enrollments.blank? && @enrollment_changes.blank?
           Program.open_for_registration.for_summer.each do |program|
-            next if account.transactions.paid_signup_fee_for_program(program).any?
+            next if account.paid_signup_fee_for_program(program).any?
 
             fee = calculate_signup_fee_for_program(program)
 
