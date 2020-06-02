@@ -92,8 +92,9 @@ class Staff::TimeEntriesController < ApplicationController
     @starts_at = Time.zone.today.beginning_of_week.to_date
     if params[:starts_at].present?
       @starts_at = Time.zone.parse(params[:starts_at]).to_date
-    elsif @time_entries.any? && @time_entries.last.time.present?
-      @starts_at = @time_entries.last.time.in_time_zone.to_date
+    elsif @time_entries.any? && @time_entries.reverse.first.time.present?
+      # apparently `last` tries to automatically reverse the list, which doesn't suite the coalesce, resulting in the following error: "ActiveRecord::IrreversibleOrderError: Order "COALESCE(time, created_at) DESC" can not be reversed automatically". So, need to explicitly reverse it.
+      @starts_at = @time_entries.reverse.first.time.in_time_zone.to_date
     end
 
     @stops_at = Time.zone.today.end_of_week.to_date
