@@ -70,7 +70,7 @@
               = link_to staff_time_entry_path(time_entry, recordable_type: @recordable_type, recordable_id: @recordable.id), method: :delete, :data => { :confirm => 'Are you sure?' } do
                 %i.material-icons delete_forever
           %td= time_entry.location.name
-          %td= time_entry.time.present? ? time_entry.time.stamp("March 4th, 2018 2:58 pm") : "Unknown"
+          %td= time_entry.time.present? ? time_entry.time.stamp("March 4th, 2018 2:58 pm") : "Unknown (Created at #{time_entry.created_at.stamp("March 4th, 2018 2:58 pm")})"
           %td= time_entry.record_type.try(:text)
           - if policy(TimeEntry).manage?
             %td
