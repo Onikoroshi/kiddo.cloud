@@ -22,7 +22,7 @@ class TimeEntry < ApplicationRecord
       .where("time >= ? and time <= ?", start_time, end_time)
   end
 
-  scope :all_in_range, -> (start, stop) { where("time >= ? and time <= ?", start.to_date.beginning_of_day, stop.to_date.end_of_day) }
+  scope :all_in_range, -> (start, stop) { where("time IS NULL OR (time >= ? and time <= ?)", start.to_date.beginning_of_day, stop.to_date.end_of_day) }
 
   def self.staffs
     Staff.where(id: self.for_staff.pluck(:time_recordable_id).uniq).distinct

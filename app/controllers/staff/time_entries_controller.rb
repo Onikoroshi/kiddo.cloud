@@ -87,7 +87,7 @@ class Staff::TimeEntriesController < ApplicationController
   end
 
   def set_collection
-    @time_entries = @recordable.time_entries.order("time DESC")
+    @time_entries = @recordable.time_entries.order("time DESC created_at DESC")
 
     @starts_at = Time.zone.today.beginning_of_week.to_date
     if params[:starts_at].present?
