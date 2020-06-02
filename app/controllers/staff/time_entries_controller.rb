@@ -89,8 +89,19 @@ class Staff::TimeEntriesController < ApplicationController
   def set_collection
     @time_entries = @recordable.time_entries.order("time DESC")
 
-    @starts_at = params[:starts_at].present? ? Time.zone.parse(params[:starts_at]).to_date : @time_entries.last.time.in_time_zone.to_date
-    @stops_at = params[:stops_at].present? ? Time.zone.parse(params[:stops_at]).to_date : @time_entries.first.time.in_time_zone.to_date
+    @starts_at = Time.zone.today.beginning_of_week.to_date
+    if params[:starts_at].present?
+      @starts_at = Time.zone.parse(params[:starts_at]).to_date
+    elsif @time_entries.any?
+      @starts_at = @time_entries.last.time.in_time_zone.to_date
+    end
+
+    @stops_at = Time.zone.today.end_of_week.to_date
+    if params[:stops_at].present?
+      @stops_at = Time.zone.parse(params[:stops_at]).to_date
+    elsif @time_entries.any?
+      @stops_at = @time_entries.first.time.in_time_zone.to_date
+    end
 
     @time_entries = @time_entries.all_in_range(@starts_at, @stops_at)
   end
