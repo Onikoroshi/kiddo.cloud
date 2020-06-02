@@ -92,14 +92,14 @@ class Staff::TimeEntriesController < ApplicationController
     @starts_at = Time.zone.today.beginning_of_week.to_date
     if params[:starts_at].present?
       @starts_at = Time.zone.parse(params[:starts_at]).to_date
-    elsif @time_entries.any?
+    elsif @time_entries.any? && @time_entries.last.time.present?
       @starts_at = @time_entries.last.time.in_time_zone.to_date
     end
 
     @stops_at = Time.zone.today.end_of_week.to_date
     if params[:stops_at].present?
       @stops_at = Time.zone.parse(params[:stops_at]).to_date
-    elsif @time_entries.any?
+    elsif @time_entries.any? && @time_entries.first.time.present?
       @stops_at = @time_entries.first.time.in_time_zone.to_date
     end
 
