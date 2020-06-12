@@ -67,7 +67,7 @@ class TransactionalMailer < ApplicationMailer
     @transactions = transactions
     @account = transactions.first.account
 
-    mail(to: ["office@daviskidsklub.com", "jenifer@daviskidsklub.com"], subject: "DKK Enrollment Change Report")
+    mail(to: ["office@daviskidsklub.com", "admin@daviskidsklub.com"], subject: "DKK Enrollment Change Report")
   end
 
   def late_notifications_report(children_notified = [])
