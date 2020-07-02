@@ -60,6 +60,13 @@
 
       %br
 
+      .field
+        .togglebutton
+          %label
+            = f.check_box :disable_refunds
+            = f.label :disable_refunds, "Disable refunds for ALL Plans in this Program"
+      %br
+
       %h4 Holidays
 
       = f.fields_for :holidays do |holiday_fields|

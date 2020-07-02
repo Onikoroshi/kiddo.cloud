@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190822194701) do
+ActiveRecord::Schema.define(version: 20200702191809) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -366,6 +366,7 @@ ActiveRecord::Schema.define(version: 20190822194701) do
     t.integer "priority"
     t.bigint "program_group_id"
     t.jsonb "allowed_grades", default: []
+    t.boolean "disable_refunds", default: false
     t.index ["center_id"], name: "index_programs_on_center_id"
     t.index ["program_group_id"], name: "index_programs_on_program_group_id"
   end

@@ -116,7 +116,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
               EnrollmentChange.where(account: @account, enrollment: enrollment, applied: false).destroy_all
             elsif enrollment._destroy || enrollment.changed?
               enrollment_change = EnrollmentChange.where(account: @account, enrollment: enrollment, applied: false).first_or_create!
-              enrollment_change.update_attributes(requires_fee: true, requires_refund: true)
+              enrollment_change.update_attributes(requires_fee: true, requires_refund: !enrollment.program.disable_refunds?)
 
               if enrollment._destroy
                 ap "removing #{enrollment.id}"
