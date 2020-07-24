@@ -1,0 +1,14 @@
+.nested-fields
+  .row
+    .col-sm-12
+      = f.hidden_field :plan_id, value: @program.custom_request_plan.id
+      = f.hidden_field :monday, value: true
+      = f.hidden_field :starts_at, value: @program.starts_at
+      = f.hidden_field :ends_at, value: @program.starts_at
+
+      After the registration fee for this program is paid, please
+      = link_to "Contact Us", @program.custom_requests_url, target: "_blank"
+      to request a custom enrollment.
+
+      %br
+      = link_to_remove_association "Remove Request", f

@@ -86,3 +86,18 @@ class PlanType::CampDay < PlanType
     true
   end
 end
+
+# only used as a placeholder to allow people to trigger a custom request (just redirected to the wordpress site so they can directly contact the office). Should not be used anywhere.
+class PlanType::CustomRequest < PlanType
+  def recurring?
+    false
+  end
+
+  def one_time?
+    false
+  end
+
+  def single_day?
+    false
+  end
+end

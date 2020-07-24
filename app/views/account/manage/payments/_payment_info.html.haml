@@ -15,7 +15,7 @@
       - transaction.enrollment_transactions.each do |enrollment_transaction|
         %tr
           %td= enrollment_transaction.enrollment.child.full_name
-          %td= enrollment_transaction.description
+          %td= enrollment_transaction.description.html_safe
           %td= enrollment_transaction.enrollment.program.try(:name)
           %td= enrollment_transaction.service_dates
           - if has_changes

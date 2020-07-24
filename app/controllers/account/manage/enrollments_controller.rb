@@ -160,7 +160,7 @@ class Account::Manage::EnrollmentsController < ApplicationController
       target_enrollments = []
       # do NOT add any scopes to this. It will lose the attributes assigned
       child.enrollments.each do |enrollment|
-        target_enrollments << enrollment if !enrollment._destroy && enrollment.alive? && enrollment.program == @program
+        target_enrollments << enrollment if !enrollment._destroy && enrollment.alive? && enrollment.program == @program && !enrollment.plan_type.custom_request?
       end
       overlapping = child.overlapping_enrollment_dates(target_enrollments)
       if overlapping.any?

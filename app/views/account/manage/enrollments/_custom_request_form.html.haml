@@ -1,0 +1,27 @@
+= form_for(@account, url: account_dashboard_enrollments_path, method: defined?(target_method) ? target_method : "POST") do |f|
+  = hidden_field_tag :plan_type, @plan_type.to_s
+
+  = render "application/form_errors", object: @account
+
+  = f.fields_for :children do |children_fields|
+    .plan-box
+      .row
+        .col-sm-12
+          .dropin-name{style: "padding-left: 20px;"}
+            = children_fields.object.full_name
+
+      - if @program.grade_allowed?(children_fields.object.grade_entering)
+        - already_assigned = false
+        = children_fields.fields_for :enrollments do |enrollment_fields|
+          - valid_object = enrollment_fields.object.alive? && enrollment_fields.object.program == @program && enrollment_fields.object.plan_type.to_s == @plan_type.to_s && (defined?(target_method) || enrollment_fields.object.unpaid?)
+          - if valid_object && enrollment_fields.object.plan_id.present?
+            = render "enrollment_fields", f: enrollment_fields
+            - already_assigned = true
+
+        - unless already_assigned
+          .row{style: "padding-left: 20px;"}
+            .links
+              .pull-left= link_to_add_association 'Add Custom Request', children_fields, :enrollments, {class: "btn btn-info"}
+
+  = link_to "Cancel", @account.signup_complete? ? (defined?(target_method) ? edit_account_dashboard_enrollments_path(@account) : new_account_dashboard_enrollment_path(@account)) : account_step_path(@account, :plan), class: "btn"
+  = f.submit "Submit", class: "btn btn-info pull-right"

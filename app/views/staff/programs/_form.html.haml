@@ -63,6 +63,17 @@
       .field
         .togglebutton
           %label
+            = f.check_box :custom_requests
+            = f.label :custom_requests, "Parents may only sign up and request enrollments"
+      %br
+
+      .form-group.label-floating
+        = f.label :custom_requests_url, "URL to direct parents to so they can make their custom enrollment requests", class: "control-label"
+        = f.text_field :custom_requests_url, class: "form-control"
+
+      .field
+        .togglebutton
+          %label
             = f.check_box :disable_refunds
             = f.label :disable_refunds, "Disable refunds for ALL Plans in this Program"
       %br

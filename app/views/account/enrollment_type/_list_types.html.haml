@@ -6,7 +6,11 @@
 
   .col-xs-12
     #attendance-selection-chooser
-      - type_width = (12 / program.plan_types.count).to_i
-      - program.plan_types.each do |plan_type|
-        .text-center{class: "col-xs-#{type_width}"}
-          = link_to plan_type.text, plan_selection_path(plan_type, @account, program, defined?(target_action) ? target_action : "new"), class: "btn btn-lg btn-block btn-info btn-fat"
+      - if program.custom_requests? && !pundit_user.super_admin?
+        .text-center{class: "col-xs-12"}
+          = link_to "Text to inform parents that they need to make a custom request", plan_selection_path(PlanType[:custom_request], @account, program, defined?(target_action) ? target_action : "new"), class: "btn btn-lg btn-block btn-info btn-fat"
+      - else
+        - type_width = (12 / program.plan_types.count).to_i
+        - program.plan_types.each do |plan_type|
+          .text-center{class: "col-xs-#{type_width}"}
+            = link_to plan_type.text, plan_selection_path(plan_type, @account, program, defined?(target_action) ? target_action : "new"), class: "btn btn-lg btn-block btn-info btn-fat"

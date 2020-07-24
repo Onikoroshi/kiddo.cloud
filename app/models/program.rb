@@ -53,12 +53,22 @@ class Program < ApplicationRecord
     ProgramGroup.where(id: self.pluck("program_group_id").reject(&:blank?).uniq)
   end
 
+  def custom_request_plan
+    target_plan = plans.by_plan_type(PlanType[:custom_request].to_s).first
+
+    if target_plan.blank?
+      target_plan = Plan.create!(program_id: self.id, plan_type: PlanType[:custom_request].to_s, display_name: "Custom Requests", price: 0.0, days_per_week: 5, enabled: true)
+    end
+
+    target_plan
+  end
+
   def available_locations
     Location.where(id: program_locations.available.pluck(:location_id))
   end
 
   def plan_types
-    plans.map{|plan| plan.plan_type}.uniq{|plan| plan.to_s}
+    plans.select{|plan| !custom_requests? || !plan.plan_type.custom_request?}.map{|plan| plan.plan_type}.uniq{|plan| plan.to_s}
   end
 
   def short_name

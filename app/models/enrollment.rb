@@ -96,6 +96,24 @@ class Enrollment < ApplicationRecord
   def self.active_blurbs(child)
     blurbs = []
 
+    locationless_enrollments = self.alive.joins(plan: :program).where("programs.ends_at >= ?", Time.zone.today)
+
+    program_ids = locationless_enrollments.pluck("programs.id").uniq
+    Program.where(id: program_ids).find_each do |program|
+      program_enrollments = locationless_enrollments.where("programs.id = ?", program.id)
+
+      plan_types = program_enrollments.pluck("plans.plan_type").uniq.sort
+      plan_types.each do |plan_type|
+        plan_type_enrollments = program_enrollments.where("plans.plan_type = ?", plan_type)
+        num_enrolls = plan_type_enrollments.count
+
+        case plan_type.to_s
+        when PlanType[:custom_request]
+          blurbs << "#{child.first_name} has had a custom enrollment requested"
+        end
+      end
+    end
+
     all_enrollments = self.alive.joins(:location, plan: :program).where("programs.ends_at >= ?", Time.zone.today)
 
     program_ids = all_enrollments.pluck("programs.id").uniq
@@ -112,6 +130,8 @@ class Enrollment < ApplicationRecord
           num_enrolls = plan_type_enrollments.count
 
           case plan_type.to_s
+          when PlanType[:custom_request]
+            blurbs << "#{child.first_name} has had a custom enrollment requested"
           when PlanType[:weekly].to_s
             blurbs << "#{child.first_name} is attending  #{num_enrolls} #{"Week".pluralize(num_enrolls)} at #{location.name} during #{program.short_name}"
           when PlanType[:drop_in].to_s
@@ -499,6 +519,12 @@ class Enrollment < ApplicationRecord
 
   def to_s
     case plan.plan_type.to_s
+    when PlanType[:custom_request].to_s
+      if program.custom_requests_url.present?
+        "<a href=#{program.custom_requests_url} target='blank'>Contact Us</a> to submit your custom enrollment request.".html_safe
+      else
+        "Contact our office to talk with us about your custom enrollment request."
+      end
     when PlanType[:weekly].to_s
       "#{child.full_name} is enrolled in a #{to_short}"
     when PlanType[:drop_in].to_s
@@ -510,6 +536,8 @@ class Enrollment < ApplicationRecord
 
   def to_short
     case plan.plan_type.to_s
+    when PlanType[:custom_request].to_s
+      to_s
     when PlanType[:weekly].to_s
       "Weekly #{plan.display_name} plan #{display_dates} at #{location_name}"
     when PlanType[:drop_in].to_s

@@ -1,0 +1,8 @@
+.col-md-10.col-md-offset-1.col-xs-12
+  %h2.text-center
+    Custom Enrollment Requests for #{@program.name}
+
+  %h4.text-center
+    This program is only available for custom enrollment requests. Indicate which children you would like to request:
+
+  = render "custom_request_form", target_method: defined?(target_method) ? target_method : "POST"
