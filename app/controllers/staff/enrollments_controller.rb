@@ -86,7 +86,7 @@ class Staff::EnrollmentsController < ApplicationController
       @target_stop = @enrollments_date.end_of_week
     end
 
-    @enrollments = Enrollment.alive.paid
+    @enrollments = Enrollment.alive.paid.non_custom
 
     if @all_week
       @enrollments = @enrollments.by_program_within_date_range(@program, @target_start, @target_stop)

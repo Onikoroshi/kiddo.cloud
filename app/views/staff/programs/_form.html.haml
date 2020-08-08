@@ -58,7 +58,7 @@
         = f.label :latest_payment_offset, "Latest day automatic payments can be charged", class: "control-label"
         = f.select :latest_payment_offset, options_from_collection_for_select(@payment_offsets, 'to_i', 'to_s', f.object.latest_payment_offset.to_i), class: "form-control"
 
-      %br
+      %hr
 
       .field
         .togglebutton
@@ -70,6 +70,7 @@
       .form-group.label-floating
         = f.label :custom_requests_url, "URL to direct parents to so they can make their custom enrollment requests", class: "control-label"
         = f.text_field :custom_requests_url, class: "form-control"
+      %hr
 
       .field
         .togglebutton

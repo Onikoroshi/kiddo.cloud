@@ -23,6 +23,8 @@ class Enrollment < ApplicationRecord
   scope :alive, -> { where.not(dead: true) }
   scope :dead, -> { where(dead: true) }
 
+  scope :non_custom, -> { joins(:plan).where("plans.plan_type != ?", PlanType[:custom_request].to_s) }
+
   scope :by_program, ->(program) { program.present? ? joins(:program).where("programs.id = ?", program.id) : all }
   scope :by_plan_type, ->(plan_type) { plan_type.present? ? joins(:plan).where("plans.plan_type = ?", plan_type.to_s) : all }
   scope :by_program_and_plan_type, ->(program, plan_type) { joins(:program).where("plans.plan_type = ? AND programs.id = ?", plan_type.to_s, program.id) }
@@ -521,9 +523,9 @@ class Enrollment < ApplicationRecord
     case plan.plan_type.to_s
     when PlanType[:custom_request].to_s
       if program.custom_requests_url.present?
-        "<a href=#{program.custom_requests_url} target='blank'>Contact Us</a> to submit your custom enrollment request.".html_safe
+        "<a href=#{program.custom_requests_url} target='blank'>Click Here to Contact Us</a> and submit your custom enrollment request.".html_safe
       else
-        "Contact our office to talk with us about your custom enrollment request."
+        "Contact our office at #{link_to "office@daviskidsklub.com", "mailto:office@daviskidsklub.com"} to talk with us about your custom enrollment request."
       end
     when PlanType[:weekly].to_s
       "#{child.full_name} is enrolled in a #{to_short}"
