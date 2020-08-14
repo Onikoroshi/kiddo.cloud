@@ -21,6 +21,10 @@ class Location < ApplicationRecord
     Program.where(id: self.joins(:programs).pluck("programs.id").uniq)
   end
 
+  def self.select_options
+    all.map{|location| [location.name, location.id]}
+  end
+
   def default?
     default
   end

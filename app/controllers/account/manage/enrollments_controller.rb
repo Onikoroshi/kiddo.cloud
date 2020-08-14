@@ -279,6 +279,8 @@ class Account::Manage::EnrollmentsController < ApplicationController
           sanitized_params["account"]["children_attributes"][child_key][:id] = enrollment_attrs['id']
           sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"] = {}
 
+          plan_id_trans = {}
+
           day_dictionary = [
             "monday",
             "tuesday",
@@ -287,8 +289,10 @@ class Account::Manage::EnrollmentsController < ApplicationController
             "friday"
           ]
 
-          day_dictionary.each_with_index do |day_str, day_index|
+          day_dictionary.each_with_index do |day_str, orig_day_index|
             ap "checking #{day_str}"
+            ap "enrollment_attrs:"
+            ap enrollment_attrs.permit!
             selected_plan_id = enrollment_attrs["#{day_str}_id"]
             ap "selected plan id: #{selected_plan_id}"
             existing_enrollment = child.enrollments.alive.by_program_and_plan_type(@program, @plan_type).where("enrollments.#{day_str} IS TRUE").first
@@ -308,17 +312,40 @@ class Account::Manage::EnrollmentsController < ApplicationController
             end
             ap "didn't skip"
 
-            # set all days to 0 because multi-day enrollments will be added here
-            sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s] = {
-              :monday => "0",
-              :tuesday => "0",
-              :wednesday => "0",
-              :thursday => "0",
-              :friday => "0",
-            }
+            day_index = orig_day_index.to_s
+            if selected_plan_id.present?
+              found_index = plan_id_trans[selected_plan_id.to_s]
+              if found_index.present?
+                day_index = found_index.to_s
+              else
+                plan_id_trans[selected_plan_id.to_s] = orig_day_index.to_s
+
+                # set all days to 0 because multi-day enrollments will be added here
+                sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s] = {
+                  :monday => "0",
+                  :tuesday => "0",
+                  :wednesday => "0",
+                  :thursday => "0",
+                  :friday => "0",
+                }
+              end
+            elsif existing_enrollment.present?
+              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s] = {
+                :monday => "0",
+                :tuesday => "0",
+                :wednesday => "0",
+                :thursday => "0",
+                :friday => "0",
+              }
+            end
+
+            ap "final index: #{day_index}"
+            ap "params so far:"
+            ap sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s].permit!
 
             if selected_plan_id.present?
-              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s][day_dictionary[day_index]] = "1"
+              ap "selecte plan id present and day: #{day_dictionary[day_index.to_i]}"
+              sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s][day_dictionary[orig_day_index.to_i]] = "1"
             else
               sanitized_params["account"]["children_attributes"][child_key]["enrollments_attributes"][day_index.to_s]["_destroy"] = "true"
             end
