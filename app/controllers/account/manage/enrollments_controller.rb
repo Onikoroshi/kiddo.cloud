@@ -116,13 +116,18 @@ class Account::Manage::EnrollmentsController < ApplicationController
               EnrollmentChange.where(account: @account, enrollment: enrollment, applied: false).destroy_all
             elsif enrollment._destroy || enrollment.changed?
               enrollment_change = EnrollmentChange.where(account: @account, enrollment: enrollment, applied: false).first_or_create!
-              enrollment_change.update_attributes(requires_fee: true, requires_refund: !enrollment.program.disable_refunds?)
 
-              if enrollment._destroy
-                ap "removing #{enrollment.id}"
+              disable_refund = enrollment.program.present? ? enrollment.program.disable_refunds : false
+              enrollment_change.update_attributes(requires_fee: true, requires_refund: !disable_refund)
+
+              if enrollment.program.blank?
+                ap "removing enrollment #{enrollment.id} because no program"
+                enrollment_change.update_attributes(data: {"_destroy" => "true"})
+              elsif enrollment._destroy
+                ap "removing enrollment #{enrollment.id}"
                 enrollment_change.update_attributes(data: {"_destroy" => "true"})
               elsif enrollment.changed?
-                ap "changing #{enrollment.id}"
+                ap "changing enrollment #{enrollment.id}"
                 change_hash = {}
                 enrollment.changes.each do |attr_name, change_array|
                   change_hash[attr_name] = change_array[1]
