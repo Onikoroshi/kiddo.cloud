@@ -1,7 +1,6 @@
 namespace :scheduler do
   desc "Called by the Heroku scheduler add-on. Finds everyone who owes a recurring payment and attempts to make a charge in Stripe, sending an email and marking them as unpaid if that fails"
   task process_recurring_payments: :environment do
-    return true # disable automatic payments for now
 
     messages = []
 
@@ -30,6 +29,8 @@ namespace :scheduler do
 
         total = enrollments.inject(Money.new(0)){ |sum, enrollment| sum + Money.new(enrollment.amount_due_today) }
         messages << "total of #{total} due"
+
+        next # don't actually charge anyone yet
 
         success = false
 
