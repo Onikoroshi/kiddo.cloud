@@ -30,8 +30,6 @@ namespace :scheduler do
         total = enrollments.inject(Money.new(0)){ |sum, enrollment| sum + Money.new(enrollment.amount_due_today) }
         messages << "total of #{total} due"
 
-        next # don't actually charge anyone yet
-
         success = false
 
         begin
