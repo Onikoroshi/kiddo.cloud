@@ -525,7 +525,7 @@ class Enrollment < ApplicationRecord
       if program.custom_requests_url.present?
         "<a href=#{program.custom_requests_url} target='blank'>Click Here to Contact Us</a> and submit your custom enrollment request.".html_safe
       else
-        "Contact our office at #{link_to "office@daviskidsklub.com", "mailto:office@daviskidsklub.com"} to talk with us about your custom enrollment request."
+        "Contact our office at <a href='mailto:office@daviskidsklub.com'>office@daviskidsklub.com</a> to talk with us about your custom enrollment request."
       end
     when PlanType[:weekly].to_s
       "#{child.full_name} is enrolled in a #{to_short}"
