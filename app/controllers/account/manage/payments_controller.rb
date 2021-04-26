@@ -85,7 +85,7 @@ class Account::Manage::PaymentsController < ApplicationController
     program_ids = transaction.itemizations.keys.select{|key| key.to_s.include?("signup_fee_")}.map{|key| key.to_s.gsub("signup_fee_", "")}
 
     signed_up_programs = Program.where(id: program_ids).distinct
-    TransactionalMailer.welcome_summer_customer(@account).deliver_now if signed_up_programs.for_summer.any?
+    # TransactionalMailer.welcome_summer_customer(@account).deliver_now if signed_up_programs.for_summer.any?
     TransactionalMailer.welcome_fall_customer(@account).deliver_now if signed_up_programs.for_fall.any?
   end
 
