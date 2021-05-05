@@ -30,7 +30,7 @@ class Account < ApplicationRecord
 
   after_save :update_enrollment_payment_dates
 
-  after_commit :update_search_field
+  after_commit :update_search_field, if: :persisted?
 
   scope :by_program, ->(given_program) { given_program.present? ? joins(enrollments: :program).where("enrollments.dead IS FALSE AND programs.id = ?", given_program.id).distinct : all }
   scope :by_location, ->(given_location) { given_location.present? ? joins(:enrollments).where("enrollments.dead IS FALSE AND enrollments.location_id = ?", given_location.id).distinct : all }
