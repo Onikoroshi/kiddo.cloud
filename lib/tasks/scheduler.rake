@@ -68,14 +68,18 @@ namespace :scheduler do
           messages << e.backtrace
         end
 
-        if success
-          TransactionalMailer.successful_recurring_payment(account).deliver_now
-        else
-          enrollments.each do |enrollment|
-            messages << "marking enrollment #{enrollment.id} unpaid"
-            enrollment.update_attribute(:paid, false)
+        if total != Money.new(0) # Don't notify unless actually tried to charge something
+          if success
+            TransactionalMailer.successful_recurring_payment(account).deliver_now
+          else
+            enrollments.each do |enrollment|
+              messages << "marking enrollment #{enrollment.id} unpaid"
+              enrollment.update_attribute(:paid, false)
+            end
+            TransactionalMailer.failed_recurring_payment(account).deliver_now
           end
-          TransactionalMailer.failed_recurring_payment(account).deliver_now
+        else
+          messages << "total of #{total} is 0, so customer not notified."
         end
 
         index += 1
