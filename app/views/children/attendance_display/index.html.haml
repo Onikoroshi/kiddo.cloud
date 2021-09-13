@@ -18,11 +18,11 @@
       .checkin-name
         .col-xs-3
           = link_to enrollment.child.full_name, staff_time_entries_path(recordable_type: "Child", recordable_id: enrollment.child.id)
-        .col-xs-3
-          = enrollment.plan_type.text
         .col-xs-3.text-center
           - if enrollment.child.eligible_for_tardy_notification?
-            = link_to "Send Tardy Notification", send_tardy_notification_children_attendance_display_path(enrollment.child)
+            = link_to "Send Absence Notification", send_tardy_notification_children_attendance_display_path(enrollment.child), class: "btn btn-primary btn-sm", style: "margin-top: -5px; margin-bottom: 0px;"
+        .col-xs-3
+          = enrollment.plan_type.text
         .col-xs-3.text-right
           .togglebutton
             %label
