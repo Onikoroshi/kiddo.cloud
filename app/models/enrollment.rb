@@ -371,6 +371,8 @@ class Enrollment < ApplicationRecord
       else # we don't have any yet, so do the first one
         target_date = self.starts_at # figured that out above
       end
+      ap "target date:"
+      ap target_date
 
       self.next_target_date = target_date
       if transaction_covers_date(target_date).present?
