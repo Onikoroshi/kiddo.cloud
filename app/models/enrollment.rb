@@ -355,20 +355,37 @@ class Enrollment < ApplicationRecord
 
   def set_next_target_and_payment_date(given_enrollment_transaction = nil)
     if plan_type.recurring?
+      ap "plan type recurring"
+      ap "original start/stop:"
+      ap self.starts_at
+      ap self.ends_at
       # update starts_at to make sure
       self.starts_at ||= [@program.starts_at.to_date, (created_at || Time.zone.today).to_date].max
       self.ends_at ||= @program.ends_at
       stop_date = nil
+      ap "new start/stop:"
+      ap self.starts_at
+      ap self.ends_at
 
       latest_enrollment_transaction = given_enrollment_transaction || enrollment_transactions.paid.by_target_date.last
+      ap "latest trans:"
+      ap latest_enrollment_transaction
+      ap "description data:"
+      ap latest_enrollment_transaction.description_data
+      ap "placeholder?"
+      ap latest_enrollment_transaction.placeholder?
 
       stop_date = latest_enrollment_transaction.description_data["stop_date"] if latest_enrollment_transaction.present? && !latest_enrollment_transaction.placeholder?
+      ap "stop date:"
+      ap stop_date
 
       if stop_date.present?
+        ap "stop date present"
         stop_date = stop_date.to_date
 
         target_date = [(stop_date.end_of_month + 1.day), self.ends_at].min # move forward a month, or to the end of the enrollment
       else # we don't have any yet, so do the first one
+        ap "stop date blank"
         target_date = self.starts_at # figured that out above
       end
       ap "target date:"
