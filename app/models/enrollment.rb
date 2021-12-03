@@ -371,9 +371,9 @@ class Enrollment < ApplicationRecord
       ap "latest trans:"
       ap latest_enrollment_transaction
       ap "description data:"
-      ap latest_enrollment_transaction.description_data
+      ap latest_enrollment_transaction.try(:description_data)
       ap "placeholder?"
-      ap latest_enrollment_transaction.placeholder?
+      ap latest_enrollment_transaction.try(:placeholder?)
 
       stop_date = latest_enrollment_transaction.description_data["stop_date"] if latest_enrollment_transaction.present? && !latest_enrollment_transaction.placeholder?
       ap "stop date:"
