@@ -12,7 +12,7 @@ class Enrollment < ApplicationRecord
 
   before_validation :deduce_plan
 
-  after_create :set_next_target_and_payment_date!
+  after_commit :dynamically_set_next_target_and_payment_date
 
   validates :starts_at, :ends_at, presence: true
   validate :validate_dates
@@ -717,6 +717,12 @@ class Enrollment < ApplicationRecord
 
     if starts_at.present? && ends_at.present? && ([0, 6] & (starts_at.wday..ends_at.wday).to_a).any?
       errors.add(:base, "#{child.first_name} cannot attend on #{starts_at.stamp("Mar. 3rd, 2018")} because we are only in session on weekdays")
+    end
+  end
+
+  def dynamically_set_next_target_and_payment_date
+    if saved_change_to_starts_at || saved_change_to_ends_at
+      set_next_target_and_payment_date!
     end
   end
 end
