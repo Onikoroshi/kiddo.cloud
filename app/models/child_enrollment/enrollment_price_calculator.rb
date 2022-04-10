@@ -149,6 +149,10 @@ module ChildEnrollment
       itemizations
     end
 
+    def requires_payment_information?
+      programs.require_payment_information.exists?
+    end
+
     def programs
       program_ids = enrollments.programs.pluck(:id)
       program_ids += independent_enrollment_changes.joins(enrollment: :program).pluck("programs.id")

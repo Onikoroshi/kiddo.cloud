@@ -43,7 +43,7 @@ namespace :scheduler do
                 :currency => "usd",
                 :customer => stripe_customer.id,
               )
-            else
+            elsif enrollments.require_payment_information.exists?
               # just in case the call above doesn't throw an exception
               raise "Could not find Stripe Customer for id #{account.gateway_customer_id}"
             end

@@ -38,10 +38,13 @@ class Account::Manage::PaymentsController < ApplicationController
     calculator.calculate
     recurring_enrollments = calculator.enrollments.recurring.to_a # freeze this list because the relation will change once they're paid
 
-    # Token is created using Stripe.js or Checkout!
-    # Get the payment token ID submitted by the form:
-    token = params[:stripeToken]
-    customer = StripeCustomerService.new(@account).find_or_create_customer(token)
+    customer = nil
+    if calculator.requires_payment_information?
+      # Token is created using Stripe.js or Checkout!
+      # Get the payment token ID submitted by the form:
+      token = params[:stripeToken]
+      customer = StripeCustomerService.new(@account).find_or_create_customer(token)
+    end
 
     begin
       charge_transaction = handle_charges(calculator, customer)

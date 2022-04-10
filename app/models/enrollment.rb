@@ -33,6 +33,7 @@ class Enrollment < ApplicationRecord
   scope :by_location, ->(location) { location.present? ? where(location_id: location.id) : all }
   scope :active, -> { where("enrollments.starts_at <= ? AND enrollments.ends_at >= ?", Time.zone.today, Time.zone.today).distinct }
   scope :inactive, -> { where("enrollments.starts_at > ? OR enrollments.ends_at < ?", Time.zone.today, Time.zone.today).distinct }
+  scope :require_payment_information, -> { joins(:program).where(programs: {waive_payment_information: false}) }
   scope :paid, -> { where(paid: true) }
   scope :ever_paid, -> { joins(:transactions).where("transactions.paid IS TRUE").distinct }
   scope :unpaid, -> { where.not(paid: true) }

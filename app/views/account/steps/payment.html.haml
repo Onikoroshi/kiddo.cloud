@@ -1,12 +1,13 @@
 = render partial: "step_navigation"
 
-.row
-  .alert.alert-warning
-    .alert-icon
-      %i.material-icons warning
-    %button.close{"aria-label" => "Close", "data-dismiss" => "alert", :type => "button"}
-      %span{"aria-hidden" => "true"}
-        %i.material-icons clear
-    Please add your credit card information for auto-pay! If you have previously paid, you won't be charged again.
+- if @calculator.requires_payment_information?
+  .row
+    .alert.alert-warning
+      .alert-icon
+        %i.material-icons warning
+      %button.close{"aria-label" => "Close", "data-dismiss" => "alert", :type => "button"}
+        %span{"aria-hidden" => "true"}
+          %i.material-icons clear
+      Please add your credit card information for auto-pay! If you have previously paid, you won't be charged again.
 
 = render "checkout_payment"

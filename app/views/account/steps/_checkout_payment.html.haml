@@ -10,14 +10,17 @@
 
   %br.cleaner
   = form_tag account_checkout_path(@account), id: "payment-form" do |form|
-    .form-group.label-floating
-      %label{:for => "card-element", class: "control-label"}
-        Credit or Debit Card
-      #card-element.form-control
-        / a Stripe Element will be inserted here.
-      / Used to display Element errors
-      #card-errors{:role => "alert"}
-    .credit-cards
-      = image_tag ("credit-cards.png")
-    - button_text = current_user.legacy? ? "Store Card For AutoPay" : "Pay & Finish Registration"
-    = submit_tag button_text, class: "btn btn-info pull-right", data: { disable_with: "Processing ..." }
+    - if @calculator.requires_payment_information?
+      .form-group.label-floating
+        %label{:for => "card-element", class: "control-label"}
+          Credit or Debit Card
+        #card-element.form-control
+          / a Stripe Element will be inserted here.
+        / Used to display Element errors
+        #card-errors{:role => "alert"}
+      .credit-cards
+        = image_tag ("credit-cards.png")
+      - button_text = current_user.legacy? ? "Store Card For AutoPay" : "Pay & Finish Registration"
+      = submit_tag button_text, class: "btn btn-info pull-right", data: { disable_with: "Processing ..." }
+    - else
+      = submit_tag "Finish Registration", class: "btn btn-info pull-right", data: { disable_with: "Processing ..." }

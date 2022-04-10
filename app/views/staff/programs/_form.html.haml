@@ -38,6 +38,14 @@
         = f.label :registration_closes, "Registration Closes", class: "control-label"
         = f.text_field :registration_closes, class: "form-control flatpickr-date"
 
+      %br
+      .field
+        .togglebutton
+          %label
+            = f.check_box :waive_payment_information
+            = f.label :waive_payment_information, "Do NOT require payment information (set all fees to $0 since they will not be paid)"
+      %br
+
       .form-group.label-floating
         = f.label :registration_fee, "Registration Fee", class: "control-label"
         = f.text_field :registration_fee, class: "form-control"

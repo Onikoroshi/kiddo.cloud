@@ -33,6 +33,9 @@ class Program < ApplicationRecord
 
   after_save :sync_enrollments
 
+  scope :require_payment_information, -> { where(waive_payment_information: false) }
+  scope :waive_payment_information, -> { where(waive_payment_information: true) }
+
   scope :order_by_priority, -> { order("priority ASC") }
   scope :descending_by_start_date, -> { order("starts_at DESC") }
   scope :descending_by_updated, -> { order("updated_at DESC") }
