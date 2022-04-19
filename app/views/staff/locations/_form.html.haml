@@ -10,12 +10,12 @@
       = f.label :programs, "Programs", class: "control-label"
       %table
         %thead
-          %th Program
+          %th{ style: "float: right;" } Program
           %th Available
           %th Enable Tardy Alerts
         %tbody
           %tr
-            %td
+            %td{ style: "float: right;" }
               = f.collection_check_boxes :program_ids, @programs, :id, :name, class: "form-control" do |cb|
                 = "#{cb.check_box} #{cb.text}"
                 %br
