@@ -1,9 +1,7 @@
 = form_for(@account, url: account_dashboard_enrollments_path, method: defined?(target_method) ? target_method : "POST") do |f|
   = hidden_field_tag :plan_type, @plan_type.to_s
 
-  %h5.text-center Payments will be automatically charged to your card once a month. To make this process as smooth and convenient as possible, we can offset that date by a certain amount. Please choose your ideal offset below.
-
-  .text-center= f.select :payment_offset, options_from_collection_for_select(PaymentOffsetPresenter.build(@program.earliest_payment_offset, @program.latest_payment_offset), 'to_i', 'to_s', f.object.payment_offset.to_i)
+  = render "payment_offset_field", f: f
 
   %br
 
