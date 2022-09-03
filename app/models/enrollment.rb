@@ -223,6 +223,10 @@ class Enrollment < ApplicationRecord
     end
   end
 
+  def requires_payment_information?
+    programs.require_payment_information.any?
+  end
+
   def past?
     ends_at < Time.zone.today
   end
