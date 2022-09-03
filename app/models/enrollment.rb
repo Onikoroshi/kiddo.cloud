@@ -224,7 +224,7 @@ class Enrollment < ApplicationRecord
   end
 
   def requires_payment_information?
-    programs.require_payment_information.any?
+    program.requires_payment_information?
   end
 
   def past?

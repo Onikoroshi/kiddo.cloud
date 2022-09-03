@@ -56,6 +56,10 @@ class Program < ApplicationRecord
     ProgramGroup.where(id: self.pluck("program_group_id").reject(&:blank?).uniq)
   end
 
+  def requires_payment_information?
+    !waive_payment_information?
+  end
+
   def custom_request_plan
     target_plan = plans.by_plan_type(PlanType[:custom_request].to_s).first
 
