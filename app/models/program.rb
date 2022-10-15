@@ -75,7 +75,7 @@ class Program < ApplicationRecord
   end
 
   def plan_types
-    plans.select{ |plan| plan.allowed_days.any? && 0 != plan.days_per_week && (!custom_requests? || !plan.plan_type.custom_request?) }.map{ |plan| plan.plan_type}.uniq{|plan| plan.to_s }
+    plans.select{|plan| !custom_requests? || !plan.plan_type.custom_request?}.map{|plan| plan.plan_type}.uniq{|plan| plan.to_s}
   end
 
   def short_name
