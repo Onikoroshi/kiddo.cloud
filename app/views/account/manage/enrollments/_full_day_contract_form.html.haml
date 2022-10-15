@@ -66,11 +66,14 @@
               .col-xs-9{style: "padding-left: 0px !important"}
                 = children_fields.text_field :starts_at, value: (existing_enrollment_start || [(@program.starts_at).to_date, (Time.zone.today).to_date].max), class: "drop_in-date-select flatpickr-date"
 
-            .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px; margin-left: 20px;"}
-              .col-xs-3{style: "padding-left: 0px !important"}
-                = f.label :ends_at, "Stopping On"
-              .col-xs-9{style: "padding-left: 0px !important"}
-                = children_fields.text_field :ends_at, value: (existing_enrollment_end || (@program.ends_at).to_date), class: "drop_in-date-select flatpickr-date"
+            - if current_user.super_admin?
+              .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px; margin-left: 20px;"}
+                .col-xs-3{style: "padding-left: 0px !important"}
+                  = f.label :ends_at, "Stopping On"
+                .col-xs-9{style: "padding-left: 0px !important"}
+                  = children_fields.text_field :ends_at, value: (existing_enrollment_end || @program.ends_at.to_date), class: "drop_in-date-select flatpickr-date"
+            - else
+              = children_fields.hidden_field :ends_at, value: (existing_enrollment_end || @program.ends_at.to_date)
         - else
           %h4{style: "padding-left: 20px;"}= display_unavailable_locations_message
       - else

@@ -44,13 +44,18 @@
                   = f.label :starts_at, "Starting On"
                 .col-xs-9{style: "padding-left: 0px !important"}
                   = enrollment_fields.text_field :starts_at, value: [(enrollment_fields.object.starts_at || @program.starts_at).to_date, (enrollment_fields.object.created_at || Time.zone.today).to_date].max, class: "drop_in-date-select flatpickr-date"
-            .row
-              .col-xs-7
-              .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px;"}
-                .col-xs-3{style: "padding-left: 0px !important"}
-                  = f.label :ends_at, "Stopping On"
-                .col-xs-9{style: "padding-left: 0px !important"}
-                  = enrollment_fields.text_field :ends_at, value: (enrollment_fields.object.ends_at || @program.ends_at).to_date, class: "drop_in-date-select flatpickr-date"
+
+            - if current_user.super_admin?
+              .row
+                .col-xs-7
+                .col-xs-3{style: "padding-left: 0px !important; padding-top: 7px;"}
+                  .col-xs-3{style: "padding-left: 0px !important"}
+                    = f.label :ends_at, "Stopping On"
+                  .col-xs-9{style: "padding-left: 0px !important"}
+                    = enrollment_fields.text_field :ends_at, value: (enrollment_fields.object.ends_at || @program.ends_at).to_date, class: "drop_in-date-select flatpickr-date"
+            - else
+              = enrollment_fields.hidden_field :ends_at, value: (enrollment_fields.object.ends_at || @program.ends_at).to_date
+
             .cleaner
           - elsif valid_object
             %h4{style: "padding-left: 20px;"}= display_unavailable_locations_message
