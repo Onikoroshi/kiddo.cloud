@@ -93,6 +93,8 @@ namespace :scheduler do
     end
 
     TransactionalMailer.recurring_payment_report(messages).deliver_now
+
+    FindUnpaidEnrollments.send_unpaid_enrollments_report
   end
 
   desc "This task is called by the Heroku scheduler add-on"
