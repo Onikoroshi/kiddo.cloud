@@ -24,7 +24,6 @@ class FindUnpaidEnrollments
       end
     end
 
-    ap messages
-    # TransactionalMailer.one_time_unpaid_payment_report(messages).deliver_now
+    TransactionalMailer.one_time_unpaid_payment_report(messages).deliver_now
   end
 end
