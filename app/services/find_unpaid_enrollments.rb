@@ -22,6 +22,8 @@ class FindUnpaidEnrollments
         messages << "no associated account found"
         next
       end
+
+      index += 1
     end
 
     TransactionalMailer.one_time_unpaid_payment_report(messages).deliver_now
