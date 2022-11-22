@@ -1,7 +1,8 @@
 class FindUnpaidEnrollments
   def self.send_unpaid_enrollments_report
+    messages = []
     unpaid_enrollments = Enrollment.one_time.unpaid.includes(child: :account).references(:accounts)
-    enroll_hash = due_enrollments.to_a.group_by{|e| e.child.account.id}
+    enroll_hash = unpaid_enrollments.to_a.group_by{|e| e.child.account.id}
     messages << enroll_hash
 
     total_accounts = enroll_hash.count
