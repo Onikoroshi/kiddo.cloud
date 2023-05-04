@@ -20,5 +20,7 @@ module Kidsclub
     config.assets.paths << "#{Rails.root}/app/assets"
 
     config.time_zone = "Pacific Time (US & Canada)"
+
+    config.active_job.queue_adapter = :async
   end
 end
