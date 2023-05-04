@@ -12,7 +12,7 @@ class Transaction < ApplicationRecord
   has_many :enrollment_changes, through: :enrollment_change_transactions
 
   classy_enum_attr :transaction_type
-  money_column :amount
+  money_column :amount, currency: 'USD'
 
   after_create :initialize_receipt_number
 

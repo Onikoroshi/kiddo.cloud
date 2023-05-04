@@ -10,7 +10,7 @@ class DropIn < ApplicationRecord
       DateTime.now.beginning_of_day..DateTime.now.end_of_day)
   }
 
-  money_column :price
+  money_column :price, currency: 'USD'
 
   validates :date, presence: true
   validate :validate_date_within_range

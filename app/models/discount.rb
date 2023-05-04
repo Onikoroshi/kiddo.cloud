@@ -1,7 +1,7 @@
 class Discount < ApplicationRecord
   belongs_to :plan
 
-  money_column :amount
+  money_column :amount, currency: 'USD'
 
   validates :plan, :amount, :starts_on, :stops_on, presence: true
   validate :validate_start_stop_order

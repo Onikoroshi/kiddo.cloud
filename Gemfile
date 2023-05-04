@@ -5,10 +5,10 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-ruby "2.4.1"
+ruby "2.6.0"
 
-gem 'devise', '~> 4.2'
-gem 'hamlit-rails', '~> 0.2.0'
+gem 'devise', '4.4.0'
+gem 'haml-rails', '~> 2.0'
 gem 'wicked', '~> 1.3', '>= 1.3.1'
 gem 'forgery', '~> 0.6.0'
 gem 'seed-fu', '~> 2.3', '>= 2.3.6'
@@ -17,7 +17,7 @@ gem 'flatpickr_rails'
 gem 'pundit', '~> 1.1'
 gem "font-awesome-rails"
 gem "chronic"
-gem "money", github: "Shopify/money"
+gem 'shopify-money', '~> 1.1'
 gem "cocoon"
 gem "stamp"
 gem "stripe"
@@ -29,7 +29,7 @@ gem "sentry-raven"
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.1'
+gem 'rails', '5.1.1'
 # Use sqlite3 as the database for Active Record
 gem 'pg'
 # Use Puma as the app server

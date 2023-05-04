@@ -2,7 +2,7 @@ class EnrollmentTransaction < ApplicationRecord
   belongs_to :enrollment
   belongs_to :my_transaction, class_name: "Transaction"
 
-  money_column :amount
+  money_column :amount, currency: 'USD'
 
   scope :chronological, -> { order("enrollment_transactions.created_at ASC") }
   scope :reverse_chronological, -> { order("enrollment_transactions.created_at DESC") }

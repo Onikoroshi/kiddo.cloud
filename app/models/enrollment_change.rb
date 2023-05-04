@@ -5,7 +5,7 @@ class EnrollmentChange < ApplicationRecord
   has_many :enrollment_change_transactions, dependent: :destroy
   has_many :transactions, through: :enrollment_change_transactions, source: :my_transaction
 
-  money_column :amount
+  money_column :amount, currency: 'USD'
 
   validates :account, :enrollment, presence: true
 

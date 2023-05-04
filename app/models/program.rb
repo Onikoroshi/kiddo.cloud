@@ -17,8 +17,8 @@ class Program < ApplicationRecord
 
   accepts_nested_attributes_for :holidays, allow_destroy: true
 
-  money_column :registration_fee
-  money_column :change_fee
+  money_column :registration_fee, currency: "USD"
+  money_column :change_fee, currency: "USD"
 
   classy_enum_attr :program_type
 
