@@ -5,9 +5,9 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-ruby "2.6.0"
+ruby "2.6.6"
 
-gem 'devise', '4.4.0'
+gem 'devise', '4.4'
 gem 'haml-rails', '~> 2.0'
 gem 'wicked', '~> 1.3', '>= 1.3.1'
 gem 'forgery', '~> 0.6.0'
