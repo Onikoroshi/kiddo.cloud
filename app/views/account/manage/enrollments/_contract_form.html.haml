@@ -23,7 +23,7 @@
 
             .row
               .col-sm-7
-                - @plan_type.find_available_days.each do |day_name, value|
+                - @plan_type.find_available_days(@program).each do |day_name, value|
                   - if value
                     .checkbox
                       %label

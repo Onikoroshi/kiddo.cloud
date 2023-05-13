@@ -685,19 +685,32 @@ class Enrollment < ApplicationRecord
 
     target_program = plan.program
     target_plan_type = plan.plan_type
-    possible_plans = program.plans.by_plan_type(target_plan_type)
+    num_days_match_plans = program.plans.by_plan_type(target_plan_type).where(days_per_week: num_days)
 
-    success = false
-
-    possible_plans.find_each do |possible_plan|
-      if [-1, num_days].include?(possible_plan.days_per_week.to_i) && (target_days & possible_plan.allowed_days).sort == target_days
-        self.plan_id = possible_plan.id
-        success = true
-        break
+    if num_days_match_plans.exists?
+      num_days_match_plans.find_each do |num_days_match_plan|
+        if (target_days & num_days_match_plan.allowed_days).sort == target_days
+          self.plan_id = num_days_match_plan.id
+          return
+        end
       end
-    end
 
-    unless success
+      all_allowed_days = num_days_match_plans.to_a.map{ |p| p.allowed_days }.uniq
+      disp_days = all_allowed_days.map do |day_combo|
+        prescript = day_combo.length > num_days ? "from " : ""
+        prescript + day_combo.map{|x| x.capitalize}.to_sentence
+      end.to_sentence(last_word_connector: "or")
+      errors.add(:base, "to attend #{num_days} days, please choose #{disp_days}")
+    else
+      possible_plans = program.plans.by_plan_type(target_plan_type).where(days_per_week: -1)
+
+      possible_plans.find_each do |possible_plan|
+        if (target_days & possible_plan.allowed_days).sort == target_days
+          self.plan_id = possible_plan.id
+          return
+        end
+      end
+
       errors.add(:base, "No payment plans cover the days selected for #{self.child.full_name}. Try a different combination of days.")
     end
   end
