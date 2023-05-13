@@ -157,6 +157,7 @@ class Enrollment < ApplicationRecord
         "Child Last Name",
         "Child First Name",
         "Birthdate",
+        "DJUSD Student Lunch ID",
         "Plan",
         "Day(s)",
         "Location",
@@ -203,7 +204,7 @@ class Enrollment < ApplicationRecord
 
         child = enrollment.child
 
-        child_info = [child.last_name, child.first_name, child.birthdate.stamp("5/13/2011"), enrollment.type_display, enrollment.service_dates_with_days, enrollment.location_name]
+        child_info = [child.last_name, child.first_name, child.birthdate.stamp("5/13/2011"), child.djusd_lunch_id, enrollment.type_display, enrollment.service_dates_with_days, enrollment.location_name]
 
         child_info += account_info
 

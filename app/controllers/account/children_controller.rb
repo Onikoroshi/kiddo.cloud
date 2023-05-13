@@ -71,6 +71,7 @@ class Account::ChildrenController < ApplicationController
        :gender,
        :grade_entering,
        :birthdate,
+       :djusd_lunch_id,
        :additional_info,
        care_items_attributes: [:id, :name, :active, :explanation, :required, :two_part],
        attendance_selections_attributes: []

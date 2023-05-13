@@ -125,6 +125,11 @@
               Date of Birth:
             .col-xs-8.account-name
               = c.birthdate.stamp("November 30th, 1984") if c.birthdate.present?
+          .row.account-row
+            .col-xs-4.account-label
+              DJUSD Student Lunch ID:
+            .col-xs-8.account-name
+              = c.djusd_lunch_id
           #careitems
             %h5 Care Items
             - c.care_items.where(active: true).each do |ci|

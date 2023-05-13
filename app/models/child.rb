@@ -24,6 +24,7 @@ class Child < ApplicationRecord
   validates :last_name, presence: true
   validates :gender, presence: true
   validates :birthdate, presence: true
+  validates :djusd_lunch_id, presence: true
 
   accepts_nested_attributes_for :enrollments, allow_destroy: true
   accepts_nested_attributes_for :care_items, allow_destroy: true

@@ -9,11 +9,11 @@
       .col-md-10
         .form-group.label-floating
           = form.label :first_name, "First Name", class: "control-label"
-          = form.text_field :first_name, class: "form-control"
+          = form.text_field :first_name, required: true, class: "form-control"
 
         .form-group.label-floating
           = form.label :last_name, "Last Name", class: "control-label"
-          = form.text_field :last_name, class: "form-control"
+          = form.text_field :last_name, required: true, class: "form-control"
 
         .form-group.label-floating
           = form.label :gender
@@ -26,13 +26,17 @@
         .select.form-group.label-floating
           = form.label :grade_entering
           %br
-          = form.select :grade_entering, Child.available_grades, include_blank: false, class: "selectpicker"
+          = form.select :grade_entering, Child.available_grades, include_blank: false, required: true, class: "selectpicker"
 
         .form-group.label-floating
           = form.label :birthdate, "Birth Date", class: "control-label"
           %br
-          = form.text_field :birthdate, class: "form-control flatpickr-date"
+          = form.text_field :birthdate, required: true, class: "form-control flatpickr-date", required: true
           Remember to click on the day to set the birthdate
+
+        .form-group.label-floating
+          = form.label :djusd_lunch_id, "DJUSD Student Lunch ID", class: "control-label"
+          = form.text_field :djusd_lunch_id, required: true, required: true, class: "form-control"
 
         %h5 In an effort to connect with your child, to meet his/her needs, and to help him/her be socially, academically and behaviorally successful in our after school program, please complete this form as accurately and honestly as possible. Note:  This information is kept confidential by DKK staff.
 

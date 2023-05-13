@@ -4,6 +4,7 @@ FactoryGirl.define do
     last_name { Faker::Name.last_name }
     grade_entering "1"
     birthdate Time.zone.today - 5.years
+    djusd_lunch_id rand(10000..99999)
     additional_info nil
     gender "male"
 

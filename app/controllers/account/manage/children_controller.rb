@@ -3,6 +3,7 @@ class Account::Manage::ChildrenController < ApplicationController
   before_action :guard_center!
   before_action :set_account
   before_action :set_account_child, only: [:show, :edit, :update, :destroy]
+  before_action :build_default_care_items, only: [:show, :edit]
 
   def index
     authorize @account, :dashboard?
@@ -60,6 +61,9 @@ class Account::Manage::ChildrenController < ApplicationController
 
   def set_account_child
     @account_child = Child.find(params[:id])
+  end
+
+  def build_default_care_items
     @account_child.build_default_care_items
   end
 
@@ -75,6 +79,7 @@ class Account::Manage::ChildrenController < ApplicationController
      :gender,
      :grade_entering,
      :birthdate,
+     :djusd_lunch_id,
      :additional_info,
      care_items_attributes: [:id, :name, :active, :explanation],
      attendance_selections_attributes: []

@@ -42,6 +42,7 @@ class Account < ApplicationRecord
         "Child Last Name",
         "Child First Name",
         "Birthdate",
+        "DJUSD Student Lunch ID",
         "Primary Parent",
         "Email",
         "Phone",
@@ -88,7 +89,7 @@ class Account < ApplicationRecord
 
         account.children.each do |child|
           total_children += 1
-          child_info = [child.last_name, child.first_name, child.birthdate.stamp("5/13/2011")]
+          child_info = [child.last_name, child.first_name, child.birthdate.stamp("5/13/2011"), child.djusd_lunch_id]
           child_info += account_info
 
           if child.care_items.active.any?

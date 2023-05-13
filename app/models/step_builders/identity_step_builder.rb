@@ -28,6 +28,7 @@ class IdentityStepBuilder
       last_name:  params["last_name"],
       grade_entering:  params["grade_entering"],
       birthdate: params["birthdate"],
+      djusd_lunch_id: params["djusd_lunch_id"],
       gender: params["gender"]
     )
   end

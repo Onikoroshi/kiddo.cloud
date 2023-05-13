@@ -38,6 +38,7 @@ User.parent_users.find_each do |parent_user|
       c.gender = gender.to_s
       c.grade_entering = Child.available_grades.sample
       c.birthdate = ((Time.zone.today - 12.years)..(Time.zone.today - 3.years)).to_a.sample
+      c.djusd_lunch_id = rand(10000..99999).to_s
     end
     child = Child.last
 

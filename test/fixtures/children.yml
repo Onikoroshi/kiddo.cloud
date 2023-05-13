@@ -4,6 +4,7 @@ one:
   references:
   grade_entering: MyString
   birthdate: 2017-05-26
+  djusd_lunch_id: 12345
   additional_info: MyText
   gender: male
 
@@ -11,5 +12,6 @@ two:
   references:
   grade_entering: MyString
   birthdate: 2017-05-26
+  djusd_lunch_id: 54321
   additional_info: MyText
   gender: female
