@@ -42,7 +42,7 @@ class Account < ApplicationRecord
         "Child Last Name",
         "Child First Name",
         "Birthdate",
-        "DJUSD Student Lunch ID",
+        "District Student ID #",
         "Primary Parent",
         "Email",
         "Phone",

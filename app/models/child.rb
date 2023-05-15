@@ -24,7 +24,8 @@ class Child < ApplicationRecord
   validates :last_name, presence: true
   validates :gender, presence: true
   validates :birthdate, presence: true
-  validates :djusd_lunch_id, presence: true
+
+  validate :validate_djusd_lunch_id_presence
 
   accepts_nested_attributes_for :enrollments, allow_destroy: true
   accepts_nested_attributes_for :care_items, allow_destroy: true
@@ -176,6 +177,12 @@ class Child < ApplicationRecord
 
     if saved_change_to_first_name? || saved_change_to_last_name?
       account.update_search_field
+    end
+  end
+
+  def validate_djusd_lunch_id_presence
+    if djusd_lunch_id.blank?
+      errors.add(:base, "Your student's District Student ID # can't be left blank")
     end
   end
 end

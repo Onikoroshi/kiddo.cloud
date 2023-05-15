@@ -157,7 +157,7 @@ class Enrollment < ApplicationRecord
         "Child Last Name",
         "Child First Name",
         "Birthdate",
-        "DJUSD Student Lunch ID",
+        "District Student ID #",
         "Plan",
         "Day(s)",
         "Location",
