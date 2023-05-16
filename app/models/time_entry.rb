@@ -71,41 +71,57 @@ class TimeEntry < ApplicationRecord
     total_hours
   end
 
-  def self.count_checked_in_at(datetime)
-    hash = {}
-    self.all.each do |entry|
-      key = "#{entry.time_recordable_type}_#{entry.time_recordable_id}"
-      hash[key] = [] if hash[key].nil?
-      hash[key] << entry
+  def self.count_checked_in_at(datetime, entry_hash)
+    staff_checked_in_count = 0
+    children_checked_in_count = 0
+
+    last_start = Time.zone.now
+    entry_hash.each do |key, entries|
+      last_before = entries.select{|e| e.time.in_time_zone <= datetime}.last
+
+      if last_before.present? && last_before.checked_in?
+        if "child" == last_before.time_recordable_type.downcase
+          children_checked_in_count += 1
+        else
+          staff_checked_in_count += 1
+        end
+      end
+      ap (Time.zone.now - last_start)
+      last_start = Time.zone.now
     end
 
-    checked_in_count = 0
-    hash.each do |key, entries|
-      entries_before = entries.select{|e| e.time.in_time_zone <= datetime}
-      last_before = entries_before.sort{|a, b| a.time <=> b.time}.last
-
-      checked_in_count += 1 if last_before.present? && last_before.checked_in?
-    end
-
-    checked_in_count
+    {
+      "staff_count" => staff_checked_in_count,
+      "children_count" => children_checked_in_count
+    }
   end
 
   def self.ratio_report_hash
-    hash = {}
+    result = {}
 
-    return hash unless self.any?
+    return result unless self.any?
 
-    first_time = self.order(:time).first.time.beginning_of_hour
-    last_time = self.order(:time).last.time.beginning_of_hour + 1.hour
+    keyed_entries = {}
 
-    (first_time.to_i .. last_time.to_i).step(15.minutes).to_a.each do |time|
-      hash[Time.zone.at(time).stamp("3:00 PM")] = {
-        "staff_count" => self.for_staff.count_checked_in_at(Time.zone.at(time)),
-        "children_count" => self.for_children.count_checked_in_at(Time.zone.at(time))
-      }
+    first_time = self.minimum(:time)
+    last_time = self.maximum(:time)
+    ap "first time: #{first_time}"
+    ap "last_time: #{last_time}"
+
+    self.order(:time).find_each do |time_entry|
+      puts "."
+      key = "#{time_entry.time_recordable_type}_#{time_entry.time_recordable_id}"
+      keyed_entries[key] = [] if keyed_entries[key].nil?
+      keyed_entries[key] << time_entry
+    end
+    ap "built hash"
+
+    (first_time.to_i .. last_time.to_i).step(15.minutes).each do |time|
+      ap Time.zone.at(time),
+      result[Time.zone.at(time).stamp("3:00 PM")] = self.count_checked_in_at(Time.zone.at(time), keyed_entries)
     end
 
-    hash
+    result
   end
 
   def self.to_ratio_csv
