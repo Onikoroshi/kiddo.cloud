@@ -75,7 +75,6 @@ class TimeEntry < ApplicationRecord
     staff_checked_in_count = 0
     children_checked_in_count = 0
 
-    last_start = Time.zone.now
     entry_hash.each do |key, entries|
       last_before = entries.select{|e| e.time.in_time_zone <= datetime}.last
 
@@ -86,7 +85,6 @@ class TimeEntry < ApplicationRecord
           staff_checked_in_count += 1
         end
       end
-      ap (Time.zone.now - last_start)
       last_start = Time.zone.now
     end
 
@@ -105,11 +103,8 @@ class TimeEntry < ApplicationRecord
 
     first_time = self.minimum(:time)
     last_time = self.maximum(:time)
-    ap "first time: #{first_time}"
-    ap "last_time: #{last_time}"
 
     self.order(:time).find_each do |time_entry|
-      puts "."
       key = "#{time_entry.time_recordable_type}_#{time_entry.time_recordable_id}"
       keyed_entries[key] = [] if keyed_entries[key].nil?
       keyed_entries[key] << time_entry
@@ -117,7 +112,6 @@ class TimeEntry < ApplicationRecord
     ap "built hash"
 
     (first_time.to_i .. last_time.to_i).step(15.minutes).each do |time|
-      ap Time.zone.at(time),
       result[Time.zone.at(time).stamp("3:00 PM")] = self.count_checked_in_at(Time.zone.at(time), keyed_entries)
     end
 
