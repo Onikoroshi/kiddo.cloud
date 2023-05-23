@@ -15,6 +15,6 @@
           - @transactions.each do |transaction|
             %tr
               %td= transaction.transaction_type.text
-              %td= transaction.created_at.in_time_zone.to_date.to_s
+              %td= transaction.created_at.in_time_zone.strftime("%m/%d/%Y at %I:%M %p")
               %td= transaction.amount
               %td= link_to "Details & Receipt", account_dashboard_payment_path(@account, transaction)
