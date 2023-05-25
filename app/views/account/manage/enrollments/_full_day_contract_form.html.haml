@@ -58,7 +58,7 @@
 
             .h3{style: "padding-left: 0px !important; padding-top: 7px;"}
               = f.label :location, "At"
-              = children_fields.select :location_id, @program.available_locations.select_options, include_blank: "None", selected: existing_enrollment.present? ? existing_enrollment.location_id : @program.available_locations.first.id
+              = children_fields.select :location_id, @program.available_locations.select_options, selected: existing_enrollment.present? ? existing_enrollment.location_id : @program.available_locations.first.id
 
             .col-xs-3{style: "padding-left: 0px !important; padding-top: 20px; margin-left: 20px;"}
               .col-xs-3{style: "padding-left: 0px !important"}
