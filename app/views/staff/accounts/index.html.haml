@@ -5,7 +5,11 @@
   .text-center
     = form_tag staff_accounts_path, method: :get do
       .row
-        .col-xs-4.text-center
+        - if current_user.super_admin?
+          .col-xs-2.text-center
+            %h5 Program Group
+            = select_tag "program_group_id", options_from_collection_for_select(@program_groups, "id", "title", @program_group_id), include_blank: "All Program Groups"
+        .col-xs-3.text-center
           %h5 Program
           = select_tag "program_id", options_from_collection_for_select(@programs, "id", "name", @program_id), include_blank: current_user.super_admin? ? "All Programs" : false
         .col-xs-3.text-center
@@ -14,7 +18,7 @@
         .col-xs-3.text-center
           %h5 Search
           = text_field_tag "search", params[:search], {style: "width: 100%;"}
-        .col-xs-2.text-center
+        .col-xs-3.text-center
           %br
           = check_box_tag "only_active", "1", @only_active
           = label_tag "only_active", "Show Only with Active Enrollments"

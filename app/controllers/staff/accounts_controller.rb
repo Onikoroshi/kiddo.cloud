@@ -28,6 +28,7 @@ class Staff::AccountsController < ApplicationController
     ap "locations: #{@locations.pluck(:id)}"
     @programs = @locations.programs.descending_by_updated
     ap "programs: #{@programs.pluck(:id)}"
+    @program_groups = ProgramGroup.all
 
     unless params[:search].blank?
       ap "search not blank"
@@ -35,21 +36,32 @@ class Staff::AccountsController < ApplicationController
       @program = nil
       @location_id = ""
       @location = nil
+      @program_group = nil
+      @program_group_id = nil
 
       target = "%#{params[:search].to_s.downcase.gsub(" ", "")}%"
       @accounts = Account.includes(:parents).where("accounts.search_field ILIKE ?", target)
     else
       ap "search blank"
-      @program_id = params[:program_id]
-      ap "initial program id: #{@program_id}"
-      @program = Program.find_by(id: @program_id)
-      ap "initial program: #{@program.present? ? @program.id : "none"}"
-      ap "current user super_admin? #{current_user.super_admin?}"
-      ap "programs include current? #{@programs.include?(@program)}"
-      @program = @programs.first if !current_user.super_admin? && !@programs.include?(@program)
-      ap "final program: #{@program.present? ? @program.id : "none"}"
-      @program_id = @program.id if @program.present?
-      ap "final program id: #{@program_id}"
+
+      @program_group_id = params[:program_group_id]
+      @program_group = ProgramGroup.find_by(id: @program_group_id)
+
+      if @program_group.present?
+        @program = nil
+        @program_id = nil
+      else
+        @program_id = params[:program_id]
+        ap "initial program id: #{@program_id}"
+        @program = Program.find_by(id: @program_id)
+        ap "initial program: #{@program.present? ? @program.id : "none"}"
+        ap "current user super_admin? #{current_user.super_admin?}"
+        ap "programs include current? #{@programs.include?(@program)}"
+        @program = @programs.first if !current_user.super_admin? && !@programs.include?(@program)
+        ap "final program: #{@program.present? ? @program.id : "none"}"
+        @program_id = @program.id if @program.present?
+        ap "final program id: #{@program_id}"
+      end
 
       @locations = Location.where(id: (@locations.pluck(:id) & @program.locations.pluck(:id))) if @program.present?
       ap "final locations: #{@locations.pluck(:id)}"
@@ -68,7 +80,7 @@ class Staff::AccountsController < ApplicationController
       @show_unregistered = params["show_unregistered"].present?
       @only_active = params["only_active"].present?
 
-      @accounts = Account.includes(:parents).where(center: @center).by_program(@program).by_location(@location)
+      @accounts = Account.includes(:parents).where(center: @center).by_program_group(@program_group).by_program(@program).by_location(@location)
       ap "initial accounts: #{@accounts.count}"
       @accounts = @show_unregistered ? @accounts.where.not(signup_complete: true) : @accounts.where(signup_complete: true)
       ap "after show unregistered: #{@accounts.count}"

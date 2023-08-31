@@ -32,9 +32,10 @@ class Account < ApplicationRecord
 
   after_commit :update_search_field, if: :persisted?
 
-  scope :by_program, ->(given_program) { given_program.present? ? joins(enrollments: :program).where("enrollments.dead IS FALSE AND programs.id = ?", given_program.id).distinct : all }
-  scope :by_location, ->(given_location) { given_location.present? ? joins(:enrollments).where("enrollments.dead IS FALSE AND enrollments.location_id = ?", given_location.id).distinct : all }
-  scope :only_active_enrollments, -> { joins(:enrollments).where("enrollments.dead IS FALSE AND enrollments.starts_at <= ? AND enrollments.ends_at >= ?", Time.zone.today, Time.zone.today) }
+  scope :by_program_group, ->(given_program_group) { given_program_group.present? ? joins(:enrollments).merge(Enrollment.alive.by_program_group(given_program_group)).distinct : all }
+  scope :by_program, ->(given_program) { given_program.present? ? joins(enrollments: :program).merge(Enrollment.alive.by_program(given_program)).distinct : all }
+  scope :by_location, ->(given_location) { given_location.present? ? joins(:enrollments).merge(Enrollment.alive.by_location(given_location)).distinct : all }
+  scope :only_active_enrollments, -> { joins(:enrollments).merge(Enrollment.alive.active).distinct }
 
   def self.to_csv
     ap "generating csv for #{self.count} accounts"
