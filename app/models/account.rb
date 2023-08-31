@@ -34,6 +34,7 @@ class Account < ApplicationRecord
 
   scope :by_program, ->(given_program) { given_program.present? ? joins(enrollments: :program).where("enrollments.dead IS FALSE AND programs.id = ?", given_program.id).distinct : all }
   scope :by_location, ->(given_location) { given_location.present? ? joins(:enrollments).where("enrollments.dead IS FALSE AND enrollments.location_id = ?", given_location.id).distinct : all }
+  scope :only_active_enrollments, -> { joins(:enrollments).where("enrollments.dead IS FALSE AND enrollments.starts_at <= ? AND enrollments.ends_at >= ?", Time.zone.today, Time.zone.today) }
 
   def self.to_csv
     ap "generating csv for #{self.count} accounts"

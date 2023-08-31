@@ -74,9 +74,7 @@ class Staff::AccountsController < ApplicationController
       ap "after show unregistered: #{@accounts.count}"
 
       if @only_active
-        enrollments_to_consider = Enrollment.alive.active
-        account_ids = enrollments_to_consider.joins(:account).pluck("accounts.id").uniq
-        @accounts = @accounts.where(id: account_ids)
+        @accounts = @accounts.only_active_enrollments
       end
       ap "final accounts: #{@accounts.count}"
     end
