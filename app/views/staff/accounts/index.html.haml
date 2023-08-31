@@ -32,7 +32,7 @@
     %button.btn.btn-primary.btn-sm.clipboard-btn{data: { "clipboard-text" => @all_accounts.map{|a| a.all_emails}.flatten.uniq.join("; ")} } Copy Emails
 
 .row
-  #{@accounts.count} accounts found
+  #{@all_accounts.count} accounts found
 
 - if @accounts.any?
   %table{class: "tablesorter {sortlist: [[3,1]]}"}
