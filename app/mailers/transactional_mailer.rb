@@ -81,7 +81,7 @@ class TransactionalMailer < ApplicationMailer
 
     @children_notified = children_notified
 
-    mail(to: ["petertcormack@gmail.com", "office@daviskidsklub.com", "admin@daviskidsklub.com"], subject: "Tardy Notifications Report")
+    mail(to: ["petertcormack@gmail.com", "staff@daviskidsklub.com"], subject: "Tardy Notifications Report")
   end
 
   def exception_notification(except_message, except_backtrace)
