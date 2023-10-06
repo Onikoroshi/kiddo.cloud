@@ -10,6 +10,7 @@ class Staff::TimeEntriesController < ApplicationController
 
   def ratio_report
     @report_hash = @time_entries.ratio_report_hash
+    @manage_entries = policy(TimeEntry).manage?
   end
 
   def ratio_csv

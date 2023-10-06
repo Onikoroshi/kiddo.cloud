@@ -20,8 +20,8 @@
       = submit_tag "Submit"
 
     .pull-left
-      %h5 Total of #{@time_entries.children.count} Children Attending
-      %h5 Total of #{@time_entries.staffs.count} Staff Working
+      %h5 Total of #{@time_entries.count_children_checked_in} Children Attending
+      %h5 Total of #{@time_entries.count_staff_checked_in} Staff Working
 
   %br
   %br
@@ -52,25 +52,25 @@
 
     %table.admin-table
       %thead
-        - if policy(TimeEntry).manage?
+        - if @manage_entries
           %th
         %th.admin-title Location
         %th.admin-title Time
         %th.admin-title Action
-        - if policy(TimeEntry).manage?
+        - if @manage_entries
           %th
 
       %tbody
         - staff.time_entries.for_date(@target_date).for_location(@location).order("time ASC").each do |time_entry|
           %tr
-            - if policy(TimeEntry).manage?
+            - if @manage_entries
               %td
                 = link_to staff_time_entry_path(time_entry, recordable_type: time_entry.time_recordable_type, recordable_id: time_entry.time_recordable.id, back_path: request.fullpath), method: :delete, :data => { :confirm => 'Are you sure?' } do
                   %i.material-icons delete_forever
             %td= time_entry.location.name
             %td= time_entry.time.stamp("March 4th, 2018 2:58 pm")
             %td= time_entry.record_type.try(:text)
-            - if policy(TimeEntry).manage?
+            - if @manage_entries
               %td
                 = link_to edit_staff_time_entry_path(time_entry, recordable_type: time_entry.time_recordable_type, recordable_id: time_entry.time_recordable.id, back_path: request.fullpath) do
                   %i.material-icons edit
@@ -84,25 +84,25 @@
 
     %table.admin-table
       %thead
-        - if policy(TimeEntry).manage?
+        - if @manage_entries
           %th
         %th.admin-title Location
         %th.admin-title Time
         %th.admin-title Action
-        - if policy(TimeEntry).manage?
+        - if @manage_entries
           %th
 
       %tbody
         - child.time_entries.for_date(@target_date).for_location(@location).order("time ASC").each do |time_entry|
           %tr
-            - if policy(TimeEntry).manage?
+            - if @manage_entries
               %td
                 = link_to staff_time_entry_path(time_entry, recordable_type: time_entry.time_recordable_type, recordable_id: time_entry.time_recordable.id, back_path: request.fullpath), method: :delete, :data => { :confirm => 'Are you sure?' } do
                   %i.material-icons delete_forever
             %td= time_entry.location.name
             %td= time_entry.time.stamp("March 4th, 2018 2:58 pm")
             %td= time_entry.record_type.try(:text)
-            - if policy(TimeEntry).manage?
+            - if @manage_entries
               %td
                 = link_to edit_staff_time_entry_path(time_entry, recordable_type: time_entry.time_recordable_type, recordable_id: time_entry.time_recordable.id, back_path: request.fullpath) do
                   %i.material-icons edit

@@ -725,7 +725,6 @@ class Enrollment < ApplicationRecord
     end
 
     if program.present?
-      starts_at.present?
       if self.starts_at.present? && self.starts_at < program.starts_at
         errors.add(:base, "#{child.first_name} cannot attend on #{self.starts_at.stamp("Mar. 3rd, 2018")} as #{program.name} only runs from #{program.starts_at} to #{program.ends_at}")
       end
@@ -735,8 +734,8 @@ class Enrollment < ApplicationRecord
       end
     end
 
-    if starts_at.present? && ends_at.present? && ([0, 6] & (starts_at.wday..ends_at.wday).to_a).any?
-      errors.add(:base, "#{child.first_name} cannot attend on #{starts_at.stamp("Mar. 3rd, 2018")} because we are only in session on weekdays")
+    if starts_at.present? && ends_at.present? && ([0, 6] & [starts_at.wday, ends_at.wday]).any?
+      errors.add(:base, "#{child.first_name} cannot attend on #{[starts_at, ends_at].select{|d| [0, 6].include?(d.wday)}.map{|d| d.stamp("Mar. 3rd, 2018")}.to_sentence(two_words_connector: " or ", last_word_connector: ", or ")} because we are only in session on weekdays")
     end
   end
 

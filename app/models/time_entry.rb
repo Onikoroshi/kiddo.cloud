@@ -28,8 +28,16 @@ class TimeEntry < ApplicationRecord
     Staff.where(id: self.for_staff.pluck(:time_recordable_id).uniq).distinct
   end
 
+  def self.count_staff_checked_in
+    self.for_staff.entering.pluck(:time_recordable_id).uniq.count
+  end
+
   def self.children
     Child.where(id: self.for_children.pluck(:time_recordable_id).uniq).distinct
+  end
+
+  def self.count_children_checked_in
+    self.for_children.entering.pluck(:time_recordable_id).uniq.count
   end
 
   def self.display_hours
@@ -95,27 +103,29 @@ class TimeEntry < ApplicationRecord
   end
 
   def self.ratio_report_hash
-    result = {}
+    # result = {}
+    #
+    # return result unless self.any?
+    #
+    # keyed_entries = {}
+    #
+    # first_time = self.minimum(:time)
+    # last_time = self.maximum(:time)
+    #
+    # self.order(:time).find_each do |time_entry|
+    #   key = "#{time_entry.time_recordable_type}_#{time_entry.time_recordable_id}"
+    #   keyed_entries[key] = [] if keyed_entries[key].nil?
+    #   keyed_entries[key] << time_entry
+    # end
+    # ap "built hash"
+    #
+    # (first_time.to_i .. last_time.to_i).step(15.minutes).each do |time|
+    #   result[Time.zone.at(time).stamp("3:00 PM")] = self.count_checked_in_at(Time.zone.at(time), keyed_entries)
+    # end
+    #
+    # result
 
-    return result unless self.any?
-
-    keyed_entries = {}
-
-    first_time = self.minimum(:time)
-    last_time = self.maximum(:time)
-
-    self.order(:time).find_each do |time_entry|
-      key = "#{time_entry.time_recordable_type}_#{time_entry.time_recordable_id}"
-      keyed_entries[key] = [] if keyed_entries[key].nil?
-      keyed_entries[key] << time_entry
-    end
-    ap "built hash"
-
-    (first_time.to_i .. last_time.to_i).step(15.minutes).each do |time|
-      result[Time.zone.at(time).stamp("3:00 PM")] = self.count_checked_in_at(Time.zone.at(time), keyed_entries)
-    end
-
-    result
+    RatioReporter.new(self).ratio_report
   end
 
   def self.to_ratio_csv
