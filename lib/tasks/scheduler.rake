@@ -3,11 +3,12 @@ namespace :scheduler do
   task process_recurring_payments: :environment do
 
     messages = []
+    fewer_messages = []
 
     begin
       due_enrollments = Enrollment.alive.recurring.due_by_today.includes(child: :account).references(:accounts)
       enroll_hash = due_enrollments.to_a.group_by{|e| e.child.account.id}
-      messages << enroll_hash
+      # messages << enroll_hash
 
       total_accounts = enroll_hash.count
       index = 1
@@ -64,13 +65,20 @@ namespace :scheduler do
 
           success = true
         rescue => e
+          messages << "Error with account #{account_id}"
           messages << e.message
           messages << e.backtrace
+
+          fewer_messages << "Error with account #{account_id}"
+          fewer_messages << e.message
+          fewer_messages << e.backtrace
         end
 
         unless success
+          fewer_messages << "Account (#{account_id}) payment of #{total} failed."
           enrollments.each do |enrollment|
             messages << "marking enrollment #{enrollment.id} unpaid"
+            fewer_messages << "marking enrollment #{enrollment.id} unpaid"
             enrollment.update_attribute(:paid, false)
           end
         end
@@ -90,9 +98,13 @@ namespace :scheduler do
     rescue => e
       messages << e.message
       messages << e.backtrace
+
+      fewer_messages << e.message
+      fewer_messages << e.backtrace
     end
 
-    TransactionalMailer.recurring_payment_report(messages).deliver_now
+    TransactionalMailer.recurring_payment_report(messages, [ "petertcormack@gmail.com" ]).deliver_now
+    TransactionalMailer.recurring_payment_report(fewer_messages, [ "petertcormack@gmail.com", "office@daviskidsklub.com", "admin@daviskidsklub.com" ]).deliver_now if fewer_messages.any?
 
     FindUnpaidEnrollments.send_unpaid_enrollments_report
   end

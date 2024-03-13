@@ -58,14 +58,14 @@ class TransactionalMailer < ApplicationMailer
     mail(to: @account.all_emails, subject: "Your DKK Payment Information is incomplete or out-of-date")
   end
 
-  def recurring_payment_report(messages)
+  def recurring_payment_report(messages, given_emails)
     @messages = messages
-    mail(to: [ "petertcormack@gmail.com", "office@daviskidsklub.com", "admin@daviskidsklub.com" ], subject: "DKK Recurring Payment Report")
+    mail(to: given_emails, subject: "DKK Recurring Payment Report")
   end
 
-  def one_time_unpaid_payment_report(messages)
+  def one_time_unpaid_payment_report(messages, given_emails)
     @messages = messages
-    mail(to: [ "petertcormack@gmail.com", "office@daviskidsklub.com", "admin@daviskidsklub.com" ], subject: "DKK One-Time unpaid Payment Report")
+    mail(to: given_emails, subject: "DKK One-Time unpaid Payment Report")
   end
 
   def enrollment_change_report(transactions)
@@ -81,7 +81,7 @@ class TransactionalMailer < ApplicationMailer
 
     @children_notified = children_notified
 
-    mail(to: ["petertcormack@gmail.com", "staff@daviskidsklub.com"], subject: "Tardy Notifications Report")
+    mail(to: ["petertcormack@gmail.com"], subject: "Tardy Notifications Report")
   end
 
   def exception_notification(except_message, except_backtrace)
